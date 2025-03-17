@@ -42,8 +42,21 @@
                     </form>
                     <p class="switch-form">Já tem uma conta? <a href="#" id="showLogin">Fazer login</a></p>
                 </div>
+                <div id="messageContainer" style="display: none;"></div> <!-- Added message container -->
             </div>
         </section>
     </main>
+    <script src="js/auth.js"></script> <!-- Added script reference -->
+    <script>
+        // Check login status on page load
+        function checkLoginStatus() {
+            const token = localStorage.getItem('token');
+            if (token) {
+                window.location.href = '/dashboard.html';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', checkLoginStatus);
+    </script>
 </body>
 </html>

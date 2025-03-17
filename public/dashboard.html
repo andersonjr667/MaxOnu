@@ -7,6 +7,69 @@
     <link rel="stylesheet" href="css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <link rel="icon" href="images/logo-maxonu.png" type="image/png">
+    <style>
+        .dashboard-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: var(--branco);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .dashboard-container h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--azul-principal);
+        }
+
+        .question-card {
+            background: var(--azul-secundario);
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            border: 2px solid var(--branco);
+        }
+
+        .question-card h3 {
+            color: var(--branco);
+            margin-bottom: 0.5rem;
+        }
+
+        .question-card textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid var(--branco);
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            resize: vertical;
+        }
+
+        .question-card button {
+            background: var(--laranja);
+            color: var(--branco);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+        .question-card button:hover {
+            background: var(--amarelo);
+            transform: translateY(-2px);
+        }
+
+        .question-card .delete-button {
+            background: var(--vermelho);
+            margin-left: 1rem;
+        }
+
+        .question-card .delete-button:hover {
+            background: var(--vermelho-escuro);
+        }
+    </style>
 </head>
 <body>
     <main class="main-content">
@@ -21,13 +84,82 @@
     <script>
         // Verificar se o usuário está logado e é admin
         function checkAdmin() {
-            const user = localStorage.getItem('currentUser');
-            if (!user || JSON.parse(user).username !== 'Anderson') {
+            const token = localStorage.getItem('token');
+            if (!token) {
                 window.location.href = '/login.html';
+                return;
             }
+
+            fetch('/api/check-admin', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (!data.isAdmin) {
+                    window.location.href = '/login.html';
+                } else {
+                    loadPendingQuestions();
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao verificar admin:', error);
+                window.location.href = '/login.html';
+            });
         }
 
-        checkAdmin();
+        function loadPendingQuestions() {
+            fetch('/api/questions/pending')
+                .then(response => response.json())
+                .then(questions => {
+                    const questionsList = document.getElementById('pendingQuestions');
+                    if (questions.length === 0) {
+                        questionsList.innerHTML = '<p>Não há perguntas pendentes.</p>';
+                    } else {
+                        questionsList.innerHTML = questions.map(q => `
+                            <div class="question-card">
+                                <h3>${q.question}</h3>
+                                <textarea id="answer-${q._id}" placeholder="Digite sua resposta aqui..."></textarea>
+                                <button onclick="submitAnswer('${q._id}')">Responder</button>
+                                <button class="delete-button" onclick="deleteQuestion('${q._id}')">Excluir</button>
+                            </div>
+                        `).join('');
+                    }
+                })
+                .catch(error => console.error('Erro ao carregar perguntas pendentes:', error));
+        }
+
+        function submitAnswer(id) {
+            const answer = document.getElementById(`answer-${id}`).value;
+            fetch(`/api/questions/${id}/answer`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ answer })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Resposta enviada com sucesso!');
+                loadPendingQuestions();
+            })
+            .catch(error => console.error('Erro ao enviar resposta:', error));
+        }
+
+        function deleteQuestion(id) {
+            fetch(`/api/questions/${id}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Pergunta excluída com sucesso!');
+                loadPendingQuestions();
+            })
+            .catch(error => console.error('Erro ao excluir pergunta:', error));
+        }
+
+        document.addEventListener('DOMContentLoaded', checkAdmin);
     </script>
 </body>
 </html>

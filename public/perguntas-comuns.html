@@ -40,5 +40,134 @@
 
     <include src="footer.html"></include>
     <script src="js/questions.js"></script>
+    <script>
+        function loadQuestions() {
+            fetch('/api/questions')
+                .then(response => response.json())
+                .then(questions => {
+                    const questionsList = document.getElementById('questionsList');
+                    questionsList.innerHTML = questions.map(q => `
+                        <div class="question-card" data-id="${q._id}">
+                            <h3>${q.question}</h3>
+                            <p>${q.answer}</p>
+                            ${isAdmin() ? `
+                                <button onclick="editQuestion('${q._id}')">Editar</button>
+                                <button onclick="deleteQuestion('${q._id}')">Excluir</button>
+                            ` : ''}
+                        </div>
+                    `).join('');
+                })
+                .catch(error => console.error('Erro ao carregar perguntas:', error));
+        }
+
+        function isAdmin() {
+            const token = localStorage.getItem('token');
+            if (!token) return false;
+
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            return payload.username === 'Anderson';
+        }
+
+        function editQuestion(id) {
+            const questionCard = document.querySelector(`.question-card[data-id="${id}"]`);
+            const questionText = questionCard.querySelector('h3').innerText;
+            const answerText = questionCard.querySelector('p').innerText;
+
+            questionCard.innerHTML = `
+                <textarea id="edit-question-${id}">${questionText}</textarea>
+                <textarea id="edit-answer-${id}">${answerText}</textarea>
+                <button onclick="saveQuestion('${id}')">Salvar</button>
+                <button onclick="cancelEdit('${id}', '${questionText}', '${answerText}')">Cancelar</button>
+            `;
+        }
+
+        function saveQuestion(id) {
+            const question = document.getElementById(`edit-question-${id}`).value;
+            const answer = document.getElementById(`edit-answer-${id}`).value;
+
+            fetch(`/api/questions/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ question, answer })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Pergunta atualizada com sucesso!');
+                loadQuestions();
+            })
+            .catch(error => console.error('Erro ao atualizar pergunta:', error));
+        }
+
+        function cancelEdit(id, questionText, answerText) {
+            const questionCard = document.querySelector(`.question-card[data-id="${id}"]`);
+            questionCard.innerHTML = `
+                <h3>${questionText}</h3>
+                <p>${answerText}</p>
+                ${isAdmin() ? `
+                    <button onclick="editQuestion('${id}')">Editar</button>
+                    <button onclick="deleteQuestion('${id}')">Excluir</button>
+                ` : ''}
+            `;
+        }
+
+        function deleteQuestion(id) {
+            fetch(`/api/questions/${id}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Pergunta excluída com sucesso!');
+                loadQuestions();
+            })
+            .catch(error => console.error('Erro ao excluir pergunta:', error));
+        }
+
+        document.addEventListener('DOMContentLoaded', loadQuestions);
+    </script>
+    <style>
+        .question-card {
+            background: var(--azul-secundario);
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            border: 2px solid var(--branco);
+        }
+
+        .question-card h3 {
+            color: var(--branco);
+            margin-bottom: 0.5rem;
+        }
+
+        .question-card p {
+            color: var(--branco);
+        }
+
+        .question-card button {
+            background: var(--laranja);
+            color: var(--branco);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+        .question-card button:hover {
+            background: var(--amarelo);
+            transform: translateY(-2px);
+        }
+
+        .question-card .delete-button {
+            background: var(--vermelho);
+            margin-left: 1rem;
+        }
+
+        .question-card .delete-button:hover {
+            background: var(--vermelho-escuro);
+        }
+    </style>
 </body>
 </html>

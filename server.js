@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
+const jwt = require('jsonwebtoken');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -143,6 +144,42 @@ app.put('/api/questions/:id/answer', async (req, res) => {
         res.json(question);
     } catch (error) {
         res.status(400).json({ error: error.message });
+    }
+});
+
+app.put('/api/questions/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { question, answer } = req.body;
+        const updatedQuestion = await Question.findByIdAndUpdate(
+            id,
+            { question, answer },
+            { new: true }
+        );
+        res.json(updatedQuestion);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+app.delete('/api/questions/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        await Question.findByIdAndDelete(id);
+        res.json({ message: 'Pergunta excluída com sucesso' });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Check if user is admin
+app.get('/api/check-admin', (req, res) => {
+    const token = req.headers.authorization.split(' ')[1];
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+        res.json({ isAdmin: decoded.username === 'Anderson' });
+    } catch (error) {
+        res.status(401).json({ error: 'Token inválido' });
     }
 });
 
