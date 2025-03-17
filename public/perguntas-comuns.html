@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perguntas Comuns - MaxOnu 2025</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="icon" href="images/logo-maxonu.png" type="image/png">
+    <script src="js/includes.js"></script>
+</head>
+<body>
+    <include src="header.html"></include>
+
+    <main class="main-content">
+        <section class="content-section">
+            <article class="content-box">
+                <h1>Perguntas Comuns</h1>
+                <p>Tire suas dúvidas sobre o MaxOnu 2025. Se você tem alguma pergunta, não hesite em perguntar!</p>
+                <button class="ask-button" onclick="openQuestionModal()">Fazer uma Pergunta</button>
+            </article>
+
+            <!-- Modal para perguntas -->
+            <div class="modal" id="questionModal">
+                <div class="modal-content">
+                    <button class="modal-close" onclick="closeQuestionModal()">&times;</button>
+                    <h2>Faça sua pergunta</h2>
+                    <form id="questionForm" class="question-form">
+                        <textarea id="question" placeholder="Digite sua pergunta aqui..." required></textarea>
+                        <button type="submit" class="submit-question">Enviar Pergunta</button>
+                    </form>
+                </div>
+            </div>
+
+            <div id="questionsList">
+                <!-- Perguntas respondidas serão carregadas aqui -->
+            </div>
+        </section>
+    </main>
+
+    <include src="footer.html"></include>
+    <script src="js/questions.js"></script>
+</body>
+</html>

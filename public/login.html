@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - MaxOnu 2025</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="icon" href="images/logo-maxonu.png" type="image/png">
+</head>
+<body>
+    <main class="main-content">
+        <section class="content-section">
+            <div class="login-container">
+                <div class="login-box">
+                    <h2>Login</h2>
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <input type="text" id="username" name="username" placeholder="Usuário" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="password" name="password" placeholder="Senha" required>
+                        </div>
+                        <button type="submit" class="login-btn">Entrar</button>
+                    </form>
+                    <p class="switch-form">Não tem uma conta? <a href="#" id="showRegister">Registre-se</a></p>
+                </div>
+
+                <div class="register-box" style="display: none;">
+                    <h2>Registro</h2>
+                    <form id="registerForm">
+                        <div class="form-group">
+                            <input type="text" id="newUsername" name="newUsername" placeholder="Usuário" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" id="email" name="email" placeholder="Email" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="newPassword" name="newPassword" placeholder="Senha" required>
+                        </div>
+                        <button type="submit" class="register-btn">Registrar</button>
+                    </form>
+                    <p class="switch-form">Já tem uma conta? <a href="#" id="showLogin">Fazer login</a></p>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

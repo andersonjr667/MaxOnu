@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MaxOnu 2025</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="js/countdown.js" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="icon" href="images/logo-maxonu.png" type="image/png">
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+    <script src="js/includes.js"></script>
+</head>
+<body>
+    <include src="header.html"></include>
+
+    <section id="countdown-section">
+        <div class="countdown-container">
+            <h1 class="main-title">MAXONU 2025</h1>
+            <div class="countdown-message">Faltam</div>
+            <div class="countdown-grid" id="countdown"></div>
+        </div>
+    </section>
+
+    <main class="main-content index-content">
+        <section class="content-section">
+            <div class="info-tabs">
+                <button class="tab-button active" onclick="openTab('sobre')">O que é?</button>
+                <button class="tab-button" onclick="openTab('equipe')">Equipe</button>
+            </div>
+
+            <div id="sobre" class="tab-content active">
+                <article class="content-box">
+                    <h2>Sobre a MaxOnu</h2>
+                    <p>A MaxOnu é uma simulação de debates da ONU organizada pelo Colégio Maximus. Este evento proporciona aos estudantes a oportunidade de desenvolver habilidades essenciais em diplomacia, negociação e relações internacionais.</p>
+                    <div class="features-grid">
+                        <div class="feature-card blue-accent">
+                            <h3>Diplomacia</h3>
+                            <p>Os participantes exercitam suas habilidades de negociação e oratória, representando diferentes países e defendendo suas posições em debates acalorados.</p>
+                        </div>
+                        <div class="feature-card blue-accent">
+                            <h3>Aprendizado</h3>
+                            <p>Os estudantes adquirem um profundo conhecimento sobre política global, entendendo melhor os desafios e as dinâmicas das relações internacionais.</p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+
+            <div id="equipe" class="tab-content">
+                <article class="content-box">
+                    <h2>Nossa Equipe</h2>
+                    <p>Conheça os profissionais dedicados que tornam a MaxOnu possível:</p>
+                    <div class="team-grid">
+                        <div class="member-card">
+                            <div class="member-photo" style="background-image: url('images/guilherme.png')"></div>
+                            <h3>Guilherme Loiola</h3>
+                            <p>Coordenador Geral</p>
+                            <p>Guilherme é responsável pela coordenação geral do evento, garantindo que todas as atividades sejam realizadas com excelência.</p>
+                        </div>
+                        <div class="member-card">
+                            <div class="member-photo" style="background-image: url('images/bruno.png')"></div>
+                            <h3>Bruno Gusmão</h3>
+                            <p>Professor Diretor</p>
+                            <p>Bruno supervisiona o conteúdo acadêmico e oferece suporte pedagógico aos participantes, assegurando uma experiência educativa enriquecedora.</p>
+                        </div>
+                        <div class="member-card">
+                            <div class="member-photo" style="background-image: url('images/anderson.png')"></div>
+                            <h3>Anderson Jr</h3>
+                            <p>Desenvolvedor</p>
+                            <p>Anderson é o responsável pelo desenvolvimento e manutenção do site da MaxOnu, proporcionando uma plataforma digital eficiente e intuitiva.</p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="content-section" id="committees-section">
+            <h2>Comitês</h2>
+            <div class="committees-message">Em breve! Estamos preparando o melhor para os senhores e senhoras delegados(as)</div>
+            <div class="committees-grid">
+                <div class="committee-card present" data-index="1" data-title="(AGNU-2024) 140 Anos da Partilha da África" data-description="Reflexões e perspectivas sobre um dos marcos mais importantes da história africana e seu impacto global.">
+                    <div class="ribbon"></div>
+                    <h3>Dossiê Confidencial!</h3>
+                </div>
+                <div class="committee-card present" data-index="2" data-title="(CSNU-2024) Tensões entre Rússia e Ucrânia" data-description="Análise das tensões recentes entre Rússia e Ucrânia no Conselho de Segurança da ONU.">
+                    <div class="ribbon"></div>
+                    <h3>Crise em Análise!</h3>
+                </div>
+                <div class="committee-card present" data-index="3" data-title="(OEA-2024) Violações dos Direitos Humanos" data-description="Discussão sobre as violações dos direitos humanos dentro do sistema carcerário nas Américas.">
+                    <div class="ribbon"></div>
+                    <h3>Questão Global Oculta!</h3>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <include src="footer.html"></include>
+
+    <script>
+        function openTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+    </script>
+</body>
+</html>

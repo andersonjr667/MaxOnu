@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin - MaxOnu 2025</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="icon" href="images/logo-maxonu.png" type="image/png">
+</head>
+<body>
+    <main class="main-content">
+        <section class="dashboard-container">
+            <h1>Dashboard Administrativo</h1>
+            <div class="questions-list" id="pendingQuestions">
+                <!-- Perguntas pendentes serão carregadas aqui -->
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Verificar se o usuário está logado e é admin
+        function checkAdmin() {
+            const user = localStorage.getItem('currentUser');
+            if (!user || JSON.parse(user).username !== 'Anderson') {
+                window.location.href = '/login.html';
+            }
+        }
+
+        checkAdmin();
+    </script>
+</body>
+</html>

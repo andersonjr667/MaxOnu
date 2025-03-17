@@ -1,0 +1,73 @@
+<!-- header.html -->
+<header class="main-header">
+    <div class="header-content">
+        <a href="index.html" class="logo">
+            <img src="images/logo-maxonu.png" alt="MaxOnu" class="logo-img">
+        </a>
+        <nav class="nav-links">
+            <ul>
+                <li><a href="index.html" class="nav-link">Pagina Inicial</a></li>
+                <li><a href="blog.html" class="nav-link">Blog</a></li>
+                <li><a href="guias.html" class="nav-link">Guias</a></li>
+                <li><a href="delegacoes.html" class="nav-link">Delegações</a></li>
+                <li><a href="dpos.html" class="nav-link">DPOs</a></li>
+                <li><a href="regras.html" class="nav-link">Regras</a></li>
+                <li><a href="perguntas-comuns.html" class="nav-link">Perguntas Comuns</a></li>
+                <li><a href="instagram.html" class="nav-link">Instagram</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+<style>
+    .main-header {
+        background: var(--azul-principal);
+        padding: 1rem 2rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        position: fixed;
+        width: 100%;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+        transition: background 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .main-header:hover {
+        background: var(--azul-secundario);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+
+    .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .logo-img {
+        height: 50px;
+        transition: transform 0.3s ease;
+    }
+
+    .logo-img:hover {
+        transform: scale(1.1);
+    }
+
+    .nav-links ul {
+        display: flex;
+        gap: 1.5rem;
+        list-style: none;
+    }
+
+    .nav-link {
+        color: var(--branco);
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.3s ease, text-shadow 0.3s ease;
+    }
+
+    .nav-link:hover {
+        color: var(--laranja);
+        text-shadow: 0 0 10px var(--amarelo);
+    }
+</style>

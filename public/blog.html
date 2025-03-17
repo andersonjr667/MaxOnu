@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - MaxOnu 2025</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="icon" href="images/logo-maxonu.png" type="image/png">
+    <script src="js/includes.js"></script>
+    <script src="js/auth.js"></script>
+</head>
+<body>
+    <include src="header.html"></include>
+
+    <main class="main-content">
+        <section class="content-section">
+            <article class="content-box">
+                <h1>Blog</h1>
+                <div id="admin-actions" style="display: none;">
+                    <button class="view-button" onclick="window.location.href='create-post.html'">Fazer um Post</button>
+                </div>
+                <div class="blog-posts">
+                    <!-- Blog posts will be dynamically loaded here -->
+                </div>
+            </article>
+        </section>
+    </main>
+
+    <include src="footer.html"></include>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('token');
+            if (token) {
+                // Check if the user is an admin
+                fetch('/api/check-admin', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.isAdmin) {
+                        document.getElementById('admin-actions').style.display = 'block';
+                    }
+                })
+                .catch(error => console.error('Erro ao verificar admin:', error));
+            }
+        });
+    </script>
+</body>
+</html>

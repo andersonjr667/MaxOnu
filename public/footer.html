@@ -1,0 +1,67 @@
+<!-- footer.html -->
+<div class="footer-wrapper">
+    <footer class="main-footer">
+        <div class="footer-content">
+            <p>&copy; 2025 MaxOnu - Colégio Maximus</p>
+            <div class="social-links">
+                <a href="#" class="social-link">
+                    <svg class="instagram-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                    </svg>
+                    Instagram
+                </a>
+            </div>
+        </div>
+    </footer>
+</div>
+<style>
+    .main-footer {
+        background: var(--azul-principal);
+        color: var(--branco);
+        padding: 2rem;
+        transition: background 0.3s ease, color 0.3s ease;
+        position: relative;
+        width: 100%;
+        bottom: 0;
+        z-index: 1000;
+    }
+
+    .main-footer:hover {
+        background: var(--azul-secundario);
+        color: var(--amarelo);
+    }
+
+    .footer-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .social-link {
+        color: var(--branco);
+        transition: color 0.3s ease, text-shadow 0.3s ease;
+        scroll-behavior: smooth;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+    }
+
+    .instagram-icon {
+        color: var(--branco);
+        transition: color 0.3s ease;
+    }
+
+    .social-link:hover .instagram-icon {
+        color: var(--amarelo);
+    }
+
+    .social-link:hover {
+        color: var(--amarelo);
+        text-shadow: 0 0 10px var(--laranja);
+    }
+</style>
