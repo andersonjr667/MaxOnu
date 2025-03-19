@@ -49,6 +49,24 @@ let inMemoryUsers = [];
 const User = require('./models/User');
 const Question = require('./models/Question');
 
+// Ensure all questions are available for everyone
+app.get('/api/questions', async (req, res) => {
+    try {
+        if (mongoose.connection.readyState !== 1) {
+            return res.json(inMemoryQuestions);
+        }
+        const questions = await Question.find();
+        res.json(questions);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    console.log('Note: Running with in-memory fallback if MongoDB is unavailable');
+});
+
 // Modified routes with fallback
 app.post('/api/register', async (req, res) => {
     try {

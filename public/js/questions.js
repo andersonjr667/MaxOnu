@@ -10,14 +10,6 @@ function initQuestions() {
     const questionForm = document.getElementById('questionForm');
     const questionsList = document.getElementById('questionsList');
 
-    // Close modal when clicking outside
-    window.onclick = function(event) {
-        const modal = document.getElementById('questionModal');
-        if (event.target === modal) {
-            closeQuestionModal();
-        }
-    }
-
     function loadQuestions() {
         fetch('/api/questions')
             .then(response => response.json())
