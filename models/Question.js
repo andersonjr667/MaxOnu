@@ -7,7 +7,7 @@ const questionSchema = new mongoose.Schema({
     },
     answer: {
         type: String,
-        default: null
+        default: 'Sem Resposta ainda!'
     },
     answered: {
         type: Boolean,
