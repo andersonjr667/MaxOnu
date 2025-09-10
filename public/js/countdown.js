@@ -5,7 +5,7 @@ function padZero(value) {
 
 document.addEventListener('DOMContentLoaded', function() {
     const countdownElement = document.getElementById('countdown');
-    const targetDate = new Date('2025-12-31T23:59:59').getTime(); // Defina a data e hora alvo
+    const targetDate = new Date('2025-10-18T23:59:59').getTime(); // Defina a data e hora alvo
 
     function updateCountdown() {
         const now = new Date().getTime();

@@ -16,10 +16,19 @@ function initAuth() {
     function checkLoginStatus() {
         const token = localStorage.getItem('token');
         const currentPath = window.location.pathname;
-        if (token && currentPath === '/login.html') {
-            window.location.href = '/dashboard.html';
-        } else if (!token && currentPath === '/dashboard.html') {
-            window.location.href = '/login.html';
+        const isTokenValido = token && token !== 'null' && token !== 'undefined' && token.trim() !== '';
+
+        // Limpa tokens inválidos do localStorage
+        if (token === 'null' || token === 'undefined' || token === '' || token === null) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('isAdmin');
+        }
+
+        // Só faz redirecionamento automático se estiver no dashboard.html e não houver token válido
+        if (currentPath === '/dashboard.html') {
+            if (!isTokenValido) {
+                window.location.href = '/login.html';
+            }
         }
     }
 
@@ -56,9 +65,11 @@ function initAuth() {
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('isAdmin', data.isAdmin);
                 displayMessage('Login realizado com sucesso!');
-                setTimeout(() => {
-                    window.location.href = '/dashboard.html'; // Redirect to dashboard
-                }, 1000);
+                if (data.token) {
+                    setTimeout(() => {
+                        window.location.href = '/dashboard.html';
+                    }, 800);
+                }
             } else {
                 displayMessage(data.error || 'Erro ao fazer login', true);
             }

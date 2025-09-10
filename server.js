@@ -6,7 +6,25 @@ const path = require('path');
 const jwt = require('jsonwebtoken');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const DEFAULT_PORT = 3000;
+let serverInstance;
+let PORT = DEFAULT_PORT;
+
+function startServer(port) {
+    serverInstance = app.listen(port, () => {
+        console.log(`Server running on port ${port}`);
+        console.log('Note: Running with in-memory fallback if MongoDB is unavailable');
+    });
+    serverInstance.on('error', (err) => {
+        if (err.code === 'EADDRINUSE') {
+            console.error(`Porta ${port} em uso. Tentando próxima porta...`);
+            PORT = Number(port) + 1;
+            startServer(PORT);
+        } else {
+            throw err;
+        }
+    });
+}
 
 // Middleware
 app.use(cors());
@@ -62,10 +80,8 @@ app.get('/api/questions', async (req, res) => {
     }
 });
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-    console.log('Note: Running with in-memory fallback if MongoDB is unavailable');
-});
+// Inicia o servidor tentando portas livres automaticamente
+startServer(PORT);
 
 // Modified routes with fallback
 app.post('/api/register', async (req, res) => {
@@ -195,7 +211,11 @@ app.delete('/api/questions/:id', async (req, res) => {
 
 // Check if user is admin
 app.get('/api/check-admin', (req, res) => {
-    const token = req.headers.authorization.split(' ')[1];
+    const token = req.headers.authorization && req.headers.authorization.split(' ')[1];
+    // Se estiver usando fallback em memória, aceite o dummy-token como admin
+    if (mongoose.connection.readyState !== 1) {
+        return res.json({ isAdmin: token === 'dummy-token' });
+    }
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
         res.json({ isAdmin: decoded.username === 'Anderson' });
@@ -205,11 +225,9 @@ app.get('/api/check-admin', (req, res) => {
 });
 
 // Serve static files
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+
+// Rota coringa para 404
+app.use((req, res) => {
+    res.status(404).sendFile(path.join(__dirname, 'public', '404.html'));
 });
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-    console.log('Note: Running with in-memory fallback if MongoDB is unavailable');
-});

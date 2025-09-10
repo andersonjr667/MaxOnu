@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página não encontrada - 404</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        body {
+            background: var(--gradiente);
+        }
+        .container-404 {
+            background: var(--branco);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.10);
+            padding: 3rem 2rem;
+            text-align: center;
+            max-width: 420px;
+            margin: 6rem auto 0 auto;
+        }
+        h1 {
+            font-size: 6rem;
+            margin: 0 0 1rem 0;
+            font-weight: 900;
+            color: var(--azul-principal);
+            letter-spacing: 8px;
+            text-shadow: 2px 4px 16px rgba(0,0,0,0.08);
+        }
+        p {
+            font-size: 1.3rem;
+            margin: 0.5rem 0 2rem 0;
+            color: var(--azul-secundario);
+        }
+        .btn-voltar {
+            display: inline-block;
+            background: var(--laranja);
+            color: var(--branco);
+            font-weight: 700;
+            padding: 0.8rem 2.2rem;
+            border-radius: 30px;
+            border: none;
+            font-size: 1.1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s, transform 0.2s;
+            text-decoration: none;
+        }
+        .btn-voltar:hover {
+            background: var(--amarelo);
+            color: var(--azul-principal);
+            transform: translateY(-2px) scale(1.04);
+        }
+    </style>
+</head>
+<body>
+    <div class="container-404">
+        <img src="images/logo-maxonu.png" alt="Logo MaxOnu" style="width: 100px; display: block; margin: 0 auto 2rem auto;">
+        <h1>404</h1>
+        <p>Página não encontrada.</p>
+        <a class="btn-voltar" href="/index.html">Voltar para a página inicial</a>
+    </div>
+</body>
+</html>
