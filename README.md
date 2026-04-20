@@ -1,6 +1,6 @@
-# MaxOnu 2025
+# MaxOnu 2026
 
-MaxOnu 2025 is a simulation of United Nations debates organized by Colégio Maximus. This event provides students with the opportunity to develop essential skills in diplomacy, negotiation, and international relations.
+MaxOnu 2026 is a simulation of United Nations debates organized by Colégio Maximus. This event provides students with the opportunity to develop essential skills in diplomacy, negotiation, and international relations.
 
 ## Table of Contents
 
@@ -17,7 +17,7 @@ MaxOnu 2025 is a simulation of United Nations debates organized by Colégio Maxi
 
 ## Project Overview
 
-MaxOnu 2025 is a web application that simulates UN debates. It includes features such as user registration and login, a dashboard for administrators, and a public interface for viewing information about the event, teams, and committees.
+MaxOnu 2026 is a web application that simulates UN debates. It includes features such as user registration and login, a dashboard for administrators, and a public interface for viewing information about the event, teams, and committees.
 
 ## Features
 
@@ -40,8 +40,8 @@ MaxOnu 2025 is a web application that simulates UN debates. It includes features
 
 1. **Clone the repository**:
     ```bash
-    git clone https://github.com/your-username/maxonu2025.git
-    cd maxonu2025
+    git clone https://github.com/your-username/maxonu2026.git
+    cd maxonu2026
     ```
 
 2. **Install dependencies**:
@@ -75,7 +75,7 @@ MaxOnu 2025 is a web application that simulates UN debates. It includes features
 ## Project Structure
 
 ```
-maxonu2025/
+maxonu2026/
 ├── models/
 │   ├── Question.js
 │   └── User.js

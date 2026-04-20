@@ -5,7 +5,25 @@ function padZero(value) {
 
 document.addEventListener('DOMContentLoaded', function() {
     const countdownElement = document.getElementById('countdown');
-    const targetDate = new Date('2026-05-04T00:00:00').getTime(); // Início dos comitês: 04/05/2026
+    const heroCtaGroup = document.getElementById('heroCtaGroup');
+    const countdownMessage = document.querySelector('.countdown-message');
+    const targetDate = new Date('2026-05-04T00:00:00').getTime(); // Início da MaxOnu 2026: 04/05/2026
+
+    function getRegistrationLink() {
+        const token = localStorage.getItem('token');
+        const validToken = token && token !== 'null' && token !== 'undefined' && token.trim() !== '';
+        return validToken ? 'inscricao.html' : 'login.html?next=/inscricao.html';
+    }
+
+    function renderRegistrationCta() {
+        if (!heroCtaGroup) {
+            return;
+        }
+
+        heroCtaGroup.innerHTML = `
+            <a href="${getRegistrationLink()}" class="auth-btn auth-btn-primary hero-auth-btn">Faça sua inscrição</a>
+        `;
+    }
 
     function updateCountdown() {
         const now = new Date().getTime();
@@ -13,6 +31,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (distance < 0) {
             clearInterval(interval);
+            renderRegistrationCta();
+            if (countdownMessage) {
+                countdownMessage.textContent = 'A contagem terminou. Faça sua inscrição para começar a montar sua delegação.';
+            }
             countdownElement.innerHTML = `
                 <div class="time-unit">
                     <div class="time-value">00</div>

@@ -7,23 +7,24 @@
     <link rel="stylesheet" href="css/styles.css">
     <script src="js/countdown.js" defer></script>
     <script src="js/committees.js" defer></script>
+    <script src="js/index.js" defer></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <link rel="icon" href="images/logo-maxonu.png" type="image/png">
-    <script src="js/includes.js"></script>
+    <script src="js/includes.js?v=20260420-headerfix"></script>
 </head>
 <body>
     <include src="header.html"></include>
 
     <section id="countdown-section">
         <div class="countdown-container">
-            <div class="hero-badge">Simulação 2026 do Colégio Maximus</div>
+            <div class="hero-badge">Edição 2026 do Colégio Maximus</div>
             <h1 class="main-title">MAXONU 2026</h1>
             <p class="hero-intro">A nova edição da MaxOnu mantém a identidade do projeto e chega com 7 comitês, novas áreas de acompanhamento e uma experiência digital pensada para delegados, professores orientadores e coordenação.</p>
-            <div class="hero-cta-group">
+            <div class="hero-cta-group" id="heroCtaGroup">
                 <a href="login.html" class="auth-btn auth-btn-secondary hero-auth-btn">Entrar</a>
                 <a href="login.html#register" class="auth-btn auth-btn-primary hero-auth-btn">Cadastrar</a>
             </div>
-            <div class="countdown-message">Contagem regressiva para o início dos comitês</div>
+            <div class="countdown-message">Contagem regressiva para o início da MaxOnu 2026</div>
             <div class="countdown-grid" id="countdown"></div>
             <div class="event-date">Data de Início: 4 de Maio de 2026</div>
         </div>
@@ -32,8 +33,8 @@
     <main class="main-content index-content">
         <section class="content-section">
             <div class="info-tabs">
-                <button class="tab-button active" onclick="openTab('sobre', event)">O que é?</button>
-                <button class="tab-button" onclick="openTab('equipe', event)">Equipe</button>
+                <button class="tab-button active" type="button" data-tab-target="sobre">O que é?</button>
+                <button class="tab-button" type="button" data-tab-target="equipe">Equipe</button>
             </div>
 
             <div id="sobre" class="tab-content active">
@@ -75,10 +76,11 @@
                             <p>Bruno supervisiona o conteúdo acadêmico e oferece suporte pedagógico aos participantes, assegurando uma experiência educativa enriquecedora.</p>
                         </div>
                         <div class="member-card">
-                            <div class="member-photo" style="background-image: url('images/anderson.png')"></div>
-                            <h3>Anderson Jr</h3>
-                            <p>Desenvolvedor</p>
-                            <p>Anderson é o responsável pelo desenvolvimento e manutenção do site da MaxOnu, proporcionando uma plataforma digital eficiente e intuitiva.</p>
+                            <div class="member-photo placeholder-photo"></div>
+                            <h3>Imprensa MaxOnu</h3>
+                            <p>Cobertura e comunicação</p>
+                            <p>A equipe de imprensa registra os principais momentos da MaxOnu e fortalece a comunicação do projeto com conteúdo, divulgação e presença digital.</p>
+                            <a href="imprensa.html" class="view-button team-cta">Conheça a Imprensa</a>
                         </div>
                     </div>
                 </article>
@@ -149,14 +151,5 @@
     </main>
 
     <include src="footer.html"></include>
-
-    <script>
-        function openTab(tabId, event) {
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            event.currentTarget.classList.add('active');
-        }
-    </script>
 </body>
 </html>

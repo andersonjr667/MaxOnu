@@ -7,8 +7,8 @@
     <link rel="stylesheet" href="css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <link rel="icon" href="images/logo-maxonu.png" type="image/png">
-    <script src="js/includes.js"></script>
-    <script src="js/auth.js"></script>
+    <script src="js/includes.js?v=20260420-headerfix"></script>
+    <script src="js/blog.js" defer></script>
 </head>
 <body>
     <include src="header.html"></include>
@@ -19,36 +19,15 @@
                 <h1>Blog</h1>
                 <p>Espaço reservado para comunicados, orientações e atualizações da MaxOnu 2026.</p>
                 <div id="admin-actions" style="display: none;">
-                    <button class="view-button" onclick="window.location.href='create-post.html'">Fazer um Post</button>
+                    <button class="view-button" id="createPostBtn" type="button">Fazer um Post</button>
                 </div>
                 <div class="blog-posts">
-                    <!-- Blog posts will be dynamically loaded here -->
+                    <p class="dashboard-empty">Carregando publicações...</p>
                 </div>
             </article>
         </section>
     </main>
 
     <include src="footer.html"></include>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const token = localStorage.getItem('token');
-            if (token) {
-                // Check if the user is an admin
-                fetch('/api/check-admin', {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.isAdmin) {
-                        document.getElementById('admin-actions').style.display = 'block';
-                    }
-                })
-                .catch(error => console.error('Erro ao verificar admin:', error));
-            }
-        });
-    </script>
 </body>
 </html>

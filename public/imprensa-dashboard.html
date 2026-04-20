@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal da Imprensa - MaxOnu 2026</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="icon" href="images/logo-maxonu.png" type="image/png">
+    <script src="js/includes.js?v=20260420-headerfix"></script>
+    <script src="js/role-portals.js" defer></script>
+</head>
+<body data-portal-role="press">
+    <include src="header.html"></include>
+
+    <main class="main-content">
+        <section class="content-section">
+            <div class="portal-shell">
+                <section class="portal-hero">
+                    <div class="portal-copy">
+                        <span class="portal-kicker">Comunicação</span>
+                        <h1 id="portalTitle">Portal da Imprensa</h1>
+                        <p id="portalLead">Carregando recursos da equipe de imprensa...</p>
+                    </div>
+                    <div class="portal-badge" id="portalBadge">Validando acesso</div>
+                </section>
+
+                <div class="dashboard-summary-grid" id="portalSummary"></div>
+
+                <section class="dashboard-panel">
+                    <div class="dashboard-section-heading">
+                        <span class="dashboard-section-kicker">Ações</span>
+                        <h2>Ferramentas da comunicação</h2>
+                        <p>Organize cobertura, publicações e canais oficiais da MaxOnu em um único lugar.</p>
+                    </div>
+                    <div class="portal-action-grid" id="portalActions"></div>
+                </section>
+            </div>
+        </section>
+    </main>
+
+    <include src="footer.html"></include>
+</body>
+</html>

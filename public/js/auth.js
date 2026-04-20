@@ -1,21 +1,50 @@
 function initAuth() {
     const loginForm = document.getElementById('loginForm');
     const registerForm = document.getElementById('registerForm');
-    const showRegister = document.getElementById('showRegister');
-    const showLogin = document.getElementById('showLogin');
     const loginBox = document.querySelector('.login-box');
     const registerBox = document.querySelector('.register-box');
     const messageContainer = document.getElementById('messageContainer');
+    const tabButtons = document.querySelectorAll('[data-auth-tab]');
 
-    if (!loginForm || !registerForm || !showRegister || !showLogin || !loginBox || !registerBox || !messageContainer) {
+    if (!loginForm || !registerForm || !loginBox || !registerBox || !messageContainer) {
         return;
     }
 
     function displayMessage(message, isError = false) {
         messageContainer.style.display = 'block';
+        messageContainer.className = `login-message ${isError ? 'is-error' : 'is-success'}`;
         messageContainer.textContent = message;
-        messageContainer.style.color = isError ? '#9f2f3e' : '#0d3b66';
-        messageContainer.style.border = `1px solid ${isError ? 'rgba(209, 73, 91, 0.24)' : 'rgba(13, 59, 102, 0.14)'}`;
+    }
+
+    function clearMessage() {
+        messageContainer.style.display = 'none';
+        messageContainer.textContent = '';
+        messageContainer.className = 'login-message';
+    }
+
+    function parseValidationError(errorPayload) {
+        if (Array.isArray(errorPayload)) {
+            return errorPayload[0]?.msg || 'Dados inválidos.';
+        }
+
+        if (typeof errorPayload === 'string') {
+            return errorPayload;
+        }
+
+        return 'Erro inesperado.';
+    }
+
+    async function parseApiResponse(response) {
+        const contentType = response.headers.get('content-type') || '';
+
+        if (contentType.includes('application/json')) {
+            return response.json();
+        }
+
+        const text = await response.text();
+        return {
+            error: text.startsWith('<!DOCTYPE') ? 'Resposta invalida do servidor.' : text || 'Erro inesperado no servidor.'
+        };
     }
 
     function checkLoginStatus() {
@@ -23,46 +52,95 @@ function initAuth() {
         const currentPath = window.location.pathname;
         const isTokenValido = token && token !== 'null' && token !== 'undefined' && token.trim() !== '';
 
-        // Limpa tokens inválidos do localStorage
-        if (token === 'null' || token === 'undefined' || token === '' || token === null) {
+        if (!isTokenValido) {
             localStorage.removeItem('token');
             localStorage.removeItem('isAdmin');
+            localStorage.removeItem('role');
         }
 
-        // Só faz redirecionamento automático se estiver no dashboard.html e não houver token válido
-        if (currentPath === '/dashboard.html') {
-            if (!isTokenValido) {
-                window.location.href = '/login.html';
-            }
+        if (['/dashboard.html', '/admin.html', '/coordenacao.html', '/orientadores.html', '/imprensa-dashboard.html', '/inscricao.html'].includes(currentPath) && !isTokenValido) {
+            window.location.href = '/login.html';
         }
     }
 
-    showRegister.addEventListener('click', (e) => {
-        e.preventDefault();
-        loginBox.style.display = 'none';
-        registerBox.style.display = 'block';
-        messageContainer.style.display = 'none';
+    function getRoleRedirect(role) {
+        if (role === 'admin') return '/admin.html';
+        if (role === 'coordinator') return '/coordenacao.html';
+        if (role === 'teacher') return '/orientadores.html';
+        if (role === 'press') return '/imprensa-dashboard.html';
+        return '/profile.html';
+    }
+
+    function getSafeNextPath() {
+        const next = new URLSearchParams(window.location.search).get('next');
+        if (!next || !next.startsWith('/') || next.startsWith('//')) {
+            return '';
+        }
+        return next;
+    }
+
+    function setButtonLoading(button, isLoading, loadingText) {
+        if (!button) return;
+
+        if (isLoading) {
+            button.dataset.originalText = button.textContent;
+            button.textContent = loadingText;
+            button.disabled = true;
+        } else {
+            button.textContent = button.dataset.originalText || button.textContent;
+            button.disabled = false;
+        }
+    }
+
+    function switchTab(tabName) {
+        const showLogin = tabName === 'login';
+        loginBox.style.display = showLogin ? 'block' : 'none';
+        registerBox.style.display = showLogin ? 'none' : 'block';
+        clearMessage();
+
+        tabButtons.forEach((button) => {
+            const isActive = button.dataset.authTab === tabName;
+            button.classList.toggle('is-active', isActive);
+            button.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        });
+    }
+
+    function togglePassword(targetId, trigger) {
+        const input = document.getElementById(targetId);
+        if (!input) return;
+
+        const isPassword = input.type === 'password';
+        input.type = isPassword ? 'text' : 'password';
+        trigger.textContent = isPassword ? 'Ocultar' : 'Mostrar';
+    }
+
+    tabButtons.forEach((button) => {
+        button.addEventListener('click', () => switchTab(button.dataset.authTab));
     });
 
-    showLogin.addEventListener('click', (e) => {
-        e.preventDefault();
-        registerBox.style.display = 'none';
-        loginBox.style.display = 'block';
-        messageContainer.style.display = 'none';
+    document.querySelectorAll('[data-password-target]').forEach((button) => {
+        button.addEventListener('click', () => togglePassword(button.dataset.passwordTarget, button));
     });
 
-    // Support linking directly to the register form via hash or query param
     const urlHash = window.location.hash;
     const urlParams = new URLSearchParams(window.location.search);
     if (urlHash === '#register' || urlParams.get('register') === '1') {
-        loginBox.style.display = 'none';
-        registerBox.style.display = 'block';
+        switchTab('register');
+    } else {
+        switchTab('login');
     }
 
-    loginForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
+    loginForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        clearMessage();
+
+        const submitButton = loginForm.querySelector('button[type="submit"]');
+        const emailInput = document.getElementById('loginEmail');
+        const passwordInput = document.getElementById('password');
+        const email = emailInput?.value.trim() || '';
+        const password = passwordInput?.value || '';
+
+        setButtonLoading(submitButton, true, 'Entrando...');
 
         try {
             const response = await fetch('/api/login', {
@@ -70,42 +148,56 @@ function initAuth() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ username, password })
+                body: JSON.stringify({ email, password })
             });
 
-            const data = await response.json();
-            if (response.ok) {
-                localStorage.setItem('token', data.token);
-                localStorage.setItem('isAdmin', data.isAdmin);
-                localStorage.setItem('role', data.role || 'candidate');
-                displayMessage('Login realizado com sucesso!');
-                if (data.token) {
-                    setTimeout(() => {
-                        // Redirect based on role
-                        const role = data.role || 'candidate';
-                        if (role === 'admin') {
-                            window.location.href = '/dashboard.html';
-                        } else if (role === 'coordinator' || role === 'teacher') {
-                            window.location.href = '/dashboard.html';
-                        } else {
-                            window.location.href = '/profile.html';
-                        }
-                    }, 800);
-                }
-            } else {
-                displayMessage(data.error || 'Erro ao fazer login', true);
+            const data = await parseApiResponse(response);
+            if (!response.ok) {
+                throw new Error(parseValidationError(data.error) || 'Erro ao fazer login.');
+            }
+
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('isAdmin', data.isAdmin);
+            localStorage.setItem('role', data.role || 'candidate');
+            displayMessage('Login realizado com sucesso!');
+
+            if (data.token) {
+                setTimeout(() => {
+                    const nextPath = getSafeNextPath();
+                    window.location.href = nextPath || getRoleRedirect(data.role || 'candidate');
+                }, 700);
             }
         } catch (error) {
             console.error('Erro no login:', error);
-            displayMessage('Erro ao fazer login', true);
+            displayMessage(error.message || 'Erro ao fazer login.', true);
+        } finally {
+            setButtonLoading(submitButton, false, 'Entrar na MaxOnu');
         }
     });
 
-    registerForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const username = document.getElementById('newUsername').value;
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('newPassword').value;
+    registerForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        clearMessage();
+
+        const submitButton = registerForm.querySelector('button[type="submit"]');
+        const fullNameInput = document.getElementById('newFullName');
+        const emailInput = document.getElementById('registerEmail');
+        const unidadeInput = document.getElementById('unidade');
+        const turmaInput = document.getElementById('turma');
+        const passwordInput = document.getElementById('newPassword');
+        const fullName = fullNameInput?.value.trim() || '';
+        const email = emailInput?.value.trim() || '';
+        const unidade = unidadeInput?.value || '';
+        const turma = turmaInput?.value || '';
+        const password = passwordInput?.value || '';
+
+        if (!unidade || !turma) {
+            displayMessage('Selecione a unidade e a turma para concluir o cadastro.', true);
+            return;
+        }
+
+        const classGroup = `${unidade} - ${turma}`;
+        setButtonLoading(submitButton, true, 'Criando conta...');
 
         try {
             const response = await fetch('/api/register', {
@@ -113,26 +205,26 @@ function initAuth() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ username, email, password })
+                body: JSON.stringify({ fullName, email, classGroup, password })
             });
 
-            const data = await response.json();
-            if (response.ok) {
-                displayMessage('Registro realizado com sucesso!');
-                setTimeout(() => {
-                    registerBox.style.display = 'none';
-                    loginBox.style.display = 'block';
-                }, 1000);
-            } else {
-                displayMessage(data.error || 'Erro ao registrar', true);
+            const data = await parseApiResponse(response);
+            if (!response.ok) {
+                throw new Error(parseValidationError(data.error) || 'Erro ao registrar.');
             }
+
+            displayMessage('Cadastro realizado com sucesso! Faça login para continuar.');
+            registerForm.reset();
+            setTimeout(() => switchTab('login'), 800);
         } catch (error) {
             console.error('Erro no registro:', error);
-            displayMessage('Erro ao registrar', true);
+            displayMessage(error.message || 'Erro ao registrar.', true);
+        } finally {
+            setButtonLoading(submitButton, false, 'Criar minha conta');
         }
     });
 
-    checkLoginStatus(); // Check login status on page load
+    checkLoginStatus();
 }
 
 document.addEventListener('DOMContentLoaded', initAuth);

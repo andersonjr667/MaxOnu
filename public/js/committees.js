@@ -1,3 +1,34 @@
+const COMMITTEES_CACHE_KEY = 'maxonu_committees_cache_v1';
+const REVEAL_STATUS_CACHE_KEY = 'maxonu_reveal_status_cache_v1';
+
+function readCache(key, ttl) {
+    try {
+        const raw = sessionStorage.getItem(key);
+        if (!raw) return null;
+
+        const parsed = JSON.parse(raw);
+        if (Date.now() - parsed.timestamp > ttl) {
+            sessionStorage.removeItem(key);
+            return null;
+        }
+
+        return parsed.data;
+    } catch (error) {
+        return null;
+    }
+}
+
+function writeCache(key, data) {
+    try {
+        sessionStorage.setItem(key, JSON.stringify({
+            timestamp: Date.now(),
+            data
+        }));
+    } catch (error) {
+        // Ignore cache write failures.
+    }
+}
+
 function buildLockedCards() {
     return Array.from({ length: 7 }, (_, index) => {
         const committeeNumber = index + 1;
@@ -26,23 +57,43 @@ function buildHomeCards(committees) {
     `).join('');
 }
 
-function buildDelegationCards(committees) {
-    return committees.map((committee) => `
+function buildSoonDelegationCards() {
+    return Array.from({ length: 7 }, (_, index) => `
         <div class="committee-card committee-card-detailed">
-            <span class="committee-number">Comitê ${committee.id}</span>
-            <h3>${committee.shortTitle}</h3>
-            <p>${committee.title || 'Tema em definição. O conteúdo detalhado desta delegação será publicado em seguida.'}</p>
-            <button class="view-button" disabled>Detalhes da delegação em breve</button>
+            <span class="committee-number">Comitê ${index + 1}</span>
+            <h3>Em breve</h3>
+            <p>As delegações desta página serão lançadas depois, em uma divulgação própria.</p>
+            <button class="view-button" disabled>Em breve</button>
         </div>
     `).join('');
 }
 
 async function fetchCommittees() {
+    const cached = readCache(COMMITTEES_CACHE_KEY, 5 * 60 * 1000);
+    if (cached) {
+        return cached;
+    }
+
     const response = await fetch('/api/committees');
     if (!response.ok) {
         throw new Error('Committees are still locked');
     }
-    return response.json();
+
+    const data = await response.json();
+    writeCache(COMMITTEES_CACHE_KEY, data);
+    return data;
+}
+
+async function fetchRevealStatus() {
+    const cached = readCache(REVEAL_STATUS_CACHE_KEY, 60 * 1000);
+    if (cached) {
+        return cached;
+    }
+
+    const response = await fetch('/api/reveal-status');
+    const data = await response.json();
+    writeCache(REVEAL_STATUS_CACHE_KEY, data);
+    return data;
 }
 
 async function initHomeCommittees() {
@@ -66,12 +117,15 @@ async function initDelegationsPage() {
     if (!grid || !message) return;
 
     try {
-        const data = await fetchCommittees();
-        grid.innerHTML = buildDelegationCards(data.committees);
-        message.textContent = 'As delegações foram liberadas após o fim da contagem regressiva.';
+        const data = await fetchRevealStatus();
+
+        grid.innerHTML = buildSoonDelegationCards();
+        message.textContent = data.revealed
+            ? 'Em breve. As delegações serão lançadas depois, em uma publicação separada.'
+            : 'Nenhuma página pública desta seção revela temas antes do fim da contagem. Quando ela terminar, esta página continuará como "Em breve" até o lançamento oficial.';
     } catch (error) {
-        grid.innerHTML = buildLockedCards();
-        message.textContent = 'Nenhuma página pública desta seção revela temas antes do fim da contagem. Quando chegar a hora, os cards abaixo serão liberados automaticamente.';
+        grid.innerHTML = buildSoonDelegationCards();
+        message.textContent = 'Em breve. As delegações serão lançadas depois, em uma publicação separada.';
     }
 }
 

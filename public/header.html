@@ -8,26 +8,20 @@
                 <strong>MaxOnu 2026</strong>
             </div>
         </a>
-        <div class="header-status">
-            <span class="header-status-label">Edicao 2026</span>
-            <span class="header-status-dot"></span>
-            <span class="header-status-text">Site oficial</span>
-        </div>
         <nav class="nav-links" aria-label="Principal">
             <ul id="navLinks">
-                <li><a href="index.html" class="nav-link">Pagina Inicial</a></li>
                 <li><a href="blog.html" class="nav-link">Blog</a></li>
                 <li><a href="guias.html" class="nav-link">Guias</a></li>
                 <li><a href="delegacoes.html" class="nav-link">Delegações</a></li>
                 <li><a href="dpos.html" class="nav-link">DPOs</a></li>
                 <li><a href="regras.html" class="nav-link">Regras</a></li>
                 <li><a href="perguntas-comuns.html" class="nav-link">Perguntas Comuns</a></li>
-                <li><a href="instagram.html" class="nav-link">Instagram</a></li>
-                <li class="mobile-auth-link"><a href="login.html" class="nav-link">Entrar</a></li>
-                <li class="mobile-auth-link"><a href="login.html#register" class="nav-link nav-link-highlight">Cadastrar</a></li>
+                <li class="mobile-auth-link" data-mobile-auth-slot="primary"><a href="login.html" class="nav-link mobile-auth-enter">Entrar</a></li>
+                <li class="mobile-auth-link" data-mobile-auth-slot="secondary"><a href="login.html#register" class="nav-link mobile-auth-register">Cadastrar</a></li>
             </ul>
         </nav>
-        <div class="auth-buttons">
+        <div class="header-utilities" data-header-utilities></div>
+        <div class="auth-buttons" data-auth-buttons>
             <a href="login.html" class="auth-btn auth-btn-secondary">Entrar</a>
             <a href="login.html#register" class="auth-btn auth-btn-primary">Cadastrar</a>
         </div>
@@ -38,40 +32,3 @@
         </button>
     </div>
 </header>
-<script>
-    (function() {
-        const hamburgerMenu = document.getElementById('hamburgerMenu');
-        const navLinks = document.getElementById('navLinks');
-        if (!hamburgerMenu || !navLinks) return;
-
-        const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-        navLinks.querySelectorAll('a').forEach(link => {
-            const href = link.getAttribute('href');
-            if (href === currentPage || (currentPage === '' && href === 'index.html')) {
-                link.classList.add('is-active');
-            }
-        });
-
-        hamburgerMenu.addEventListener('click', function() {
-            hamburgerMenu.classList.toggle('active');
-            navLinks.classList.toggle('active');
-            hamburgerMenu.setAttribute('aria-expanded', hamburgerMenu.classList.contains('active') ? 'true' : 'false');
-        });
-
-        document.addEventListener('click', function(event) {
-            if (!hamburgerMenu.contains(event.target) && !navLinks.contains(event.target)) {
-                hamburgerMenu.classList.remove('active');
-                navLinks.classList.remove('active');
-                hamburgerMenu.setAttribute('aria-expanded', 'false');
-            }
-        });
-
-        navLinks.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                hamburgerMenu.classList.remove('active');
-                navLinks.classList.remove('active');
-                hamburgerMenu.setAttribute('aria-expanded', 'false');
-            });
-        });
-    })();
-</script>

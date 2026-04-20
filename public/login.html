@@ -7,69 +7,148 @@
     <link rel="stylesheet" href="css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <link rel="icon" href="images/logo-maxonu.png" type="image/png">
-    <script src="js/includes.js"></script>
+    <script src="js/includes.js?v=20260420-headerfix"></script>
+    <script src="js/auth.js" defer></script>
 </head>
-<body>
+<body class="login-page">
     <include src="header.html"></include>
 
     <main class="main-content">
         <section class="content-section">
-            <div class="login-container">
-                <div class="login-intro content-box">
-                    <h1>Acesso MaxOnu 2026</h1>
-                    <p>Os acessos agora ficam visíveis e centrais no site para acompanhar a experiência de cada perfil durante o evento.</p>
-                    <div class="role-preview-grid">
-                        <div class="role-preview-card">
-                            <h3>Candidato</h3>
-                            <p>Cadastro, perguntas, perfil e visualização do país atribuído.</p>
+            <div class="login-shell">
+                <section class="login-showcase">
+                    <span class="hero-badge login-badge">Acesso oficial</span>
+                    <h1>Entre na plataforma da MaxOnu 2026</h1>
+                    <p>Faça login para acessar seu painel, concluir a inscrição e acompanhar a formação da sua delegação com uma experiência visual alinhada ao restante do site.</p>
+
+                    <div class="login-stats-strip">
+                        <div class="login-stat-pill">
+                            <strong>7</strong>
+                            <span>comitês</span>
                         </div>
-                        <div class="role-preview-card">
-                            <h3>Professor Orientador</h3>
-                            <p>Consulta de alunos por comitê e acompanhamento das delegações.</p>
+                        <div class="login-stat-pill">
+                            <strong>Duplas</strong>
+                            <span>ou trios</span>
                         </div>
-                        <div class="role-preview-card">
-                            <h3>Coordenação</h3>
-                            <p>Distribuição de países, visão ampla dos inscritos e exportação de listas.</p>
+                        <div class="login-stat-pill">
+                            <strong>2026</strong>
+                            <span>edição oficial</span>
                         </div>
                     </div>
-                </div>
 
-                <div class="login-box">
-                    <h2>Login</h2>
-                    <form id="loginForm">
-                        <div class="form-group">
-                            <input type="text" id="username" name="username" placeholder="Usuário" required>
-                        </div>
-                        <div class="form-group">
-                            <input type="password" id="password" name="password" placeholder="Senha" required>
-                        </div>
-                        <button type="submit" class="login-btn">Entrar</button>
-                    </form>
-                    <p class="switch-form">Não tem uma conta? <a href="#" id="showRegister">Registre-se</a></p>
-                </div>
+                    <div class="login-showcase-panel">
+                        <h3>Seu acesso começa aqui</h3>
+                        <p>Entre para continuar sua jornada na MaxOnu 2026 com uma interface pensada para inscrição, organização e acompanhamento.</p>
+                    </div>
 
-                <div class="register-box" style="display: none;">
-                    <h2>Registro</h2>
-                    <form id="registerForm">
-                        <div class="form-group">
-                            <input type="text" id="newUsername" name="newUsername" placeholder="Usuário" required>
+                    <div class="login-showcase-footer">
+                        <div class="login-quote-mark">"</div>
+                        <p>Uma experiência criada para organizar o acesso, a inscrição e a montagem das delegações com clareza visual desde o primeiro clique.</p>
+                    </div>
+                </section>
+
+                <section class="login-card-panel">
+                    <div class="login-card-header">
+                        <a href="index.html" class="login-brand">
+                            <img src="images/logo-maxonu.png" alt="MaxOnu 2026">
+                            <div>
+                                <span>Colégio Maximus</span>
+                                <strong>MaxOnu 2026</strong>
+                            </div>
+                        </a>
+
+                        <div class="login-tab-bar" role="tablist" aria-label="Acesso">
+                            <button type="button" class="login-tab is-active" id="showLogin" data-auth-tab="login" aria-selected="true">Login</button>
+                            <button type="button" class="login-tab" id="showRegister" data-auth-tab="register" aria-selected="false">Cadastro</button>
                         </div>
-                        <div class="form-group">
-                            <input type="email" id="email" name="email" placeholder="Email" required>
+                    </div>
+
+                    <div id="messageContainer" class="login-message" style="display: none;"></div>
+
+                    <section class="login-box" data-auth-panel="login">
+                        <div class="login-panel-copy">
+                            <h2>Entrar</h2>
+                            <p>Use seu email e senha para acessar sua área.</p>
                         </div>
-                        <div class="form-group">
-                            <input type="password" id="newPassword" name="newPassword" placeholder="Senha" required>
+
+                        <form id="loginForm" class="auth-form">
+                            <div class="form-group">
+                                <label for="loginEmail">Email</label>
+                                <input type="text" id="loginEmail" name="loginEmail" placeholder="Digite seu email" required autocomplete="username">
+                            </div>
+
+                            <div class="form-group password-field">
+                                <label for="password">Senha</label>
+                                <input type="password" id="password" name="password" placeholder="Digite sua senha" required autocomplete="current-password">
+                                <button type="button" class="password-toggle" data-password-target="password" aria-label="Mostrar senha">Mostrar</button>
+                            </div>
+
+                            <button type="submit" class="view-button auth-submit-btn">Entrar na MaxOnu</button>
+                        </form>
+
+                        <p class="switch-form">Ainda não tem conta? <button type="button" class="text-link" data-auth-tab="register">Criar cadastro</button></p>
+                    </section>
+
+                    <section class="register-box" data-auth-panel="register" style="display: none;">
+                        <div class="login-panel-copy">
+                            <h2>Criar conta</h2>
+                            <p>O cadastro público é voltado aos delegados e já registra a turma para a etapa de inscrição.</p>
                         </div>
-                        <button type="submit" class="register-btn">Registrar</button>
-                    </form>
-                    <p class="register-note">O cadastro público é direcionado aos candidatos. Perfis de professores orientadores e coordenação podem ser configurados pela equipe responsável.</p>
-                    <p class="switch-form">Já tem uma conta? <a href="#" id="showLogin">Fazer login</a></p>
-                </div>
-                <div id="messageContainer" style="display: none;"></div> <!-- Added message container -->
+
+                        <form id="registerForm" class="auth-form">
+                            <div class="form-group">
+                                <label for="newFullName">Nome completo</label>
+                                <input type="text" id="newFullName" name="newFullName" placeholder="Digite seu nome completo" required autocomplete="name">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="registerEmail">Email</label>
+                                <input type="email" id="registerEmail" name="registerEmail" placeholder="Digite seu email" required autocomplete="email">
+                            </div>
+
+                            <div class="auth-form-grid">
+                                <div class="form-group">
+                                    <label for="unidade">Unidade</label>
+                                    <select id="unidade" required>
+                                        <option value="">Selecione</option>
+                                        <option value="Sta Ines">Sta Ines</option>
+                                        <option value="Palmares">Palmares</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="turma">Turma</label>
+                                    <select id="turma" required>
+                                        <option value="">Selecione</option>
+                                        <option value="8 ano A">8 ano A</option>
+                                        <option value="8 ano B">8 ano B</option>
+                                        <option value="9 ano A">9 ano A</option>
+                                        <option value="9 ano B">9 ano B</option>
+                                        <option value="1 Serie A">1 Serie A</option>
+                                        <option value="1 Serie B">1 Serie B</option>
+                                        <option value="2 serie">2 serie</option>
+                                        <option value="3 serie">3 serie</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group password-field">
+                                <label for="newPassword">Senha</label>
+                                <input type="password" id="newPassword" name="newPassword" placeholder="Mínimo de 6 caracteres" required autocomplete="new-password">
+                                <button type="button" class="password-toggle" data-password-target="newPassword" aria-label="Mostrar senha">Mostrar</button>
+                            </div>
+
+                            <button type="submit" class="view-button auth-submit-btn">Criar minha conta</button>
+                        </form>
+
+                        <p class="register-note">Perfis de professores, coordenação, imprensa e administração podem ser configurados pela equipe responsável.</p>
+                        <p class="switch-form">Já possui conta? <button type="button" class="text-link" data-auth-tab="login">Fazer login</button></p>
+                    </section>
+                </section>
             </div>
         </section>
     </main>
+
     <include src="footer.html"></include>
-    <script src="js/auth.js"></script> <!-- Added script reference -->
 </body>
 </html>

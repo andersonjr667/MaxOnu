@@ -5,17 +5,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Novo Post - MaxOnu 2026</title>
     <link rel="stylesheet" href="css/styles.css">
-    <script src="js/includes.js"></script>
+    <script src="js/includes.js?v=20260420-headerfix"></script>
+    <script src="js/create-post.js" defer></script>
 </head>
 <body>
     <include src="header.html"></include>
 
-    <main class="main-content">
+    <main class="main-content" id="main-content">
         <section class="content-section">
-            <article class="content-box">
-                <h1>Novo Post</h1>
-                <p>O atalho administrativo para criação de posts agora aponta para uma página válida. Se você quiser, no próximo passo eu posso transformar esta área em um editor real de comunicados.</p>
-            </article>
+            <div class="dashboard-container">
+                <section class="dashboard-hero">
+                    <div class="dashboard-hero-copy">
+                        <span class="dashboard-kicker">Publicação</span>
+                        <h1>Novo post</h1>
+                        <p id="postAccessMessage">Verificando permissão para criação de posts...</p>
+                    </div>
+                    <div class="dashboard-hero-badge">Blog</div>
+                </section>
+
+                <section class="dashboard-panel">
+                    <div class="dashboard-section-heading">
+                        <span class="dashboard-section-kicker">Editor</span>
+                        <h2>Monte a publicação</h2>
+                        <p>Crie um comunicado, aviso ou atualização pública da MaxOnu 2026.</p>
+                    </div>
+
+                    <form id="createPostForm" class="dashboard-form" hidden>
+                        <div class="form-group">
+                            <label for="postTitle">Título</label>
+                            <input type="text" id="postTitle" placeholder="Título da publicação" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="postExcerpt">Resumo curto</label>
+                            <input type="text" id="postExcerpt" placeholder="Resumo para aparecer no card do blog">
+                        </div>
+                        <div class="form-group">
+                            <label for="postImage">Imagem opcional</label>
+                            <input type="file" id="postImage" accept="image/*">
+                            <p class="form-help">Adicione uma imagem para o post. Não é obrigatório.</p>
+                            <img id="postImagePreview" class="post-image-preview" alt="Pré-visualização da imagem" hidden>
+                        </div>
+                        <div class="form-group">
+                            <label for="postContent">Conteúdo</label>
+                            <textarea id="postContent" class="post-editor-textarea" placeholder="Escreva o conteúdo do post..." required></textarea>
+                        </div>
+                        <button type="submit" class="view-button">Publicar post</button>
+                    </form>
+
+                    <p class="register-note registration-feedback" id="createPostFeedback">Aguardando liberação do editor...</p>
+                </section>
+            </div>
         </section>
     </main>
 

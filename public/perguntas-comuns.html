@@ -7,23 +7,23 @@
     <link rel="stylesheet" href="css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <link rel="icon" href="images/logo-maxonu.png" type="image/png">
-    <script src="js/includes.js"></script>
+    <script src="js/includes.js?v=20260420-headerfix"></script>
 </head>
 <body>
     <include src="header.html"></include>
 
-    <main class="main-content">
+    <main class="main-content" id="main-content">
         <section class="content-section">
             <article class="content-box">
                 <h1>Perguntas Comuns</h1>
                 <p>Tire suas dúvidas sobre o MaxOnu 2026. Se você tem alguma pergunta, não hesite em perguntar.</p>
-                <button class="ask-button" onclick="openQuestionModal()">Fazer uma Pergunta</button>
+                <button class="ask-button" id="openQuestionModalBtn" type="button">Fazer uma Pergunta</button>
             </article>
 
             <!-- Modal para perguntas -->
             <div class="modal" id="questionModal">
                 <div class="modal-content">
-                    <button class="modal-close" onclick="closeQuestionModal()">&times;</button>
+                    <button class="modal-close" id="closeQuestionModalBtn" type="button">&times;</button>
                     <h2>Faça sua pergunta</h2>
                     <form id="questionForm" class="question-form">
                         <textarea id="question" placeholder="Digite sua pergunta aqui..." required></textarea>
@@ -40,99 +40,5 @@
 
     <include src="footer.html"></include>
     <script src="js/questions.js"></script>
-    <script>
-    function loadQuestions() {
-        fetch('/api/questions')
-            .then(response => response.json())
-            .then(questions => {
-                const questionsList = document.getElementById('questionsList');
-                questionsList.innerHTML = questions.map(q => `
-                    <div class="question-card" data-id="${q._id}">
-                        <h3>${q.question}</h3>
-                        <p>${q.answer}</p>
-                        ${isAdmin() ? `
-                            <button onclick="editQuestion('${q._id}')">Editar</button>
-                            <button onclick="deleteQuestion('${q._id}')">Excluir</button>
-                        ` : ''}
-                    </div>
-                `).join('');
-            })
-            .catch(error => console.error('Erro ao carregar perguntas:', error));
-    }
-        function isAdmin() {
-            const token = localStorage.getItem('token');
-            if (!token) return false;
-            if (token === 'dummy-token') return true;
-            try {
-                const role = localStorage.getItem('role');
-                if (role === 'admin') return true;
-                const payload = JSON.parse(atob(token.split('.')[1]));
-                return payload.username === 'Anderson' || payload.role === 'admin';
-            } catch (error) {
-                return false;
-            }
-        }
-
-        function editQuestion(id) {
-            const questionCard = document.querySelector(`.question-card[data-id="${id}"]`);
-            const questionText = questionCard.querySelector('h3').innerText;
-            const answerText = questionCard.querySelector('p').innerText;
-
-            questionCard.innerHTML = `
-                <textarea id="edit-question-${id}">${questionText}</textarea>
-                <textarea id="edit-answer-${id}">${answerText}</textarea>
-                <button onclick="saveQuestion('${id}')">Salvar</button>
-                <button onclick="cancelEdit('${id}', '${questionText}', '${answerText}')">Cancelar</button>
-            `;
-        }
-
-        function saveQuestion(id) {
-            const question = document.getElementById(`edit-question-${id}`).value;
-            const answer = document.getElementById(`edit-answer-${id}`).value;
-
-            fetch(`/api/questions/${id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ question, answer })
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert('Pergunta atualizada com sucesso!');
-                loadQuestions();
-            })
-            .catch(error => console.error('Erro ao atualizar pergunta:', error));
-        }
-
-        function cancelEdit(id, questionText, answerText) {
-            const questionCard = document.querySelector(`.question-card[data-id="${id}"]`);
-            questionCard.innerHTML = `
-                <h3>${questionText}</h3>
-                <p>${answerText}</p>
-                ${isAdmin() ? `
-                    <button onclick="editQuestion('${id}')">Editar</button>
-                    <button onclick="deleteQuestion('${id}')">Excluir</button>
-                ` : ''}
-            `;
-        }
-
-        function deleteQuestion(id) {
-            fetch(`/api/questions/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert('Pergunta excluída com sucesso!');
-                loadQuestions();
-            })
-            .catch(error => console.error('Erro ao excluir pergunta:', error));
-        }
-
-        document.addEventListener('DOMContentLoaded', loadQuestions);
-    </script>
 </body>
 </html>

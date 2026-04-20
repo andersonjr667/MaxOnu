@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscrição - MaxOnu 2026</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="icon" href="images/logo-maxonu.png" type="image/png">
+    <script src="js/includes.js?v=20260420-headerfix"></script>
+    <script src="js/registration.js" defer></script>
+</head>
+<body class="registration-page">
+    <include src="header.html"></include>
+
+    <main class="main-content">
+        <section class="content-section">
+            <div class="dashboard-container">
+                <section class="dashboard-hero">
+                    <div class="dashboard-hero-copy">
+                        <span class="dashboard-kicker">Inscrição oficial</span>
+                        <h1>Forme sua delegação</h1>
+                        <p>Escolha seus comitês preferidos, confirme sua turma e defina se sua delegação será em dupla ou trio.</p>
+                    </div>
+                    <div class="dashboard-hero-badge">MaxOnu 2026</div>
+                </section>
+
+                <section class="dashboard-panel registration-panel">
+                    <div class="dashboard-section-heading">
+                        <span class="dashboard-section-kicker">Formulário</span>
+                        <h2>Inscrição do delegado</h2>
+                        <p id="registrationLead">Carregando sua inscrição...</p>
+                    </div>
+
+                    <div class="registration-layout">
+                        <div class="registration-side-card">
+                            <span class="dashboard-chip">Etapas</span>
+                            <h3>Como funciona</h3>
+                            <p>Escolha três comitês em ordem de prioridade, confirme o formato da sua delegação e envie.</p>
+                            <div class="registration-step-list">
+                                <div class="registration-step-item">
+                                    <strong>1.</strong>
+                                    <span>Turma preenchida automaticamente pelo cadastro.</span>
+                                </div>
+                                <div class="registration-step-item">
+                                    <strong>2.</strong>
+                                    <span>Selecione 1ª, 2ª e 3ª opção de comitê.</span>
+                                </div>
+                                <div class="registration-step-item">
+                                    <strong>3.</strong>
+                                    <span>Defina se sua delegação será em dupla ou trio.</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    <form id="registrationForm" class="dashboard-form registration-form-shell">
+                        <div class="form-group">
+                            <label for="registrationClassGroup">Turma</label>
+                            <input type="text" id="registrationClassGroup" readonly>
+                        </div>
+                        <div class="registration-grid">
+                            <div class="form-group">
+                                <label for="firstChoice">1ª opção de comitê</label>
+                                <select id="firstChoice" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label for="secondChoice">2ª opção de comitê</label>
+                                <select id="secondChoice" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label for="thirdChoice">3ª opção de comitê</label>
+                                <select id="thirdChoice" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label for="teamSize">Formato da delegação</label>
+                                <select id="teamSize" required>
+                                    <option value="2">Dupla</option>
+                                    <option value="3">Trio</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="registration-submit-row">
+                            <button type="submit" class="view-button">Enviar inscrição</button>
+                        </div>
+                    </form>
+                    </div>
+
+                    <p class="register-note registration-feedback" id="registrationFeedback">A turma é herdada do cadastro e já vem preenchida.</p>
+                </section>
+            </div>
+        </section>
+    </main>
+
+    <include src="footer.html"></include>
+</body>
+</html>
