@@ -62,6 +62,26 @@ MaxOnu 2026 is a web application that simulates UN debates. It includes features
 - `MONGODB_URI`: The connection string for your MongoDB database.
 - `JWT_SECRET`: The secret key used for signing JWT tokens.
 
+## Render Deploy
+
+1. Create a new `Web Service` on Render connected to this repository.
+2. Render can detect [render.yaml](/workspace/c:\Users\User\OneDrive\Área de Trabalho\Nova pasta (6)\Geral\Codes\HTML\MaxOnu2025\render.yaml) automatically, or you can configure manually with:
+   - Build Command: `npm install`
+   - Start Command: `npm start`
+   - Health Check Path: `/health`
+3. Add these environment variables in Render:
+   - `MONGODB_URI`
+   - `JWT_SECRET`
+   - `NODE_ENV=production`
+4. Keep MongoDB accessible from Render. If you use MongoDB Atlas, allow Render's outbound IPs or use the recommended secure access method from Atlas.
+5. After deploy, test:
+   - `/health`
+   - login
+   - profile edit
+   - registration flow
+
+The app now requires `MONGODB_URI` and `JWT_SECRET` to start, which is safer for production and avoids a partially broken deploy.
+
 ## Running the Application
 
 1. **Start the server**:

@@ -21,6 +21,7 @@ const { COMMITTEE_REVEAL_DATE } = require('./utils/event-config');
 const app = express();
 app.disable('x-powered-by');
 app.set('trust proxy', 1);
+const publicDir = path.join(__dirname, 'public');
 const parsedEnvPort = Number.parseInt(process.env.PORT, 10);
 const DEFAULT_PORT = Number.isInteger(parsedEnvPort) ? parsedEnvPort : 3000;
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
@@ -200,7 +201,7 @@ process.on('SIGINT', gracefulShutdown);
 // Env validation
 const envSchema = Joi.object({
   JWT_SECRET: Joi.string().required(),
-  MONGODB_URI: Joi.string().uri().allow('')
+  MONGODB_URI: Joi.string().uri().required()
 }).unknown();
 const { error } = envSchema.validate(process.env);
 if (error) {
@@ -280,14 +281,14 @@ app.use((req, res, next) => {
 });
 
 // Static
-app.use(express.static('public', {
+app.use(express.static(publicDir, {
   etag: true,
   maxAge: '7d',
   setHeaders: setStaticCacheHeaders
 }));
 
-app.get('/header', (req, res) => res.sendFile(path.join(__dirname, 'public', 'header.html')));
-app.get('/footer', (req, res) => res.sendFile(path.join(__dirname, 'public', 'footer.html')));
+app.get('/header', (req, res) => res.sendFile(path.join(publicDir, 'header.html')));
+app.get('/footer', (req, res) => res.sendFile(path.join(publicDir, 'footer.html')));
 
 // MongoDB
 const connectDB = async () => {
@@ -317,7 +318,7 @@ app.use('/api', (req, res) => {
 });
 
 // 404
-app.use((req, res) => res.status(404).sendFile(path.join(__dirname, 'public', '404.html')));
+app.use((req, res) => res.status(404).sendFile(path.join(publicDir, '404.html')));
 
 // Init
 connectDB();
