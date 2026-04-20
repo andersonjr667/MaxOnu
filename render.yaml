@@ -3,7 +3,7 @@ services:
     name: maxonu2026
     runtime: node
     plan: free
-    buildCommand: npm install
+    buildCommand: npm ci
     startCommand: npm start
     healthCheckPath: /health
     envVars:
