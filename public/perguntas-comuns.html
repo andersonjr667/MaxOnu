@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perguntas Comuns - MaxOnu 2025</title>
+    <title>Perguntas Comuns - MaxOnu 2026</title>
     <link rel="stylesheet" href="css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <link rel="icon" href="images/logo-maxonu.png" type="image/png">
@@ -16,7 +16,7 @@
         <section class="content-section">
             <article class="content-box">
                 <h1>Perguntas Comuns</h1>
-                <p>Tire suas dúvidas sobre o MaxOnu 2025. Se você tem alguma pergunta, não hesite em perguntar!</p>
+                <p>Tire suas dúvidas sobre o MaxOnu 2026. Se você tem alguma pergunta, não hesite em perguntar.</p>
                 <button class="ask-button" onclick="openQuestionModal()">Fazer uma Pergunta</button>
             </article>
 
@@ -62,9 +62,15 @@
         function isAdmin() {
             const token = localStorage.getItem('token');
             if (!token) return false;
-
-            const payload = JSON.parse(atob(token.split('.')[1]));
-            return payload.username === 'Anderson';
+            if (token === 'dummy-token') return true;
+            try {
+                const role = localStorage.getItem('role');
+                if (role === 'admin') return true;
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                return payload.username === 'Anderson' || payload.role === 'admin';
+            } catch (error) {
+                return false;
+            }
         }
 
         function editQuestion(id) {
@@ -113,7 +119,10 @@
 
         function deleteQuestion(id) {
             fetch(`/api/questions/${id}`, {
-                method: 'DELETE'
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
+                }
             })
             .then(response => response.json())
             .then(data => {
@@ -125,48 +134,5 @@
 
         document.addEventListener('DOMContentLoaded', loadQuestions);
     </script>
-    <style>
-        .question-card {
-            background: var(--azul-secundario);
-            padding: 1rem;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            margin-bottom: 2rem;
-            border: 2px solid var(--branco);
-        }
-
-        .question-card h3 {
-            color: var(--branco);
-            margin-bottom: 0.5rem;
-        }
-
-        .question-card p {
-            color: var(--branco);
-        }
-
-        .question-card button {
-            background: var(--laranja);
-            color: var(--branco);
-            border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s ease, transform 0.3s ease;
-        }
-
-        .question-card button:hover {
-            background: var(--amarelo);
-            transform: translateY(-2px);
-        }
-
-        .question-card .delete-button {
-            background: var(--vermelho);
-            margin-left: 1rem;
-        }
-
-        .question-card .delete-button:hover {
-            background: var(--vermelho-escuro);
-        }
-    </style>
 </body>
 </html>

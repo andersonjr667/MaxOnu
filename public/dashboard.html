@@ -3,114 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Admin - MaxOnu 2025</title>
+    <title>Painel Administrativo - MaxOnu 2026</title>
     <link rel="stylesheet" href="css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <link rel="icon" href="images/logo-maxonu.png" type="image/png">
-    <style>
-        .dashboard-container {
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 2rem;
-            background: var(--branco);
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .dashboard-container h1 {
-            text-align: center;
-            margin-bottom: 2rem;
-            color: var(--azul-principal);
-        }
-
-        .question-card {
-            background: var(--azul-secundario);
-            padding: 1rem;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            margin-bottom: 2rem;
-            border: 2px solid var(--branco);
-        }
-
-        .question-card h3 {
-            color: var(--branco);
-            margin-bottom: 0.5rem;
-        }
-
-        .question-card textarea {
-            width: 100%;
-            padding: 0.8rem;
-            border: 2px solid var(--branco);
-            border-radius: 5px;
-            margin-bottom: 1rem;
-            resize: vertical;
-        }
-
-        .question-card button {
-            background: var(--laranja);
-            color: var(--branco);
-            border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s ease, transform 0.3s ease;
-        }
-
-        .question-card button:hover {
-            background: var(--amarelo);
-            transform: translateY(-2px);
-        }
-
-        .question-card .delete-button {
-            background: var(--vermelho);
-            margin-left: 1rem;
-        }
-
-        .question-card .delete-button:hover {
-            background: var(--vermelho-escuro);
-        }
-    </style>
+    <script src="js/includes.js"></script>
 </head>
 <body>
+    <include src="header.html"></include>
+
     <main class="main-content">
-        <section class="dashboard-container">
-            <h1>Dashboard Administrativo</h1>
-            <div class="questions-list" id="pendingQuestions">
-                <!-- Perguntas pendentes serão carregadas aqui -->
+        <section class="content-section">
+            <div class="dashboard-container">
+                <h1>Painel MaxOnu 2026</h1>
+                <p id="dashboardLead">Carregando permissões do usuário...</p>
+
+                <div class="dashboard-summary-grid" id="dashboardSummary"></div>
+
+                <div class="dashboard-tools-grid">
+                    <section class="dashboard-panel">
+                        <h2>Consultar Comitê</h2>
+                        <div class="dashboard-inline-form">
+                            <label for="committeeFilter">Número do comitê</label>
+                            <select id="committeeFilter">
+                                <option value="1">Comitê 1</option>
+                                <option value="2">Comitê 2</option>
+                                <option value="3">Comitê 3</option>
+                                <option value="4">Comitê 4</option>
+                                <option value="5">Comitê 5</option>
+                                <option value="6">Comitê 6</option>
+                                <option value="7">Comitê 7</option>
+                            </select>
+                            <button type="button" class="view-button" id="loadCommitteeBtn">Carregar lista</button>
+                        </div>
+                        <div class="dashboard-export-actions" id="exportActions" style="display: none;">
+                            <button type="button" class="view-button" id="exportCsvBtn">Baixar CSV</button>
+                            <button type="button" class="view-button" id="exportXlsxBtn">Baixar XLSX</button>
+                        </div>
+                        <div id="committeeUsers" class="committee-users-list">
+                            <p>Selecione um comitê para ver os participantes.</p>
+                        </div>
+                    </section>
+
+                    <section class="dashboard-panel" id="assignmentPanel" style="display: none;">
+                        <h2>Definir País e Comitê</h2>
+                        <form id="assignmentForm" class="dashboard-form">
+                            <div class="form-group">
+                                <input type="text" id="userId" placeholder="ID do usuário" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="number" id="userCommittee" placeholder="Comitê (1 a 7)" min="1" max="7" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" id="userCountry" placeholder="País atribuído" required>
+                            </div>
+                            <button type="submit" class="view-button">Salvar distribuição</button>
+                        </form>
+                        <p class="register-note">Use o ID exibido na lista do comitê para ajustar a distribuição de país e comitê dos participantes.</p>
+                    </section>
+                </div>
+
+                <section class="dashboard-panel">
+                    <h2>Perguntas Pendentes</h2>
+                    <div class="questions-list" id="pendingQuestions">
+                        <p>Carregando perguntas pendentes...</p>
+                    </div>
+                </section>
             </div>
         </section>
     </main>
 
+    <include src="footer.html"></include>
+
     <script>
-        // Verificar se o usuário está logado e é admin
-        function checkAdmin() {
-            const token = localStorage.getItem('token');
-            if (!token) {
+        let currentUser = null;
+
+        function getToken() {
+            return localStorage.getItem('token');
+        }
+
+        function getAuthHeaders() {
+            return {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getToken()}`
+            };
+        }
+
+        // Check login and load content according to role
+        async function checkAdmin() {
+            const token = getToken();
+            if (!token) return window.location.href = '/login.html';
+            try {
+                const res = await fetch('/api/me', { headers: { 'Authorization': `Bearer ${token}` } });
+                if (!res.ok) return window.location.href = '/login.html';
+                currentUser = await res.json();
+                // Only allow admin, coordinator or teacher to access this page
+                if (currentUser.role !== 'admin' && currentUser.role !== 'coordinator' && currentUser.role !== 'teacher') {
+                    return window.location.href = '/profile.html';
+                }
+                setupDashboard(currentUser);
+                loadPendingQuestions();
+                loadCommitteeUsers();
+            } catch (err) {
+                console.error(err);
                 window.location.href = '/login.html';
-                return;
+            }
+        }
+
+        function setupDashboard(user) {
+            const lead = document.getElementById('dashboardLead');
+            const summary = document.getElementById('dashboardSummary');
+            const exportActions = document.getElementById('exportActions');
+            const assignmentPanel = document.getElementById('assignmentPanel');
+
+            const roleLabels = {
+                teacher: 'Professor orientador',
+                coordinator: 'Coordenador',
+                admin: 'Administrador'
+            };
+
+            lead.textContent = `${roleLabels[user.role] || 'Usuário'} autenticado. Este painel reúne perguntas pendentes, consulta por comitê e as permissões operacionais da edição 2026.`;
+
+            const cards = [
+                { title: 'Acesso atual', text: roleLabels[user.role] || user.role },
+                { title: 'Comitê vinculado', text: user.committee ?? 'Sem vínculo definido' },
+                { title: 'País visível', text: user.country || 'Ainda não definido' }
+            ];
+
+            if (user.role === 'teacher') {
+                cards.push({ title: 'Permissão', text: 'Consultar alunos e países por comitê.' });
+            } else {
+                cards.push({ title: 'Permissão', text: 'Consultar, distribuir países e exportar listas.' });
+                exportActions.style.display = 'flex';
+                assignmentPanel.style.display = 'block';
             }
 
-            fetch('/api/check-admin', {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (!data.isAdmin) {
-                    window.location.href = '/login.html';
-                } else {
-                    loadPendingQuestions();
-                }
-            })
-            .catch(error => {
-                console.error('Erro ao verificar admin:', error);
-                window.location.href = '/login.html';
-            });
+            summary.innerHTML = cards.map(card => `
+                <article class="feature-card">
+                    <h3>${card.title}</h3>
+                    <p>${card.text}</p>
+                </article>
+            `).join('');
         }
 
         function loadPendingQuestions() {
-            fetch('/api/questions/pending')
+            fetch('/api/questions/pending', {
+                headers: { 'Authorization': `Bearer ${getToken()}` }
+            })
                 .then(response => response.json())
                 .then(questions => {
                     const questionsList = document.getElementById('pendingQuestions');
@@ -135,7 +174,8 @@
             fetch(`/api/questions/${id}/answer`, {
                 method: 'PUT',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getToken()}`
                 },
                 body: JSON.stringify({ answer })
             })
@@ -149,7 +189,10 @@
 
         function deleteQuestion(id) {
             fetch(`/api/questions/${id}`, {
-                method: 'DELETE'
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${getToken()}`
+                }
             })
             .then(response => response.json())
             .then(data => {
@@ -158,6 +201,103 @@
             })
             .catch(error => console.error('Erro ao excluir pergunta:', error));
         }
+
+        function renderCommitteeUsers(users) {
+            const container = document.getElementById('committeeUsers');
+
+            if (!users.length) {
+                container.innerHTML = '<p>Nenhum participante encontrado neste comitê.</p>';
+                return;
+            }
+
+            container.innerHTML = users.map(user => `
+                <article class="committee-user-card">
+                    <h3>${user.username}</h3>
+                    <p><strong>ID:</strong> ${user._id || user.id || 'não informado'}</p>
+                    <p><strong>Email:</strong> ${user.email || '-'}</p>
+                    <p><strong>Função:</strong> ${user.role || 'candidate'}</p>
+                    <p><strong>País:</strong> ${user.country || 'Não definido'}</p>
+                    <p><strong>Dupla:</strong> ${user.partner || 'Não definida'}</p>
+                </article>
+            `).join('');
+        }
+
+        async function loadCommitteeUsers() {
+            const committee = document.getElementById('committeeFilter').value;
+            const token = getToken();
+            const endpoint = currentUser && currentUser.role === 'teacher'
+                ? `/api/users/committee/${committee}`
+                : `/api/users?committee=${committee}`;
+
+            try {
+                const response = await fetch(endpoint, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const users = await response.json();
+                renderCommitteeUsers(Array.isArray(users) ? users : []);
+            } catch (error) {
+                console.error('Erro ao carregar usuários do comitê:', error);
+                document.getElementById('committeeUsers').innerHTML = '<p>Erro ao carregar participantes.</p>';
+            }
+        }
+
+        async function exportCommittee(format) {
+            const committee = document.getElementById('committeeFilter').value;
+            try {
+                const response = await fetch(`/api/export/committee/${committee}?format=${format}`, {
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Não foi possível exportar a lista deste comitê.');
+                }
+
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `comite-${committee}.${format}`;
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+                URL.revokeObjectURL(url);
+            } catch (error) {
+                console.error(error);
+                alert(error.message || 'Erro ao exportar arquivo.');
+            }
+        }
+
+        async function handleAssignment(event) {
+            event.preventDefault();
+            const userId = document.getElementById('userId').value.trim();
+            const committee = Number(document.getElementById('userCommittee').value);
+            const country = document.getElementById('userCountry').value.trim();
+
+            try {
+                const response = await fetch(`/api/users/${userId}`, {
+                    method: 'PUT',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({ committee, country })
+                });
+
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.error || 'Erro ao salvar distribuição');
+                }
+
+                alert('Distribuição atualizada com sucesso.');
+                event.target.reset();
+                loadCommitteeUsers();
+            } catch (error) {
+                console.error(error);
+                alert(error.message || 'Erro ao salvar distribuição.');
+            }
+        }
+
+        document.getElementById('loadCommitteeBtn').addEventListener('click', loadCommitteeUsers);
+        document.getElementById('exportCsvBtn').addEventListener('click', () => exportCommittee('csv'));
+        document.getElementById('exportXlsxBtn').addEventListener('click', () => exportCommittee('xlsx'));
+        document.getElementById('assignmentForm').addEventListener('submit', handleAssignment);
 
         document.addEventListener('DOMContentLoaded', checkAdmin);
     </script>

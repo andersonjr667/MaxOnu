@@ -5,7 +5,7 @@ function padZero(value) {
 
 document.addEventListener('DOMContentLoaded', function() {
     const countdownElement = document.getElementById('countdown');
-    const targetDate = new Date('2025-10-18T23:59:59').getTime(); // Defina a data e hora alvo
+    const targetDate = new Date('2026-05-04T00:00:00').getTime(); // Início dos comitês: 04/05/2026
 
     function updateCountdown() {
         const now = new Date().getTime();
@@ -13,8 +13,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (distance < 0) {
             clearInterval(interval);
-            revealCommittees();
-            enableButtons();
+            countdownElement.innerHTML = `
+                <div class="time-unit">
+                    <div class="time-value">00</div>
+                    <div class="time-label">dias</div>
+                </div>
+                <div class="time-unit">
+                    <div class="time-value">00</div>
+                    <div class="time-label">horas</div>
+                </div>
+                <div class="time-unit">
+                    <div class="time-value">00</div>
+                    <div class="time-label">minutos</div>
+                </div>
+                <div class="time-unit">
+                    <div class="time-value">00</div>
+                    <div class="time-label">segundos</div>
+                </div>
+            `;
             return;
         }
 
@@ -43,36 +59,6 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
     }
 
-    function revealCommittees() {
-        document.querySelector('.committees-message').innerText = 'Conheça os comitês da MaxOnu 2025';
-        document.querySelectorAll('.committee-card.present').forEach(card => {
-            card.classList.remove('present');
-            card.innerHTML = `
-                <div class="committee-photo" style="background-image: url('images/comite${card.dataset.index}.jpg')"></div>
-                <h3>${card.dataset.title}</h3>
-                <p>${card.dataset.description}</p>
-                <button class="view-button" onclick="window.location.href='delegacao-${card.dataset.index}-8-9.html'">Ver 8º e 9º Ano</button>
-                <button class="view-button" onclick="window.location.href='delegacao-${card.dataset.index}-em.html'">Ver Ensino Médio</button>
-            `;
-        });
-    }
-
-    function enableButtons() {
-        document.querySelectorAll('.view-button').forEach(button => {
-            button.disabled = false;
-        });
-    }
-
     const interval = setInterval(updateCountdown, 1000);
     updateCountdown();
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    const committeesSection = document.getElementById('committees-section');
-    if (committeesSection && !document.querySelector('.committees-message')) {
-        const messageElement = document.createElement('div');
-        messageElement.className = 'committees-message';
-        messageElement.innerText = 'Em breve! Estamos preparando o melhor para os senhores e senhoras delegados(as)';
-        committeesSection.insertBefore(messageElement, committeesSection.querySelector('.committees-grid'));
-    }
 });

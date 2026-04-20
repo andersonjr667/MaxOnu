@@ -1,9 +1,15 @@
 function openQuestionModal() {
-    document.getElementById('questionModal').classList.add('active');
+    const modal = document.getElementById('questionModal');
+    if (modal) {
+        modal.classList.add('active');
+    }
 }
 
 function closeQuestionModal() {
-    document.getElementById('questionModal').classList.remove('active');
+    const modal = document.getElementById('questionModal');
+    if (modal) {
+        modal.classList.remove('active');
+    }
 }
 
 function initQuestions() {
@@ -45,30 +51,17 @@ function initQuestions() {
                     questionForm.reset();
                     closeQuestionModal();
                 } else {
-                    throw new Error('Erro ao enviar pergunta');
+                    const data = await response.json().catch(() => ({}));
+                    throw new Error(data.error || 'Erro ao enviar pergunta');
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Erro ao enviar pergunta. Tente novamente.');
+                alert(error.message || 'Erro ao enviar pergunta. Tente novamente.');
             }
         });
     }
 
     loadQuestions();
-}
-
-function answerQuestion(id) {
-    const answer = document.getElementById(`answer-${id}`).value;
-    const questions = JSON.parse(localStorage.getItem('questions')) || [];
-    const questionIndex = questions.findIndex(q => q.id === id);
-    
-    if (questionIndex !== -1) {
-        questions[questionIndex].answer = answer;
-        questions[questionIndex].answered = true;
-        localStorage.setItem('questions', JSON.stringify(questions));
-        alert('Resposta enviada com sucesso!');
-        location.reload();
-    }
 }
 
 document.addEventListener('DOMContentLoaded', initQuestions);

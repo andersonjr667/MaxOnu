@@ -7,10 +7,15 @@ function initAuth() {
     const registerBox = document.querySelector('.register-box');
     const messageContainer = document.getElementById('messageContainer');
 
+    if (!loginForm || !registerForm || !showRegister || !showLogin || !loginBox || !registerBox || !messageContainer) {
+        return;
+    }
+
     function displayMessage(message, isError = false) {
         messageContainer.style.display = 'block';
         messageContainer.textContent = message;
-        messageContainer.style.color = isError ? 'red' : 'green';
+        messageContainer.style.color = isError ? '#9f2f3e' : '#0d3b66';
+        messageContainer.style.border = `1px solid ${isError ? 'rgba(209, 73, 91, 0.24)' : 'rgba(13, 59, 102, 0.14)'}`;
     }
 
     function checkLoginStatus() {
@@ -46,6 +51,14 @@ function initAuth() {
         messageContainer.style.display = 'none';
     });
 
+    // Support linking directly to the register form via hash or query param
+    const urlHash = window.location.hash;
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlHash === '#register' || urlParams.get('register') === '1') {
+        loginBox.style.display = 'none';
+        registerBox.style.display = 'block';
+    }
+
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const username = document.getElementById('username').value;
@@ -64,10 +77,19 @@ function initAuth() {
             if (response.ok) {
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('isAdmin', data.isAdmin);
+                localStorage.setItem('role', data.role || 'candidate');
                 displayMessage('Login realizado com sucesso!');
                 if (data.token) {
                     setTimeout(() => {
-                        window.location.href = '/dashboard.html';
+                        // Redirect based on role
+                        const role = data.role || 'candidate';
+                        if (role === 'admin') {
+                            window.location.href = '/dashboard.html';
+                        } else if (role === 'coordinator' || role === 'teacher') {
+                            window.location.href = '/dashboard.html';
+                        } else {
+                            window.location.href = '/profile.html';
+                        }
                     }, 800);
                 }
             } else {

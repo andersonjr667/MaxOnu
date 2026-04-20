@@ -3,16 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MaxOnu 2025</title>
+    <title>MaxOnu 2026</title>
     <link rel="stylesheet" href="css/styles.css">
     <script src="js/countdown.js" defer></script>
+    <script src="js/committees.js" defer></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <link rel="icon" href="images/logo-maxonu.png" type="image/png">
-    <style>
-        html {
-            scroll-behavior: smooth;
-        }
-    </style>
     <script src="js/includes.js"></script>
 </head>
 <body>
@@ -20,32 +16,42 @@
 
     <section id="countdown-section">
         <div class="countdown-container">
-            <h1 class="main-title">MAXONU 2025</h1>
-            <div class="countdown-message">Faltam</div>
+            <div class="hero-badge">Simulação 2026 do Colégio Maximus</div>
+            <h1 class="main-title">MAXONU 2026</h1>
+            <p class="hero-intro">A nova edição da MaxOnu mantém a identidade do projeto e chega com 7 comitês, novas áreas de acompanhamento e uma experiência digital pensada para delegados, professores orientadores e coordenação.</p>
+            <div class="hero-cta-group">
+                <a href="login.html" class="auth-btn auth-btn-secondary hero-auth-btn">Entrar</a>
+                <a href="login.html#register" class="auth-btn auth-btn-primary hero-auth-btn">Cadastrar</a>
+            </div>
+            <div class="countdown-message">Contagem regressiva para o início dos comitês</div>
             <div class="countdown-grid" id="countdown"></div>
-            <div class="event-date">Data de Início: 1 de Outubro de 2025</div> <!-- Added start date -->
+            <div class="event-date">Data de Início: 4 de Maio de 2026</div>
         </div>
     </section>
 
     <main class="main-content index-content">
         <section class="content-section">
             <div class="info-tabs">
-                <button class="tab-button active" onclick="openTab('sobre')">O que é?</button>
-                <button class="tab-button" onclick="openTab('equipe')">Equipe</button>
+                <button class="tab-button active" onclick="openTab('sobre', event)">O que é?</button>
+                <button class="tab-button" onclick="openTab('equipe', event)">Equipe</button>
             </div>
 
             <div id="sobre" class="tab-content active">
                 <article class="content-box">
                     <h2>Sobre a MaxOnu</h2>
-                    <p>A MaxOnu é uma simulação de debates da ONU organizada pelo Colégio Maximus. Este evento proporciona aos estudantes a oportunidade de desenvolver habilidades essenciais em diplomacia, negociação e relações internacionais.</p>
+                    <p>A MaxOnu é uma simulação de debates da ONU organizada pelo Colégio Maximus. Em 2026, o projeto amplia sua atuação com uma nova edição cercada de expectativa, mantendo o sigilo dos comitês até o encerramento da contagem regressiva.</p>
                     <div class="features-grid">
                         <div class="feature-card blue-accent">
                             <h3>Diplomacia</h3>
-                            <p>Os participantes exercitam suas habilidades de negociação e oratória, representando diferentes países e defendendo suas posições em debates acalorados.</p>
+                            <p>Os participantes exercitam negociação, oratória e pensamento estratégico ao representar países e defender posições em debates de alta complexidade.</p>
                         </div>
                         <div class="feature-card blue-accent">
                             <h3>Aprendizado</h3>
-                            <p>Os estudantes adquirem um profundo conhecimento sobre política global, entendendo melhor os desafios e as dinâmicas das relações internacionais.</p>
+                            <p>Os estudantes aprofundam seu repertório sobre geopolítica, direitos humanos, ética, tecnologia e os grandes conflitos do século XXI.</p>
+                        </div>
+                        <div class="feature-card blue-accent">
+                            <h3>Experiência Digital</h3>
+                            <p>Candidatos poderão se cadastrar, fazer perguntas, acompanhar perfil e ver o país designado. Professores e coordenação terão painéis próprios para monitorar cada comitê.</p>
                         </div>
                     </div>
                 </article>
@@ -81,28 +87,71 @@
 
         <section class="content-section" id="committees-section">
             <h2>Comitês</h2>
-            <div class="committees-message">Em breve! Estamos preparando o melhor para os senhores e senhoras delegados(as)</div>
-            <div class="committees-grid">
-                <div class="committee-card present" data-index="1" data-title="(AGNU-2024) 140 Anos da Partilha da África" data-description="Reflexões e perspectivas sobre um dos marcos mais importantes da história africana e seu impacto global.">
-                    <div class="ribbon"></div>
-                    <h3>Dossiê Confidencial!</h3>
+            <div class="committees-message" id="committeesMessage">Os comitês da edição 2026 seguem sob sigilo e serão revelados automaticamente quando a contagem regressiva chegar ao fim.</div>
+            <div class="committees-grid" id="committeesGrid">
+                <div class="committee-card committee-card-detailed committee-card-locked">
+                    <span class="committee-number">Comitê 1</span>
+                    <h3>Sigilo diplomático</h3>
+                    <p>A revelação oficial acontecerá somente após o encerramento da contagem regressiva.</p>
                 </div>
-                <div class="committee-card present" data-index="2" data-title="(CSNU-2024) Tensões entre Rússia e Ucrânia" data-description="Análise das tensões recentes entre Rússia e Ucrânia no Conselho de Segurança da ONU.">
-                    <div class="ribbon"></div>
-                    <h3>Crise em Análise!</h3>
+                <div class="committee-card committee-card-detailed committee-card-locked">
+                    <span class="committee-number">Comitê 2</span>
+                    <h3>Sigilo diplomático</h3>
+                    <p>Estamos preservando o mistério desta edição até o momento de abertura.</p>
                 </div>
-                <div class="committee-card present" data-index="3" data-title="(OEA-2024) Violações dos Direitos Humanos" data-description="Discussão sobre as violações dos direitos humanos dentro do sistema carcerário nas Américas.">
-                    <div class="ribbon"></div>
-                    <h3>Questão Global Oculta!</h3>
+                <div class="committee-card committee-card-detailed committee-card-locked">
+                    <span class="committee-number">Comitê 3</span>
+                    <h3>Sigilo diplomático</h3>
+                    <p>Os temas só entram em cena quando o cronômetro terminar.</p>
+                </div>
+                <div class="committee-card committee-card-detailed committee-card-locked">
+                    <span class="committee-number">Comitê 4</span>
+                    <h3>Sigilo diplomático</h3>
+                    <p>Até lá, a página mostra apenas a estrutura da programação sem revelar o conteúdo.</p>
+                </div>
+                <div class="committee-card committee-card-detailed committee-card-locked">
+                    <span class="committee-number">Comitê 5</span>
+                    <h3>Sigilo diplomático</h3>
+                    <p>O objetivo é evitar qualquer vazamento antes da data oficial.</p>
+                </div>
+                <div class="committee-card committee-card-detailed committee-card-locked">
+                    <span class="committee-number">Comitê 6</span>
+                    <h3>Sigilo diplomático</h3>
+                    <p>Delegados, orientadores e coordenação verão os temas somente após a liberação.</p>
+                </div>
+                <div class="committee-card committee-card-detailed committee-card-locked">
+                    <span class="committee-number">Comitê 7</span>
+                    <h3>Em definição</h3>
+                    <p>O sétimo comitê continua reservado e será publicado somente no momento certo.</p>
                 </div>
             </div>
+        </section>
+
+        <section class="content-section">
+            <article class="content-box">
+                <h2>Acesso por Perfil</h2>
+                <div class="features-grid">
+                    <div class="feature-card blue-accent">
+                        <h3>Candidatos</h3>
+                        <p>Poderão criar conta, enviar perguntas, acessar o próprio perfil e consultar qual país foi atribuído à dupla.</p>
+                    </div>
+                    <div class="feature-card blue-accent">
+                        <h3>Professores Orientadores</h3>
+                        <p>Terão acesso aos alunos de cada comitê e à distribuição de países para acompanhar suas delegações com mais clareza.</p>
+                    </div>
+                    <div class="feature-card blue-accent">
+                        <h3>Coordenação</h3>
+                        <p>Poderá visualizar alunos, definir países por participante, acompanhar comitês e exportar listas em CSV e XLSX para a operação do evento.</p>
+                    </div>
+                </div>
+            </article>
         </section>
     </main>
 
     <include src="footer.html"></include>
 
     <script>
-        function openTab(tabId) {
+        function openTab(tabId, event) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');

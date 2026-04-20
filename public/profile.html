@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Perfil - MaxOnu 2026</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <script src="js/includes.js"></script>
+</head>
+<body>
+    <include src="header.html"></include>
+
+    <main class="main-content">
+        <section class="content-section">
+            <article class="content-box">
+                <h2>Meu Perfil</h2>
+                <div id="profileInfo">
+                    <p>Carregando...</p>
+                </div>
+            </article>
+        </section>
+        <section class="content-section">
+            <article class="content-box">
+                <h2>Área do Participante</h2>
+                <div id="profileRoleDetails">
+                    <p>Carregando recursos do perfil...</p>
+                </div>
+            </article>
+        </section>
+    </main>
+
+    <include src="footer.html"></include>
+
+    <script>
+        async function loadProfile() {
+            const token = localStorage.getItem('token');
+            if (!token) return window.location.href = '/login.html';
+            try {
+                const res = await fetch('/api/me', { headers: { 'Authorization': `Bearer ${token}` } });
+                if (!res.ok) return document.getElementById('profileInfo').innerText = 'Erro ao carregar perfil.';
+                const user = await res.json();
+                document.getElementById('profileInfo').innerHTML = `
+                    <p><strong>Usuário:</strong> ${user.username}</p>
+                    <p><strong>Email:</strong> ${user.email || '-'}</p>
+                    <p><strong>Função:</strong> ${user.role}</p>
+                    <p><strong>Comitê:</strong> ${user.committee !== null && user.committee !== undefined ? user.committee : 'Não designado'}</p>
+                    <p><strong>País:</strong> ${user.country || 'Não designado'}</p>
+                    <p><strong>Dupla:</strong> ${user.partner || 'Não definida'}</p>
+                `;
+                renderRoleDetails(user);
+            } catch (err) {
+                console.error(err);
+                document.getElementById('profileInfo').innerText = 'Erro ao carregar perfil.';
+                document.getElementById('profileRoleDetails').innerText = 'Erro ao carregar recursos do perfil.';
+            }
+        }
+
+        function renderRoleDetails(user) {
+            const roleDetails = document.getElementById('profileRoleDetails');
+            const role = user.role || 'candidate';
+
+            const descriptions = {
+                candidate: `
+                    <div class="role-preview-grid">
+                        <div class="role-preview-card">
+                            <h3>Perguntas e suporte</h3>
+                            <p>Use a área de perguntas para falar com a organização sempre que precisar de orientação.</p>
+                        </div>
+                        <div class="role-preview-card">
+                            <h3>Delegação</h3>
+                            <p>Acompanhe por aqui seu comitê, país e as informações da sua dupla ao longo da preparação.</p>
+                        </div>
+                        <div class="role-preview-card">
+                            <h3>Perfil</h3>
+                            <p>Esta página será o ponto central para consultar seus dados no ciclo da MaxOnu 2026.</p>
+                        </div>
+                    </div>
+                `,
+                teacher: `
+                    <div class="role-preview-grid">
+                        <div class="role-preview-card">
+                            <h3>Visão dos comitês</h3>
+                            <p>Seu painel permite consultar os alunos alocados em cada comitê e seus respectivos países.</p>
+                        </div>
+                        <div class="role-preview-card">
+                            <h3>Acompanhamento</h3>
+                            <p>Professores orientadores conseguem monitorar as duplas e apoiar a preparação de forma organizada.</p>
+                        </div>
+                    </div>
+                `,
+                coordinator: `
+                    <div class="role-preview-grid">
+                        <div class="role-preview-card">
+                            <h3>Gestão dos participantes</h3>
+                            <p>Coordenadores podem visualizar alunos, ajustar países e organizar os comitês da edição 2026.</p>
+                        </div>
+                        <div class="role-preview-card">
+                            <h3>Exportações</h3>
+                            <p>Listas por comitê podem ser baixadas em CSV e XLSX diretamente pelo painel administrativo.</p>
+                        </div>
+                    </div>
+                `,
+                admin: `
+                    <div class="role-preview-grid">
+                        <div class="role-preview-card">
+                            <h3>Controle ampliado</h3>
+                            <p>Administradores possuem acesso às funções de coordenação e à gestão geral dos acessos.</p>
+                        </div>
+                    </div>
+                `
+            };
+
+            roleDetails.innerHTML = descriptions[role] || descriptions.candidate;
+        }
+        document.addEventListener('DOMContentLoaded', loadProfile);
+    </script>
+</body>
+</html>
