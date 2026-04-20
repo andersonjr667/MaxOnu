@@ -17,6 +17,7 @@ const postRoutes = require('./routes/posts');
 const questionRoutes = require('./routes/questions');
 const userRoutes = require('./routes/users');
 const exportRoutes = require('./routes/export');
+const { shareMetaMiddleware } = require('./middleware/share-meta');
 const { COMMITTEE_REVEAL_DATE } = require('./utils/event-config');
 
 const app = express();
@@ -276,6 +277,9 @@ app.use('/api/posts', postRoutes);
 app.use('/api/questions', questionRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/export', exportRoutes);
+
+// Share meta tags middleware para melhorar compartilhamento em redes sociais
+app.use(shareMetaMiddleware(publicDir));
 
 app.use((req, res, next) => {
   if (COMMITTEE_PAGES.has(req.path)) return res.redirect('/delegacoes.html');
