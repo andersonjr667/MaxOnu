@@ -7,12 +7,12 @@ function getProfileRoleDetails(user) {
                 <div class="role-preview-card">
                     <h3>Portal dos orientadores</h3>
                     <p>Use sua área exclusiva para consultar comitês, acompanhar delegações e orientar os participantes.</p>
-                    <a href="orientadores.html" class="view-button">Abrir portal</a>
+                    <a href="/orientadores" class="view-button">Abrir portal</a>
                 </div>
                 <div class="role-preview-card">
                     <h3>Painel operacional</h3>
                     <p>Seu painel permite consultar os alunos alocados em cada comitê e seus respectivos países.</p>
-                    <a href="dashboard.html" class="view-button">Abrir painel</a>
+                    <a href="/dashboard" class="view-button">Abrir painel</a>
                 </div>
             </div>
         `,
@@ -21,12 +21,12 @@ function getProfileRoleDetails(user) {
                 <div class="role-preview-card">
                     <h3>Portal da coordenação</h3>
                     <p>Acesse um hub com atalhos para distribuição, consulta ampla e operação dos comitês.</p>
-                    <a href="coordenacao.html" class="view-button">Abrir portal</a>
+                    <a href="/coordenacao" class="view-button">Abrir portal</a>
                 </div>
                 <div class="role-preview-card">
                     <h3>Painel operacional</h3>
                     <p>Coordenação pode visualizar alunos, ajustar países e organizar os comitês da edição 2026.</p>
-                    <a href="dashboard.html" class="view-button">Abrir painel</a>
+                    <a href="/dashboard" class="view-button">Abrir painel</a>
                 </div>
             </div>
         `,
@@ -35,12 +35,12 @@ function getProfileRoleDetails(user) {
                 <div class="role-preview-card">
                     <h3>Portal administrativo</h3>
                     <p>Administradores possuem acesso ao hub completo de operação, conteúdo e gestão de acessos.</p>
-                    <a href="admin.html" class="view-button">Abrir portal</a>
+                    <a href="/admin" class="view-button">Abrir portal</a>
                 </div>
                 <div class="role-preview-card">
                     <h3>Painel operacional</h3>
                     <p>Centralize perguntas, comitês, exportações e distribuição de países em um único painel.</p>
-                    <a href="dashboard.html" class="view-button">Abrir painel</a>
+                    <a href="/dashboard" class="view-button">Abrir painel</a>
                 </div>
             </div>
         `,
@@ -49,12 +49,12 @@ function getProfileRoleDetails(user) {
                 <div class="role-preview-card">
                     <h3>Portal da imprensa</h3>
                     <p>Central de comunicação com atalhos para blog, cobertura pública e organização de conteúdo.</p>
-                    <a href="imprensa-dashboard.html" class="view-button">Abrir portal</a>
+                    <a href="/imprensa-dashboard" class="view-button">Abrir portal</a>
                 </div>
                 <div class="role-preview-card">
                     <h3>Publicações</h3>
                     <p>A equipe de imprensa pode acompanhar o blog e a área de criação de conteúdo oficial.</p>
-                    <a href="blog.html" class="view-button">Abrir blog</a>
+                    <a href="/blog" class="view-button">Abrir blog</a>
                 </div>
             </div>
         `
@@ -209,7 +209,7 @@ function renderCandidatePanels(user, delegationStatus) {
                 </div>
             </div>
             <div class="dashboard-question-actions">
-                <a href="inscricao.html" class="view-button">${registration?.submittedAt ? 'Editar inscrição' : 'Fazer inscrição'}</a>
+                <a href="/inscricao" class="view-button">${registration?.submittedAt ? 'Editar inscrição' : 'Fazer inscrição'}</a>
             </div>
         </article>
     `;

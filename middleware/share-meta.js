@@ -17,39 +17,74 @@ const META_TAGS_CONFIG = {
     url: 'https://maxonu.coleiomaximus.com.br',
     type: 'website'
   },
+  '/blog': {
+    title: 'Blog - MaxOnu 2026',
+    description: 'Comunicados, orientações e atualizações da MaxOnu 2026. Acompanhe as últimas notícias sobre a simulação de debates da ONU.',
+    image: '/images/logo-maxonu.png',
+    url: 'https://maxonu.coleiomaximus.com.br/blog',
+    type: 'website'
+  },
   '/blog.html': {
     title: 'Blog - MaxOnu 2026',
     description: 'Comunicados, orientações e atualizações da MaxOnu 2026. Acompanhe as últimas notícias sobre a simulação de debates da ONU.',
     image: '/images/logo-maxonu.png',
-    url: 'https://maxonu.coleiomaximus.com.br/blog.html',
+    url: 'https://maxonu.coleiomaximus.com.br/blog',
+    type: 'website'
+  },
+  '/guias': {
+    title: 'Guias - MaxOnu 2026',
+    description: 'Guias completos para delegados, professores orientadores e coordenadores. Aprenda sobre os comitês, regras e procedimentos da MaxOnu 2026.',
+    image: '/images/logo-maxonu.png',
+    url: 'https://maxonu.coleiomaximus.com.br/guias',
     type: 'website'
   },
   '/guias.html': {
     title: 'Guias - MaxOnu 2026',
     description: 'Guias completos para delegados, professores orientadores e coordenadores. Aprenda sobre os comitês, regras e procedimentos da MaxOnu 2026.',
     image: '/images/logo-maxonu.png',
-    url: 'https://maxonu.coleiomaximus.com.br/guias.html',
+    url: 'https://maxonu.coleiomaximus.com.br/guias',
+    type: 'website'
+  },
+  '/inscricao': {
+    title: 'Inscrição - MaxOnu 2026',
+    description: 'Inscreva-se na MaxOnu 2026 e junte-se a uma simulação única de debates da ONU. Conheça a MaxOnu, represente seu país e participe de negociações diplomáticas em temas globais relevantes ao mundo atual.',
+    image: '/images/logo-maxonu.png',
+    url: 'https://maxonu.coleiomaximus.com.br/inscricao',
     type: 'website'
   },
   '/inscricao.html': {
     title: 'Inscrição - MaxOnu 2026',
     description: 'Inscreva-se na MaxOnu 2026 e junte-se a uma simulação única de debates da ONU. Conheça a MaxOnu, represente seu país e participe de negociações diplomáticas em temas globais relevantes ao mundo atual.',
     image: '/images/logo-maxonu.png',
-    url: 'https://maxonu.coleiomaximus.com.br/inscricao.html',
+    url: 'https://maxonu.coleiomaximus.com.br/inscricao',
+    type: 'website'
+  },
+  '/delegacoes': {
+    title: 'Delegações - MaxOnu 2026',
+    description: 'Conheça as delegações e comitês da MaxOnu 2026. Explore as diferentes áreas de negociação e especialização do evento.',
+    image: '/images/logo-maxonu.png',
+    url: 'https://maxonu.coleiomaximus.com.br/delegacoes',
     type: 'website'
   },
   '/delegacoes.html': {
     title: 'Delegações - MaxOnu 2026',
     description: 'Conheça as delegações e comitês da MaxOnu 2026. Explore as diferentes áreas de negociação e especialização do evento.',
     image: '/images/logo-maxonu.png',
-    url: 'https://maxonu.coleiomaximus.com.br/delegacoes.html',
+    url: 'https://maxonu.coleiomaximus.com.br/delegacoes',
+    type: 'website'
+  },
+  '/faq': {
+    title: 'Perguntas Comuns - MaxOnu 2026',
+    description: 'Tire suas dúvidas sobre a MaxOnu 2026. Encontre respostas para as perguntas mais frequentes sobre inscrição, funcionamento e participação no evento.',
+    image: '/images/logo-maxonu.png',
+    url: 'https://maxonu.coleiomaximus.com.br/faq',
     type: 'website'
   },
   '/perguntas-comuns.html': {
     title: 'Perguntas Comuns - MaxOnu 2026',
     description: 'Tire suas dúvidas sobre a MaxOnu 2026. Encontre respostas para as perguntas mais frequentes sobre inscrição, funcionamento e participação no evento.',
     image: '/images/logo-maxonu.png',
-    url: 'https://maxonu.coleiomaximus.com.br/perguntas-comuns.html',
+    url: 'https://maxonu.coleiomaximus.com.br/faq',
     type: 'website'
   }
 };

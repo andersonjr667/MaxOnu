@@ -18,6 +18,7 @@ const questionRoutes = require('./routes/questions');
 const userRoutes = require('./routes/users');
 const exportRoutes = require('./routes/export');
 const { shareMetaMiddleware } = require('./middleware/share-meta');
+const cleanUrlsMiddleware = require('./middleware/clean-urls');
 const { COMMITTEE_REVEAL_DATE } = require('./utils/event-config');
 
 const app = express();
@@ -281,8 +282,11 @@ app.use('/api/export', exportRoutes);
 // Share meta tags middleware para melhorar compartilhamento em redes sociais
 app.use(shareMetaMiddleware(publicDir));
 
+// Clean URLs middleware - remove extensão .html e oferece rotas amigáveis
+app.use(cleanUrlsMiddleware(publicDir));
+
 app.use((req, res, next) => {
-  if (COMMITTEE_PAGES.has(req.path)) return res.redirect('/delegacoes.html');
+  if (COMMITTEE_PAGES.has(req.path)) return res.redirect('/delegacoes');
   next();
 });
 

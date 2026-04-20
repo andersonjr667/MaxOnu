@@ -249,12 +249,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (!context) {
             authButtons.innerHTML = `
-                <a href="login.html" class="auth-btn auth-btn-secondary">Entrar</a>
-                <a href="login.html#register" class="auth-btn auth-btn-primary">Cadastrar</a>
+                <a href="/login" class="auth-btn auth-btn-secondary">Entrar</a>
+                <a href="/login#register" class="auth-btn auth-btn-primary">Cadastrar</a>
             `;
 
-            mobilePrimary.innerHTML = '<a href="login.html" class="nav-link mobile-auth-enter">Entrar</a>';
-            mobileSecondary.innerHTML = '<a href="login.html#register" class="nav-link mobile-auth-register">Cadastrar</a>';
+            mobilePrimary.innerHTML = '<a href="/login" class="nav-link mobile-auth-enter">Entrar</a>';
+            mobileSecondary.innerHTML = '<a href="/login#register" class="nav-link mobile-auth-register">Cadastrar</a>';
             mobilePrimary.hidden = false;
             mobileSecondary.hidden = false;
             return;
