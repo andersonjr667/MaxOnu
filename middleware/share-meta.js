@@ -5,14 +5,14 @@ const fs = require('fs');
 const META_TAGS_CONFIG = {
   '/': {
     title: 'MaxOnu 2026 - Simulação de Debates da ONU',
-    description: 'Participar da MaxOnu 2026, a simulação de debates da ONU do Colégio Maximus. Exercite diplomacia, oratória e pensamento estratégico em 7 comitês diferenciados.',
+    description: 'Conheça a MaxOnu 2026, uma simulação realista de debates da ONU organizada pelo Colégio Maximus. Um espaço onde estudantes exercitam diplomacia, oratória e pensamento estratégico em 7 comitês diferenciados, negociando e representando países em temas globais de importância.',
     image: '/images/logo-maxonu.png',
     url: 'https://maxonu.coleiomaximus.com.br',
     type: 'website'
   },
   '/index.html': {
     title: 'MaxOnu 2026 - Simulação de Debates da ONU',
-    description: 'Participar da MaxOnu 2026, a simulação de debates da ONU do Colégio Maximus. Exercite diplomacia, oratória e pensamento estratégico em 7 comitês diferenciados.',
+    description: 'Conheça a MaxOnu 2026, uma simulação realista de debates da ONU organizada pelo Colégio Maximus. Um espaço onde estudantes exercitam diplomacia, oratória e pensamento estratégico em 7 comitês diferenciados, negociando e representando países em temas globais de importância.',
     image: '/images/logo-maxonu.png',
     url: 'https://maxonu.coleiomaximus.com.br',
     type: 'website'
@@ -33,7 +33,7 @@ const META_TAGS_CONFIG = {
   },
   '/inscricao.html': {
     title: 'Inscrição - MaxOnu 2026',
-    description: 'Inscreva-se na MaxOnu 2026. Participate da simulação de debates da ONU do Colégio Maximus e represente seu país no evento.',
+    description: 'Inscreva-se na MaxOnu 2026 e junte-se a uma simulação única de debates da ONU. Conheça a MaxOnu, represente seu país e participe de negociações diplomáticas em temas globais relevantes ao mundo atual.',
     image: '/images/logo-maxonu.png',
     url: 'https://maxonu.coleiomaximus.com.br/inscricao.html',
     type: 'website'
