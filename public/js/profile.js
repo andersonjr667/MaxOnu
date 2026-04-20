@@ -191,10 +191,8 @@ function renderCandidatePanels(user, delegationStatus) {
                 <p>${registration?.submittedAt ? 'Sua inscrição já está registrada. Agora você pode acompanhar a formação da delegação e convidar sua dupla ou trio.' : 'Quando a abertura estiver liberada, faça sua inscrição com as três opções de comitê.'}</p>
             </div>
             <div class="registration-overview">
-                <div class="feature-card blue-accent">
-                    <h3>Turma</h3>
-                    <p>${user.classGroup || 'Não informada'}</p>
-                </div>
+                ${createEditableCard('Turma', 'classGroup', user.classGroup, { placeholder: 'Digite sua turma', emptyText: 'Não informada' })}
+                ${createEditableCard('País', 'country', user.country, { placeholder: 'Digite seu país', emptyText: 'Não designado' })}
                 <div class="feature-card">
                     <h3>Formato</h3>
                     <p>${registration?.teamSize === 3 ? 'Trio' : 'Dupla'}</p>
@@ -209,10 +207,6 @@ function renderCandidatePanels(user, delegationStatus) {
                 <div class="committee-choice-list">
                     ${formatCommitteeChoices(registration)}
                 </div>
-            </div>
-            <div class="dashboard-summary-grid profile-summary-grid">
-                ${createEditableCard('Turma', 'classGroup', user.classGroup, { placeholder: 'Digite sua turma', emptyText: 'Não informada' })}
-                ${createEditableCard('País', 'country', user.country, { placeholder: 'Digite seu país', emptyText: 'Não designado' })}
             </div>
             <div class="dashboard-question-actions">
                 <a href="inscricao.html" class="view-button">${registration?.submittedAt ? 'Editar inscrição' : 'Fazer inscrição'}</a>
@@ -333,9 +327,15 @@ async function loadProfile() {
         document.getElementById('registrationPanel').innerHTML = `
             <article class="content-box">
                 <h2>Meu Perfil</h2>
-                <p><strong>Comitê:</strong> ${user.committee !== null && user.committee !== undefined ? user.committee : 'Não designado'}</p>
-                <p><strong>Dupla:</strong> ${user.partner || 'Não definida'}</p>
                 <div class="dashboard-summary-grid profile-summary-grid">
+                    <article class="feature-card">
+                        <h3>Comitê</h3>
+                        <p>${user.committee !== null && user.committee !== undefined ? user.committee : 'Não designado'}</p>
+                    </article>
+                    <article class="feature-card">
+                        <h3>Dupla</h3>
+                        <p>${user.partner || 'Não definida'}</p>
+                    </article>
                     ${createEditableCard('Turma', 'classGroup', user.classGroup, { placeholder: 'Digite sua turma', emptyText: 'Não informada' })}
                     ${createEditableCard('País', 'country', user.country, { placeholder: 'Digite seu país', emptyText: 'Não designado' })}
                 </div>
