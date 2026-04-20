@@ -16,6 +16,7 @@ const delegationRoutes = require('./routes/delegations');
 const postRoutes = require('./routes/posts');
 const questionRoutes = require('./routes/questions');
 const userRoutes = require('./routes/users');
+const exportRoutes = require('./routes/export');
 const { COMMITTEE_REVEAL_DATE } = require('./utils/event-config');
 
 const app = express();
@@ -274,6 +275,7 @@ app.use('/api/delegation', delegationRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/questions', questionRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/export', exportRoutes);
 
 app.use((req, res, next) => {
   if (COMMITTEE_PAGES.has(req.path)) return res.redirect('/delegacoes.html');

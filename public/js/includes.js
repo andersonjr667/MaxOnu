@@ -1,10 +1,19 @@
 document.addEventListener('DOMContentLoaded', function() {
     let headerContext = null;
+    const AUTH_CONTEXT_CACHE_KEY = 'maxonu_auth_context_v1';
+    const AUTH_CONTEXT_TTL = 60 * 1000;
+    let authContextPromise = null;
 
     const clearStoredAuth = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('isAdmin');
         localStorage.removeItem('role');
+        authContextPromise = null;
+        try {
+            sessionStorage.removeItem(AUTH_CONTEXT_CACHE_KEY);
+        } catch (error) {
+            // Ignore storage cleanup failures.
+        }
     };
 
     const closeHamburgerMenu = (hamburgerMenu, navLinks) => {
@@ -84,7 +93,37 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const parseJson = async (response) => response.json().catch(() => ({}));
 
-    const getAuthContext = async () => {
+    const readAuthContextCache = () => {
+        try {
+            const raw = sessionStorage.getItem(AUTH_CONTEXT_CACHE_KEY);
+            if (!raw) {
+                return null;
+            }
+
+            const parsed = JSON.parse(raw);
+            if (Date.now() - parsed.timestamp > AUTH_CONTEXT_TTL) {
+                sessionStorage.removeItem(AUTH_CONTEXT_CACHE_KEY);
+                return null;
+            }
+
+            return parsed.data || null;
+        } catch (error) {
+            return null;
+        }
+    };
+
+    const writeAuthContextCache = (context) => {
+        try {
+            sessionStorage.setItem(AUTH_CONTEXT_CACHE_KEY, JSON.stringify({
+                timestamp: Date.now(),
+                data: context
+            }));
+        } catch (error) {
+            // Ignore cache write failures.
+        }
+    };
+
+    const fetchFreshAuthContext = async () => {
         const token = getValidToken();
         if (!token) {
             return null;
@@ -118,10 +157,34 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
 
-            return { user, delegationStatus };
+            const context = { user, delegationStatus };
+            writeAuthContextCache(context);
+            return context;
         } catch (error) {
             return getStoredAuthContext();
         }
+    };
+
+    const getAuthContext = async (options = {}) => {
+        const { forceRefresh = false } = options;
+
+        if (!forceRefresh) {
+            const cached = readAuthContextCache();
+            if (cached) {
+                return cached;
+            }
+        }
+
+        if (!forceRefresh && authContextPromise) {
+            return authContextPromise;
+        }
+
+        authContextPromise = fetchFreshAuthContext()
+            .finally(() => {
+                authContextPromise = null;
+            });
+
+        return authContextPromise;
     };
 
     const setActiveLinks = (navLinks) => {
@@ -162,7 +225,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="notification-list">
                         ${pendingNotifications.map((notification) => `
                             <article class="notification-card" data-notification-id="${notification.id}">
-                                <p><strong>${notification.fromUsername}</strong> convidou você para uma delegação em ${notification.teamSize === 3 ? 'trio' : 'dupla'}.</p>
+                                <p><strong>${notification.fromUsername}</strong> convidou você para integrar uma delegação com ${notification.teamSize} participantes.</p>
                                 <div class="notification-actions">
                                     <button type="button" class="view-button" data-notification-action="accept">Aceitar</button>
                                     <button type="button" class="delete-button" data-notification-action="reject">Recusar</button>
@@ -212,6 +275,13 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('[data-logout-trigger]').forEach((trigger) => {
             trigger.addEventListener('click', logout);
         });
+    };
+
+    window.MaxOnuSession = {
+        getToken: getValidToken,
+        clearAuth: clearStoredAuth,
+        getAuthContext,
+        refreshAuthContext: () => getAuthContext({ forceRefresh: true })
     };
 
     const refreshHeader = async (navLinks) => {
@@ -386,6 +456,8 @@ document.addEventListener('DOMContentLoaded', function() {
         return false;
     };
 
-    loadInclude('header.html');
-    loadInclude('footer.html');
+    Promise.all([
+        loadInclude('header.html'),
+        loadInclude('footer.html')
+    ]);
 });

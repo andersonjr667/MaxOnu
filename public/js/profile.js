@@ -6,7 +6,7 @@ function getProfileRoleDetails(user) {
             <div class="role-preview-grid">
                 <div class="role-preview-card">
                     <h3>Portal dos orientadores</h3>
-                    <p>Use sua área exclusiva para consultar comitês, acompanhar delegações e orientar as duplas.</p>
+                    <p>Use sua área exclusiva para consultar comitês, acompanhar delegações e orientar os participantes.</p>
                     <a href="orientadores.html" class="view-button">Abrir portal</a>
                 </div>
                 <div class="role-preview-card">
@@ -64,7 +64,7 @@ function getProfileRoleDetails(user) {
 }
 
 function getToken() {
-    return localStorage.getItem('token');
+    return window.MaxOnuSession?.getToken?.() || localStorage.getItem('token');
 }
 
 async function parseJson(response) {
@@ -188,14 +188,14 @@ function renderCandidatePanels(user, delegationStatus) {
             <div class="dashboard-section-heading">
                 <span class="dashboard-section-kicker">Inscrição</span>
                 <h2>Inscrição realizada</h2>
-                <p>${registration?.submittedAt ? 'Sua inscrição já está registrada. Agora você pode acompanhar a formação da delegação e convidar sua dupla ou trio.' : 'Quando a abertura estiver liberada, faça sua inscrição com as três opções de comitê.'}</p>
+                <p>${registration?.submittedAt ? 'Sua inscrição já está registrada. Agora você pode acompanhar a formação da delegação e convidar os demais integrantes.' : 'Quando a abertura estiver liberada, faça sua inscrição com as três opções de comitê.'}</p>
             </div>
             <div class="registration-overview">
                 ${createEditableCard('Turma', 'classGroup', user.classGroup, { placeholder: 'Digite sua turma', emptyText: 'Não informada' })}
                 ${createEditableCard('País', 'country', user.country, { placeholder: 'Digite seu país', emptyText: 'Não designado' })}
                 <div class="feature-card">
                     <h3>Formato</h3>
-                    <p>${registration?.teamSize === 3 ? 'Trio' : 'Dupla'}</p>
+                    <p>${registration?.teamSize === 3 ? '3 integrantes' : '2 integrantes'}</p>
                 </div>
                 <div class="feature-card">
                     <h3>Status</h3>
@@ -218,13 +218,13 @@ function renderCandidatePanels(user, delegationStatus) {
         <article class="dashboard-panel candidate-panel">
             <div class="dashboard-section-heading">
                 <span class="dashboard-section-kicker">Delegação</span>
-                <h2>Monte sua dupla ou trio</h2>
+                <h2>Organize sua delegação</h2>
                 <p>Convide os colegas pelo usuário cadastrado. Eles receberão o convite no painel de notificações do header.</p>
             </div>
             <div class="registration-overview">
                 <div class="feature-card blue-accent">
                     <h3>Tamanho definido</h3>
-                    <p>${registration?.teamSize === 3 ? 'Trio' : 'Dupla'}</p>
+                    <p>${registration?.teamSize === 3 ? '3 integrantes' : '2 integrantes'}</p>
                 </div>
                 <div class="feature-card">
                     <h3>Integrantes atuais</h3>
@@ -247,7 +247,7 @@ function renderCandidatePanels(user, delegationStatus) {
             <form id="inviteForm" class="dashboard-form invite-form-shell" ${registration?.submittedAt ? '' : 'hidden'}>
                 <div class="form-group">
                     <label for="inviteUsername">Usuário do colega</label>
-                    <input type="text" id="inviteUsername" placeholder="Digite o usuário da dupla ou trio" required>
+                    <input type="text" id="inviteUsername" placeholder="Digite o usuário do participante" required>
                 </div>
                 <button type="submit" class="view-button" ${!registration?.submittedAt || (delegation?.remainingSlots || 0) === 0 ? 'disabled' : ''}>Enviar convite</button>
             </form>
@@ -264,21 +264,20 @@ async function loadProfile() {
     }
 
     try {
-        const [meResponse, delegationResponse] = await Promise.all([
-            fetch('/api/me', {
+        const [userContext, delegationResponse] = await Promise.all([
+            window.MaxOnuSession?.getAuthContext?.() || fetch('/api/me', {
                 headers: { 'Authorization': `Bearer ${token}` }
-            }),
+            }).then((response) => response.ok ? parseJson(response) : null),
             fetch('/api/delegation/status', {
                 headers: { 'Authorization': `Bearer ${token}` }
             })
         ]);
 
-        if (!meResponse.ok) {
+        const user = userContext?.user || userContext;
+        if (!user) {
             window.location.href = '/login.html';
             return;
         }
-
-        const user = await parseJson(meResponse);
         const delegationStatus = delegationResponse.ok ? await parseJson(delegationResponse) : null;
 
         // Update hero badge and kicker based on role
@@ -333,7 +332,7 @@ async function loadProfile() {
                         <p>${user.committee !== null && user.committee !== undefined ? user.committee : 'Não designado'}</p>
                     </article>
                     <article class="feature-card">
-                        <h3>Dupla</h3>
+                        <h3>Delegação</h3>
                         <p>${user.partner || 'Não definida'}</p>
                     </article>
                     ${createEditableCard('Turma', 'classGroup', user.classGroup, { placeholder: 'Digite sua turma', emptyText: 'Não informada' })}

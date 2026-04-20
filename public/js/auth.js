@@ -48,14 +48,18 @@ function initAuth() {
     }
 
     function checkLoginStatus() {
-        const token = localStorage.getItem('token');
+        const token = window.MaxOnuSession?.getToken?.() || localStorage.getItem('token');
         const currentPath = window.location.pathname;
         const isTokenValido = token && token !== 'null' && token !== 'undefined' && token.trim() !== '';
 
         if (!isTokenValido) {
-            localStorage.removeItem('token');
-            localStorage.removeItem('isAdmin');
-            localStorage.removeItem('role');
+            if (window.MaxOnuSession?.clearAuth) {
+                window.MaxOnuSession.clearAuth();
+            } else {
+                localStorage.removeItem('token');
+                localStorage.removeItem('isAdmin');
+                localStorage.removeItem('role');
+            }
         }
 
         if (['/dashboard.html', '/admin.html', '/coordenacao.html', '/orientadores.html', '/imprensa-dashboard.html', '/inscricao.html'].includes(currentPath) && !isTokenValido) {
@@ -159,6 +163,9 @@ function initAuth() {
             localStorage.setItem('token', data.token);
             localStorage.setItem('isAdmin', data.isAdmin);
             localStorage.setItem('role', data.role || 'candidate');
+            if (window.MaxOnuSession?.refreshAuthContext) {
+                window.MaxOnuSession.refreshAuthContext().catch(() => {});
+            }
             displayMessage('Login realizado com sucesso!');
 
             if (data.token) {

@@ -1,7 +1,7 @@
 let currentUser = null;
 
 function getToken() {
-    return localStorage.getItem('token');
+    return window.MaxOnuSession?.getToken?.() || localStorage.getItem('token');
 }
 
 function getAuthHeaders() {
@@ -49,16 +49,12 @@ async function checkAdmin() {
     }
 
     try {
-        const res = await fetch('/api/me', {
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
-
-        if (!res.ok) {
+        const context = await window.MaxOnuSession?.getAuthContext?.();
+        currentUser = context?.user;
+        if (!currentUser) {
             window.location.href = '/login.html';
             return;
         }
-
-        currentUser = await res.json();
         if (currentUser.role !== 'admin' && currentUser.role !== 'coordinator' && currentUser.role !== 'teacher' && currentUser.role !== 'press') {
             window.location.href = '/profile.html';
             return;

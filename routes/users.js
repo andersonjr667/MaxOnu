@@ -24,7 +24,7 @@ async function generateUniqueUsername(fullName) {
 }
 
 // GET /api/users - List users
-router.get('/', authMiddleware, [
+router.get('/', authMiddleware, requireRole(['admin', 'coordinator', 'teacher', 'press']), [
   query('role').optional().isIn(['candidate', 'teacher', 'coordinator', 'admin', 'press']),
   query('committee').optional().isInt()
 ], async (req, res) => {
@@ -46,9 +46,19 @@ router.get('/', authMiddleware, [
 });
 
 // GET /api/users/committee/:num
-router.get('/committee/:num', authMiddleware, async (req, res) => {
+router.get('/committee/:num', authMiddleware, requireRole(['admin', 'coordinator', 'teacher', 'press']), async (req, res) => {
   try {
-    const users = await User.find({ committee: Number(req.params.num) }).select('-password');
+    const committee = Number(req.params.num);
+    if (!Number.isInteger(committee) || committee < 1 || committee > 7) {
+      return res.status(400).json({ error: 'Comitê inválido.' });
+    }
+
+    const filter = { committee };
+    if (req.user.role === 'teacher') {
+      filter.role = 'candidate';
+    }
+
+    const users = await User.find(filter).select('-password');
     res.json(users);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -56,7 +66,7 @@ router.get('/committee/:num', authMiddleware, async (req, res) => {
 });
 
 // GET /api/users/:id
-router.get('/:id', authMiddleware, async (req, res) => {
+router.get('/:id', authMiddleware, requireRole(['admin', 'coordinator', 'teacher', 'press']), async (req, res) => {
   try {
     const user = await User.findById(req.params.id).select('-password');
     res.json(user || {});
@@ -113,7 +123,7 @@ router.post('/', authMiddleware, requireRole(['admin']), [
 });
 
 // PUT /api/users/:id - Update user
-router.put('/:id', authMiddleware, [
+router.put('/:id', authMiddleware, requireRole(['admin', 'coordinator', 'teacher']), [
   body('committee').optional().isInt(),
   body('country').optional().isLength({ min: 1 }),
   body('role').optional().isIn(['candidate', 'teacher', 'coordinator', 'admin', 'press'])
@@ -124,7 +134,15 @@ router.put('/:id', authMiddleware, [
   }
 
   try {
-    const updates = req.body;
+    const updates = {
+      ...(req.body.committee !== undefined ? { committee: Number(req.body.committee) } : {}),
+      ...(req.body.country !== undefined ? { country: req.body.country.trim() } : {})
+    };
+
+    if (req.user.role === 'admin' && req.body.role !== undefined) {
+      updates.role = req.body.role;
+    }
+
     const updated = await User.findByIdAndUpdate(req.params.id, updates, { new: true }).select('-password');
     res.json(updated);
   } catch (error) {
@@ -133,4 +151,3 @@ router.put('/:id', authMiddleware, [
 });
 
 module.exports = router;
-

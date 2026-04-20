@@ -5,6 +5,10 @@ const authMiddleware = require('../middleware/auth');
 
 const router = express.Router();
 
+function escapeRegex(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 function normalizeFullNameToUsername(fullName) {
   const normalized = fullName
     .normalize('NFKD')
@@ -83,7 +87,7 @@ router.post('/login', [
     const user = await User.findOne({
       $or: [
         { email: loginValue },
-        { username: loginValue }
+        { username: new RegExp(`^${escapeRegex(loginValue)}$`, 'i') }
       ]
     });
 

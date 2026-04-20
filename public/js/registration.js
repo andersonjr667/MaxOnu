@@ -1,5 +1,5 @@
 function getToken() {
-    return localStorage.getItem('token');
+    return window.MaxOnuSession?.getToken?.() || localStorage.getItem('token');
 }
 
 async function parseJson(response) {
@@ -19,21 +19,20 @@ async function loadRegistrationPage() {
         return;
     }
 
-    const [meResponse, statusResponse] = await Promise.all([
-        fetch('/api/me', {
+    const [userContext, statusResponse] = await Promise.all([
+        window.MaxOnuSession?.getAuthContext?.() || fetch('/api/me', {
             headers: { 'Authorization': `Bearer ${token}` }
-        }),
+        }).then((response) => response.ok ? parseJson(response) : null),
         fetch('/api/delegation/status', {
             headers: { 'Authorization': `Bearer ${token}` }
         })
     ]);
 
-    if (!meResponse.ok) {
+    const user = userContext?.user || userContext;
+    if (!user) {
         window.location.href = '/login.html?next=/inscricao.html';
         return;
     }
-
-    const user = await parseJson(meResponse);
     if (user.role !== 'candidate') {
         window.location.href = '/profile.html';
         return;

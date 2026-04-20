@@ -6,7 +6,7 @@ async function initCreatePostPage() {
     const message = document.getElementById('postAccessMessage');
     const feedback = document.getElementById('createPostFeedback');
     const form = document.getElementById('createPostForm');
-    const token = localStorage.getItem('token');
+    const token = window.MaxOnuSession?.getToken?.() || localStorage.getItem('token');
     const allowedRoles = new Set(['admin', 'teacher', 'coordinator', 'press']);
 
     if (!token) {
@@ -15,17 +15,11 @@ async function initCreatePostPage() {
     }
 
     try {
-        const response = await fetch('/api/me', {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-
-        if (!response.ok) {
+        const context = await window.MaxOnuSession?.getAuthContext?.();
+        const user = context?.user;
+        if (!user) {
             throw new Error('Sem permissão');
         }
-
-        const user = await response.json();
         if (!allowedRoles.has(user.role)) {
             window.location.href = '/blog.html';
             return;
@@ -70,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('createPostForm')?.addEventListener('submit', async (event) => {
         event.preventDefault();
 
-        const token = localStorage.getItem('token');
+            const token = window.MaxOnuSession?.getToken?.() || localStorage.getItem('token');
         const feedback = document.getElementById('createPostFeedback');
         const submitButton = event.target.querySelector('button[type="submit"]');
 

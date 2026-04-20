@@ -86,24 +86,19 @@ function getRoleLabel(role) {
 }
 
 async function fetchCurrentUser() {
-    const token = localStorage.getItem('token');
+    const token = window.MaxOnuSession?.getToken?.() || localStorage.getItem('token');
     if (!token) {
         window.location.href = '/login.html';
         return null;
     }
 
-    const response = await fetch('/api/me', {
-        headers: {
-            'Authorization': `Bearer ${token}`
-        }
-    });
-
-    if (!response.ok) {
+    const context = await window.MaxOnuSession?.getAuthContext?.();
+    if (!context?.user) {
         window.location.href = '/login.html';
         return null;
     }
 
-    return response.json();
+    return context.user;
 }
 
 function renderPortalSummary(user, config) {

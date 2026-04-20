@@ -33,6 +33,7 @@
 
 html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
 }
 
 body {
@@ -44,6 +45,7 @@ body {
         radial-gradient(circle at bottom right, rgba(31, 111, 168, 0.18), transparent 30%),
         #eef4f8;
     line-height: 1.6;
+    overflow-x: hidden;
 }
 
 a {
@@ -59,6 +61,13 @@ textarea {
 img {
     max-width: 100%;
     display: block;
+}
+
+iframe,
+video,
+canvas,
+svg {
+    max-width: 100%;
 }
 
 .main-header {
@@ -90,6 +99,7 @@ img {
 .dashboard-container {
     width: min(1180px, calc(100% - 2rem));
     margin: 0 auto;
+    min-width: 0;
 }
 
 .header-content {
@@ -176,6 +186,7 @@ img {
     flex: 1;
     display: flex;
     justify-content: center;
+    min-width: 0;
 }
 
 .nav-links ul {
@@ -1479,6 +1490,8 @@ img {
         rgba(255, 255, 255, 0.92);
     box-shadow: 0 12px 36px rgba(8, 31, 56, 0.08);
     transition: all 0.3s ease;
+    min-width: 0;
+    overflow-wrap: anywhere;
 }
 
 .dashboard-panel:hover {
@@ -1497,6 +1510,17 @@ img {
 .dashboard-form {
     display: grid;
     gap: 1rem;
+    min-width: 0;
+}
+
+.dashboard-inline-form,
+.dashboard-export-actions {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    align-items: end;
+}
+
+.dashboard-form {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
 
 .dashboard-inline-form label {
@@ -1506,6 +1530,11 @@ img {
 }
 
 .dashboard-inline-form select,
+.dashboard-form input[type="text"],
+.dashboard-form input[type="number"],
+.dashboard-form input[type="email"],
+.dashboard-form input[type="password"],
+.dashboard-form select,
 .admin-user-form input[type="text"],
 .admin-user-form input[type="email"],
 .admin-user-form input[type="password"],
@@ -1521,6 +1550,11 @@ img {
 }
 
 .dashboard-inline-form select:hover,
+.dashboard-form input[type="text"]:hover,
+.dashboard-form input[type="number"]:hover,
+.dashboard-form input[type="email"]:hover,
+.dashboard-form input[type="password"]:hover,
+.dashboard-form select:hover,
 .admin-user-form input[type="text"]:hover,
 .admin-user-form input[type="email"]:hover,
 .admin-user-form input[type="password"]:hover,
@@ -1530,6 +1564,11 @@ img {
 }
 
 .dashboard-inline-form select:focus,
+.dashboard-form input[type="text"]:focus,
+.dashboard-form input[type="number"]:focus,
+.dashboard-form input[type="email"]:focus,
+.dashboard-form input[type="password"]:focus,
+.dashboard-form select:focus,
 .admin-user-form input[type="text"]:focus,
 .admin-user-form input[type="email"]:focus,
 .admin-user-form input[type="password"]:focus,
@@ -1542,6 +1581,16 @@ img {
 
 .committee-user-card p + p {
     margin-top: 0.35rem;
+}
+
+.committee-user-card p,
+.feature-card p,
+.role-preview-card p,
+.portal-action-card p,
+.dashboard-panel p,
+.question-card h3,
+.question-card p {
+    overflow-wrap: anywhere;
 }
 
 #messageContainer {
@@ -1985,6 +2034,7 @@ img {
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 253, 0.96));
     box-shadow: 0 14px 30px rgba(8, 31, 56, 0.06);
     transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+    min-width: 0;
 }
 
 .portal-action-card:hover {
@@ -2352,6 +2402,8 @@ img {
         background: linear-gradient(180deg, rgba(8, 31, 56, 0.98), rgba(13, 59, 102, 0.98));
         border: 1px solid rgba(255, 209, 102, 0.12);
         box-shadow: var(--sombra-media);
+        max-height: min(70vh, 520px);
+        overflow-y: auto;
     }
 
     .nav-links ul.active {
@@ -2500,6 +2552,14 @@ img {
         grid-template-columns: 1fr;
     }
 
+    .dashboard-inline-form,
+    .dashboard-export-actions,
+    .dashboard-form,
+    .portal-action-grid,
+    .registration-overview {
+        grid-template-columns: 1fr;
+    }
+
     .logo-img {
         height: 48px;
     }
@@ -2522,6 +2582,10 @@ img {
     .portal-badge {
         width: 100%;
         min-width: 0;
+    }
+
+    .question-card button + button {
+        margin-left: 0;
     }
 }
 

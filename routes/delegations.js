@@ -172,7 +172,7 @@ router.post('/invite', authMiddleware, [
         }
 
         if (!hasRegistration(inviter)) {
-            return res.status(400).json({ error: 'Envie sua inscricao antes de convidar sua dupla ou trio.' });
+            return res.status(400).json({ error: 'Envie sua inscricao antes de convidar outros integrantes para a delegacao.' });
         }
 
         if (getDelegationCount(inviter) >= (inviter.registration?.teamSize || 2)) {

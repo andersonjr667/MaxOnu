@@ -72,23 +72,18 @@ async function initBlogPage() {
         renderPosts([]);
     }
 
-    const token = localStorage.getItem('token');
+    const token = window.MaxOnuSession?.getToken?.() || localStorage.getItem('token');
     if (!token) {
         return;
     }
 
     try {
-        const response = await fetch('/api/me', {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-
-        if (!response.ok) {
+        const context = await window.MaxOnuSession?.getAuthContext?.();
+        if (!context?.user) {
             return;
         }
 
-        const user = await response.json();
+        const user = context.user;
         if (allowedRoles.has(user.role)) {
             adminActions.style.display = 'block';
         }
