@@ -3,12 +3,22 @@ const { body, validationResult } = require('express-validator');
 const mongoose = require('mongoose');
 const authMiddleware = require('../middleware/auth');
 const User = require('../models/User');
-const { isRegistrationOpen, COMMITTEE_REVEAL_DATE } = require('../utils/event-config');
+const SiteSettings = require('../models/SiteSettings');
+const { getRegistrationState, isRegistrationOpen, hasCommitteeRevealPassed, COMMITTEE_REVEAL_DATE } = require('../utils/event-config');
+const { buildDelegationGroups } = require('../utils/delegation-groups');
 
 const router = express.Router();
 
 function sameId(a, b) {
     return String(a) === String(b);
+}
+
+async function getSettings() {
+    let settings = await SiteSettings.findOne({ singletonKey: 'main' });
+    if (!settings) {
+        settings = await SiteSettings.create({ singletonKey: 'main' });
+    }
+    return settings;
 }
 
 function cleanPendingInvitations(user) {
@@ -71,7 +81,6 @@ function buildDelegationSummary(user) {
             createdAt: invitation.createdAt,
             respondedAt: invitation.respondedAt
         })),
-        registrationOpen: isRegistrationOpen(),
         revealDate: COMMITTEE_REVEAL_DATE.toISOString()
     };
 }
@@ -98,7 +107,71 @@ router.get('/status', authMiddleware, async (req, res) => {
         }
 
         cleanPendingInvitations(user);
-        res.json(buildDelegationSummary(user));
+        const settings = await getSettings();
+        const registrationState = await getRegistrationState();
+        res.json({
+            ...buildDelegationSummary(user),
+            registrationOpen: registrationState.registrationOpen,
+            registrationManuallyClosed: registrationState.registrationManuallyClosed,
+            revealPassed: registrationState.revealPassed,
+            publicDelegationsReleased: settings.publicDelegationsReleased
+        });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+router.get('/public-status', async (req, res) => {
+    try {
+        const settings = await getSettings();
+        res.json({
+            registrationOpen: await isRegistrationOpen(),
+            publicDelegationsReleased: settings.publicDelegationsReleased,
+            revealDate: COMMITTEE_REVEAL_DATE.toISOString()
+        });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+router.get('/public/committee/:committee', async (req, res) => {
+    try {
+        const committee = Number(req.params.committee);
+        if (!Number.isInteger(committee) || committee < 1 || committee > 7) {
+            return res.status(400).json({ error: 'Comitê inválido.' });
+        }
+
+        const settings = await getSettings();
+        if (!hasCommitteeRevealPassed() || !settings.publicDelegationsReleased) {
+            return res.json({
+                released: false,
+                committee,
+                delegations: [],
+                revealDate: COMMITTEE_REVEAL_DATE.toISOString()
+            });
+        }
+
+        const users = await User.find({ role: 'candidate', committee })
+            .populate('delegationMembers', 'fullName username classGroup committee country registration');
+        const delegations = buildDelegationGroups(users)
+            .filter((group) => group.country)
+            .map((group) => ({
+                key: group.key,
+                committee: group.committee,
+                country: group.country,
+                teamSize: group.teamSize,
+                members: group.members.map((member) => ({
+                    fullName: member.fullName,
+                    classGroup: member.classGroup
+                }))
+            }));
+
+        res.json({
+            released: true,
+            committee,
+            delegations,
+            revealDate: COMMITTEE_REVEAL_DATE.toISOString()
+        });
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
@@ -115,7 +188,7 @@ router.post('/register', authMiddleware, [
         return res.status(400).json({ error: errors.array() });
     }
 
-    if (!isRegistrationOpen()) {
+    if (!(await isRegistrationOpen())) {
         return res.status(403).json({
             error: 'As inscricoes ainda nao foram liberadas.',
             revealDate: COMMITTEE_REVEAL_DATE.toISOString()
@@ -148,9 +221,13 @@ router.post('/register', authMiddleware, [
         await user.save();
 
         const refreshed = await loadCurrentUser(user._id);
+        const registrationState = await getRegistrationState();
         res.json({
             message: 'Inscricao enviada com sucesso.',
-            ...buildDelegationSummary(refreshed)
+            ...buildDelegationSummary(refreshed),
+            registrationOpen: registrationState.registrationOpen,
+            registrationManuallyClosed: registrationState.registrationManuallyClosed,
+            revealPassed: registrationState.revealPassed
         });
     } catch (error) {
         res.status(400).json({ error: error.message });

@@ -3,6 +3,9 @@ const { body, validationResult, query } = require('express-validator');
 const authMiddleware = require('../middleware/auth');
 const requireRole = require('../middleware/roleAuth');
 const User = require('../models/User');
+const SiteSettings = require('../models/SiteSettings');
+const { buildDelegationGroups } = require('../utils/delegation-groups');
+const { hasCommitteeRevealPassed } = require('../utils/event-config');
 
 const router = express.Router();
 
@@ -23,6 +26,14 @@ async function generateUniqueUsername(fullName) {
   return username;
 }
 
+async function getSettings() {
+  let settings = await SiteSettings.findOne({ singletonKey: 'main' });
+  if (!settings) {
+    settings = await SiteSettings.create({ singletonKey: 'main' });
+  }
+  return settings;
+}
+
 // GET /api/users - List users
 router.get('/', authMiddleware, requireRole(['admin', 'coordinator', 'teacher', 'press']), [
   query('role').optional().isIn(['candidate', 'teacher', 'coordinator', 'admin', 'press']),
@@ -35,6 +46,10 @@ router.get('/', authMiddleware, requireRole(['admin', 'coordinator', 'teacher', 
 
   try {
     const { role, committee } = req.query;
+    if (committee && !hasCommitteeRevealPassed()) {
+      return res.status(403).json({ error: 'As informações de comitê permanecem em sigilo até o fim da contagem regressiva.' });
+    }
+
     const filter = {};
     if (role) filter.role = role;
     if (committee) filter.committee = Number(committee);
@@ -48,6 +63,10 @@ router.get('/', authMiddleware, requireRole(['admin', 'coordinator', 'teacher', 
 // GET /api/users/committee/:num
 router.get('/committee/:num', authMiddleware, requireRole(['admin', 'coordinator', 'teacher', 'press']), async (req, res) => {
   try {
+    if (!hasCommitteeRevealPassed()) {
+      return res.status(403).json({ error: 'As informações de comitê permanecem em sigilo até o fim da contagem regressiva.' });
+    }
+
     const committee = Number(req.params.num);
     if (!Number.isInteger(committee) || committee < 1 || committee > 7) {
       return res.status(400).json({ error: 'Comitê inválido.' });
@@ -60,6 +79,33 @@ router.get('/committee/:num', authMiddleware, requireRole(['admin', 'coordinator
 
     const users = await User.find(filter).select('-password');
     res.json(users);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+router.get('/committee/:num/delegations', authMiddleware, requireRole(['admin', 'coordinator', 'teacher', 'press']), async (req, res) => {
+  try {
+    if (!hasCommitteeRevealPassed()) {
+      return res.status(403).json({ error: 'As informações de comitê permanecem em sigilo até o fim da contagem regressiva.' });
+    }
+
+    const committee = Number(req.params.num);
+    if (!Number.isInteger(committee) || committee < 1 || committee > 7) {
+      return res.status(400).json({ error: 'Comitê inválido.' });
+    }
+
+    const users = await User.find({ role: 'candidate', committee })
+      .populate('delegationMembers', 'fullName username email classGroup committee country registration');
+
+    const groups = buildDelegationGroups(users);
+    const settings = await getSettings();
+
+    res.json({
+      committee,
+      publicDelegationsReleased: settings.publicDelegationsReleased,
+      delegations: groups
+    });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -89,23 +135,29 @@ router.post('/', authMiddleware, requireRole(['admin']), [
 
   try {
     const { fullName, email, password, role } = req.body;
-    
-    // Verificar se email já existe apenas se foi fornecido
-    if (email && email.trim() !== '') {
-      const existingUser = await User.findOne({ email });
+    const normalizedEmail = typeof email === 'string' ? email.trim().toLowerCase() : '';
+    const normalizedFullName = typeof fullName === 'string' ? fullName.trim() : '';
+
+    const username = await generateUniqueUsername(normalizedFullName);
+    const effectiveEmail = normalizedEmail || username;
+
+    // Verificar se email já existe usando email informado ou fallback pelo username
+    if (effectiveEmail) {
+      const existingUser = await User.findOne({ email: effectiveEmail });
       if (existingUser) {
         return res.status(400).json({ error: 'Email já cadastrado. Use outro email.' });
       }
     }
 
-    const username = await generateUniqueUsername(fullName);
-    const newUser = new User({ 
+    const newUserPayload = { 
       username, 
-      fullName, 
-      email: (email && email.trim().length > 0) ? email.trim() : null, 
+      fullName: normalizedFullName,
       password, 
-      role 
-    });
+      role,
+      email: effectiveEmail
+    };
+
+    const newUser = new User(newUserPayload);
     await newUser.save();
 
     res.status(201).json({
@@ -118,6 +170,23 @@ router.post('/', authMiddleware, requireRole(['admin']), [
       }
     });
   } catch (error) {
+    if (error?.code === 11000) {
+      if (error.keyPattern?.email) {
+        return res.status(400).json({ error: 'Email já cadastrado. Use outro email.' });
+      }
+
+      if (error.keyPattern?.username) {
+        return res.status(400).json({ error: 'Não foi possível gerar um usuário único para este nome. Tente ajustar o nome completo.' });
+      }
+
+      return res.status(400).json({ error: 'Já existe um registro com esses dados.' });
+    }
+
+    if (error?.name === 'ValidationError') {
+      const firstValidationError = Object.values(error.errors || {})[0];
+      return res.status(400).json({ error: firstValidationError?.message || 'Dados inválidos para criar o usuário.' });
+    }
+
     res.status(400).json({ error: error.message });
   }
 });
@@ -134,6 +203,10 @@ router.put('/:id', authMiddleware, requireRole(['admin', 'coordinator', 'teacher
   }
 
   try {
+    if (req.body.committee !== undefined && !hasCommitteeRevealPassed()) {
+      return res.status(403).json({ error: 'A definição de comitês só pode acontecer após o encerramento da contagem regressiva.' });
+    }
+
     const updates = {
       ...(req.body.committee !== undefined ? { committee: Number(req.body.committee) } : {}),
       ...(req.body.country !== undefined ? { country: req.body.country.trim() } : {})
@@ -145,6 +218,40 @@ router.put('/:id', authMiddleware, requireRole(['admin', 'coordinator', 'teacher
 
     const updated = await User.findByIdAndUpdate(req.params.id, updates, { new: true }).select('-password');
     res.json(updated);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+router.put('/delegations/:delegationKey/country', authMiddleware, requireRole(['admin', 'coordinator']), [
+  body('country').trim().notEmpty().withMessage('Informe um país para a delegação.')
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ error: errors.array()[0].msg });
+  }
+
+  try {
+    const delegationIds = String(req.params.delegationKey)
+      .split(':')
+      .filter(Boolean);
+
+    if (!delegationIds.length) {
+      return res.status(400).json({ error: 'Delegação inválida.' });
+    }
+
+    const country = req.body.country.trim();
+    await User.updateMany(
+      { _id: { $in: delegationIds } },
+      { $set: { country } }
+    );
+
+    const updatedUsers = await User.find({ _id: { $in: delegationIds } }).select('-password');
+    res.json({
+      message: 'País atribuído com sucesso à delegação.',
+      country,
+      users: updatedUsers
+    });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

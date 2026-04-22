@@ -44,18 +44,28 @@ async function loadRegistrationPage() {
     const lead = document.getElementById('registrationLead');
 
     document.getElementById('registrationClassGroup').value = user.classGroup || '';
-    document.getElementById('firstChoice').innerHTML = buildCommitteeOptions();
-    document.getElementById('secondChoice').innerHTML = buildCommitteeOptions();
-    document.getElementById('thirdChoice').innerHTML = buildCommitteeOptions();
 
     if (!status.registrationOpen) {
-        lead.textContent = 'As inscrições serão liberadas assim que a contagem regressiva terminar.';
-        feedback.textContent = 'Ainda não é possível enviar o formulário.';
+        const waitingReveal = !status.revealPassed;
+        lead.textContent = waitingReveal
+            ? 'As inscrições serão liberadas assim que a contagem regressiva terminar.'
+            : 'As inscrições foram fechadas temporariamente pela coordenação.';
+        feedback.textContent = waitingReveal
+            ? 'Ainda não é possível enviar o formulário.'
+            : 'O formulário está fechado no momento.';
+        const lockedLabel = waitingReveal ? 'Sigilo até a abertura' : 'Inscrições encerradas';
+        document.getElementById('firstChoice').innerHTML = `<option value="">${lockedLabel}</option>`;
+        document.getElementById('secondChoice').innerHTML = `<option value="">${lockedLabel}</option>`;
+        document.getElementById('thirdChoice').innerHTML = `<option value="">${lockedLabel}</option>`;
         form.querySelectorAll('input, select, button').forEach((field) => {
             field.disabled = true;
         });
         return;
     }
+
+    document.getElementById('firstChoice').innerHTML = buildCommitteeOptions();
+    document.getElementById('secondChoice').innerHTML = buildCommitteeOptions();
+    document.getElementById('thirdChoice').innerHTML = buildCommitteeOptions();
 
     lead.textContent = status.registration?.submittedAt
         ? 'Sua inscrição já foi enviada. Você pode ajustar as escolhas se precisar.'

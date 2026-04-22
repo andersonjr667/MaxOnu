@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sincronizar Admin - MaxOnu 2026</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="icon" href="images/logo-maxonu.png" type="image/png">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1rem;
+        }
+        .sync-container {
+            background: white;
+            padding: 3rem;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+        .subtitle {
+            color: #666;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+        .steps {
+            margin: 2rem 0;
+        }
+        .step {
+            display: flex;
+            margin-bottom: 1.5rem;
+            align-items: flex-start;
+        }
+        .step-number {
+            background: #667eea;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+        .step-content h3 {
+            margin: 0 0 0.5rem 0;
+            color: #333;
+            font-size: 1rem;
+        }
+        .step-content p {
+            margin: 0;
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        .warning-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 4px;
+        }
+        .warning-box strong {
+            color: #856404;
+        }
+        .warning-box p {
+            margin: 0.5rem 0 0 0;
+            color: #856404;
+            font-size: 0.95rem;
+        }
+        .credentials-box {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 4px;
+        }
+        .credentials-box strong {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #1565c0;
+        }
+        .credential-item {
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            background: white;
+            border-radius: 3px;
+            border: 1px solid #90caf9;
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: #333;
+        }
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        button {
+            flex: 1;
+            min-width: 150px;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        .btn-primary:hover:not(:disabled) {
+            background: #5568d3;
+        }
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+        .result {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 5px;
+            display: none;
+        }
+        .result.success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            display: block;
+        }
+        .result.error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            display: block;
+        }
+        .loader {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="sync-container">
+        <h1>🔐 Sincronizar Admin</h1>
+        <p class="subtitle">Guia para recuperar acesso ao painel administrativo</p>
+        
+        <div class="warning-box">
+            <strong>⚠️ Importante:</strong>
+            <p>Você será desconectado e precisará fazer login novamente com as credenciais atualizadas.</p>
+        </div>
+
+        <div class="credentials-box">
+            <strong>📋 Credenciais de Admin:</strong>
+            <div class="credential-item">Email: <strong>alsj1520@gmail.com</strong></div>
+            <div class="credential-item">Senha: <strong>152070an</strong></div>
+        </div>
+
+        <div class="steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h3>Sincronizar Admin</h3>
+                    <p>Clique em "Sincronizar Admin" para ativar a conta do administrador.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h3>Você será desconectado</h3>
+                    <p>Será redirecionado para a página de login e todos os dados de sessão serão limpos.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h3>Faça login com as novas credenciais</h3>
+                    <p>Use o email e senha acima para fazer login normalmente.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h3>Acesse o portal administrativo</h3>
+                    <p>Após o login, você será redirecionado automaticamente para o painel admin.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button class="btn-primary" id="syncBtn" onclick="syncAdmin()">Sincronizar Admin</button>
+            <button class="btn-secondary" onclick="goBack()">Voltar</button>
+        </div>
+
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        async function syncAdmin() {
+            const btn = document.getElementById('syncBtn');
+            const result = document.getElementById('result');
+            
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loader"></span>Sincronizando...';
+            result.className = '';
+            result.innerHTML = '';
+
+            try {
+                const response = await fetch('/api/sync-admin', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Erro ao sincronizar admin');
+                }
+
+                result.className = 'result success';
+                result.innerHTML = `
+                    <strong>✓ Sucesso!</strong><br><br>
+                    ${data.message}<br><br>
+                    <strong>Detalhes da conta:</strong><br>
+                    📧 Email: ${data.user.email}<br>
+                    👤 Função: ${data.user.role.toUpperCase()}<br><br>
+                    <strong>Desconectando em 3 segundos...</strong>
+                `;
+
+                // Limpar todas as autenticações locais
+                localStorage.removeItem('token');
+                localStorage.removeItem('isAdmin');
+                localStorage.removeItem('role');
+                try {
+                    sessionStorage.removeItem('maxonu_auth_context_v1');
+                } catch (e) {}
+
+                setTimeout(() => {
+                    // Forçar reload completo para limpar cache
+                    window.location.href = '/login.html';
+                }, 3000);
+            } catch (error) {
+                result.className = 'result error';
+                result.innerHTML = `
+                    <strong>✕ Erro ao sincronizar!</strong><br><br>
+                    ${error.message}<br><br>
+                    <em>Se o erro persistir, tente:</em><br>
+                    1. Abrir em uma aba incógnita<br>
+                    2. Limpar cache do navegador<br>
+                    3. Contactar o desenvolvedor
+                `;
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Sincronizar Admin';
+            }
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+</body>
+</html>

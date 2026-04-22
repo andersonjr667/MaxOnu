@@ -126,10 +126,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const fetchFreshAuthContext = async () => {
         const token = getValidToken();
         if (!token) {
+            console.warn('[DEBUG] Nenhum token válido para buscar contexto fresco.');
             return null;
         }
 
         try {
+            console.log('[DEBUG] Buscando contexto fresco do servidor (/api/me)...');
             const meResponse = await fetch('/api/me', {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -137,12 +139,16 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             if (!meResponse.ok) {
+                console.error('[AUTH] GET /api/me falhou com status:', meResponse.status);
                 clearStoredAuth();
                 return null;
             }
 
             const user = await parseJson(meResponse);
+            console.log('[DEBUG] Usuário recebido do servidor:', user);
+            console.log('[DEBUG] Role recebida:', user.role);
             localStorage.setItem('role', user.role || 'candidate');
+            console.log('[DEBUG] Role armazenada em localStorage:', localStorage.getItem('role'));
 
             let delegationStatus = null;
             if (user.role === 'candidate') {
@@ -168,17 +174,22 @@ document.addEventListener('DOMContentLoaded', function() {
     const getAuthContext = async (options = {}) => {
         const { forceRefresh = false } = options;
 
+        console.log('[DEBUG] getAuthContext chamado. forceRefresh:', forceRefresh);
+
         if (!forceRefresh) {
             const cached = readAuthContextCache();
             if (cached) {
+                console.log('[DEBUG] ✓ Contexto obtido do cache (sessão)');
                 return cached;
             }
         }
 
         if (!forceRefresh && authContextPromise) {
+            console.log('[DEBUG] ✓ Contexto sendo carregado (promise em andamento)');
             return authContextPromise;
         }
 
+        console.log('[DEBUG] → Buscando contexto fresco do servidor...');
         authContextPromise = fetchFreshAuthContext()
             .finally(() => {
                 authContextPromise = null;

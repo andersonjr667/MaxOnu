@@ -33,7 +33,7 @@ function renderPosts(posts) {
     }
 
     if (!posts.length) {
-        container.innerHTML = '<p class="dashboard-empty">Nenhum post publicado ainda.</p>';
+        container.innerHTML = '<p class="dashboard-empty">Ainda não há publicações disponíveis no blog. Novos comunicados serão apresentados aqui assim que forem oficialmente divulgados.</p>';
         return;
     }
 

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Novo Post - MaxOnu 2026</title>
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" href="images/logo-maxonu.png" type="image/png">
     <script src="js/includes.js?v=20260420-headerfix"></script>
     <script src="js/create-post.js" defer></script>
 </head>
@@ -23,7 +24,7 @@
                     <div class="dashboard-hero-badge">Blog</div>
                 </section>
 
-                <section class="dashboard-panel">
+                <section class="dashboard-panel create-post-panel">
                     <div class="dashboard-section-heading">
                         <span class="dashboard-section-kicker">Editor</span>
                         <h2>Monte a publicação</h2>
@@ -31,25 +32,39 @@
                     </div>
 
                     <form id="createPostForm" class="dashboard-form" hidden>
-                        <div class="form-group">
-                            <label for="postTitle">Título</label>
-                            <input type="text" id="postTitle" placeholder="Título da publicação" required>
+                        <div class="create-post-layout">
+                            <div class="create-post-main">
+                                <div class="form-group create-post-title-group">
+                                    <label for="postTitle">Título</label>
+                                    <input type="text" id="postTitle" placeholder="Ex: Comunicado oficial sobre os comitês" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="postContent">Conteúdo</label>
+                                    <textarea id="postContent" class="post-editor-textarea" placeholder="Escreva a publicação com contexto, instruções e próximos passos..." required></textarea>
+                                </div>
+                            </div>
+                            <aside class="create-post-side">
+                                <div class="create-post-side-card">
+                                    <span class="dashboard-chip">Resumo</span>
+                                    <div class="form-group">
+                                        <label for="postExcerpt">Resumo curto</label>
+                                        <input type="text" id="postExcerpt" placeholder="Texto breve para o card do blog">
+                                    </div>
+                                </div>
+                                <div class="create-post-side-card create-post-upload-card">
+                                    <span class="dashboard-chip">Capa opcional</span>
+                                    <div class="form-group">
+                                        <label for="postImage">Imagem opcional</label>
+                                        <input type="file" id="postImage" accept="image/*">
+                                        <p class="form-help">Adicione uma imagem para destacar a publicação. Não é obrigatório.</p>
+                                        <img id="postImagePreview" class="post-image-preview" alt="Pré-visualização da imagem" hidden>
+                                    </div>
+                                </div>
+                            </aside>
                         </div>
-                        <div class="form-group">
-                            <label for="postExcerpt">Resumo curto</label>
-                            <input type="text" id="postExcerpt" placeholder="Resumo para aparecer no card do blog">
+                        <div class="create-post-actions">
+                            <button type="submit" class="view-button">Publicar post</button>
                         </div>
-                        <div class="form-group">
-                            <label for="postImage">Imagem opcional</label>
-                            <input type="file" id="postImage" accept="image/*">
-                            <p class="form-help">Adicione uma imagem para o post. Não é obrigatório.</p>
-                            <img id="postImagePreview" class="post-image-preview" alt="Pré-visualização da imagem" hidden>
-                        </div>
-                        <div class="form-group">
-                            <label for="postContent">Conteúdo</label>
-                            <textarea id="postContent" class="post-editor-textarea" placeholder="Escreva o conteúdo do post..." required></textarea>
-                        </div>
-                        <button type="submit" class="view-button">Publicar post</button>
                     </form>
 
                     <p class="register-note registration-feedback" id="createPostFeedback">Aguardando liberação do editor...</p>

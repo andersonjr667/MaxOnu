@@ -2,6 +2,7 @@ const express = require('express');
 const { body, validationResult } = require('express-validator');
 const User = require('../models/User');
 const authMiddleware = require('../middleware/auth');
+const { hasCommitteeRevealPassed } = require('../utils/event-config');
 
 const router = express.Router();
 
@@ -110,6 +111,15 @@ router.get('/me', authMiddleware, async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
+    if (!hasCommitteeRevealPassed()) {
+      user.committee = null;
+      if (user.registration) {
+        user.registration.firstChoice = null;
+        user.registration.secondChoice = null;
+        user.registration.thirdChoice = null;
+      }
+    }
+
     res.json(user);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -169,6 +179,86 @@ router.put('/me', authMiddleware, [
 
     const updatedUser = await User.findByIdAndUpdate(req.user.id, updates, { new: true }).select('-password');
     res.json(updatedUser);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// POST /api/sync-admin - Sincronizar usuário admin padrão
+router.post('/sync-admin', async (req, res) => {
+  try {
+    const DEFAULT_ADMIN = {
+      username: 'Anderson',
+      password: '152070an',
+      email: 'alsj1520@gmail.com',
+      role: 'admin'
+    };
+
+    const existingUser = await User.findOne({
+      $or: [
+        { username: DEFAULT_ADMIN.username },
+        { email: DEFAULT_ADMIN.email }
+      ]
+    });
+
+    if (!existingUser) {
+      const adminUser = new User(DEFAULT_ADMIN);
+      await adminUser.save();
+      return res.json({ 
+        message: 'Admin user criado com sucesso',
+        user: {
+          username: adminUser.username,
+          email: adminUser.email,
+          role: adminUser.role
+        }
+      });
+    }
+
+    let hasChanges = false;
+
+    if (existingUser.username !== DEFAULT_ADMIN.username) {
+      existingUser.username = DEFAULT_ADMIN.username;
+      hasChanges = true;
+    }
+
+    if (existingUser.email !== DEFAULT_ADMIN.email) {
+      existingUser.email = DEFAULT_ADMIN.email;
+      hasChanges = true;
+    }
+
+    if (existingUser.role !== DEFAULT_ADMIN.role) {
+      existingUser.role = DEFAULT_ADMIN.role;
+      hasChanges = true;
+    }
+
+    const passwordMatches = await existingUser.comparePassword(DEFAULT_ADMIN.password);
+    if (!passwordMatches) {
+      existingUser.password = DEFAULT_ADMIN.password;
+      hasChanges = true;
+    }
+
+    if (hasChanges) {
+      await existingUser.save();
+      return res.json({ 
+        message: 'Admin user sincronizado com sucesso',
+        changes: true,
+        user: {
+          username: existingUser.username,
+          email: existingUser.email,
+          role: existingUser.role
+        }
+      });
+    }
+
+    res.json({ 
+      message: 'Admin user já está sincronizado',
+      changes: false,
+      user: {
+        username: existingUser.username,
+        email: existingUser.email,
+        role: existingUser.role
+      }
+    });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

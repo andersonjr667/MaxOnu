@@ -1354,6 +1354,60 @@ svg {
     background: rgba(13, 59, 102, 0.08);
 }
 
+/* Melhorias do Formulário de Usuário */
+.required-indicator {
+    color: #d1495b;
+    font-weight: 800;
+    margin-left: 0.25rem;
+}
+
+.optional-indicator {
+    color: var(--texto-suave);
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-left: 0.4rem;
+}
+
+.form-help-text {
+    display: block;
+    margin-top: 0.4rem;
+    font-size: 0.8rem;
+    color: var(--texto-suave);
+    font-weight: 400;
+    line-height: 1.4;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.form-actions .view-button {
+    flex: 1;
+    min-width: 140px;
+}
+
+.form-actions .view-button-primary {
+    background: linear-gradient(135deg, var(--azul-principal) 0%, var(--azul-secundario) 100%);
+    color: var(--branco);
+    font-weight: 700;
+    box-shadow: 0 8px 24px rgba(13, 59, 102, 0.25);
+}
+
+.form-actions .view-button-primary:hover {
+    background: linear-gradient(135deg, var(--azul-secundario) 0%, #1b5a96 100%);
+    box-shadow: 0 12px 32px rgba(13, 59, 102, 0.35);
+    transform: translateY(-2px);
+}
+
+.admin-user-form .form-actions .view-button:last-child {
+    background: rgba(13, 59, 102, 0.08);
+    color: var(--azul-principal);
+    border: 1px solid rgba(13, 59, 102, 0.2);
+}
+
 .checkbox-input {
     width: 20px;
     height: 20px;
@@ -1781,6 +1835,10 @@ svg {
     border: 1px solid rgba(13, 59, 102, 0.08);
 }
 
+.registration-locked-note {
+    margin-top: 1rem;
+}
+
 .dashboard-hero {
     display: flex;
     justify-content: space-between;
@@ -2021,6 +2079,171 @@ svg {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 1rem;
+}
+
+.dashboard-tools-grid-enhanced {
+    align-items: stretch;
+}
+
+.dashboard-resource-panel,
+.create-post-panel {
+    position: relative;
+    isolation: isolate;
+}
+
+.dashboard-resource-panel::before,
+.create-post-panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background:
+        radial-gradient(circle at top right, rgba(255, 209, 102, 0.12), transparent 28%),
+        linear-gradient(145deg, rgba(255, 255, 255, 0.22), transparent 48%);
+    pointer-events: none;
+}
+
+.dashboard-resource-list {
+    position: relative;
+}
+
+.committee-users-list {
+    display: grid;
+    gap: 1rem;
+}
+
+.committee-user-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.committee-user-card::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 4px;
+    background: linear-gradient(90deg, rgba(13, 59, 102, 0), rgba(255, 140, 66, 0.95), rgba(255, 209, 102, 0.9));
+}
+
+.create-post-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.7fr) minmax(280px, 0.95fr);
+    gap: 1.25rem;
+    align-items: start;
+}
+
+.create-post-main,
+.create-post-side {
+    display: grid;
+    gap: 1rem;
+}
+
+.create-post-side-card {
+    padding: 1rem;
+    border-radius: 22px;
+    border: 1px solid rgba(13, 59, 102, 0.1);
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(246, 249, 253, 0.94));
+    box-shadow: 0 14px 30px rgba(8, 31, 56, 0.06);
+}
+
+.create-post-side-card .dashboard-chip {
+    margin-bottom: 0.9rem;
+}
+
+.create-post-title-group input {
+    font-size: 1.02rem;
+    font-weight: 700;
+}
+
+.create-post-upload-card .form-help {
+    margin-top: 0.55rem;
+}
+
+.create-post-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.delegation-manager-grid,
+.committee-page-grid,
+.committee-page-stack,
+.committee-page-shell {
+    display: grid;
+    gap: 1rem;
+}
+
+.delegation-manager-grid {
+    margin-top: 1rem;
+}
+
+.delegation-manager-card {
+    gap: 1rem;
+}
+
+.delegation-toggle-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.delegation-toggle-btn h3 {
+    margin-top: 0.35rem;
+}
+
+.delegation-manager-body {
+    display: grid;
+    gap: 1rem;
+}
+
+.delegation-country-form {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+}
+
+.delegation-member-list {
+    margin-top: 0;
+}
+
+.dashboard-release-actions {
+    margin-bottom: 0.75rem;
+}
+
+.committee-navigation-card {
+    display: grid;
+    gap: 0.85rem;
+}
+
+.committee-page-card {
+    display: grid;
+    gap: 1rem;
+}
+
+.committee-page-empty {
+    margin-top: 0.3rem;
+}
+
+.committee-page-shell {
+    margin-top: 1rem;
+}
+
+.committee-page-stack .view-button,
+.committee-page-card .view-button,
+.committee-navigation-card .view-button {
+    width: fit-content;
+}
+
+.dpo-upload-form {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
 }
 
 .portal-action-card {
@@ -2264,6 +2487,7 @@ svg {
     object-fit: cover;
     max-height: 320px;
     border: 1px solid rgba(13, 59, 102, 0.12);
+    box-shadow: 0 16px 30px rgba(8, 31, 56, 0.1);
 }
 
 .blog-post-content {
@@ -2280,6 +2504,8 @@ svg {
 
 .post-editor-textarea {
     min-height: 220px;
+    line-height: 1.7;
+    resize: vertical;
 }
 
 .imprensa-intro {
@@ -2292,28 +2518,36 @@ svg {
 }
 
 .editable-card .edit-btn {
-    background: var(--azul-principal);
-    color: white;
-    border: none;
-    padding: 0.4rem 0.8rem;
-    border-radius: 4px;
-    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 0.62rem 1rem;
+    border-radius: 999px;
+    border: 1px solid rgba(13, 59, 102, 0.12);
+    background: linear-gradient(135deg, rgba(13, 59, 102, 0.08), rgba(31, 111, 168, 0.12));
+    color: var(--azul-profundo);
+    font-size: 0.9rem;
+    font-weight: 800;
     cursor: pointer;
     margin-top: 0.5rem;
-    transition: background-color 0.2s;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .editable-card .edit-btn:hover {
-    background: var(--azul-escuro);
+    transform: translateY(-1px);
+    border-color: rgba(255, 140, 66, 0.28);
+    box-shadow: 0 10px 22px rgba(8, 31, 56, 0.08);
 }
 
 .editable-card .edit-input {
     width: 100%;
-    padding: 0.5rem;
-    border: 1px solid var(--borda);
-    border-radius: 4px;
+    padding: 0.85rem 1rem;
+    border: 1px solid rgba(13, 59, 102, 0.14);
+    border-radius: 14px;
     font-size: 1rem;
     margin-top: 0.5rem;
+    background: rgba(255, 255, 255, 0.92);
 }
 
 .editable-card .edit-actions {
@@ -2328,12 +2562,12 @@ svg {
 }
 
 .editable-card .edit-actions .view-button.secondary {
-    background: var(--cinza-claro);
+    background: linear-gradient(135deg, rgba(13, 59, 102, 0.08), rgba(13, 59, 102, 0.12));
     color: var(--texto);
 }
 
 .editable-card .edit-actions .view-button.secondary:hover {
-    background: var(--cinza-medio);
+    background: linear-gradient(135deg, rgba(13, 59, 102, 0.12), rgba(13, 59, 102, 0.16));
 }
 
 @media (max-width: 1080px) {
@@ -2556,7 +2790,13 @@ svg {
     .dashboard-export-actions,
     .dashboard-form,
     .portal-action-grid,
-    .registration-overview {
+    .registration-overview,
+    .create-post-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .delegation-country-form,
+    .dpo-upload-form {
         grid-template-columns: 1fr;
     }
 
@@ -2582,6 +2822,14 @@ svg {
     .portal-badge {
         width: 100%;
         min-width: 0;
+    }
+
+    .create-post-actions {
+        justify-content: stretch;
+    }
+
+    .create-post-actions .view-button {
+        width: 100%;
     }
 
     .question-card button + button {

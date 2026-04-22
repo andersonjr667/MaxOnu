@@ -51,7 +51,7 @@ function buildHomeCards(committees) {
     return committees.map((committee) => `
         <div class="committee-card committee-card-detailed ${committee.id === 7 ? 'committee-card-placeholder' : ''}">
             <span class="committee-number">Comitê ${committee.id}</span>
-            <h3>${committee.shortTitle}</h3>
+            <h3>${committee.displayName || committee.shortTitle}</h3>
             <p>${committee.title || 'Tema em definição. Este espaço permanece aberto para a formulação final do comitê.'}</p>
         </div>
     `).join('');

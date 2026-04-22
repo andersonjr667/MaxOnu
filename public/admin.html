@@ -40,35 +40,64 @@
                     <div class="dashboard-section-heading">
                         <span class="dashboard-section-kicker">Administração</span>
                         <h2>Criar usuário de equipe</h2>
-                        <p>Crie contas para professores, coordenação ou imprensa diretamente pelo portal administrativo.</p>
+                        <p>Registre novos membros da equipe de operação da MaxOnu com acesso rápido ao painel administrativo.</p>
                     </div>
                     <form id="createUserForm" class="admin-user-form">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                            <div class="form-group">
+                                <label for="newUserFullName">
+                                    <span>Nome completo</span>
+                                    <span class="required-indicator">*</span>
+                                </label>
+                                <input type="text" id="newUserFullName" placeholder="Ex: João Silva" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="newUserRole">
+                                    <span>Função</span>
+                                    <span class="required-indicator">*</span>
+                                </label>
+                                <select id="newUserRole" required>
+                                    <option value="">Selecione a função</option>
+                                    <option value="teacher">Professor orientador</option>
+                                    <option value="coordinator">Coordenação</option>
+                                    <option value="press">Imprensa</option>
+                                </select>
+                            </div>
+                        </div>
+
                         <div class="form-group">
-                            <label for="newUserFullName">Nome completo</label>
-                            <input type="text" id="newUserFullName" placeholder="Digite o nome completo" required>
+                            <label for="newUserEmail">
+                                <span>Email</span>
+                                <span class="optional-indicator">(opcional)</span>
+                            </label>
+                            <input type="email" id="newUserEmail" placeholder="Ex: joao@escola.edu.br">
+                            <small class="form-help-text">Se deixar vazio, o usuário poderá configurar depois</small>
                         </div>
-                        <div class="form-group">
-                            <label for="newUserEmail">Email</label>
-                            <input type="email" id="newUserEmail" placeholder="Digite o email">
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                            <div class="form-group">
+                                <label for="newUserPassword">
+                                    <span>Senha temporária</span>
+                                    <span class="required-indicator">*</span>
+                                </label>
+                                <input type="password" id="newUserPassword" placeholder="Mínimo 6 caracteres" required>
+                                <small class="form-help-text">O usuário deve alterar na primeira autenticação</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="confirmPassword">
+                                    <span>Confirmar senha</span>
+                                    <span class="required-indicator">*</span>
+                                </label>
+                                <input type="password" id="confirmPassword" placeholder="Confirme a senha" required>
+                            </div>
                         </div>
-                        <div class="form-group checkbox-group">
-                            <input type="checkbox" id="emailOptional" class="checkbox-input">
-                            <label for="emailOptional" class="checkbox-label">Email opcional (configurar depois)</label>
+
+                        <div class="form-actions">
+                            <button type="submit" class="view-button view-button-primary">
+                                <span>✓ Criar usuário</span>
+                            </button>
+                            <button type="reset" class="view-button">Limpar formulário</button>
                         </div>
-                        <div class="form-group">
-                            <label for="newUserPassword">Senha</label>
-                            <input type="password" id="newUserPassword" placeholder="Senha temporária" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="newUserRole">Função</label>
-                            <select id="newUserRole" required>
-                                <option value="">Selecione</option>
-                                <option value="teacher">Professor orientador</option>
-                                <option value="coordinator">Coordenação</option>
-                                <option value="press">Imprensa</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="view-button">Criar usuário</button>
                         <p id="createUserMessage" class="form-message" style="display:none;"></p>
                     </form>
                 </section>

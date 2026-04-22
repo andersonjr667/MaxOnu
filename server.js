@@ -17,6 +17,8 @@ const postRoutes = require('./routes/posts');
 const questionRoutes = require('./routes/questions');
 const userRoutes = require('./routes/users');
 const exportRoutes = require('./routes/export');
+const settingsRoutes = require('./routes/settings');
+const dpoRoutes = require('./routes/dpos');
 const { shareMetaMiddleware } = require('./middleware/share-meta');
 const cleanUrlsMiddleware = require('./middleware/clean-urls');
 const { COMMITTEE_REVEAL_DATE } = require('./utils/event-config');
@@ -47,36 +49,43 @@ const COMMITTEE_PAGES = new Set([
 const COMMITTEE_DATA = [
   {
     id: 1,
+    displayName: 'Conselho de Direitos Humanos (CDH - 2026)',
     shortTitle: '(CDH - 2026)',
     title: 'O Paradoxo da Hiperconectividade: Regulamentação da Vigilância Massiva, Ética da Inteligência Artificial e Proteção da Democracia na Era do Big Data'
   },
   {
     id: 2,
+    displayName: 'Assembleia Geral das Nações Unidas (AGNU)',
     shortTitle: '(AGNU)',
     title: 'Guerra, Multipolaridade e Disputas Territoriais: Desafios à Soberania, Segurança Global e Justiça Internacional no Século XXI'
   },
   {
     id: 3,
+    displayName: 'Alto Comissariado das Nações Unidas para Refugiados (ACNUR)',
     shortTitle: '(ACNUR - Alto Comissariado das Nações Unidas para Refugiados)',
     title: 'Proteção e garantia de direitos de pessoas em situação de mobilidade humana em contextos de crises humanitárias'
   },
   {
     id: 4,
+    displayName: 'Bioética e Genética Humana',
     shortTitle: 'Bioética e Genética Humana',
     title: 'Impactos globais da tecnologia de manipulação e edição genética e seus desafios éticos quanto à dignidade humana e aos direitos das futuras gerações'
   },
   {
     id: 5,
+    displayName: 'Nova Ordem Global',
     shortTitle: 'Nova Ordem Global',
     title: 'A Nova Ordem Global em Disputa: Recursos Estratégicos, Poder e os Limites do Capitalismo no Século XXI'
   },
   {
     id: 6,
+    displayName: 'Conselho de Direitos Humanos das Nações Unidas (UNHRC)',
     shortTitle: '(UNHRC - Conselho de Direitos Humanos das Nações Unidas)',
     title: 'Identidade, memória e poder: disputas culturais e garantia de direitos em um mundo globalizado'
   },
   {
     id: 7,
+    displayName: 'Organização das Nações Unidas para as Mulheres (ONU Mulheres)',
     shortTitle: '(ONU MULHERES)',
     title: ''
   }
@@ -278,6 +287,8 @@ app.use('/api/posts', postRoutes);
 app.use('/api/questions', questionRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/export', exportRoutes);
+app.use('/api/settings', settingsRoutes);
+app.use('/api/dpos', dpoRoutes);
 
 // Share meta tags middleware para melhorar compartilhamento em redes sociais
 app.use(shareMetaMiddleware(publicDir));
@@ -333,4 +344,3 @@ app.use((req, res) => res.status(404).sendFile(path.join(publicDir, '404.html'))
 // Init
 connectDB();
 startServer(PORT);
-

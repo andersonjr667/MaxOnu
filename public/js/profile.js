@@ -71,7 +71,19 @@ async function parseJson(response) {
     return response.json().catch(() => ({}));
 }
 
-function formatCommitteeChoices(registration) {
+function formatCommitteeChoices(registration, registrationOpen) {
+    if (!registrationOpen) {
+        if (!registration?.submittedAt) {
+            return 'As preferências de comitê ainda não foram enviadas.';
+        }
+
+        return `
+            <p><strong>1ª opção:</strong> Comitê ${registration.firstChoice}</p>
+            <p><strong>2ª opção:</strong> Comitê ${registration.secondChoice}</p>
+            <p><strong>3ª opção:</strong> Comitê ${registration.thirdChoice}</p>
+        `;
+    }
+
     if (!registration?.submittedAt) {
         return 'Inscrição ainda não enviada.';
     }
@@ -114,6 +126,17 @@ function createEditableCard(title, field, value, options = {}) {
                 </div>
                 <button class="edit-btn" data-field="${field}" data-empty-text="${emptyText}">Editar</button>
             </div>
+        </article>
+    `;
+}
+
+function createInfoCard(title, value, options = {}) {
+    const { emptyText = 'Não informado', accent = '' } = options;
+
+    return `
+        <article class="feature-card ${accent}">
+            <h3>${title}</h3>
+            <p>${value || emptyText}</p>
         </article>
     `;
 }
@@ -182,35 +205,48 @@ function renderCandidatePanels(user, delegationStatus) {
     const delegation = delegationStatus?.delegation;
     const teammates = delegation?.members || [];
     const pendingNotifications = delegationStatus?.notifications?.filter((item) => item.status === 'pending') || [];
+    const registrationOpen = Boolean(delegationStatus?.registrationOpen);
+    const revealPassed = Boolean(delegationStatus?.revealPassed);
+    const registrationSubmitted = Boolean(registration?.submittedAt);
+    const canManageDelegation = registrationOpen && registrationSubmitted;
+    const registrationBlockedMessage = revealPassed
+        ? 'As inscrições foram fechadas temporariamente pela coordenação.'
+        : 'O formulário será liberado automaticamente quando a contagem regressiva da página inicial terminar.';
+    const delegationBlockedMessage = revealPassed
+        ? 'As inscrições estão fechadas no momento. Quando forem reabertas, você poderá enviar ou editar a inscrição.'
+        : 'A organização da delegação será liberada depois que a contagem regressiva terminar e sua inscrição for enviada.';
+    const inviteBlockedMessage = revealPassed
+        ? 'As inscrições estão fechadas no momento.'
+        : 'Aguarde o fim da contagem regressiva para liberar a inscrição e a formação da delegação.';
 
     registrationPanel.innerHTML = `
         <article class="dashboard-panel candidate-panel">
             <div class="dashboard-section-heading">
                 <span class="dashboard-section-kicker">Inscrição</span>
-                <h2>Inscrição realizada</h2>
-                <p>${registration?.submittedAt ? 'Sua inscrição já está registrada. Agora você pode acompanhar a formação da delegação e convidar os demais integrantes.' : 'Quando a abertura estiver liberada, faça sua inscrição com as três opções de comitê.'}</p>
+                <h2>${registrationSubmitted ? 'Inscrição realizada' : 'Status da inscrição'}</h2>
+                <p>${registrationSubmitted ? 'Sua inscrição já está registrada. Agora você pode acompanhar a formação da delegação e convidar os demais integrantes.' : registrationOpen ? 'A contagem terminou. Sua inscrição já pode ser preenchida com as três opções de comitê.' : registrationBlockedMessage}</p>
             </div>
             <div class="registration-overview">
-                ${createEditableCard('Turma', 'classGroup', user.classGroup, { placeholder: 'Digite sua turma', emptyText: 'Não informada' })}
-                ${createEditableCard('País', 'country', user.country, { placeholder: 'Digite seu país', emptyText: 'Não designado' })}
-                <div class="feature-card">
-                    <h3>Formato</h3>
-                    <p>${registration?.teamSize === 3 ? '3 integrantes' : '2 integrantes'}</p>
-                </div>
-                <div class="feature-card">
-                    <h3>Status</h3>
-                    <p>${registration?.submittedAt ? 'Inscrição enviada' : delegationStatus?.registrationOpen ? 'Aguardando envio' : 'Aguardando abertura'}</p>
-                </div>
+                ${createInfoCard('Turma', user.classGroup, { emptyText: 'Não informada' })}
+                ${createInfoCard('País', user.country, { emptyText: 'Não designado' })}
+                ${createInfoCard('Formato', registration?.teamSize === 3 ? '3 integrantes' : '2 integrantes' )}
+                ${createInfoCard('Status', registrationSubmitted ? 'Inscrição enviada' : registrationOpen ? 'Formulário liberado' : revealPassed ? 'Inscrições fechadas' : 'Aguardando fim da contagem' )}
             </div>
             <div class="content-box registration-choice-box">
                 <h3>Preferências de comitê</h3>
                 <div class="committee-choice-list">
-                    ${formatCommitteeChoices(registration)}
+                    ${formatCommitteeChoices(registration, registrationOpen)}
                 </div>
             </div>
-            <div class="dashboard-question-actions">
-                <a href="/inscricao" class="view-button">${registration?.submittedAt ? 'Editar inscrição' : 'Fazer inscrição'}</a>
-            </div>
+            ${registrationOpen ? `
+                <div class="dashboard-question-actions">
+                    <a href="/inscricao" class="view-button">${registrationSubmitted ? 'Editar inscrição' : 'Fazer inscrição'}</a>
+                </div>
+            ` : `
+                <div class="dashboard-empty registration-locked-note">
+                    ${registrationBlockedMessage}
+                </div>
+            `}
         </article>
     `;
 
@@ -219,21 +255,12 @@ function renderCandidatePanels(user, delegationStatus) {
             <div class="dashboard-section-heading">
                 <span class="dashboard-section-kicker">Delegação</span>
                 <h2>Organize sua delegação</h2>
-                <p>Convide os colegas pelo usuário cadastrado. Eles receberão o convite no painel de notificações do header.</p>
+                <p>${canManageDelegation ? 'Convide os colegas pelo usuário cadastrado. Eles receberão o convite no painel de notificações do header.' : registrationOpen ? 'Envie sua inscrição para liberar os convites da delegação.' : delegationBlockedMessage}</p>
             </div>
             <div class="registration-overview">
-                <div class="feature-card blue-accent">
-                    <h3>Tamanho definido</h3>
-                    <p>${registration?.teamSize === 3 ? '3 integrantes' : '2 integrantes'}</p>
-                </div>
-                <div class="feature-card">
-                    <h3>Integrantes atuais</h3>
-                    <p>${delegation?.currentSize || 1} de ${registration?.teamSize || 2}</p>
-                </div>
-                <div class="feature-card">
-                    <h3>Convites pendentes</h3>
-                    <p>${pendingNotifications.length}</p>
-                </div>
+                ${createInfoCard('Tamanho definido', registration?.teamSize === 3 ? '3 integrantes' : '2 integrantes', { accent: 'blue-accent' })}
+                ${createInfoCard('Integrantes atuais', `${delegation?.currentSize || 1} de ${registration?.teamSize || 2}`)}
+                ${createInfoCard('Convites pendentes', String(pendingNotifications.length))}
             </div>
             <div class="content-box registration-choice-box">
                 <h3>Integrantes confirmados</h3>
@@ -244,14 +271,14 @@ function renderCandidatePanels(user, delegationStatus) {
                     </div>
                 `).join('')}</div>` : '<div class="dashboard-empty">Nenhum integrante confirmado ainda.</div>'}
             </div>
-            <form id="inviteForm" class="dashboard-form invite-form-shell" ${registration?.submittedAt ? '' : 'hidden'}>
+            <form id="inviteForm" class="dashboard-form invite-form-shell" ${canManageDelegation ? '' : 'hidden'}>
                 <div class="form-group">
                     <label for="inviteUsername">Usuário do colega</label>
                     <input type="text" id="inviteUsername" placeholder="Digite o usuário do participante" required>
                 </div>
-                <button type="submit" class="view-button" ${!registration?.submittedAt || (delegation?.remainingSlots || 0) === 0 ? 'disabled' : ''}>Enviar convite</button>
+                <button type="submit" class="view-button" ${!canManageDelegation || (delegation?.remainingSlots || 0) === 0 ? 'disabled' : ''}>Enviar convite</button>
             </form>
-            <p class="register-note registration-feedback" id="inviteFeedback">${!registration?.submittedAt ? 'Envie sua inscrição primeiro para liberar os convites.' : (delegation?.remainingSlots || 0) === 0 ? 'Sua delegação já está completa.' : 'Os convites serão aceitos ou recusados diretamente pelo header.'}</p>
+            <p class="register-note registration-feedback" id="inviteFeedback">${!registrationOpen ? inviteBlockedMessage : !registrationSubmitted ? 'Envie sua inscrição primeiro para liberar os convites.' : (delegation?.remainingSlots || 0) === 0 ? 'Sua delegação já está completa.' : 'Os convites serão aceitos ou recusados diretamente pelo header.'}</p>
         </article>
     `;
 }
@@ -306,8 +333,8 @@ async function loadProfile() {
                 </article>
                 ${createEditableCard('Nome completo', 'fullName', user.fullName, { placeholder: 'Digite seu nome completo' })}
                 ${createEditableCard('Email', 'email', user.email, { type: 'email', placeholder: 'Digite seu email' })}
-                ${createEditableCard('Turma', 'classGroup', user.classGroup, { placeholder: 'Digite sua turma', emptyText: 'Não informada' })}
-                ${createEditableCard('País', 'country', user.country, { placeholder: 'Digite seu país', emptyText: 'Não designado' })}
+                ${createInfoCard('Turma', user.classGroup, { emptyText: 'Não informada' })}
+                ${createInfoCard('País', user.country, { emptyText: 'Não designado' })}
                 <article class="feature-card">
                     <h3>Função</h3>
                     <p>${getRoleLabel(user.role)}</p>
@@ -329,14 +356,14 @@ async function loadProfile() {
                 <div class="dashboard-summary-grid profile-summary-grid">
                     <article class="feature-card">
                         <h3>Comitê</h3>
-                        <p>${user.committee !== null && user.committee !== undefined ? user.committee : 'Não designado'}</p>
+                        <p>${user.committee !== null && user.committee !== undefined ? user.committee : 'Em sigilo até a abertura oficial'}</p>
                     </article>
                     <article class="feature-card">
                         <h3>Delegação</h3>
                         <p>${user.partner || 'Não definida'}</p>
                     </article>
-                    ${createEditableCard('Turma', 'classGroup', user.classGroup, { placeholder: 'Digite sua turma', emptyText: 'Não informada' })}
-                    ${createEditableCard('País', 'country', user.country, { placeholder: 'Digite seu país', emptyText: 'Não designado' })}
+                    ${createInfoCard('Turma', user.classGroup, { emptyText: 'Não informada' })}
+                    ${createInfoCard('País', user.country, { emptyText: 'Não designado' })}
                 </div>
             </article>
         `;

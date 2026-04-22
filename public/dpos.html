@@ -8,31 +8,33 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <link rel="icon" href="images/logo-maxonu.png" type="image/png">
     <script src="js/includes.js?v=20260420-headerfix"></script>
+    <script src="js/committee-pages.js" defer></script>
 </head>
-<body>
+<body data-committee-hub="dpos">
     <include src="header.html"></include>
 
     <main class="main-content" id="main-content">
         <section class="content-section">
-            <article class="content-box">
-                <h1>DPOs</h1>
-                <p>Os DPOs da edição 2026 serão organizados nesta página após a revelação oficial dos comitês.</p>
-                <p><a href="Documents/DPO - Informações.pdf" target="_blank" class="dpo-link">Clique aqui para saber como faz o DPO</a></p>
-                <div class="features-grid">
-                    <div class="feature-card">
-                        <h3>Espaço reservado</h3>
-                        <p>Os documentos serão inseridos quando a programação puder ser divulgada.</p>
+            <div class="dashboard-container">
+                <section class="dashboard-hero">
+                    <div class="dashboard-hero-copy">
+                        <span class="dashboard-kicker">DPOs</span>
+                        <h1>Envios por comitê</h1>
+                        <p>Os Documentos de Posicionamento Oficial foram organizados por comitê para centralizar os envios das delegações após a liberação dos países.</p>
                     </div>
-                    <div class="feature-card">
-                        <h3>Fluxo seguro</h3>
-                        <p>Enquanto isso, o site mantém apenas instruções gerais de preparação para evitar qualquer vazamento.</p>
+                    <div class="dashboard-hero-badge">Diplomacia</div>
+                </section>
+                <section class="dashboard-panel">
+                    <div class="dashboard-section-heading">
+                        <span class="dashboard-section-kicker">Comitês</span>
+                        <h2>Escolha um comitê</h2>
+                        <p id="dposMessage">Carregando páginas de DPO...</p>
                     </div>
-                    <div class="feature-card">
-                        <h3>Pronto para publicação</h3>
-                        <p>A estrutura da página já está preparada para receber os DPOs assim que forem liberados.</p>
+                    <div class="committees-grid" id="dposGrid">
+                        <p class="dashboard-empty">Preparando a navegação por comitê...</p>
                     </div>
-                </div>
-            </article>
+                </section>
+            </div>
         </section>
     </main>
 

@@ -27,7 +27,19 @@
 
                 <div class="dashboard-summary-grid" id="dashboardSummary"></div>
 
-                <div class="dashboard-tools-grid">
+                <section class="dashboard-panel dashboard-resource-panel" id="registrationControlPanel" hidden>
+                    <div class="dashboard-section-heading">
+                        <span class="dashboard-section-kicker">Inscrições</span>
+                        <h2>Controle manual das inscrições</h2>
+                        <p>Depois da abertura oficial, admin e coordenação podem fechar ou reabrir o formulário de inscrição por aqui.</p>
+                    </div>
+                    <div class="dashboard-question-actions dashboard-release-actions">
+                        <button type="button" class="delete-button" id="toggleRegistrationBtn">Fechar inscrições</button>
+                    </div>
+                    <p class="register-note registration-feedback" id="registrationStatus">Consultando status das inscrições...</p>
+                </section>
+
+                <div class="dashboard-tools-grid dashboard-tools-grid-enhanced">
                     <section class="dashboard-panel dashboard-panel-emphasis">
                         <div class="dashboard-section-heading">
                             <span class="dashboard-section-kicker">Consulta</span>
@@ -51,37 +63,43 @@
                             <button type="button" class="view-button" id="exportCsvBtn">Baixar CSV</button>
                             <button type="button" class="view-button" id="exportXlsxBtn">Baixar XLSX</button>
                         </div>
-                        <div id="committeeUsers" class="committee-users-list">
+                        <div id="committeeUsers" class="committee-users-list dashboard-resource-list">
                             <p>Selecione um comitê para ver os participantes.</p>
                         </div>
                     </section>
 
-                    <section class="dashboard-panel" id="assignmentPanel" hidden>
+                    <section class="dashboard-panel dashboard-resource-panel" id="assignmentPanel" hidden>
                         <div class="dashboard-section-heading">
                             <span class="dashboard-section-kicker">Distribuição</span>
-                            <h2>Definir país e comitê</h2>
-                            <p>Atualize rapidamente a alocação de cada participante usando o ID exibido na consulta.</p>
+                            <h2>Definir país por delegação</h2>
+                            <p>Escolha um comitê nesta área para carregar as delegações dele, abra a delegação desejada, pesquise um país e salve a atribuição. A publicação para todos acontece apenas quando você liberar.</p>
                         </div>
-                        <form id="assignmentForm" class="dashboard-form">
-                            <div class="form-group">
-                                <label for="userId">ID do usuário</label>
-                                <input type="text" id="userId" placeholder="ID do usuário" required>
+                        <div class="dashboard-inline-form">
+                            <div>
+                                <label for="assignmentCommitteeFilter">Comitê da delegação</label>
+                                <select id="assignmentCommitteeFilter">
+                                    <option value="1">Comitê 1</option>
+                                    <option value="2">Comitê 2</option>
+                                    <option value="3">Comitê 3</option>
+                                    <option value="4">Comitê 4</option>
+                                    <option value="5">Comitê 5</option>
+                                    <option value="6">Comitê 6</option>
+                                    <option value="7">Comitê 7</option>
+                                </select>
                             </div>
-                            <div class="form-group">
-                                <label for="userCommittee">Comitê</label>
-                                <input type="number" id="userCommittee" placeholder="Comitê (1 a 7)" min="1" max="7" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="userCountry">País atribuído</label>
-                                <input type="text" id="userCountry" placeholder="País atribuído" required>
-                            </div>
-                            <button type="submit" class="view-button">Salvar distribuição</button>
-                        </form>
-                        <p class="register-note">Use o ID exibido na lista do comitê para ajustar a distribuição de país e comitê dos participantes.</p>
+                            <button type="button" class="view-button" id="loadDelegationsBtn">Carregar delegações</button>
+                        </div>
+                        <div class="dashboard-question-actions dashboard-release-actions">
+                            <button type="button" class="view-button" id="toggleDelegationReleaseBtn">Liberar visualização pública</button>
+                        </div>
+                        <p class="register-note registration-feedback" id="delegationReleaseStatus">As delegações ainda não foram carregadas.</p>
+                        <div id="delegationManager" class="delegation-manager-grid">
+                            <p class="dashboard-empty">Selecione um comitê para gerenciar os países das delegações.</p>
+                        </div>
                     </section>
                 </div>
 
-                <section class="dashboard-panel">
+                <section class="dashboard-panel dashboard-resource-panel">
                     <div class="dashboard-section-heading">
                         <span class="dashboard-section-kicker">Moderação</span>
                         <h2>Perguntas pendentes</h2>

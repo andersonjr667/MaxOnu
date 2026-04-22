@@ -9,30 +9,33 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <link rel="icon" href="images/logo-maxonu.png" type="image/png">
     <script src="js/includes.js?v=20260420-headerfix"></script>
+    <script src="js/committee-pages.js" defer></script>
 </head>
-<body>
+<body data-committee-hub="guides">
     <include src="header.html"></include>
 
     <main class="main-content" id="main-content">
         <section class="content-section">
-            <article class="content-box">
-                <h1>Guias</h1>
-                <p>Os guias de estudo da MaxOnu 2026 serão publicados após a revelação oficial dos comitês, preservando o sigilo desta edição.</p>
-                <div class="features-grid">
-                    <div class="feature-card">
-                        <h3>Publicação futura</h3>
-                        <p>Os guias serão liberados quando os comitês forem oficialmente apresentados.</p>
+            <div class="dashboard-container">
+                <section class="dashboard-hero">
+                    <div class="dashboard-hero-copy">
+                        <span class="dashboard-kicker">Guias</span>
+                        <h1>Guias de estudo por comitê</h1>
+                        <p>Os guias de estudo são instrumentos fundamentais de preparação e foram organizados em páginas específicas para cada comitê.</p>
                     </div>
-                    <div class="feature-card">
-                        <h3>Sem vazamentos</h3>
-                        <p>Nenhum tema ou dossiê aparece nesta página antes da data de revelação.</p>
+                    <div class="dashboard-hero-badge">Estudo</div>
+                </section>
+                <section class="dashboard-panel">
+                    <div class="dashboard-section-heading">
+                        <span class="dashboard-section-kicker">Comitês</span>
+                        <h2>Escolha um comitê</h2>
+                        <p id="guidesMessage">Carregando páginas de guias...</p>
                     </div>
-                    <div class="feature-card">
-                        <h3>Preparação organizada</h3>
-                        <p>Assim que a contagem acabar, os materiais poderão ser publicados aqui com segurança.</p>
+                    <div class="committees-grid" id="guidesGrid">
+                        <p class="dashboard-empty">Preparando a navegação por comitê...</p>
                     </div>
-                </div>
-            </article>
+                </section>
+            </div>
         </section>
     </main>
 

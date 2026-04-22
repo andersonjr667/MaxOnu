@@ -4,6 +4,7 @@ const { Parser } = require('json2csv');
 const authMiddleware = require('../middleware/auth');
 const requireRole = require('../middleware/roleAuth');
 const User = require('../models/User');
+const { hasCommitteeRevealPassed } = require('../utils/event-config');
 
 const router = express.Router();
 
@@ -37,6 +38,10 @@ router.get('/committee/:num', authMiddleware, requireRole(['admin', 'coordinator
 
   if (!['csv', 'xlsx'].includes(format)) {
     return res.status(400).json({ error: 'Formato invalido. Use csv ou xlsx.' });
+  }
+
+  if (!hasCommitteeRevealPassed()) {
+    return res.status(403).json({ error: 'As exportações por comitê permanecem bloqueadas até o fim da contagem regressiva.' });
   }
 
   try {
