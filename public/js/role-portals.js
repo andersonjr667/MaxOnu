@@ -11,10 +11,10 @@ const portalConfigs = {
             { title: 'Permissões', text: 'Gestão total, consultas, exportações e conteúdo.' }
         ],
         actions: [
-            { href: 'dashboard.html', title: 'Abrir painel operacional', text: 'Gerencie comitês, respostas pendentes e distribuição de países.' },
-            { href: 'blog.html', title: 'Gerenciar blog', text: 'Acompanhe a área de comunicados e a visibilidade dos conteúdos publicados.' },
-            { href: 'create-post.html', title: 'Criar comunicado', text: 'Acesse a área reservada para publicar avisos e conteúdos oficiais.' },
-            { href: 'profile.html', title: 'Ver meu perfil', text: 'Consulte seus dados e sua função dentro da MaxOnu 2026.' }
+            { href: '/dashboard', title: 'Abrir painel operacional', text: 'Gerencie comitês, respostas pendentes e distribuição de países.' },
+            { href: '/blog', title: 'Gerenciar blog', text: 'Acompanhe a área de comunicados e a visibilidade dos conteúdos publicados.' },
+            { href: '/create-post', title: 'Criar comunicado', text: 'Acesse a área reservada para publicar avisos e conteúdos oficiais.' },
+            { href: '/profile', title: 'Ver meu perfil', text: 'Consulte seus dados e sua função dentro da MaxOnu 2026.' }
         ]
     },
     coordinator: {
@@ -29,10 +29,10 @@ const portalConfigs = {
             { title: 'Permissões', text: 'Consulta ampla, distribuição e apoio operacional.' }
         ],
         actions: [
-            { href: 'dashboard.html', title: 'Abrir painel da coordenação', text: 'Use o painel para consultar inscritos, responder perguntas e ajustar países.' },
-            { href: 'delegacoes.html', title: 'Ver delegações públicas', text: 'Acompanhe a experiência pública disponível no site para validar comunicações.' },
-            { href: 'guias.html', title: 'Consultar guias', text: 'Revise materiais e referências que apoiam a operação e a orientação das equipes.' },
-            { href: 'profile.html', title: 'Ver meu perfil', text: 'Confira rapidamente sua identificação, comitê e dados vinculados.' }
+            { href: '/dashboard', title: 'Abrir painel da coordenação', text: 'Use o painel para consultar inscritos, responder perguntas e ajustar países.' },
+            { href: '/delegacoes', title: 'Ver delegações públicas', text: 'Acompanhe a experiência pública disponível no site para validar comunicações.' },
+            { href: '/guias', title: 'Consultar guias', text: 'Revise materiais e referências que apoiam a operação e a orientação das equipes.' },
+            { href: '/profile', title: 'Ver meu perfil', text: 'Confira rapidamente sua identificação, comitê e dados vinculados.' }
         ]
     },
     teacher: {
@@ -47,10 +47,10 @@ const portalConfigs = {
             { title: 'Permissões', text: 'Consulta de comitês e acompanhamento das delegações.' }
         ],
         actions: [
-            { href: 'dashboard.html', title: 'Abrir painel dos orientadores', text: 'Consulte alunos, países e perguntas pendentes ligadas à preparação.' },
-            { href: 'delegacoes.html', title: 'Acompanhar delegações', text: 'Veja a área pública das delegações e mantenha o alinhamento com seus alunos.' },
-            { href: 'perguntas-comuns.html', title: 'Monitorar dúvidas públicas', text: 'Acompanhe as perguntas comuns que impactam a preparação dos participantes.' },
-            { href: 'profile.html', title: 'Ver meu perfil', text: 'Consulte seus dados pessoais, função e referências da sua área.' }
+            { href: '/dashboard', title: 'Abrir painel dos orientadores', text: 'Consulte alunos, países e perguntas pendentes ligadas à preparação.' },
+            { href: '/delegacoes', title: 'Acompanhar delegações', text: 'Veja a área pública das delegações e mantenha o alinhamento com seus alunos.' },
+            { href: '/faq', title: 'Monitorar dúvidas públicas', text: 'Acompanhe as perguntas comuns que impactam a preparação dos participantes.' },
+            { href: '/profile', title: 'Ver meu perfil', text: 'Consulte seus dados pessoais, função e referências da sua área.' }
         ]
     },
     press: {
@@ -65,10 +65,10 @@ const portalConfigs = {
             { title: 'Permissões', text: 'Comunicação, cobertura e organização de conteúdo.' }
         ],
         actions: [
-            { href: 'blog.html', title: 'Acompanhar blog', text: 'Veja a área de comunicados e mantenha a comunicação centralizada.' },
-            { href: 'create-post.html', title: 'Criar publicação', text: 'Acesse a área reservada para montar novos comunicados e atualizações.' },
-            { href: 'imprensa.html', title: 'Página pública da imprensa', text: 'Revise a apresentação pública da equipe e sua presença institucional.' },
-            { href: 'instagram.html', title: 'Canal do Instagram', text: 'Use a página do canal para alinhar a navegação e a presença social oficial.' }
+            { href: '/blog', title: 'Acompanhar blog', text: 'Veja a área de comunicados e mantenha a comunicação centralizada.' },
+            { href: '/create-post', title: 'Criar publicação', text: 'Acesse a área reservada para montar novos comunicados e atualizações.' },
+            { href: '/imprensa', title: 'Página pública da imprensa', text: 'Revise a apresentação pública da equipe e sua presença institucional.' },
+            { href: 'https://www.instagram.com/maxonu26', title: 'Canal do Instagram', text: 'Acesse o perfil oficial da MaxOnu 2026 no Instagram.' }
         ]
     }
 };
@@ -91,7 +91,7 @@ async function fetchCurrentUser() {
     
     if (!token) {
         console.error('[AUTH] Nenhum token encontrado. Redirecionando para login.');
-        window.location.href = '/login.html';
+        window.location.href = '/login';
         return null;
     }
 
@@ -102,14 +102,14 @@ async function fetchCurrentUser() {
         
         if (!context?.user) {
             console.error('[AUTH] Contexto de usuário inválido. Context:', context);
-            window.location.href = '/login.html';
+            window.location.href = '/login';
             return null;
         }
 
         return context.user;
     } catch (error) {
         console.error('[AUTH] Erro ao obter contexto de usuário:', error);
-        window.location.href = '/login.html';
+        window.location.href = '/login';
         return null;
     }
 }
@@ -299,7 +299,7 @@ async function initRolePortal() {
             
             if (!token) {
                 console.error('[AUTH] Nenhum token encontrado. Redirecionando para login.');
-                window.location.href = '/login.html';
+                window.location.href = '/login';
                 return null;
             }
 
@@ -310,14 +310,14 @@ async function initRolePortal() {
                 
                 if (!context?.user) {
                     console.error('[AUTH] Contexto de usuário inválido. Context:', context);
-                    window.location.href = '/login.html';
+                    window.location.href = '/login';
                     return null;
                 }
 
                 return context.user;
             } catch (error) {
                 console.error('[AUTH] Erro ao obter contexto de usuário:', error);
-                window.location.href = '/login.html';
+                window.location.href = '/login';
                 return null;
             }
         })();
@@ -336,17 +336,17 @@ async function initRolePortal() {
             console.warn('[AUTH] Usuário não autorizado. Role:', user.role, 'Roles permitidas:', config.allowedRoles);
             
             if (user.role === 'candidate') {
-                window.location.href = '/profile.html';
+                window.location.href = '/profile';
             } else if (user.role === 'admin') {
-                window.location.href = '/admin.html';
+                window.location.href = '/admin';
             } else if (user.role === 'coordinator') {
-                window.location.href = '/coordenacao.html';
+                window.location.href = '/coordenacao';
             } else if (user.role === 'teacher') {
-                window.location.href = '/orientadores.html';
+                window.location.href = '/orientadores';
             } else if (user.role === 'press') {
-                window.location.href = '/imprensa-dashboard.html';
+                window.location.href = '/imprensa-dashboard';
             } else {
-                window.location.href = '/profile.html';
+                window.location.href = '/profile';
             }
             return;
         }

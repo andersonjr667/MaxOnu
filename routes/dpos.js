@@ -1,6 +1,4 @@
 const express = require('express');
-const fs = require('fs');
-const path = require('path');
 const multer = require('multer');
 const authMiddleware = require('../middleware/auth');
 const User = require('../models/User');
@@ -8,24 +6,12 @@ const DpoSubmission = require('../models/DpoSubmission');
 const SiteSettings = require('../models/SiteSettings');
 const { hasCommitteeRevealPassed } = require('../utils/event-config');
 const { buildDelegationKeyFromUser } = require('../utils/delegation-groups');
+const { hasCloudinaryConfig, uploadBuffer } = require('../utils/cloudinary');
 
 const router = express.Router();
 
-const dpoStorage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        const uploadDir = path.join(__dirname, '..', 'public', 'uploads', 'dpos');
-        fs.mkdirSync(uploadDir, { recursive: true });
-        cb(null, uploadDir);
-    },
-    filename: (req, file, cb) => {
-        const ext = path.extname(file.originalname).toLowerCase();
-        const safeName = `${Date.now()}-dpo-${Math.round(Math.random() * 1e9)}${ext}`;
-        cb(null, safeName);
-    }
-});
-
 const upload = multer({
-    storage: dpoStorage,
+    storage: multer.memoryStorage(),
     limits: {
         fileSize: 8 * 1024 * 1024
     },
@@ -103,6 +89,10 @@ router.post('/committee/:committee', authMiddleware, uploadDpo, async (req, res)
             return res.status(400).json({ error: 'Envie um arquivo para registrar o DPO.' });
         }
 
+        if (!hasCloudinaryConfig) {
+            return res.status(500).json({ error: 'Upload de arquivo indisponível: Cloudinary não configurado.' });
+        }
+
         if (!hasCommitteeRevealPassed()) {
             return res.status(403).json({ error: 'Os DPOs serão recebidos após a liberação oficial dos comitês.' });
         }
@@ -128,6 +118,12 @@ router.post('/committee/:committee', authMiddleware, uploadDpo, async (req, res)
         const delegationKey = buildDelegationKeyFromUser(user);
         const memberIds = [String(user._id), ...(user.delegationMembers || []).map((member) => String(member._id || member))];
 
+        const uploadedFile = await uploadBuffer(req.file.buffer, {
+            folder: 'maxonu/dpos',
+            public_id: `committee-${committee}-dpo-${Date.now()}-${Math.round(Math.random() * 1e9)}`,
+            resource_type: 'auto'
+        });
+
         const submission = await DpoSubmission.findOneAndUpdate(
             { committee, delegationKey },
             {
@@ -136,7 +132,7 @@ router.post('/committee/:committee', authMiddleware, uploadDpo, async (req, res)
                 memberIds,
                 country: user.country,
                 submittedBy: user._id,
-                fileUrl: `/uploads/dpos/${req.file.filename}`,
+                fileUrl: uploadedFile?.secure_url || uploadedFile?.url || '',
                 fileName: req.file.originalname,
                 mimeType: req.file.mimetype,
                 updatedAt: new Date()

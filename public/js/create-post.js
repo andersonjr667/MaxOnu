@@ -6,11 +6,14 @@ async function initCreatePostPage() {
     const message = document.getElementById('postAccessMessage');
     const feedback = document.getElementById('createPostFeedback');
     const form = document.getElementById('createPostForm');
+    const badge = document.getElementById('createPostRoleBadge');
+    const kicker = document.getElementById('createPostRoleKicker');
+    const heading = document.getElementById('createPostHeading');
     const token = window.MaxOnuSession?.getToken?.() || localStorage.getItem('token');
     const allowedRoles = new Set(['admin', 'teacher', 'coordinator', 'press']);
 
     if (!token) {
-        window.location.href = '/login.html';
+        window.location.href = '/login';
         return;
     }
 
@@ -21,22 +24,46 @@ async function initCreatePostPage() {
             throw new Error('Sem permissão');
         }
         if (!allowedRoles.has(user.role)) {
-            window.location.href = '/blog.html';
+            window.location.href = '/blog';
             return;
         }
 
         const roleMessages = {
-            admin: 'A administração pode usar esta área para publicar comunicados e atualizações oficiais da MaxOnu 2026.',
-            teacher: 'Professores orientadores podem preparar avisos, orientações e materiais de apoio para os participantes.',
-            coordinator: 'A coordenação pode centralizar comunicados operacionais, avisos de comitê e publicações estratégicas.',
-            press: 'A equipe de imprensa pode usar esta área para preparar comunicados, notas e chamadas públicas da MaxOnu 2026.'
+            admin: {
+                message: 'A administração pode usar esta área para publicar comunicados e atualizações oficiais da MaxOnu 2026.',
+                badge: 'Admin',
+                kicker: 'Publicação administrativa',
+                heading: 'Novo comunicado oficial'
+            },
+            teacher: {
+                message: 'Professores orientadores podem preparar avisos, orientações e materiais de apoio para os participantes.',
+                badge: 'Orientação',
+                kicker: 'Publicação de orientação',
+                heading: 'Novo aviso para participantes'
+            },
+            coordinator: {
+                message: 'A coordenação pode centralizar comunicados operacionais, avisos de comitê e publicações estratégicas.',
+                badge: 'Coordenação',
+                kicker: 'Publicação operacional',
+                heading: 'Novo post da coordenação'
+            },
+            press: {
+                message: 'A equipe de imprensa pode usar esta área para preparar comunicados, notas e chamadas públicas da MaxOnu 2026.',
+                badge: 'Imprensa',
+                kicker: 'Publicação editorial',
+                heading: 'Nova publicação da imprensa'
+            }
         };
 
-        message.textContent = roleMessages[user.role] || roleMessages.admin;
+        const roleConfig = roleMessages[user.role] || roleMessages.admin;
+        message.textContent = roleConfig.message;
+        if (badge) badge.textContent = roleConfig.badge;
+        if (kicker) kicker.textContent = roleConfig.kicker;
+        if (heading) heading.textContent = roleConfig.heading;
         feedback.textContent = 'Preencha o formulário e publique quando estiver pronto.';
         form.hidden = false;
     } catch (error) {
-        window.location.href = '/blog.html';
+        window.location.href = '/blog';
     }
 }
 
@@ -101,7 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
             imagePreview.src = '';
 
             setTimeout(() => {
-                window.location.href = '/blog.html';
+                window.location.href = '/blog';
             }, 900);
         } catch (error) {
             feedback.textContent = error.message || 'Erro ao publicar post.';

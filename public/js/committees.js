@@ -1,5 +1,14 @@
 const COMMITTEES_CACHE_KEY = 'maxonu_committees_cache_v1';
 const REVEAL_STATUS_CACHE_KEY = 'maxonu_reveal_status_cache_v1';
+const COMMITTEE_CATALOG = [
+    { id: 1, displayName: 'Conselho de Direitos Humanos (CDH - 2026)', shortTitle: 'CDH - 2026', title: 'O Paradoxo da Hiperconectividade: Regulamentação da Vigilância Massiva, Ética da Inteligência Artificial e Proteção da Democracia na Era do Big Data' },
+    { id: 2, displayName: 'Assembleia Geral das Nações Unidas (AGNU)', shortTitle: 'AGNU', title: 'Guerra, Multipolaridade e Disputas Territoriais: Desafios à Soberania, Segurança Global e Justiça Internacional no Século XXI' },
+    { id: 3, displayName: 'Alto Comissariado das Nações Unidas para Refugiados (ACNUR)', shortTitle: 'ACNUR', title: 'Proteção e garantia de direitos de pessoas em situação de mobilidade humana em contextos de crises humanitárias' },
+    { id: 4, displayName: 'Bioética e Genética Humana', shortTitle: 'Bioética e Genética Humana', title: 'Impactos globais da tecnologia de manipulação e edição genética e seus desafios éticos quanto à dignidade humana e aos direitos das futuras gerações' },
+    { id: 5, displayName: 'Nova Ordem Global', shortTitle: 'Nova Ordem Global', title: 'A Nova Ordem Global em Disputa: Recursos Estratégicos, Poder e os Limites do Capitalismo no Século XXI' },
+    { id: 6, displayName: 'Conselho de Direitos Humanos das Nações Unidas (UNHRC)', shortTitle: 'UNHRC', title: 'Identidade, memória e poder: disputas culturais e garantia de direitos em um mundo globalizado' },
+    { id: 7, displayName: 'Organização das Nações Unidas para as Mulheres (ONU Mulheres)', shortTitle: 'ONU Mulheres', title: '' }
+];
 
 function readCache(key, ttl) {
     try {
@@ -30,16 +39,13 @@ function writeCache(key, data) {
 }
 
 function buildLockedCards() {
-    return Array.from({ length: 7 }, (_, index) => {
-        const committeeNumber = index + 1;
-        const lockedTitle = committeeNumber === 7 ? 'Em definição' : 'Sigilo diplomático';
-        const lockedText = committeeNumber === 7
-            ? 'O sétimo comitê segue reservado e será divulgado apenas no momento oficial.'
-            : 'Os detalhes deste comitê serão revelados somente quando a contagem regressiva terminar.';
+    return COMMITTEE_CATALOG.map((committee) => {
+        const lockedTitle = 'Sigilo diplomático';
+        const lockedText = 'As informações deste comitê serão reveladas somente quando a contagem regressiva terminar.';
 
         return `
             <div class="committee-card committee-card-detailed committee-card-locked">
-                <span class="committee-number">Comitê ${committeeNumber}</span>
+                <span class="committee-number">Comitê ${committee.id}</span>
                 <h3>${lockedTitle}</h3>
                 <p>${lockedText}</p>
             </div>
@@ -50,7 +56,7 @@ function buildLockedCards() {
 function buildHomeCards(committees) {
     return committees.map((committee) => `
         <div class="committee-card committee-card-detailed ${committee.id === 7 ? 'committee-card-placeholder' : ''}">
-            <span class="committee-number">Comitê ${committee.id}</span>
+            <span class="committee-number">${committee.displayName || committee.shortTitle}</span>
             <h3>${committee.displayName || committee.shortTitle}</h3>
             <p>${committee.title || 'Tema em definição. Este espaço permanece aberto para a formulação final do comitê.'}</p>
         </div>
@@ -58,9 +64,9 @@ function buildHomeCards(committees) {
 }
 
 function buildSoonDelegationCards() {
-    return Array.from({ length: 7 }, (_, index) => `
+    return COMMITTEE_CATALOG.map((committee) => `
         <div class="committee-card committee-card-detailed">
-            <span class="committee-number">Comitê ${index + 1}</span>
+            <span class="committee-number">${committee.displayName}</span>
             <h3>Em breve</h3>
             <p>As delegações desta página serão lançadas depois, em uma divulgação própria.</p>
             <button class="view-button" disabled>Em breve</button>
@@ -102,6 +108,14 @@ async function initHomeCommittees() {
     if (!grid || !message) return;
 
     try {
+        const reveal = await fetchRevealStatus();
+        if (!reveal?.revealed) {
+            sessionStorage.removeItem(COMMITTEES_CACHE_KEY);
+            grid.innerHTML = buildLockedCards();
+            message.textContent = 'Os comitês da edição 2026 seguem sob sigilo e serão revelados automaticamente quando a contagem regressiva chegar ao fim.';
+            return;
+        }
+
         const data = await fetchCommittees();
         grid.innerHTML = buildHomeCards(data.committees);
         message.textContent = 'Os comitês da MaxOnu 2026 foram revelados.';

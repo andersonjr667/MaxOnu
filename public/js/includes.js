@@ -64,34 +64,75 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const getRoleDestination = (user, delegationStatus) => {
         if (user.role === 'admin') {
-            return { href: 'admin.html', label: 'Portal' };
+            return { href: '/admin', label: 'Meu portal' };
         }
 
         if (user.role === 'coordinator') {
-            return { href: 'coordenacao.html', label: 'Portal' };
+            return { href: '/coordenacao', label: 'Meu portal' };
         }
 
         if (user.role === 'teacher') {
-            return { href: 'orientadores.html', label: 'Portal' };
+            return { href: '/orientadores', label: 'Meu portal' };
         }
 
         if (user.role === 'press') {
-            return { href: 'imprensa-dashboard.html', label: 'Portal' };
+            return { href: '/imprensa-dashboard', label: 'Meu portal' };
         }
 
         if (delegationStatus?.registrationOpen && !delegationStatus?.registration?.submittedAt) {
-            return { href: 'inscricao.html', label: 'Inscrição' };
+            return { href: '/inscricao', label: 'Faça inscrição' };
         }
 
-        return { href: 'profile.html', label: 'Painel' };
+        return { href: '/profile', label: 'Minha inscrição' };
+    };
+
+    const getHeaderAvatarUrl = (user = {}) => {
+        if (user?.profileImageUrl) {
+            return user.profileImageUrl;
+        }
+
+        if (user?.gender === 'feminino') {
+            return '/images/profile_female.png';
+        }
+
+        return '/images/profile_male.png';
     };
 
     const logout = () => {
         clearStoredAuth();
-        window.location.href = '/login.html';
+        window.location.href = '/login';
     };
 
     const parseJson = async (response) => response.json().catch(() => ({}));
+
+    const bindImageFallbacks = (root = document) => {
+        const images = root.querySelectorAll('img[data-fallback-src]');
+        images.forEach((image) => {
+            image.addEventListener('error', () => {
+                const fallbackSrc = image.dataset.fallbackSrc;
+                if (!fallbackSrc || image.src === fallbackSrc) {
+                    return;
+                }
+                image.src = fallbackSrc;
+            }, { once: true });
+        });
+    };
+
+    const parseClassGroup = (classGroup = '') => {
+        const normalized = String(classGroup || '').trim();
+        if (!normalized) {
+            return { unit: 'Não informada', grade: 'Não informada' };
+        }
+
+        const separatorIndex = normalized.indexOf(' - ');
+        if (separatorIndex === -1) {
+            return { unit: normalized, grade: 'Não informada' };
+        }
+
+        const unit = normalized.slice(0, separatorIndex).trim() || 'Não informada';
+        const grade = normalized.slice(separatorIndex + 3).trim() || 'Não informada';
+        return { unit, grade };
+    };
 
     const readAuthContextCache = () => {
         try {
@@ -199,11 +240,11 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     const setActiveLinks = (navLinks) => {
-        const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+        const currentPath = window.location.pathname.replace(/\/+$/, '') || '/';
         navLinks.querySelectorAll('a').forEach((link) => {
             link.classList.remove('is-active');
-            const href = (link.getAttribute('href') || '').split('#')[0];
-            if (href === currentPage || (currentPage === '' && href === 'index.html')) {
+            const href = (link.getAttribute('href') || '').split('#')[0].replace(/\/+$/, '') || '/';
+            if (href === currentPath) {
                 link.classList.add('is-active');
             }
         });
@@ -223,9 +264,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         utilities.innerHTML = `
             <div class="notification-root" data-notification-root>
-                <button type="button" class="notification-toggle" data-notification-toggle aria-label="Abrir notificações" aria-expanded="false">
-                    <span class="notification-toggle-icon">!</span>
-                    <span class="notification-toggle-label">Convites</span>
+                <button type="button" class="notification-toggle" data-notification-toggle aria-label="Abrir convites pendentes" aria-expanded="false">
+                    <span class="notification-toggle-icon" aria-hidden="true">&#9993;</span>
                     <span class="notification-badge">${pendingNotifications.length}</span>
                 </button>
                 <div class="notification-panel" data-notification-panel>
@@ -234,15 +274,24 @@ document.addEventListener('DOMContentLoaded', function() {
                         <span>${pendingNotifications.length}</span>
                     </div>
                     <div class="notification-list">
-                        ${pendingNotifications.map((notification) => `
+                        ${pendingNotifications.map((notification) => {
+                            const inviterName = notification.fromFullName || notification.fromUsername;
+                            const inviterClass = parseClassGroup(notification.fromClassGroup);
+                            return `
                             <article class="notification-card" data-notification-id="${notification.id}">
-                                <p><strong>${notification.fromUsername}</strong> convidou você para integrar uma delegação com ${notification.teamSize} participantes.</p>
+                                <p>
+                                    <strong>${inviterName}</strong> convidou você para integrar uma delegação com ${notification.teamSize} participantes.
+                                    <br>Nome: ${inviterName}
+                                    <br>Unidade: ${inviterClass.unit}
+                                    <br>Série: ${inviterClass.grade}
+                                </p>
                                 <div class="notification-actions">
                                     <button type="button" class="view-button" data-notification-action="accept">Aceitar</button>
                                     <button type="button" class="delete-button" data-notification-action="reject">Recusar</button>
                                 </div>
                             </article>
-                        `).join('')}
+                        `;
+                        }).join('')}
                     </div>
                 </div>
             </div>
@@ -271,14 +320,28 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        const destination = getRoleDestination(context.user, context.delegationStatus);
+        const profileDestination = { href: '/profile', label: 'Meu perfil' };
+        const avatarUrl = getHeaderAvatarUrl(context.user);
+        const avatarFallbackUrl = context.user?.gender === 'feminino'
+            ? '/images/profile_female.png'
+            : '/images/profile_male.png';
+        const avatarAlt = context.user?.fullName
+            ? `Foto de perfil de ${context.user.fullName}`
+            : 'Foto de perfil';
 
         authButtons.innerHTML = `
-            <a href="${destination.href}" class="auth-btn auth-btn-primary">Meu ${destination.label}</a>
+            <a href="${profileDestination.href}" class="auth-avatar-link" aria-label="${profileDestination.label}">
+                <img src="${avatarUrl}" alt="${avatarAlt}" class="auth-avatar-image" data-fallback-src="${avatarFallbackUrl}">
+            </a>
             <button type="button" class="auth-btn auth-btn-secondary auth-btn-logout" data-logout-trigger>Sair</button>
         `;
 
-        mobilePrimary.innerHTML = `<a href="${destination.href}" class="nav-link mobile-auth-register">Meu ${destination.label}</a>`;
+        mobilePrimary.innerHTML = `
+            <a href="${profileDestination.href}" class="nav-link mobile-auth-register mobile-auth-profile">
+                <img src="${avatarUrl}" alt="${avatarAlt}" class="mobile-auth-avatar" data-fallback-src="${avatarFallbackUrl}">
+                <span>${profileDestination.label}</span>
+            </a>
+        `;
         mobileSecondary.innerHTML = '<button type="button" class="nav-link mobile-auth-enter mobile-auth-logout" data-logout-trigger>Sair</button>';
         mobilePrimary.hidden = false;
         mobileSecondary.hidden = false;
@@ -286,6 +349,9 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('[data-logout-trigger]').forEach((trigger) => {
             trigger.addEventListener('click', logout);
         });
+
+        bindImageFallbacks(authButtons);
+        bindImageFallbacks(mobilePrimary);
     };
 
     window.MaxOnuSession = {
@@ -303,7 +369,7 @@ document.addEventListener('DOMContentLoaded', function() {
             renderHeaderAuth(navLinks, null);
         }
 
-        headerContext = await getAuthContext();
+        headerContext = await getAuthContext({ forceRefresh: true });
         renderNotifications(headerContext || immediateContext);
         renderHeaderAuth(navLinks, headerContext || immediateContext);
         setActiveLinks(navLinks);
@@ -331,6 +397,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const data = await parseJson(response);
             if (!response.ok) {
                 throw new Error(data.error || 'Nao foi possivel responder ao convite.');
+            }
+
+            if (window.MaxOnuSession?.refreshAuthContext) {
+                await window.MaxOnuSession.refreshAuthContext();
             }
 
             document.dispatchEvent(new CustomEvent('delegation-updated'));
@@ -426,6 +496,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         document.addEventListener('delegation-updated', async () => {
+            await refreshHeader(navLinks);
+        });
+
+        document.addEventListener('auth-context-updated', async () => {
             await refreshHeader(navLinks);
         });
     };

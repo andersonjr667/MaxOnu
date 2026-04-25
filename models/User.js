@@ -70,7 +70,9 @@ const userSchema = new mongoose.Schema({
     username: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        trim: true,
+        lowercase: true
     },
     fullName: {
         type: String,
@@ -87,6 +89,19 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true
+    },
+    gender: {
+        type: String,
+        enum: ['masculino', 'feminino', 'nao-binario', 'outro', 'prefiro-nao-informar'],
+        default: 'prefiro-nao-informar'
+    },
+    termsAccepted: {
+        type: Boolean,
+        default: false
+    },
+    termsAcceptedAt: {
+        type: Date,
+        default: null
     }
 });
 
@@ -127,6 +142,48 @@ userSchema.add({
     createdAt: {
         type: Date,
         default: Date.now
+    },
+    // Forgot Password
+    resetPasswordToken: {
+        type: String,
+        default: null
+    },
+    resetPasswordExpires: {
+        type: Date,
+        default: null
+    },
+    // Two-Factor Authentication
+    twoFactorEnabled: {
+        type: Boolean,
+        default: false
+    },
+    twoFactorSecret: {
+        type: String,
+        default: null
+    },
+    twoFactorBackupCodes: [{
+        code: String,
+        used: {
+            type: Boolean,
+            default: false
+        }
+    }],
+    twoFactorVerified: {
+        type: Boolean,
+        default: false
+    },
+    // Mark seeds with a field to identify test data
+    isTestData: {
+        type: Boolean,
+        default: false
+    },
+    profileImageUrl: {
+        type: String,
+        default: ''
+    },
+    profileImagePublicId: {
+        type: String,
+        default: ''
     }
 });
 
@@ -147,6 +204,44 @@ userSchema.methods.generateToken = function() {
         process.env.JWT_SECRET || 'your-secret-key',
         { expiresIn: '24h' }
     );
+};
+
+// Generate password reset token
+userSchema.methods.generatePasswordResetToken = function() {
+    const token = jwt.sign(
+        { id: this._id, email: this.email },
+        process.env.JWT_SECRET || 'your-secret-key',
+        { expiresIn: '1h' }
+    );
+    
+    this.resetPasswordToken = token;
+    this.resetPasswordExpires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+    
+    return token;
+};
+
+// Verify password reset token
+userSchema.methods.verifyPasswordResetToken = function(token) {
+    if (!this.resetPasswordToken || !this.resetPasswordExpires) {
+        return false;
+    }
+    
+    if (Date.now() > this.resetPasswordExpires.getTime()) {
+        return false;
+    }
+    
+    try {
+        jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+        return this.resetPasswordToken === token;
+    } catch (error) {
+        return false;
+    }
+};
+
+// Clear password reset token
+userSchema.methods.clearPasswordResetToken = function() {
+    this.resetPasswordToken = null;
+    this.resetPasswordExpires = null;
 };
 
 module.exports = mongoose.model('User', userSchema);

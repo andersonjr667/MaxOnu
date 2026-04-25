@@ -1,3 +1,4 @@
+const fs = require('fs');
 const path = require('path');
 
 /**
@@ -8,24 +9,33 @@ function cleanUrlsMiddleware(publicDir) {
   const routeMap = {
     '/': 'index.html',
     '/blog': 'blog.html',
+    '/imprensa': 'imprensa.html',
+    '/instagram': 'instagram.html',
     '/guias': 'guias.html',
+    '/orientadores': 'orientadores.html',
+    '/coordenacao': 'coordenacao.html',
+    '/dashboard': 'dashboard.html',
+    '/admin': 'admin.html',
+    '/admin-sync': 'admin-sync.html',
     '/faq': 'perguntas-comuns.html',
     '/perguntas': 'perguntas-comuns.html', // alias alternativo
+    '/perguntas-comuns': 'perguntas-comuns.html',
     '/inscricao': 'inscricao.html',
     '/registro': 'inscricao.html', // alias alternativo
     '/delegacoes': 'delegacoes.html',
-    '/dashboard': 'dashboard.html',
     '/perfil': 'profile.html',
     '/profile': 'profile.html', // alias
     '/login': 'login.html',
-    '/admin': 'admin.html',
-    '/imprensa': 'imprensa.html',
+    '/forgot-password': 'forgot-password.html',
+    '/reset-password': 'forgot-password.html',
+    '/two-factor-auth': 'two-factor-auth.html',
+    '/verify-2fa-login': 'verify-2fa-login.html',
     '/imprensa-dashboard': 'imprensa-dashboard.html',
-    '/orientadores': 'orientadores.html',
-    '/coordenacao': 'coordenacao.html',
     '/dpos': 'dpos.html',
     '/regras': 'regras.html',
-    '/blog-post': 'create-post.html'
+    '/blog-post': 'create-post.html',
+    '/create-post': 'create-post.html',
+    '/termos-de-uso': 'termos-de-uso.html'
   };
 
   return (req, res, next) => {
@@ -42,6 +52,17 @@ function cleanUrlsMiddleware(publicDir) {
           next();
         }
       });
+    }
+
+    if (!path.extname(req.path)) {
+      const candidateFile = path.join(publicDir, `${req.path.replace(/^\/+/, '')}.html`);
+      if (fs.existsSync(candidateFile)) {
+        return res.sendFile(candidateFile, (err) => {
+          if (err) {
+            next();
+          }
+        });
+      }
     }
 
     // Se a rota tem .html, redireciona para versão sem .html

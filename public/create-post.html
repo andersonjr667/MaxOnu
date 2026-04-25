@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Novo Post - MaxOnu 2026</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="icon" href="images/logo-maxonu.png" type="image/png">
-    <script src="js/includes.js?v=20260420-headerfix"></script>
-    <script src="js/create-post.js" defer></script>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="icon" href="/images/logo-maxonu.png" type="image/png">
+    <script src="/js/includes.js?v=20260420-headerfix"></script>
+    <script src="/js/create-post.js" defer></script>
 </head>
 <body>
     <include src="header.html"></include>
@@ -17,11 +17,11 @@
             <div class="dashboard-container">
                 <section class="dashboard-hero">
                     <div class="dashboard-hero-copy">
-                        <span class="dashboard-kicker">Publicação</span>
-                        <h1>Novo post</h1>
+                        <span class="dashboard-kicker" id="createPostRoleKicker">Publicação</span>
+                        <h1 id="createPostHeading">Novo post</h1>
                         <p id="postAccessMessage">Verificando permissão para criação de posts...</p>
                     </div>
-                    <div class="dashboard-hero-badge">Blog</div>
+                    <div class="dashboard-hero-badge" id="createPostRoleBadge">Blog</div>
                 </section>
 
                 <section class="dashboard-panel create-post-panel">
@@ -76,3 +76,4 @@
     <include src="footer.html"></include>
 </body>
 </html>
+

@@ -1,6 +1,10 @@
 const SiteSettings = require('../models/SiteSettings');
 
-const COMMITTEE_REVEAL_DATE = new Date('2026-05-04T00:00:00-03:00');
+const DEFAULT_COUNTDOWN_DATE = '2026-05-04T00:00:00-03:00';
+const configuredRevealDate = new Date(process.env.COUNTDOWN_DATE || DEFAULT_COUNTDOWN_DATE);
+const COMMITTEE_REVEAL_DATE = Number.isNaN(configuredRevealDate.getTime())
+    ? new Date(DEFAULT_COUNTDOWN_DATE)
+    : configuredRevealDate;
 
 async function getSiteSettings() {
     let settings = await SiteSettings.findOne({ singletonKey: 'main' });

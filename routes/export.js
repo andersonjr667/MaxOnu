@@ -4,9 +4,14 @@ const { Parser } = require('json2csv');
 const authMiddleware = require('../middleware/auth');
 const requireRole = require('../middleware/roleAuth');
 const User = require('../models/User');
+const { buildDelegationGroups } = require('../utils/delegation-groups');
 const { hasCommitteeRevealPassed } = require('../utils/event-config');
 
 const router = express.Router();
+
+function canBypassRevealLock(user) {
+  return user?.role === 'admin' || user?.role === 'coordinator' || user?.role === 'teacher';
+}
 
 function normalizeCommitteeNumber(value) {
   const committee = Number(value);
@@ -28,6 +33,106 @@ function buildRows(users) {
   }));
 }
 
+function buildResultRows(users) {
+  return users.map((user) => ({
+    id: String(user._id),
+    username: user.username || '',
+    fullName: user.fullName || '',
+    email: user.email || '',
+    classGroup: user.classGroup || '',
+    firstChoice: user.registration?.firstChoice ?? '',
+    secondChoice: user.registration?.secondChoice ?? '',
+    thirdChoice: user.registration?.thirdChoice ?? '',
+    finalCommittee: user.committee ?? '',
+    teamSize: user.registration?.teamSize || '',
+    country: user.country || '',
+    partner: user.partner || '',
+    submittedAt: user.registration?.submittedAt ? new Date(user.registration.submittedAt).toISOString() : ''
+  }));
+}
+
+function getEducationSegmentFromText(value = '') {
+  const normalized = String(value || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+
+  if (!normalized) {
+    return '';
+  }
+
+  if (
+    normalized.includes('ensino medio') ||
+    normalized.includes('medio') ||
+    /\bem\b/.test(normalized)
+  ) {
+    return 'em';
+  }
+
+  if (
+    normalized.includes('8o') ||
+    normalized.includes('8 ano') ||
+    normalized.includes('9o') ||
+    normalized.includes('9 ano') ||
+    normalized.includes('8 e 9') ||
+    normalized.includes('8/9')
+  ) {
+    return 'fundamental';
+  }
+
+  return '';
+}
+
+function getDelegationSegment(group, registration) {
+  const candidates = [
+    registration?.classGroup,
+    ...(Array.isArray(group?.members) ? group.members.map((member) => member.classGroup) : [])
+  ];
+
+  for (const value of candidates) {
+    const segment = getEducationSegmentFromText(value);
+    if (segment) {
+      return segment;
+    }
+  }
+
+  return '';
+}
+
+function buildDelegationSegmentRows(candidates, segment) {
+  const groups = buildDelegationGroups(candidates);
+
+  return groups
+    .map((group) => {
+      const sourceUser = candidates.find((candidate) => group.memberIds.includes(String(candidate._id)));
+      const registration = sourceUser?.registration || {};
+      const segmentValue = getDelegationSegment(group, registration);
+
+      if (segmentValue !== segment) {
+        return null;
+      }
+
+      const members = Array.isArray(group.members) ? group.members : [];
+      const delegate1 = members[0] || {};
+      const delegate2 = members[1] || {};
+
+      return {
+        delegationKey: group.key,
+        delegado1: delegate1.fullName || delegate1.username || '',
+        turmaDelegado1: delegate1.classGroup || '',
+        delegado2: delegate2.fullName || delegate2.username || '',
+        turmaDelegado2: delegate2.classGroup || '',
+        primeiraOpcaoComite: registration.firstChoice ?? '',
+        segundaOpcaoComite: registration.secondChoice ?? '',
+        terceiraOpcaoComite: registration.thirdChoice ?? '',
+        comiteFinal: group.committee ?? '',
+        pais: group.country || '',
+        enviadoEm: registration.submittedAt ? new Date(registration.submittedAt).toISOString() : ''
+      };
+    })
+    .filter(Boolean);
+}
+
 router.get('/committee/:num', authMiddleware, requireRole(['admin', 'coordinator', 'teacher', 'press']), async (req, res) => {
   const committee = normalizeCommitteeNumber(req.params.num);
   const format = String(req.query.format || 'csv').toLowerCase();
@@ -40,15 +145,12 @@ router.get('/committee/:num', authMiddleware, requireRole(['admin', 'coordinator
     return res.status(400).json({ error: 'Formato invalido. Use csv ou xlsx.' });
   }
 
-  if (!hasCommitteeRevealPassed()) {
+  if (!hasCommitteeRevealPassed() && !canBypassRevealLock(req.user)) {
     return res.status(403).json({ error: 'As exportações por comitê permanecem bloqueadas até o fim da contagem regressiva.' });
   }
 
   try {
     const filter = { committee };
-    if (req.user.role === 'teacher') {
-      filter.role = 'candidate';
-    }
 
     const users = await User.find(filter).select('-password').sort({ fullName: 1, username: 1 });
     const rows = buildRows(users);
@@ -83,6 +185,121 @@ router.get('/committee/:num', authMiddleware, requireRole(['admin', 'coordinator
 
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     res.setHeader('Content-Disposition', `attachment; filename="comite-${committee}.xlsx"`);
+    await workbook.xlsx.write(res);
+    res.end();
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+router.get('/results', authMiddleware, requireRole(['admin', 'coordinator', 'teacher']), async (req, res) => {
+  const format = String(req.query.format || 'csv').toLowerCase();
+
+  if (!['csv', 'xlsx'].includes(format)) {
+    return res.status(400).json({ error: 'Formato invalido. Use csv ou xlsx.' });
+  }
+
+  try {
+    const users = await User.find({
+      role: 'candidate',
+      'registration.submittedAt': { $ne: null }
+    })
+      .select('-password')
+      .sort({ committee: 1, fullName: 1, username: 1 });
+
+    const rows = buildResultRows(users);
+
+    if (format === 'csv') {
+      const parser = new Parser({
+        fields: ['id', 'username', 'fullName', 'email', 'classGroup', 'firstChoice', 'secondChoice', 'thirdChoice', 'finalCommittee', 'teamSize', 'country', 'partner', 'submittedAt']
+      });
+      const csv = parser.parse(rows);
+      res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+      res.setHeader('Content-Disposition', 'attachment; filename="resultados-inscricoes.csv"');
+      return res.send(csv);
+    }
+
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Resultados');
+    worksheet.columns = [
+      { header: 'ID', key: 'id', width: 28 },
+      { header: 'Usuario', key: 'username', width: 24 },
+      { header: 'Nome completo', key: 'fullName', width: 32 },
+      { header: 'Email', key: 'email', width: 30 },
+      { header: 'Turma', key: 'classGroup', width: 18 },
+      { header: '1a opcao', key: 'firstChoice', width: 12 },
+      { header: '2a opcao', key: 'secondChoice', width: 12 },
+      { header: '3a opcao', key: 'thirdChoice', width: 12 },
+      { header: 'Comite final', key: 'finalCommittee', width: 14 },
+      { header: 'Tamanho da delegacao', key: 'teamSize', width: 20 },
+      { header: 'Pais', key: 'country', width: 24 },
+      { header: 'Integrantes', key: 'partner', width: 28 },
+      { header: 'Enviado em', key: 'submittedAt', width: 28 }
+    ];
+    worksheet.addRows(rows);
+    worksheet.getRow(1).font = { bold: true };
+    worksheet.views = [{ state: 'frozen', ySplit: 1 }];
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', 'attachment; filename="resultados-inscricoes.xlsx"');
+    await workbook.xlsx.write(res);
+    res.end();
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+router.get('/results/segment', authMiddleware, requireRole(['admin', 'coordinator', 'teacher']), async (req, res) => {
+  const format = String(req.query.format || 'xlsx').toLowerCase();
+  const segment = String(req.query.segment || '').toLowerCase();
+
+  if (format !== 'xlsx') {
+    return res.status(400).json({ error: 'Formato inválido para exportação segmentada. Use xlsx.' });
+  }
+
+  if (!['em', 'fundamental'].includes(segment)) {
+    return res.status(400).json({ error: 'Segmento inválido. Use "em" ou "fundamental".' });
+  }
+
+  try {
+    const candidates = await User.find({
+      role: 'candidate',
+      'registration.submittedAt': { $ne: null }
+    })
+      .select('-password')
+      .populate('delegationMembers', 'fullName username email classGroup committee country registration')
+      .sort({ 'registration.submittedAt': 1, fullName: 1 });
+
+    const rows = buildDelegationSegmentRows(candidates, segment);
+
+    const workbook = new ExcelJS.Workbook();
+    const worksheetName = segment === 'em' ? 'Resultados EM' : 'Resultados 8e9';
+    const worksheet = workbook.addWorksheet(worksheetName);
+
+    worksheet.columns = [
+      { header: 'Delegação', key: 'delegationKey', width: 36 },
+      { header: 'Delegado 1', key: 'delegado1', width: 30 },
+      { header: 'Turma Delegado 1', key: 'turmaDelegado1', width: 24 },
+      { header: 'Delegado 2', key: 'delegado2', width: 30 },
+      { header: 'Turma Delegado 2', key: 'turmaDelegado2', width: 24 },
+      { header: '1ª opção de comitê', key: 'primeiraOpcaoComite', width: 18 },
+      { header: '2ª opção de comitê', key: 'segundaOpcaoComite', width: 18 },
+      { header: '3ª opção de comitê', key: 'terceiraOpcaoComite', width: 18 },
+      { header: 'Comitê final', key: 'comiteFinal', width: 14 },
+      { header: 'País', key: 'pais', width: 24 },
+      { header: 'Enviado em', key: 'enviadoEm', width: 28 }
+    ];
+
+    worksheet.addRows(rows);
+    worksheet.getRow(1).font = { bold: true };
+    worksheet.views = [{ state: 'frozen', ySplit: 1 }];
+
+    const fileName = segment === 'em'
+      ? 'resultados-inscricoes-em.xlsx'
+      : 'resultados-inscricoes-8e9.xlsx';
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
     await workbook.xlsx.write(res);
     res.end();
   } catch (error) {

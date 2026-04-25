@@ -13,6 +13,75 @@ function sameId(a, b) {
     return String(a) === String(b);
 }
 
+function normalizeText(value = '') {
+    return String(value || '')
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '');
+}
+
+function getEducationSegment(classGroup = '') {
+    const normalized = normalizeText(classGroup);
+
+    if (
+        normalized.includes('8o') ||
+        normalized.includes('8 ano') ||
+        normalized.includes('9o') ||
+        normalized.includes('9 ano') ||
+        normalized.includes('8 e 9') ||
+        normalized.includes('8/9')
+    ) {
+        return 'fundamental';
+    }
+
+    if (
+        normalized.includes('ensino medio') ||
+        normalized.includes('medio') ||
+        /\bem\b/.test(normalized) ||
+        /\b[123]\s*serie\b/.test(normalized)
+    ) {
+        return 'em';
+    }
+
+    return '';
+}
+
+function getExpectedTeamSize() {
+    return 2;
+}
+
+function validateDelegationPairByClassGroup(userA, userB) {
+    const segmentA = getEducationSegment(userA?.classGroup);
+    const segmentB = getEducationSegment(userB?.classGroup);
+
+    if (!segmentA || !segmentB) {
+        return {
+            valid: false,
+            message: 'Nao foi possivel identificar a turma de um dos participantes para validar a formacao da delegacao.'
+        };
+    }
+
+    if (segmentA !== segmentB) {
+        return {
+            valid: false,
+            message: 'Nao e permitido misturar participantes do 8/9 com Ensino Medio na mesma delegacao.'
+        };
+    }
+
+    return { valid: true };
+}
+
+function getUniqueMemberIds(user) {
+    const seen = new Set();
+    (user.delegationMembers || []).forEach((member) => {
+        const id = String(member?._id || member);
+        if (id) {
+            seen.add(id);
+        }
+    });
+    return Array.from(seen);
+}
+
 async function getSettings() {
     let settings = await SiteSettings.findOne({ singletonKey: 'main' });
     if (!settings) {
@@ -27,12 +96,13 @@ function cleanPendingInvitations(user) {
             return true;
         }
 
-        return mongoose.Types.ObjectId.isValid(String(invitation.fromUser));
+        const fromUserId = invitation.fromUser?._id || invitation.fromUser;
+        return mongoose.Types.ObjectId.isValid(String(fromUserId));
     });
 }
 
 function getDelegationCount(user) {
-    return (user.delegationMembers || []).length + 1;
+    return getUniqueMemberIds(user).length + 1;
 }
 
 function hasRegistration(user) {
@@ -51,31 +121,47 @@ function getPendingNotifications(user) {
     return (user.invitations || []).filter((invitation) => invitation.status === 'pending');
 }
 
-function buildDelegationSummary(user) {
+function buildDelegationSummary(user, options = {}) {
+    const { revealPassed = true } = options;
+    const uniqueMembers = [];
+    const seenMembers = new Set();
+    (user.delegationMembers || []).forEach((member) => {
+        const id = String(member?._id || member);
+        if (!id || seenMembers.has(id)) {
+            return;
+        }
+
+        seenMembers.add(id);
+        uniqueMembers.push(member);
+    });
+
     return {
         classGroup: user.classGroup || '',
         registration: {
-            firstChoice: user.registration?.firstChoice ?? null,
-            secondChoice: user.registration?.secondChoice ?? null,
-            thirdChoice: user.registration?.thirdChoice ?? null,
-            teamSize: user.registration?.teamSize || 2,
+            firstChoice: revealPassed ? (user.registration?.firstChoice ?? null) : null,
+            secondChoice: revealPassed ? (user.registration?.secondChoice ?? null) : null,
+            thirdChoice: revealPassed ? (user.registration?.thirdChoice ?? null) : null,
+            teamSize: getExpectedTeamSize(),
             submittedAt: user.registration?.submittedAt || null
         },
         delegation: {
-            memberIds: (user.delegationMembers || []).map((member) => String(member._id || member)),
-            members: (user.delegationMembers || []).map((member) => ({
+            memberIds: uniqueMembers.map((member) => String(member._id || member)),
+            members: uniqueMembers.map((member) => ({
                 id: String(member._id || member),
+                fullName: member.fullName || '',
                 username: member.username || '',
                 classGroup: member.classGroup || ''
             })),
             currentSize: getDelegationCount(user),
-            remainingSlots: Math.max((user.registration?.teamSize || 2) - getDelegationCount(user), 0)
+            remainingSlots: Math.max(getExpectedTeamSize() - getDelegationCount(user), 0)
         },
         notifications: (user.invitations || []).map((invitation) => ({
             id: String(invitation._id),
             type: invitation.type,
             fromUser: String(invitation.fromUser?._id || invitation.fromUser),
             fromUsername: invitation.fromUsername,
+            fromFullName: invitation.fromUser?.fullName || '',
+            fromClassGroup: invitation.fromUser?.classGroup || '',
             teamSize: invitation.teamSize,
             status: invitation.status,
             createdAt: invitation.createdAt,
@@ -87,15 +173,20 @@ function buildDelegationSummary(user) {
 
 async function loadCurrentUser(userId) {
     return User.findById(userId)
-        .populate('delegationMembers', 'username classGroup')
-        .populate('invitations.fromUser', 'username classGroup registration delegationMembers');
+        .populate('delegationMembers', 'fullName username classGroup gender')
+        .populate('invitations.fromUser', 'username fullName classGroup registration delegationMembers');
 }
 
 async function syncPartnerLabels(users) {
     await Promise.all(users.map(async (user) => {
-        const memberNames = await User.find({ _id: { $in: user.delegationMembers || [] } }).select('username');
-        user.partner = memberNames.map((member) => member.username).join(', ');
-        await user.save();
+        const userId = user._id || user;
+        const delegationMembers = user.delegationMembers || [];
+        const memberNames = await User.find({ _id: { $in: delegationMembers } }).select('username');
+        const partnerValue = memberNames.map((member) => member.username).join(', ');
+        await User.updateOne(
+            { _id: userId },
+            { $set: { partner: partnerValue } }
+        );
     }));
 }
 
@@ -110,7 +201,7 @@ router.get('/status', authMiddleware, async (req, res) => {
         const settings = await getSettings();
         const registrationState = await getRegistrationState();
         res.json({
-            ...buildDelegationSummary(user),
+            ...buildDelegationSummary(user, { revealPassed: registrationState.revealPassed }),
             registrationOpen: registrationState.registrationOpen,
             registrationManuallyClosed: registrationState.registrationManuallyClosed,
             revealPassed: registrationState.revealPassed,
@@ -181,7 +272,7 @@ router.post('/register', authMiddleware, [
     body('firstChoice').isInt({ min: 1, max: 7 }),
     body('secondChoice').isInt({ min: 1, max: 7 }),
     body('thirdChoice').isInt({ min: 1, max: 7 }),
-    body('teamSize').isIn([2, 3])
+    body('teamSize').optional().isIn([2])
 ], async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -205,7 +296,7 @@ router.post('/register', authMiddleware, [
             return res.status(403).json({ error: 'A inscricao publica esta disponivel apenas para delegados.' });
         }
 
-        const { firstChoice, secondChoice, thirdChoice, teamSize } = req.body;
+        const { firstChoice, secondChoice, thirdChoice } = req.body;
         const choices = [Number(firstChoice), Number(secondChoice), Number(thirdChoice)];
         if (new Set(choices).size !== 3) {
             return res.status(400).json({ error: 'Escolha tres comites diferentes para a inscricao.' });
@@ -215,7 +306,7 @@ router.post('/register', authMiddleware, [
             firstChoice: choices[0],
             secondChoice: choices[1],
             thirdChoice: choices[2],
-            teamSize: Number(teamSize),
+            teamSize: getExpectedTeamSize(),
             submittedAt: new Date()
         };
         await user.save();
@@ -248,38 +339,48 @@ router.post('/invite', authMiddleware, [
             return res.status(404).json({ error: 'Usuario nao encontrado.' });
         }
 
+        if (inviter.role !== 'candidate') {
+            return res.status(403).json({ error: 'A formacao de delegacao esta disponivel apenas para delegados.' });
+        }
+
         if (!hasRegistration(inviter)) {
             return res.status(400).json({ error: 'Envie sua inscricao antes de convidar outros integrantes para a delegacao.' });
         }
 
-        if (getDelegationCount(inviter) >= (inviter.registration?.teamSize || 2)) {
+        if (getDelegationCount(inviter) >= getExpectedTeamSize()) {
             return res.status(400).json({ error: 'Sua delegacao ja esta completa.' });
         }
 
-        const targetUsername = req.body.username.trim();
+        const targetUsername = req.body.username.trim().toLowerCase();
         const invited = await User.findOne({ username: targetUsername });
 
         if (!invited) {
             return res.status(404).json({ error: 'Participante nao encontrado.' });
         }
 
-        if (sameId(invited._id, inviter._id)) {
-            return res.status(400).json({ error: 'Voce nao pode convidar a si mesmo.' });
+        if (invited.role !== 'candidate') {
+            return res.status(400).json({ error: 'Somente delegados podem participar de uma delegacao.' });
         }
 
-        if (!hasRegistration(invited)) {
-            return res.status(400).json({ error: 'Esse participante ainda nao concluiu a inscricao.' });
+        if (sameId(invited._id, inviter._id)) {
+            return res.status(400).json({ error: 'Voce nao pode convidar a si mesmo.' });
         }
 
         if ((invited.delegationMembers || []).length > 0) {
             return res.status(400).json({ error: 'Esse participante ja faz parte de uma delegacao.' });
         }
 
+        const pairValidation = validateDelegationPairByClassGroup(inviter, invited);
+        if (!pairValidation.valid) {
+            return res.status(400).json({ error: pairValidation.message });
+        }
+
         const inviterChoices = normalizeChoices(inviter);
         const invitedChoices = normalizeChoices(invited);
+        const invitedHasRegistration = hasRegistration(invited);
         const samePreferences = inviterChoices.join(',') === invitedChoices.join(',');
 
-        if (!samePreferences) {
+        if (invitedHasRegistration && !samePreferences) {
             return res.status(400).json({ error: 'Os dois participantes precisam ter a mesma ordem de comites para formar a delegacao.' });
         }
 
@@ -291,7 +392,7 @@ router.post('/invite', authMiddleware, [
         invited.invitations.push({
             fromUser: inviter._id,
             fromUsername: inviter.username,
-            teamSize: inviter.registration?.teamSize || 2
+            teamSize: getExpectedTeamSize()
         });
 
         await invited.save();
@@ -315,6 +416,10 @@ router.post('/notifications/:id/respond', authMiddleware, [
             return res.status(404).json({ error: 'Usuario nao encontrado.' });
         }
 
+        if (recipient.role !== 'candidate') {
+            return res.status(403).json({ error: 'A formacao de delegacao esta disponivel apenas para delegados.' });
+        }
+
         const invitation = recipient.invitations.id(req.params.id);
         if (!invitation || invitation.status !== 'pending') {
             return res.status(404).json({ error: 'Convite pendente nao encontrado.' });
@@ -330,10 +435,6 @@ router.post('/notifications/:id/respond', authMiddleware, [
                 message: 'Convite recusado.',
                 ...buildDelegationSummary(refreshedRejected)
             });
-        }
-
-        if (!hasRegistration(recipient)) {
-            return res.status(400).json({ error: 'Conclua sua inscricao antes de aceitar um convite.' });
         }
 
         if ((recipient.delegationMembers || []).length > 0) {
@@ -352,15 +453,35 @@ router.post('/notifications/:id/respond', authMiddleware, [
             return res.status(400).json({ error: 'O convite nao pode mais ser aceito porque a inscricao do remetente nao esta valida.' });
         }
 
-        if (getDelegationCount(inviter) >= (inviter.registration?.teamSize || 2)) {
+        if (getDelegationCount(inviter) >= getExpectedTeamSize()) {
             return res.status(400).json({ error: 'A delegacao do remetente ja foi completada.' });
         }
 
-        const recipientChoices = normalizeChoices(recipient);
+        const pairValidation = validateDelegationPairByClassGroup(inviter, recipient);
+        if (!pairValidation.valid) {
+            return res.status(400).json({ error: pairValidation.message });
+        }
+
         const inviterChoices = normalizeChoices(inviter);
-        if (recipientChoices.join(',') !== inviterChoices.join(',')) {
+        const recipientHasRegistration = hasRegistration(recipient);
+        const recipientChoices = normalizeChoices(recipient);
+        if (recipientHasRegistration && recipientChoices.join(',') !== inviterChoices.join(',')) {
             return res.status(400).json({ error: 'As preferencias de comite nao coincidem mais.' });
         }
+
+        if (!recipientHasRegistration) {
+            recipient.registration = {
+                firstChoice: inviter.registration?.firstChoice || null,
+                secondChoice: inviter.registration?.secondChoice || null,
+                thirdChoice: inviter.registration?.thirdChoice || null,
+                teamSize: getExpectedTeamSize(),
+                submittedAt: inviter.registration?.submittedAt || new Date()
+            };
+        } else {
+            recipient.registration.teamSize = getExpectedTeamSize();
+        }
+
+        inviter.registration.teamSize = getExpectedTeamSize();
 
         invitation.status = 'accepted';
         invitation.respondedAt = new Date();
@@ -385,7 +506,11 @@ router.post('/notifications/:id/respond', authMiddleware, [
                 recipient.delegationMembers.push(member._id);
             }
 
-            if (!sameId(member._id, inviter._id) && !(member.delegationMembers || []).some((memberId) => sameId(memberId, recipient._id))) {
+            if (
+                !sameId(member._id, inviter._id) &&
+                !sameId(member._id, recipient._id) &&
+                !(member.delegationMembers || []).some((memberId) => sameId(memberId, recipient._id))
+            ) {
                 member.delegationMembers.push(recipient._id);
                 await member.save();
             }
@@ -405,6 +530,49 @@ router.post('/notifications/:id/respond', authMiddleware, [
         res.json({
             message: 'Convite aceito com sucesso.',
             ...buildDelegationSummary(refreshedRecipient)
+        });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+router.post('/leave', authMiddleware, async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ error: 'Usuario nao encontrado.' });
+        }
+
+        if (user.role !== 'candidate') {
+            return res.status(403).json({ error: 'A formacao de delegacao esta disponivel apenas para delegados.' });
+        }
+
+        const memberIds = getUniqueMemberIds(user);
+        if (!memberIds.length) {
+            return res.status(400).json({ error: 'Voce nao faz parte de nenhuma delegacao no momento.' });
+        }
+
+        await Promise.all(memberIds.map((memberId) => (
+            User.updateOne(
+                { _id: memberId },
+                { $pull: { delegationMembers: user._id } }
+            )
+        )));
+
+        await User.updateOne(
+            { _id: user._id },
+            { $set: { delegationMembers: [] } }
+        );
+
+        const affectedUsers = await User.find({
+            _id: { $in: [user._id, ...memberIds] }
+        });
+        await syncPartnerLabels(affectedUsers);
+
+        const refreshed = await loadCurrentUser(user._id);
+        res.json({
+            message: 'Voce saiu da delegacao com sucesso.',
+            ...buildDelegationSummary(refreshed)
         });
     } catch (error) {
         res.status(400).json({ error: error.message });

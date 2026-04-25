@@ -4,17 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meu Perfil - MaxOnu 2026</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/profile.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
-    <link rel="icon" href="images/logo-maxonu.png" type="image/png">
-    <script src="js/includes.js?v=20260420-headerfix"></script>
-    <script src="js/profile.js" defer></script>
+    <link rel="icon" href="/images/logo-maxonu.png" type="image/png">
+    <script src="/js/includes.js?v=20260420-headerfix"></script>
+    <script src="/js/profile.js" defer></script>
 </head>
 <body class="profile-page">
     <include src="header.html"></include>
 
-    <main class="main-content" id="main-content">
-        <section class="content-section">
+    <main class="main-content profile-main" id="main-content">
+        <section class="content-section profile-hero-section">
             <div class="dashboard-container">
                 <section class="dashboard-hero">
                     <div class="dashboard-hero-copy">
@@ -29,14 +30,23 @@
                 </div>
             </div>
         </section>
-        <section class="content-section">
-            <div id="registrationPanel" class="profile-panel-shell">
-                <p>Carregando inscrição...</p>
+
+        <section class="content-section profile-panels-section">
+            <div class="dashboard-container profile-panels-grid">
+                <div id="registrationPanel" class="profile-panel-shell">
+                    <p>Carregando inscrição...</p>
+                </div>
+                <div id="delegationPanel" class="profile-panel-shell">
+                    <p>Carregando delegação...</p>
+                </div>
             </div>
         </section>
-        <section class="content-section">
-            <div id="delegationPanel" class="profile-panel-shell">
-                <p>Carregando delegação...</p>
+
+        <section class="content-section profile-security-section">
+            <div class="dashboard-container">
+                <div id="securityPanel" class="profile-panel-shell">
+                    <p>Carregando segurança da conta...</p>
+                </div>
             </div>
         </section>
     </main>
@@ -44,3 +54,4 @@
     <include src="footer.html"></include>
 </body>
 </html>
+

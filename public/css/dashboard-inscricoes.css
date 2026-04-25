@@ -1,0 +1,312 @@
+.dashboard-inscricoes-page {
+    --adv-ink: #062643;
+    --adv-muted: #4a697f;
+    --adv-line: rgba(6, 38, 67, 0.14);
+    --adv-glass: rgba(255, 255, 255, 0.9);
+    --adv-shadow: 0 20px 42px rgba(6, 38, 67, 0.14);
+    background:
+        radial-gradient(circle at 4% 0%, rgba(255, 209, 102, 0.18), transparent 34%),
+        radial-gradient(circle at 100% 12%, rgba(31, 111, 168, 0.16), transparent 34%),
+        #edf3f8;
+}
+
+.dashboard-inscricoes-page .dashboard-container {
+    margin-top: 2rem;
+}
+
+.dashboard-inscricoes-page .dashboard-hero {
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 30px;
+    background:
+        radial-gradient(circle at 90% 10%, rgba(255, 209, 102, 0.25), transparent 32%),
+        linear-gradient(132deg, #072b49 0%, #0d446d 56%, #18618f 100%);
+    box-shadow: 0 24px 52px rgba(8, 31, 56, 0.24);
+}
+
+.dashboard-inscricoes-page .dashboard-panel {
+    border-radius: 24px;
+    border: 1px solid var(--adv-line);
+    background:
+        radial-gradient(circle at 90% 10%, rgba(255, 209, 102, 0.13), transparent 34%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.97), rgba(246, 250, 255, 0.94));
+    box-shadow: var(--adv-shadow);
+}
+
+.dashboard-inscricoes-page .dashboard-hero-copy h1,
+.dashboard-inscricoes-page .dashboard-hero-copy p,
+.dashboard-inscricoes-page .dashboard-kicker {
+    color: #ffffff;
+}
+
+.dashboard-inscricoes-page .dashboard-kicker {
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 228, 173, 0.45);
+}
+
+.dashboard-inscricoes-page .dashboard-hero-badge {
+    border-radius: 999px;
+    min-height: 50px;
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.24);
+}
+
+.dashboard-inscricoes-page .dashboard-section-heading h2 {
+    color: var(--adv-ink);
+    letter-spacing: -0.01em;
+}
+
+.dashboard-inscricoes-page .dashboard-section-heading p,
+.dashboard-inscricoes-page .register-note {
+    color: var(--adv-muted);
+}
+
+.dashboard-inscricoes-page .feature-card,
+.dashboard-inscricoes-page .advanced-assignment-card,
+.dashboard-inscricoes-page .teammate-card {
+    border-radius: 16px;
+    border: 1px solid var(--adv-line);
+    background: var(--adv-glass);
+}
+
+.dashboard-inscricoes-page .feature-card h3 {
+    margin-bottom: 0.4rem;
+}
+
+.dashboard-inscricoes-page .feature-card p {
+    color: var(--adv-muted);
+}
+
+.dashboard-inscricoes-page .dashboard-question-actions .view-button,
+.dashboard-inscricoes-page .dashboard-question-actions .delete-button,
+.dashboard-inscricoes-page .dashboard-export-actions .view-button {
+    min-height: 46px;
+    border-radius: 14px;
+}
+
+.dashboard-inscricoes-page .dashboard-export-actions {
+    margin-top: 0.85rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.65rem;
+}
+
+.dashboard-inscricoes-page .dashboard-export-actions .view-button {
+    width: 100%;
+}
+
+.dashboard-inscricoes-page #advancedExportEmXlsxBtn,
+.dashboard-inscricoes-page #advancedExport89XlsxBtn {
+    border: 1px solid rgba(21, 101, 192, 0.2);
+    background: linear-gradient(135deg, rgba(239, 246, 255, 0.98), rgba(219, 234, 254, 0.96));
+    color: #1d4ed8;
+}
+
+.dashboard-inscricoes-page #advancedExportEmXlsxBtn:hover,
+.dashboard-inscricoes-page #advancedExport89XlsxBtn:hover {
+    border-color: rgba(21, 101, 192, 0.34);
+    background: linear-gradient(135deg, rgba(219, 234, 254, 1), rgba(191, 219, 254, 0.98));
+}
+
+.dashboard-inscricoes-page .advanced-filters-grid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    padding: 1rem;
+    border-radius: 16px;
+    border: 1px solid rgba(6, 38, 67, 0.12);
+    background: rgba(255, 255, 255, 0.72);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
+}
+
+.dashboard-inscricoes-page .registration-status-grid {
+    margin-top: 1rem;
+}
+
+.dashboard-inscricoes-page .registration-status-item {
+    min-height: 100%;
+}
+
+.dashboard-inscricoes-page .advanced-demand-grid {
+    margin-top: 0.9rem;
+}
+
+.dashboard-inscricoes-page .advanced-segment-ranking-grid {
+    margin-top: 0.9rem;
+}
+
+.dashboard-inscricoes-page .advanced-demand-card h3 {
+    font-size: 1rem;
+    margin-bottom: 0.45rem;
+}
+
+.dashboard-inscricoes-page .advanced-demand-card p {
+    margin: 0.2rem 0;
+}
+
+.dashboard-inscricoes-page .advanced-assignment-card {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.dashboard-inscricoes-page .assignment-meta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 0.45rem 0.75rem;
+}
+
+.dashboard-inscricoes-page .assignment-meta-grid p {
+    margin: 0;
+}
+
+.dashboard-inscricoes-page .advanced-segment-card h3 {
+    margin-bottom: 0.45rem;
+}
+
+.dashboard-inscricoes-page .advanced-segment-list {
+    margin: 0;
+    padding-left: 1.15rem;
+    display: grid;
+    gap: 0.4rem;
+}
+
+.dashboard-inscricoes-page .advanced-segment-list li {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.55rem 0.6rem;
+    border-radius: 12px;
+    border: 1px solid rgba(6, 38, 67, 0.1);
+    background: rgba(255, 255, 255, 0.72);
+    color: var(--adv-muted);
+}
+
+.dashboard-inscricoes-page .advanced-segment-list li.is-tied {
+    border-color: rgba(217, 119, 6, 0.34);
+    background: linear-gradient(180deg, rgba(255, 251, 235, 0.9), rgba(254, 243, 199, 0.82));
+}
+
+.dashboard-inscricoes-page .advanced-segment-list strong {
+    color: var(--adv-ink);
+}
+
+.dashboard-inscricoes-page .advanced-segment-list .ranking-meta {
+    display: grid;
+    gap: 0.1rem;
+}
+
+.dashboard-inscricoes-page .advanced-segment-list .ranking-position {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    display: inline-grid;
+    place-items: center;
+    font-size: 0.78rem;
+    font-weight: 800;
+    border: 1px solid transparent;
+}
+
+.dashboard-inscricoes-page .advanced-segment-list .ranking-position.is-gold {
+    color: #92400e;
+    border-color: rgba(217, 119, 6, 0.35);
+    background: rgba(254, 240, 138, 0.82);
+}
+
+.dashboard-inscricoes-page .advanced-segment-list .ranking-position.is-silver {
+    color: #334155;
+    border-color: rgba(100, 116, 139, 0.35);
+    background: rgba(226, 232, 240, 0.86);
+}
+
+.dashboard-inscricoes-page .advanced-segment-list .ranking-position.is-bronze {
+    color: #7c2d12;
+    border-color: rgba(154, 52, 18, 0.35);
+    background: rgba(254, 215, 170, 0.86);
+}
+
+.dashboard-inscricoes-page .advanced-segment-list .ranking-position.is-default {
+    color: #0f4c75;
+    border-color: rgba(15, 76, 117, 0.25);
+    background: rgba(224, 242, 254, 0.86);
+}
+
+.dashboard-inscricoes-page .advanced-segment-list .ranking-tie-badge {
+    display: inline-flex;
+    align-items: center;
+    height: 1.45rem;
+    padding: 0 0.55rem;
+    border-radius: 999px;
+    border: 1px solid rgba(180, 83, 9, 0.32);
+    background: rgba(255, 237, 213, 0.9);
+    color: #9a3412;
+    font-size: 0.73rem;
+    font-weight: 700;
+}
+
+.dashboard-inscricoes-page .assignment-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    border: 1px solid transparent;
+}
+
+.dashboard-inscricoes-page .assignment-badge.is-good {
+    color: #166534;
+    border-color: rgba(22, 101, 52, 0.24);
+    background: rgba(220, 252, 231, 0.9);
+}
+
+.dashboard-inscricoes-page .assignment-badge.is-warn {
+    color: #92400e;
+    border-color: rgba(146, 64, 14, 0.24);
+    background: rgba(254, 243, 199, 0.92);
+}
+
+.dashboard-inscricoes-page .assignment-badge.is-neutral {
+    color: #1d4ed8;
+    border-color: rgba(29, 78, 216, 0.18);
+    background: rgba(219, 234, 254, 0.9);
+}
+
+.dashboard-inscricoes-page .advanced-assign-form {
+    align-items: end;
+}
+
+.dashboard-inscricoes-page .dashboard-inline-form select,
+.dashboard-inscricoes-page .dashboard-inline-form input[type="text"] {
+    border-radius: 12px;
+    border: 1px solid rgba(6, 38, 67, 0.18);
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.dashboard-inscricoes-page .dashboard-inline-form select:focus,
+.dashboard-inscricoes-page .dashboard-inline-form input[type="text"]:focus {
+    border-color: rgba(24, 97, 143, 0.5);
+    box-shadow: 0 0 0 3px rgba(24, 97, 143, 0.15);
+}
+
+.dashboard-inscricoes-page .dashboard-resource-list .dashboard-empty {
+    border-radius: 14px;
+    border: 1px dashed rgba(6, 38, 67, 0.2);
+    background: rgba(255, 255, 255, 0.62);
+    padding: 0.9rem 1rem;
+}
+
+.dashboard-inscricoes-page #advancedUpdatedAt {
+    margin-top: 0.8rem;
+}
+
+@media (max-width: 640px) {
+    .dashboard-inscricoes-page .assignment-meta-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-inscricoes-page .advanced-segment-ranking-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-inscricoes-page .dashboard-export-actions {
+        grid-template-columns: 1fr;
+    }
+}

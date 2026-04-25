@@ -4,27 +4,13 @@ const authMiddleware = require('../middleware/auth');
 const Post = require('../models/Post');
 const User = require('../models/User');
 const multer = require('multer');
-const fs = require('fs');
-const path = require('path');
+const { hasCloudinaryConfig, uploadImageBuffer } = require('../utils/cloudinary');
 
 const router = express.Router();
 const POST_MANAGER_ROLES = new Set(['admin', 'teacher', 'coordinator', 'press']);
 
-const imageStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadDir = path.join(__dirname, '..', 'public', 'images', 'posts');
-    fs.mkdirSync(uploadDir, { recursive: true });
-    cb(null, uploadDir);
-  },
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname).toLowerCase();
-    const safeName = `${Date.now()}-${file.fieldname}-${Math.round(Math.random() * 1e9)}${ext}`;
-    cb(null, safeName);
-  }
-});
-
 const upload = multer({
-  storage: imageStorage,
+  storage: multer.memoryStorage(),
   limits: {
     fileSize: 5 * 1024 * 1024
   },
@@ -81,7 +67,19 @@ router.post('/', authMiddleware, ensurePostManager, uploadImage, [
     const title = req.body.title.trim();
     const content = req.body.content.trim();
     const excerpt = (req.body.excerpt || '').trim() || content.slice(0, 170);
-    const imageUrl = req.file ? `/images/posts/${req.file.filename}` : '';
+    let imageUrl = '';
+
+    if (req.file) {
+      if (!hasCloudinaryConfig) {
+        return res.status(500).json({ error: 'Upload de imagem indisponível: Cloudinary não configurado.' });
+      }
+
+      const uploadedImage = await uploadImageBuffer(req.file.buffer, {
+        public_id: `post-${Date.now()}-${Math.round(Math.random() * 1e9)}`
+      });
+
+      imageUrl = uploadedImage?.secure_url || '';
+    }
 
     const post = new Post({
       title,

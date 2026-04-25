@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel Administrativo - MaxOnu 2026</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="/css/styles.css?v=20260425-dashboard-v2">
+    <link rel="stylesheet" href="/css/dashboard.css?v=20260425-dashboard-v2">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
-    <link rel="icon" href="images/logo-maxonu.png" type="image/png">
-    <script src="js/includes.js?v=20260420-headerfix"></script>
-    <script src="js/dashboard.js" defer></script>
+    <link rel="icon" href="/images/logo-maxonu.png" type="image/png">
+    <script src="/js/includes.js?v=20260420-headerfix"></script>
+    <script src="/js/dashboard.js" defer></script>
 </head>
-<body>
+<body class="dashboard-page">
     <include src="header.html"></include>
 
     <main class="main-content" id="main-content">
@@ -39,6 +40,56 @@
                     <p class="register-note registration-feedback" id="registrationStatus">Consultando status das inscrições...</p>
                 </section>
 
+                <section class="dashboard-panel dashboard-resource-panel" id="manualAssignmentPanel" hidden>
+                    <div class="dashboard-section-heading">
+                        <span class="dashboard-section-kicker">Resultados</span>
+                        <h2>Alocação manual por delegação</h2>
+                        <p>Defina o comitê final por delegação (dupla/trio), usando a 1ª, 2ª e 3ª opção do formulário.</p>
+                    </div>
+                    <div class="dashboard-question-actions">
+                        <a href="/dashboard-inscricoes" class="view-button">Abrir painel aprofundado</a>
+                    </div>
+                    <div class="dashboard-summary-grid segment-ranking-grid" id="registrationSegmentRanking">
+                        <article class="feature-card">
+                            <h3>Ranking EM</h3>
+                            <p>Carregue delegações para ver os comitês mais escolhidos no Ensino Médio.</p>
+                        </article>
+                        <article class="feature-card">
+                            <h3>Ranking 8º e 9º</h3>
+                            <p>Carregue delegações para ver os comitês mais escolhidos no 8º e 9º ano.</p>
+                        </article>
+                    </div>
+                    <div class="dashboard-inline-form">
+                        <label for="registrationPreferenceFilter">Filtrar por opção</label>
+                        <select id="registrationPreferenceFilter">
+                            <option value="all">Todas as delegações</option>
+                            <option value="first">1ª opção</option>
+                            <option value="second">2ª opção</option>
+                            <option value="third">3ª opção</option>
+                            <option value="unassigned">Sem comitê definido</option>
+                        </select>
+                        <label for="registrationCommitteeTarget">Comitê alvo</label>
+                        <select id="registrationCommitteeTarget">
+                            <option value="all">Todos os comitês</option>
+                            <option value="1">Conselho de Direitos Humanos (CDH - 2026)</option>
+                            <option value="2">Assembleia Geral das Nações Unidas (AGNU)</option>
+                            <option value="3">Alto Comissariado das Nações Unidas para Refugiados (ACNUR)</option>
+                            <option value="4">Bioética e Genética Humana</option>
+                            <option value="5">Nova Ordem Global</option>
+                            <option value="6">Conselho de Direitos Humanos das Nações Unidas (UNHRC)</option>
+                            <option value="7">Organização das Nações Unidas para as Mulheres (ONU Mulheres)</option>
+                        </select>
+                        <button type="button" class="view-button" id="loadRegistrationsBtn">Carregar delegações</button>
+                    </div>
+                    <div class="dashboard-export-actions">
+                        <button type="button" class="view-button" id="exportResultsCsvBtn">Baixar resultados CSV</button>
+                        <button type="button" class="view-button" id="exportResultsXlsxBtn">Baixar resultados XLSX</button>
+                    </div>
+                    <div id="manualAssignmentList" class="committee-users-list dashboard-resource-list">
+                        <p>Carregue as delegações para definir os comitês manualmente.</p>
+                    </div>
+                </section>
+
                 <div class="dashboard-tools-grid dashboard-tools-grid-enhanced">
                     <section class="dashboard-panel dashboard-panel-emphasis">
                         <div class="dashboard-section-heading">
@@ -49,13 +100,13 @@
                         <div class="dashboard-inline-form">
                             <label for="committeeFilter">Número do comitê</label>
                             <select id="committeeFilter">
-                                <option value="1">Comitê 1</option>
-                                <option value="2">Comitê 2</option>
-                                <option value="3">Comitê 3</option>
-                                <option value="4">Comitê 4</option>
-                                <option value="5">Comitê 5</option>
-                                <option value="6">Comitê 6</option>
-                                <option value="7">Comitê 7</option>
+                                <option value="1">Conselho de Direitos Humanos (CDH - 2026)</option>
+                                <option value="2">Assembleia Geral das Nações Unidas (AGNU)</option>
+                                <option value="3">Alto Comissariado das Nações Unidas para Refugiados (ACNUR)</option>
+                                <option value="4">Bioética e Genética Humana</option>
+                                <option value="5">Nova Ordem Global</option>
+                                <option value="6">Conselho de Direitos Humanos das Nações Unidas (UNHRC)</option>
+                                <option value="7">Organização das Nações Unidas para as Mulheres (ONU Mulheres)</option>
                             </select>
                             <button type="button" class="view-button" id="loadCommitteeBtn">Carregar lista</button>
                         </div>
@@ -78,13 +129,13 @@
                             <div>
                                 <label for="assignmentCommitteeFilter">Comitê da delegação</label>
                                 <select id="assignmentCommitteeFilter">
-                                    <option value="1">Comitê 1</option>
-                                    <option value="2">Comitê 2</option>
-                                    <option value="3">Comitê 3</option>
-                                    <option value="4">Comitê 4</option>
-                                    <option value="5">Comitê 5</option>
-                                    <option value="6">Comitê 6</option>
-                                    <option value="7">Comitê 7</option>
+                                    <option value="1">Conselho de Direitos Humanos (CDH - 2026)</option>
+                                    <option value="2">Assembleia Geral das Nações Unidas (AGNU)</option>
+                                    <option value="3">Alto Comissariado das Nações Unidas para Refugiados (ACNUR)</option>
+                                    <option value="4">Bioética e Genética Humana</option>
+                                    <option value="5">Nova Ordem Global</option>
+                                    <option value="6">Conselho de Direitos Humanos das Nações Unidas (UNHRC)</option>
+                                    <option value="7">Organização das Nações Unidas para as Mulheres (ONU Mulheres)</option>
                                 </select>
                             </div>
                             <button type="button" class="view-button" id="loadDelegationsBtn">Carregar delegações</button>

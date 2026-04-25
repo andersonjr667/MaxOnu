@@ -62,17 +62,17 @@ function initAuth() {
             }
         }
 
-        if (['/dashboard.html', '/admin.html', '/coordenacao.html', '/orientadores.html', '/imprensa-dashboard.html', '/inscricao.html'].includes(currentPath) && !isTokenValido) {
-            window.location.href = '/login.html';
+        if (['/dashboard', '/dashboard.html', '/dashboard-inscricoes', '/dashboard-inscricoes.html', '/admin', '/admin.html', '/coordenacao', '/coordenacao.html', '/orientadores', '/orientadores.html', '/imprensa-dashboard', '/imprensa-dashboard.html', '/inscricao', '/inscricao.html', '/profile', '/profile.html'].includes(currentPath) && !isTokenValido) {
+            window.location.href = '/login';
         }
     }
 
     function getRoleRedirect(role) {
-        if (role === 'admin') return '/admin.html';
-        if (role === 'coordinator') return '/coordenacao.html';
-        if (role === 'teacher') return '/orientadores.html';
-        if (role === 'press') return '/imprensa-dashboard.html';
-        return '/profile.html';
+        if (role === 'admin') return '/admin';
+        if (role === 'coordinator') return '/coordenacao';
+        if (role === 'teacher') return '/orientadores';
+        if (role === 'press') return '/imprensa-dashboard';
+        return '/profile';
     }
 
     function getSafeNextPath() {
@@ -160,6 +160,16 @@ function initAuth() {
                 throw new Error(parseValidationError(data.error) || 'Erro ao fazer login.');
             }
 
+            // Se 2FA é obrigatório, redirecionar para verificação
+            if (data.twoFactorRequired) {
+                sessionStorage.setItem('2fa_user_id', data.userId);
+                displayMessage('Verificação de dois fatores necessária...');
+                setTimeout(() => {
+                    window.location.href = '/verify-2fa-login';
+                }, 500);
+                return;
+            }
+
             localStorage.setItem('token', data.token);
             localStorage.setItem('isAdmin', data.isAdmin);
             localStorage.setItem('role', data.role || 'candidate');
@@ -189,17 +199,32 @@ function initAuth() {
         const submitButton = registerForm.querySelector('button[type="submit"]');
         const fullNameInput = document.getElementById('newFullName');
         const emailInput = document.getElementById('registerEmail');
+        const usernameInput = document.getElementById('registerUsername');
+        const genderInput = document.getElementById('registerGender');
         const unidadeInput = document.getElementById('unidade');
         const turmaInput = document.getElementById('turma');
         const passwordInput = document.getElementById('newPassword');
+        const acceptTermsInput = document.getElementById('acceptTerms');
         const fullName = fullNameInput?.value.trim() || '';
         const email = emailInput?.value.trim() || '';
+        const username = usernameInput?.value.trim() || '';
+        const gender = genderInput?.value || '';
         const unidade = unidadeInput?.value || '';
         const turma = turmaInput?.value || '';
         const password = passwordInput?.value || '';
 
         if (!unidade || !turma) {
             displayMessage('Selecione a unidade e a turma para concluir o cadastro.', true);
+            return;
+        }
+
+        if (!gender) {
+            displayMessage('Selecione o gênero para concluir o cadastro.', true);
+            return;
+        }
+
+        if (!acceptTermsInput?.checked) {
+            displayMessage('Você precisa aceitar os termos de uso para criar a conta.', true);
             return;
         }
 
@@ -212,7 +237,7 @@ function initAuth() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ fullName, email, classGroup, password })
+                body: JSON.stringify({ fullName, username, email, classGroup, password, gender, acceptTerms: true })
             });
 
             const data = await parseApiResponse(response);
@@ -220,7 +245,7 @@ function initAuth() {
                 throw new Error(parseValidationError(data.error) || 'Erro ao registrar.');
             }
 
-            displayMessage('Cadastro realizado com sucesso! Faça login para continuar.');
+            displayMessage(`Cadastro realizado com sucesso! Seu usuário é @${data.username || username}. Faça login para continuar.`);
             registerForm.reset();
             setTimeout(() => switchTab('login'), 800);
         } catch (error) {

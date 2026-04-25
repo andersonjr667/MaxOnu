@@ -59,7 +59,7 @@ async function initBlogPage() {
 
     if (createPostBtn) {
         createPostBtn.addEventListener('click', () => {
-            window.location.href = 'create-post.html';
+            window.location.href = '/create-post';
         });
     }
 

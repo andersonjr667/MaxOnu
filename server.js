@@ -32,9 +32,11 @@ const DEFAULT_PORT = Number.isInteger(parsedEnvPort) ? parsedEnvPort : 3000;
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 const DEFAULT_ADMIN = {
   username: 'Anderson',
+  fullName: 'Anderson (Admin)',
   password: '152070an',
   email: 'alsj1520@gmail.com',
-  role: 'admin'
+  role: 'admin',
+  classGroup: 'Administracao'
 };
 let serverInstance;
 let PORT = DEFAULT_PORT;
@@ -160,6 +162,11 @@ async function ensureAdminUser() {
     hasChanges = true;
   }
 
+  if (!existingUser.fullName || existingUser.fullName.trim() === '') {
+    existingUser.fullName = DEFAULT_ADMIN.fullName;
+    hasChanges = true;
+  }
+
   const passwordMatches = await existingUser.comparePassword(DEFAULT_ADMIN.password);
   if (!passwordMatches) {
     existingUser.password = DEFAULT_ADMIN.password;
@@ -223,7 +230,13 @@ if (error) {
 
 // Middleware
 app.use(helmet({
-  crossOriginResourcePolicy: false
+  crossOriginResourcePolicy: false,
+  contentSecurityPolicy: {
+    useDefaults: true,
+    directives: {
+      "img-src": ["'self'", "data:", "blob:", "https://res.cloudinary.com"]
+    }
+  }
 }));
 if (!IS_PRODUCTION) {
   app.use(morgan('dev'));
@@ -254,7 +267,10 @@ const authApiLimiter = createApiLimiter({
 
 app.use('/api', publicApiLimiter);
 app.use('/api', writeApiLimiter);
-app.use(['/api/login', '/api/register', '/api/check-admin'], authApiLimiter);
+app.use(
+  ['/api/login', '/api/register', '/api/check-admin', '/api/forgot-password', '/api/reset-password', '/api/verify-2fa-login'],
+  authApiLimiter
+);
 
 // Health
 app.get('/health', (req, res) => res.json({

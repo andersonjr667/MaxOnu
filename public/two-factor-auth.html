@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autenticação de Dois Fatores - MaxOnu 2026</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="icon" href="/images/logo-maxonu.png" type="image/png">
+    <script src="/js/includes.js?v=20260420-headerfix"></script>
+</head>
+<body>
+    <include src="header.html"></include>
+
+    <main class="main-content">
+        <section class="content-section">
+            <div class="dashboard-container">
+                <section class="dashboard-hero">
+                    <div class="dashboard-hero-copy">
+                        <span class="dashboard-kicker">Segurança avançada</span>
+                        <h1>Autenticação de dois fatores</h1>
+                        <p>Proteja sua conta com um aplicativo autenticador e códigos de backup.</p>
+                    </div>
+                    <div class="dashboard-hero-badge">2FA</div>
+                </section>
+
+                <section class="dashboard-panel security-panel">
+                    <div class="dashboard-section-heading">
+                        <span class="dashboard-section-kicker">Controle de acesso</span>
+                        <h2>Configurar ou revisar 2FA</h2>
+                        <p>Você pode ativar o 2FA, verificar o status atual da conta e desativá-lo quando necessário.</p>
+                    </div>
+
+                    <div class="login-tab-bar security-tab-bar" role="tablist" aria-label="Autenticação em duas etapas">
+                        <button type="button" class="login-tab is-active" data-twofa-tab="status">Status</button>
+                        <button type="button" class="login-tab" data-twofa-tab="setup">Configurar</button>
+                        <button type="button" class="login-tab" data-twofa-tab="disable">Desativar</button>
+                    </div>
+
+                    <div id="twofaAlert" class="login-message" hidden></div>
+
+                    <div data-twofa-panel="status">
+                        <div id="twofaStatusCards" class="dashboard-summary-grid profile-summary-grid">
+                            <article class="feature-card blue-accent">
+                                <h3>Status</h3>
+                                <p>Carregando...</p>
+                            </article>
+                        </div>
+                    </div>
+
+                    <div data-twofa-panel="setup" hidden>
+                        <div class="content-box security-note-card">
+                            <h3>1. Instale um aplicativo autenticador</h3>
+                            <p>Você pode usar Google Authenticator, Microsoft Authenticator, Authy ou outro app compatível com TOTP.</p>
+                        </div>
+
+                        <div class="create-post-actions security-actions-start">
+                            <button type="button" class="view-button" id="generateQrButton">Gerar QR Code</button>
+                        </div>
+
+                        <div id="setupResult" class="security-setup-result" hidden>
+                            <div class="dashboard-summary-grid profile-summary-grid">
+                                <article class="feature-card blue-accent security-wide-card">
+                                    <h3>2. Escaneie o QR Code</h3>
+                                    <div class="security-qr-wrap">
+                                        <img id="qrImage" class="security-qr-image" alt="QR Code do 2FA">
+                                        <div class="security-secret-block">
+                                            <p>Se preferir, insira manualmente esta chave no aplicativo:</p>
+                                            <code id="secretKey" class="security-secret-code"></code>
+                                            <button type="button" class="view-button security-copy-button" id="copySecretButton">Copiar chave</button>
+                                        </div>
+                                    </div>
+                                </article>
+                                <article class="feature-card security-wide-card">
+                                    <h3>3. Guarde os códigos de backup</h3>
+                                    <div id="backupCodesList" class="backup-codes-grid"></div>
+                                    <button type="button" class="view-button secondary security-copy-backup-button" id="copyBackupButton">Copiar códigos</button>
+                                </article>
+                            </div>
+
+                            <form id="verify2faForm" class="dashboard-form security-verify-form">
+                                <div class="form-group">
+                                    <label for="verifyCode">4. Digite o código de 6 dígitos do autenticador</label>
+                                    <input type="text" id="verifyCode" placeholder="000000" inputmode="numeric" maxlength="6" pattern="[0-9]{6}" required>
+                                </div>
+                                <div class="create-post-actions">
+                                    <button type="submit" class="view-button">Ativar 2FA</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div data-twofa-panel="disable" hidden>
+                        <div class="content-box security-note-card">
+                            <h3>Desativar proteção</h3>
+                            <p>Ao desativar o 2FA, o acesso voltará a depender apenas da sua senha atual.</p>
+                        </div>
+
+                        <form id="disable2faForm" class="dashboard-form">
+                            <div class="form-group">
+                                <label for="disablePassword">Confirme sua senha</label>
+                                <input type="password" id="disablePassword" placeholder="Digite sua senha atual" required>
+                            </div>
+                            <div class="create-post-actions">
+                                <button type="submit" class="delete-button" id="disable2faButton">Desativar 2FA</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <p class="register-note security-back-link">
+                        <a href="/profile" class="text-link">Voltar ao perfil</a>
+                    </p>
+                </section>
+            </div>
+        </section>
+    </main>
+
+    <include src="footer.html"></include>
+
+    <script>
+        const API_URL = '/api';
+        let currentSecret = '';
+        let currentBackupCodes = [];
+
+        function getToken() {
+            return window.MaxOnuSession?.getToken?.() || localStorage.getItem('token');
+        }
+
+        function setAlert(message, isError = false) {
+            const container = document.getElementById('twofaAlert');
+            container.hidden = false;
+            container.className = `login-message ${isError ? 'is-error' : 'is-success'}`;
+            container.innerHTML = message;
+        }
+
+        function clearAlert() {
+            const container = document.getElementById('twofaAlert');
+            container.hidden = true;
+            container.innerHTML = '';
+            container.className = 'login-message';
+        }
+
+        function requireAuth() {
+            const token = getToken();
+            if (!token) {
+                window.location.href = '/login';
+                return '';
+            }
+            return token;
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('[data-twofa-panel]').forEach((panel) => {
+                panel.hidden = panel.dataset.twofaPanel !== tabName;
+            });
+            document.querySelectorAll('[data-twofa-tab]').forEach((button) => {
+                button.classList.toggle('is-active', button.dataset.twofaTab === tabName);
+            });
+            clearAlert();
+        }
+
+        async function parseJson(response) {
+            return response.json().catch(() => ({}));
+        }
+
+        async function loadStatus() {
+            const token = requireAuth();
+            if (!token) return;
+
+            try {
+                const response = await fetch(`${API_URL}/2fa-status`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await parseJson(response);
+                if (!response.ok) {
+                    throw new Error(data.error || 'Não foi possível consultar o status do 2FA.');
+                }
+
+                document.getElementById('twofaStatusCards').innerHTML = `
+                    <article class="feature-card blue-accent">
+                        <h3>Status atual</h3>
+                        <p>${data.twoFactorEnabled ? '2FA ativado' : '2FA desativado'}</p>
+                    </article>
+                    <article class="feature-card">
+                        <h3>Verificação concluída</h3>
+                        <p>${data.twoFactorVerified ? 'Configuração confirmada' : 'Ainda não verificada'}</p>
+                    </article>
+                    <article class="feature-card">
+                        <h3>Próximo login</h3>
+                        <p>${data.twoFactorEnabled ? 'Será necessário informar um código do autenticador.' : 'Entrará apenas com email/usuário e senha.'}</p>
+                    </article>
+                `;
+            } catch (error) {
+                setAlert(error.message || 'Erro ao carregar o status do 2FA.', true);
+            }
+        }
+
+        async function generateQrCode() {
+            const token = requireAuth();
+            if (!token) return;
+
+            const button = document.getElementById('generateQrButton');
+            button.disabled = true;
+            button.textContent = 'Gerando...';
+            clearAlert();
+
+            try {
+                const response = await fetch(`${API_URL}/setup-2fa`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                const data = await parseJson(response);
+                if (!response.ok) {
+                    throw new Error(data.error || 'Não foi possível gerar o QR Code.');
+                }
+
+                currentSecret = data.secret || '';
+                currentBackupCodes = Array.isArray(data.backupCodes) ? data.backupCodes : [];
+
+                document.getElementById('qrImage').src = data.qrCode;
+                document.getElementById('secretKey').textContent = currentSecret;
+                document.getElementById('backupCodesList').innerHTML = currentBackupCodes
+                    .map((code) => `<code class="backup-code-chip">${code}</code>`)
+                    .join('');
+                document.getElementById('setupResult').hidden = false;
+                setAlert('QR Code gerado com sucesso. Escaneie, salve os códigos de backup e confirme o código do autenticador.');
+            } catch (error) {
+                setAlert(error.message || 'Erro ao gerar o QR Code.', true);
+            } finally {
+                button.disabled = false;
+                button.textContent = 'Gerar QR Code';
+            }
+        }
+
+        async function verifySetup(event) {
+            event.preventDefault();
+            const token = requireAuth();
+            if (!token) return;
+
+            const code = document.getElementById('verifyCode').value.trim();
+            if (!/^\d{6}$/.test(code)) {
+                setAlert('Informe um código de 6 dígitos.', true);
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/verify-2fa-setup`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ token: code })
+                });
+
+                const data = await parseJson(response);
+                if (!response.ok) {
+                    throw new Error(Array.isArray(data.error) ? data.error[0]?.msg : data.error);
+                }
+
+                setAlert(data.message || '2FA ativado com sucesso.');
+                document.getElementById('verify2faForm').reset();
+                switchTab('status');
+                await loadStatus();
+            } catch (error) {
+                setAlert(error.message || 'Não foi possível ativar o 2FA.', true);
+            }
+        }
+
+        async function disableTwoFactor(event) {
+            event.preventDefault();
+            const token = requireAuth();
+            if (!token) return;
+
+            const button = document.getElementById('disable2faButton');
+            const password = document.getElementById('disablePassword').value;
+            button.disabled = true;
+            button.textContent = 'Desativando...';
+
+            try {
+                const response = await fetch(`${API_URL}/disable-2fa`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ password })
+                });
+
+                const data = await parseJson(response);
+                if (!response.ok) {
+                    throw new Error(Array.isArray(data.error) ? data.error[0]?.msg : data.error);
+                }
+
+                setAlert(data.message || '2FA desativado com sucesso.');
+                event.target.reset();
+                switchTab('status');
+                await loadStatus();
+            } catch (error) {
+                setAlert(error.message || 'Não foi possível desativar o 2FA.', true);
+            } finally {
+                button.disabled = false;
+                button.textContent = 'Desativar 2FA';
+            }
+        }
+
+        document.querySelectorAll('[data-twofa-tab]').forEach((button) => {
+            button.addEventListener('click', async () => {
+                switchTab(button.dataset.twofaTab);
+                if (button.dataset.twofaTab === 'status') {
+                    await loadStatus();
+                }
+            });
+        });
+
+        document.getElementById('generateQrButton').addEventListener('click', generateQrCode);
+        document.getElementById('verify2faForm').addEventListener('submit', verifySetup);
+        document.getElementById('disable2faForm').addEventListener('submit', disableTwoFactor);
+        document.getElementById('copySecretButton').addEventListener('click', async () => {
+            if (!currentSecret) return;
+            await navigator.clipboard.writeText(currentSecret);
+            setAlert('Chave secreta copiada para a área de transferência.');
+        });
+        document.getElementById('copyBackupButton').addEventListener('click', async () => {
+            if (!currentBackupCodes.length) return;
+            await navigator.clipboard.writeText(currentBackupCodes.join('\n'));
+            setAlert('Códigos de backup copiados para a área de transferência.');
+        });
+
+        loadStatus();
+    </script>
+</body>
+</html>

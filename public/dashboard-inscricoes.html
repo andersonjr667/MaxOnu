@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Aprofundado de Inscrições - MaxOnu 2026</title>
+    <link rel="stylesheet" href="/css/styles.css?v=20260425-dashboard-v2">
+    <link rel="stylesheet" href="/css/dashboard-inscricoes.css?v=20260425-dashboard-v2">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="icon" href="/images/logo-maxonu.png" type="image/png">
+    <script src="/js/includes.js?v=20260420-headerfix"></script>
+    <script src="/js/dashboard-inscricoes.js" defer></script>
+</head>
+<body class="dashboard-inscricoes-page">
+    <include src="header.html"></include>
+
+    <main class="main-content" id="main-content">
+        <section class="content-section">
+            <div class="dashboard-container">
+                <section class="dashboard-hero">
+                    <div class="dashboard-hero-copy">
+                        <span class="dashboard-kicker">Painel Aprofundado</span>
+                        <h1>Inscrições e resultados</h1>
+                        <p id="advancedLead">Carregando permissões e dados operacionais...</p>
+                    </div>
+                    <div class="dashboard-hero-badge" id="advancedRoleBadge">Validando acesso</div>
+                </section>
+
+                <div class="dashboard-summary-grid" id="advancedSummary"></div>
+
+                <section class="dashboard-panel dashboard-resource-panel">
+                    <div class="dashboard-section-heading">
+                        <span class="dashboard-section-kicker">Inscrições</span>
+                        <h2>Controle manual detalhado</h2>
+                        <p>Administração e coordenação podem fechar ou reabrir inscrições, com leitura detalhada do estado atual do formulário.</p>
+                    </div>
+                    <div class="dashboard-question-actions">
+                        <button type="button" class="delete-button" id="advancedToggleRegistrationBtn">Fechar inscrições</button>
+                        <button type="button" class="view-button" id="advancedRefreshBtn">Atualizar dados</button>
+                    </div>
+                    <div class="dashboard-summary-grid registration-status-grid" id="registrationStatusMeta"></div>
+                    <p class="register-note registration-feedback" id="advancedRegistrationStatus">Consultando status das inscrições...</p>
+                </section>
+
+                <section class="dashboard-panel dashboard-resource-panel">
+                    <div class="dashboard-section-heading">
+                        <span class="dashboard-section-kicker">Resultados</span>
+                        <h2>Alocação manual aprofundada por delegação</h2>
+                        <p>Aplique filtros operacionais, veja indicadores de aderência às preferências e salve o comitê final de cada delegação.</p>
+                    </div>
+
+                    <div class="dashboard-inline-form advanced-filters-grid">
+                        <div>
+                            <label for="advancedPreferenceFilter">Filtro de preferência</label>
+                            <select id="advancedPreferenceFilter">
+                                <option value="all">Todas as delegações</option>
+                                <option value="first">1ª opção</option>
+                                <option value="second">2ª opção</option>
+                                <option value="third">3ª opção</option>
+                                <option value="unassigned">Sem comitê definido</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="advancedCommitteeTarget">Comitê alvo</label>
+                            <select id="advancedCommitteeTarget">
+                                <option value="all">Todos os comitês</option>
+                                <option value="1">Conselho de Direitos Humanos (CDH - 2026)</option>
+                                <option value="2">Assembleia Geral das Nações Unidas (AGNU)</option>
+                                <option value="3">Alto Comissariado das Nações Unidas para Refugiados (ACNUR)</option>
+                                <option value="4">Bioética e Genética Humana</option>
+                                <option value="5">Nova Ordem Global</option>
+                                <option value="6">Conselho de Direitos Humanos das Nações Unidas (UNHRC)</option>
+                                <option value="7">Organização das Nações Unidas para as Mulheres (ONU Mulheres)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="advancedAssignmentStatus">Status de alocação</label>
+                            <select id="advancedAssignmentStatus">
+                                <option value="all">Todos</option>
+                                <option value="assigned">Com comitê final</option>
+                                <option value="unassigned">Sem comitê final</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="advancedTeamSizeFilter">Tamanho da delegação</label>
+                            <select id="advancedTeamSizeFilter">
+                                <option value="all">Todos</option>
+                                <option value="2">Duplas</option>
+                                <option value="3">Trios</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="advancedSearchFilter">Busca por nome/usuário</label>
+                            <input type="text" id="advancedSearchFilter" placeholder="Ex.: Maria, @joao, turma...">
+                        </div>
+                    </div>
+
+                    <div class="dashboard-question-actions">
+                        <button type="button" class="view-button" id="advancedLoadBtn">Aplicar filtros</button>
+                        <button type="button" class="view-button" id="advancedResetBtn">Limpar filtros</button>
+                    </div>
+
+                    <div class="dashboard-export-actions">
+                        <button type="button" class="view-button" id="advancedExportCsvBtn">Baixar resultados CSV</button>
+                        <button type="button" class="view-button" id="advancedExportXlsxBtn">Baixar resultados XLSX</button>
+                        <button type="button" class="view-button" id="advancedExportEmXlsxBtn">Baixar EM (XLSX)</button>
+                        <button type="button" class="view-button" id="advancedExport89XlsxBtn">Baixar 8º/9º (XLSX)</button>
+                    </div>
+
+                    <div class="dashboard-summary-grid" id="advancedFilteredSummary"></div>
+                    <div class="dashboard-summary-grid advanced-demand-grid" id="advancedCommitteeDemand"></div>
+                    <div class="dashboard-summary-grid advanced-segment-ranking-grid" id="advancedSegmentRanking"></div>
+                    <p class="register-note registration-feedback" id="advancedUpdatedAt">Aguardando carregamento de dados...</p>
+
+                    <div id="advancedAssignmentList" class="committee-users-list dashboard-resource-list">
+                        <p>Carregue as delegações para iniciar a alocação manual aprofundada.</p>
+                    </div>
+                </section>
+            </div>
+        </section>
+    </main>
+
+    <include src="footer.html"></include>
+</body>
+</html>

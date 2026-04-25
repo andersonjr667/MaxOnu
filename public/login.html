@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - MaxOnu 2026</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="/css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
-    <link rel="icon" href="images/logo-maxonu.png" type="image/png">
-    <script src="js/includes.js?v=20260420-headerfix"></script>
-    <script src="js/auth.js" defer></script>
+    <link rel="icon" href="/images/logo-maxonu.png" type="image/png">
+    <script src="/js/includes.js?v=20260420-headerfix"></script>
+    <script src="/js/auth.js" defer></script>
 </head>
 <body class="login-page">
     <include src="header.html"></include>
@@ -50,7 +50,7 @@
                 <section class="login-card-panel">
                     <div class="login-card-header">
                         <a href="/" class="login-brand">
-                            <img src="images/logo-maxonu.png" alt="MaxOnu 2026">
+                            <img src="/images/logo-maxonu.png" alt="MaxOnu 2026">
                             <div>
                                 <span>Colégio Maximus</span>
                                 <strong>MaxOnu 2026</strong>
@@ -68,13 +68,13 @@
                     <section class="login-box" data-auth-panel="login">
                         <div class="login-panel-copy">
                             <h2>Entrar</h2>
-                            <p>Use seu email e senha para acessar sua área.</p>
+                            <p>Use seu email ou usuário e senha para acessar sua área.</p>
                         </div>
 
                         <form id="loginForm" class="auth-form">
                             <div class="form-group">
-                                <label for="loginEmail">Email</label>
-                                <input type="text" id="loginEmail" name="loginEmail" placeholder="Digite seu email" required autocomplete="username">
+                                <label for="loginEmail">Email ou usuário</label>
+                                <input type="text" id="loginEmail" name="loginEmail" placeholder="Digite seu email ou usuário" required autocomplete="username">
                             </div>
 
                             <div class="form-group password-field">
@@ -85,6 +85,8 @@
 
                             <button type="submit" class="view-button auth-submit-btn">Entrar na MaxOnu</button>
                         </form>
+
+                        <p class="switch-form">Esqueceu a senha? <a href="/forgot-password" class="text-link">Recuperar acesso</a></p>
 
                         <p class="switch-form">Ainda não tem conta? <button type="button" class="text-link" data-auth-tab="register">Criar cadastro</button></p>
                     </section>
@@ -104,6 +106,25 @@
                             <div class="form-group">
                                 <label for="registerEmail">Email</label>
                                 <input type="email" id="registerEmail" name="registerEmail" placeholder="Digite seu email" required autocomplete="email">
+                            </div>
+
+                            <div class="auth-form-grid">
+                                <div class="form-group">
+                                    <label for="registerUsername">Usuário</label>
+                                    <input type="text" id="registerUsername" name="registerUsername" placeholder="Ex: maria.santos" required autocomplete="username">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="registerGender">Gênero</label>
+                                    <select id="registerGender" required>
+                                        <option value="">Selecione</option>
+                                        <option value="feminino">Feminino</option>
+                                        <option value="masculino">Masculino</option>
+                                        <option value="nao-binario">Não binário</option>
+                                        <option value="outro">Outro</option>
+                                        <option value="prefiro-nao-informar">Prefiro não informar</option>
+                                    </select>
+                                </div>
                             </div>
 
                             <div class="auth-form-grid">
@@ -138,6 +159,13 @@
                                 <button type="button" class="password-toggle" data-password-target="newPassword" aria-label="Mostrar senha">Mostrar</button>
                             </div>
 
+                            <div class="form-group auth-checkbox-group">
+                                <label class="checkbox-label" for="acceptTerms">
+                                    <input type="checkbox" id="acceptTerms" required>
+                                    <span>Li e aceito os <a href="/termos-de-uso" target="_blank" rel="noopener noreferrer">Termos de Uso</a> da plataforma.</span>
+                                </label>
+                            </div>
+
                             <button type="submit" class="view-button auth-submit-btn">Criar minha conta</button>
                         </form>
 
@@ -152,3 +180,4 @@
     <include src="footer.html"></include>
 </body>
 </html>
+

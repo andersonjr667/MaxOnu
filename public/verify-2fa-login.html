@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificar 2FA - MaxOnu 2026</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="icon" href="/images/logo-maxonu.png" type="image/png">
+</head>
+<body class="login-page">
+    <main class="main-content">
+        <section class="content-section">
+            <div class="login-shell verify-login-shell">
+                <section class="login-card-panel">
+                    <div class="login-card-header">
+                        <a href="/" class="login-brand">
+                            <img src="/images/logo-maxonu.png" alt="MaxOnu 2026">
+                            <div>
+                                <span>Colégio Maximus</span>
+                                <strong>MaxOnu 2026</strong>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="login-panel-copy">
+                        <h2>Verificação em duas etapas</h2>
+                        <p>Digite o código do aplicativo autenticador ou use um código de backup salvo anteriormente.</p>
+                    </div>
+
+                    <div id="messageContainer" class="login-message" hidden></div>
+
+                    <div class="login-tab-bar" role="tablist" aria-label="Verificação 2FA">
+                        <button type="button" class="login-tab is-active" data-verify-tab="totp">Authenticator</button>
+                        <button type="button" class="login-tab" data-verify-tab="backup">Backup</button>
+                    </div>
+
+                    <section data-verify-panel="totp">
+                        <form id="totp-form" class="auth-form">
+                            <div class="form-group">
+                                <label for="totp-code">Código de 6 dígitos</label>
+                                <input type="text" id="totp-code" placeholder="000000" inputmode="numeric" maxlength="6" pattern="[0-9]{6}" required autofocus>
+                            </div>
+                            <button type="submit" class="view-button auth-submit-btn">Verificar código</button>
+                        </form>
+                    </section>
+
+                    <section data-verify-panel="backup" hidden>
+                        <form id="backup-form" class="auth-form">
+                            <div class="form-group">
+                                <label for="backup-code">Código de backup</label>
+                                <input type="text" id="backup-code" class="backup-code-input" placeholder="Digite um código de backup" required>
+                            </div>
+                            <button type="submit" class="view-button auth-submit-btn">Verificar backup</button>
+                        </form>
+                    </section>
+
+                    <p class="switch-form">Precisa recomeçar? <a href="/login" class="text-link" id="logout2fa">Voltar para o login</a></p>
+                </section>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const API_URL = '/api';
+        const userId = sessionStorage.getItem('2fa_user_id');
+
+        if (!userId) {
+            window.location.href = '/login';
+        }
+
+        function displayMessage(message, isError = false) {
+            const container = document.getElementById('messageContainer');
+            container.hidden = false;
+            container.className = `login-message ${isError ? 'is-error' : 'is-success'}`;
+            container.textContent = message;
+        }
+
+        function clearMessage() {
+            const container = document.getElementById('messageContainer');
+            container.hidden = true;
+            container.className = 'login-message';
+            container.textContent = '';
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('[data-verify-panel]').forEach((panel) => {
+                panel.hidden = panel.dataset.verifyPanel !== tabName;
+            });
+            document.querySelectorAll('[data-verify-tab]').forEach((button) => {
+                button.classList.toggle('is-active', button.dataset.verifyTab === tabName);
+            });
+            clearMessage();
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('role');
+            localStorage.removeItem('isAdmin');
+            sessionStorage.removeItem('2fa_user_id');
+            window.location.href = '/login';
+        }
+
+        function getRoleRedirect(role) {
+            if (role === 'admin') return '/admin';
+            if (role === 'coordinator') return '/coordenacao';
+            if (role === 'teacher') return '/orientadores';
+            if (role === 'press') return '/imprensa-dashboard';
+            return '/profile';
+        }
+
+        async function submitVerification(tokenValue, successMessage) {
+            try {
+                const response = await fetch(`${API_URL}/verify-2fa-login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userId,
+                        token: tokenValue
+                    })
+                });
+
+                const data = await response.json().catch(() => ({}));
+                if (!response.ok) {
+                    throw new Error(Array.isArray(data.error) ? data.error[0]?.msg : data.error);
+                }
+
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('role', data.role || 'candidate');
+                localStorage.setItem('isAdmin', data.isAdmin ? 'true' : 'false');
+                sessionStorage.removeItem('2fa_user_id');
+
+                displayMessage(successMessage);
+                setTimeout(() => {
+                    window.location.href = getRoleRedirect(data.role || 'candidate');
+                }, 900);
+            } catch (error) {
+                displayMessage(error.message || 'Código inválido.', true);
+            }
+        }
+
+        document.querySelectorAll('[data-verify-tab]').forEach((button) => {
+            button.addEventListener('click', () => switchTab(button.dataset.verifyTab));
+        });
+
+        document.getElementById('totp-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const code = document.getElementById('totp-code').value.trim();
+            if (!/^\d{6}$/.test(code)) {
+                displayMessage('O código do autenticador deve ter 6 dígitos.', true);
+                return;
+            }
+            await submitVerification(code, '2FA verificado com sucesso.');
+        });
+
+        document.getElementById('backup-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const code = document.getElementById('backup-code').value.trim().toUpperCase();
+            if (!code) {
+                displayMessage('Digite um código de backup válido.', true);
+                return;
+            }
+            await submitVerification(code, 'Código de backup verificado com sucesso.');
+        });
+
+        document.getElementById('logout2fa').addEventListener('click', (event) => {
+            event.preventDefault();
+            logout();
+        });
+    </script>
+</body>
+</html>
+

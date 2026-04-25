@@ -9,6 +9,10 @@ const { hasCommitteeRevealPassed } = require('../utils/event-config');
 
 const router = express.Router();
 
+function canBypassRevealLock(user) {
+  return user?.role === 'admin' || user?.role === 'coordinator' || user?.role === 'teacher';
+}
+
 async function generateUniqueUsername(fullName) {
   const baseUsername = fullName
     .toLowerCase()
@@ -46,7 +50,7 @@ router.get('/', authMiddleware, requireRole(['admin', 'coordinator', 'teacher', 
 
   try {
     const { role, committee } = req.query;
-    if (committee && !hasCommitteeRevealPassed()) {
+    if (committee && !hasCommitteeRevealPassed() && !canBypassRevealLock(req.user)) {
       return res.status(403).json({ error: 'As informações de comitê permanecem em sigilo até o fim da contagem regressiva.' });
     }
 
@@ -63,7 +67,7 @@ router.get('/', authMiddleware, requireRole(['admin', 'coordinator', 'teacher', 
 // GET /api/users/committee/:num
 router.get('/committee/:num', authMiddleware, requireRole(['admin', 'coordinator', 'teacher', 'press']), async (req, res) => {
   try {
-    if (!hasCommitteeRevealPassed()) {
+    if (!hasCommitteeRevealPassed() && !canBypassRevealLock(req.user)) {
       return res.status(403).json({ error: 'As informações de comitê permanecem em sigilo até o fim da contagem regressiva.' });
     }
 
@@ -73,9 +77,6 @@ router.get('/committee/:num', authMiddleware, requireRole(['admin', 'coordinator
     }
 
     const filter = { committee };
-    if (req.user.role === 'teacher') {
-      filter.role = 'candidate';
-    }
 
     const users = await User.find(filter).select('-password');
     res.json(users);
@@ -86,7 +87,7 @@ router.get('/committee/:num', authMiddleware, requireRole(['admin', 'coordinator
 
 router.get('/committee/:num/delegations', authMiddleware, requireRole(['admin', 'coordinator', 'teacher', 'press']), async (req, res) => {
   try {
-    if (!hasCommitteeRevealPassed()) {
+    if (!hasCommitteeRevealPassed() && !canBypassRevealLock(req.user)) {
       return res.status(403).json({ error: 'As informações de comitê permanecem em sigilo até o fim da contagem regressiva.' });
     }
 
@@ -106,6 +107,48 @@ router.get('/committee/:num/delegations', authMiddleware, requireRole(['admin', 
       publicDelegationsReleased: settings.publicDelegationsReleased,
       delegations: groups
     });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+router.get('/registrations', authMiddleware, requireRole(['admin', 'coordinator', 'teacher']), async (req, res) => {
+  try {
+    const candidates = await User.find({
+      role: 'candidate',
+      'registration.submittedAt': { $ne: null }
+    })
+      .select('-password')
+      .populate('delegationMembers', 'fullName username email classGroup committee country registration')
+      .sort({ 'registration.submittedAt': 1, fullName: 1 });
+
+    const groups = buildDelegationGroups(candidates);
+    const rows = groups.map((group) => {
+      const sourceUser = candidates.find((candidate) => group.memberIds.includes(String(candidate._id)));
+      const registration = sourceUser?.registration || {};
+      const committeeValues = Array.from(new Set((group.members || [])
+        .map((member) => Number(member.committee))
+        .filter((value) => Number.isInteger(value) && value >= 1 && value <= 7)));
+
+      return {
+        key: group.key,
+        memberIds: group.memberIds,
+        members: group.members,
+        memberNames: group.members.map((member) => member.fullName).join(' e '),
+        committee: committeeValues.length === 1 ? committeeValues[0] : null,
+        country: group.country || '',
+        teamSize: group.teamSize || registration.teamSize || group.members.length || 2,
+        registration: {
+          firstChoice: registration.firstChoice ?? null,
+          secondChoice: registration.secondChoice ?? null,
+          thirdChoice: registration.thirdChoice ?? null,
+          teamSize: registration.teamSize || group.teamSize || 2,
+          submittedAt: registration.submittedAt || null
+        }
+      };
+    });
+
+    res.json(rows);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -203,7 +246,7 @@ router.put('/:id', authMiddleware, requireRole(['admin', 'coordinator', 'teacher
   }
 
   try {
-    if (req.body.committee !== undefined && !hasCommitteeRevealPassed()) {
+    if (req.body.committee !== undefined && !hasCommitteeRevealPassed() && !canBypassRevealLock(req.user)) {
       return res.status(403).json({ error: 'A definição de comitês só pode acontecer após o encerramento da contagem regressiva.' });
     }
 
@@ -223,7 +266,7 @@ router.put('/:id', authMiddleware, requireRole(['admin', 'coordinator', 'teacher
   }
 });
 
-router.put('/delegations/:delegationKey/country', authMiddleware, requireRole(['admin', 'coordinator']), [
+router.put('/delegations/:delegationKey/country', authMiddleware, requireRole(['admin', 'coordinator', 'teacher']), [
   body('country').trim().notEmpty().withMessage('Informe um país para a delegação.')
 ], async (req, res) => {
   const errors = validationResult(req);
@@ -250,6 +293,40 @@ router.put('/delegations/:delegationKey/country', authMiddleware, requireRole(['
     res.json({
       message: 'País atribuído com sucesso à delegação.',
       country,
+      users: updatedUsers
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+router.put('/delegations/:delegationKey/committee', authMiddleware, requireRole(['admin', 'coordinator', 'teacher']), [
+  body('committee').isInt({ min: 1, max: 7 }).withMessage('Informe um comitê válido (1 a 7).')
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ error: errors.array()[0].msg });
+  }
+
+  try {
+    const delegationIds = String(req.params.delegationKey)
+      .split(':')
+      .filter(Boolean);
+
+    if (!delegationIds.length) {
+      return res.status(400).json({ error: 'Delegação inválida.' });
+    }
+
+    const committee = Number(req.body.committee);
+    await User.updateMany(
+      { _id: { $in: delegationIds } },
+      { $set: { committee } }
+    );
+
+    const updatedUsers = await User.find({ _id: { $in: delegationIds } }).select('-password');
+    res.json({
+      message: 'Comitê definido com sucesso para a delegação.',
+      committee,
       users: updatedUsers
     });
   } catch (error) {
