@@ -573,7 +573,7 @@ function renderProfileSummary(user, twoFactorStatus) {
                     <form id="profileImageForm" class="dashboard-form profile-image-form">
                         <div class="form-group">
                             <span class="profile-upload-label">Upload da imagem</span>
-                            <input type="file" id="profileImageInput" class="profile-file-input" accept="image/jpeg,image/png,image/gif,image/webp" required>
+                            <input type="file" id="profileImageInput" class="profile-file-input" accept="image/*,.heic,.heif" required>
                             <button type="button" id="profilePhotoSelectButton" class="profile-upload-button">Selecionar imagem</button>
                             <span class="profile-file-name" id="profileImageFileName">Nenhum arquivo selecionado</span>
                         </div>

@@ -17,11 +17,16 @@ const profileImageUpload = multer({
     fileSize: 5 * 1024 * 1024
   },
   fileFilter: (req, file, cb) => {
-    if (/^image\/(jpeg|jpg|png|gif|webp)$/.test(file.mimetype)) {
+    const mimeType = String(file?.mimetype || '').toLowerCase();
+    const fileName = String(file?.originalname || '').toLowerCase();
+    const isAllowedMime = /^image\/(jpeg|jpg|png|gif|webp|heic|heif|avif)$/.test(mimeType);
+    const isAllowedExtension = /\.(jpe?g|png|gif|webp|heic|heif|avif)$/i.test(fileName);
+
+    if (isAllowedMime || isAllowedExtension) {
       return cb(null, true);
     }
 
-    cb(new Error('Tipo de arquivo inválido. Envie JPEG, PNG, GIF ou WEBP.'));
+    cb(new Error('Tipo de arquivo inválido. Envie JPEG, PNG, GIF, WEBP, HEIC, HEIF ou AVIF.'));
   }
 });
 
