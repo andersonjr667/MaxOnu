@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <link rel="icon" href="/images/logo-maxonu.png" type="image/png">
     <script src="/js/includes.js?v=20260420-headerfix"></script>
-    <script src="/js/verificacao-usuarios.js?v=20260427-actions" defer></script>
+    <script src="/js/verificacao-usuarios.js?v=20260427-filters" defer></script>
 </head>
 <body>
     <include src="header.html"></include>
@@ -33,21 +33,59 @@
                     </div>
 
                     <div class="dashboard-inline-form user-verification-filters">
-                        <label for="userSearchInput">Nome, usuário ou email</label>
-                        <input type="text" id="userSearchInput" placeholder="Ex: Ana, ana.silva, ana@email.com">
-                        <label for="userCommitteeFilter">Comitê</label>
-                        <select id="userCommitteeFilter">
-                            <option value="all">Todos</option>
-                            <option value="none">Não definido</option>
-                            <option value="1">Comitê 1</option>
-                            <option value="2">Comitê 2</option>
-                            <option value="3">Comitê 3</option>
-                            <option value="4">Comitê 4</option>
-                            <option value="5">Comitê 5</option>
-                            <option value="6">Comitê 6</option>
-                            <option value="7">Comitê 7</option>
-                        </select>
-                        <button type="button" class="view-button" id="reloadUsersBtn">Atualizar lista</button>
+                        <div>
+                            <label for="userSearchInput">Nome, usuário ou email</label>
+                            <input type="text" id="userSearchInput" placeholder="Ex: Ana, ana.silva, ana@email.com">
+                        </div>
+                        <div>
+                            <label for="userCollegeFilter">Colégio/Unidade</label>
+                            <select id="userCollegeFilter">
+                                <option value="all">Todos</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="userClassGroupFilter">Sala/Turma</label>
+                            <select id="userClassGroupFilter">
+                                <option value="all">Todas</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="userCommitteeFilter">Comitê</label>
+                            <select id="userCommitteeFilter">
+                                <option value="all">Todos</option>
+                                <option value="none">Não definido</option>
+                                <option value="1">Comitê 1</option>
+                                <option value="2">Comitê 2</option>
+                                <option value="3">Comitê 3</option>
+                                <option value="4">Comitê 4</option>
+                                <option value="5">Comitê 5</option>
+                                <option value="6">Comitê 6</option>
+                                <option value="7">Comitê 7</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="userCreatedFrom">Criado de</label>
+                            <input type="date" id="userCreatedFrom">
+                        </div>
+                        <div>
+                            <label for="userCreatedTo">Criado até</label>
+                            <input type="date" id="userCreatedTo">
+                        </div>
+                        <div>
+                            <label for="userSortBy">Ordenar por</label>
+                            <select id="userSortBy">
+                                <option value="created_desc">Mais recentes</option>
+                                <option value="created_asc">Mais antigos</option>
+                                <option value="name_asc">Nome (A-Z)</option>
+                                <option value="name_desc">Nome (Z-A)</option>
+                                <option value="class_asc">Turma (A-Z)</option>
+                                <option value="committee_asc">Comitê (1-7)</option>
+                            </select>
+                        </div>
+                        <div class="user-verification-filter-actions">
+                            <button type="button" class="view-button" id="reloadUsersBtn">Atualizar lista</button>
+                            <button type="button" class="view-button" id="clearUserFiltersBtn">Limpar filtros</button>
+                        </div>
                     </div>
                 </section>
 

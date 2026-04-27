@@ -97,4 +97,58 @@ router.post('/', authMiddleware, ensurePostManager, uploadImage, [
   }
 });
 
+router.put('/:id', authMiddleware, ensurePostManager, [
+  body('title').trim().notEmpty().withMessage('Title required'),
+  body('content').trim().isLength({ min: 10 }).withMessage('Content min 10 chars'),
+  body('excerpt').optional().trim()
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ error: errors.array() });
+  }
+
+  try {
+    const user = await User.findById(req.user.id).select('role');
+    if (!user || !POST_MANAGER_ROLES.has(user.role)) {
+      return res.status(403).json({ error: 'Access denied' });
+    }
+
+    const post = await Post.findById(req.params.id);
+    if (!post) {
+      return res.status(404).json({ error: 'Post not found' });
+    }
+
+    const title = req.body.title.trim();
+    const content = req.body.content.trim();
+    const excerpt = (req.body.excerpt || '').trim() || content.slice(0, 170);
+
+    post.title = title;
+    post.content = content;
+    post.excerpt = excerpt;
+
+    await post.save();
+    res.json(post);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+router.delete('/:id', authMiddleware, ensurePostManager, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('role');
+    if (!user || !POST_MANAGER_ROLES.has(user.role)) {
+      return res.status(403).json({ error: 'Access denied' });
+    }
+
+    const deleted = await Post.findByIdAndDelete(req.params.id);
+    if (!deleted) {
+      return res.status(404).json({ error: 'Post not found' });
+    }
+
+    res.json({ message: 'Post deleted successfully' });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
 module.exports = router;

@@ -32,14 +32,21 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        const formatted = new Intl.DateTimeFormat('pt-BR', {
+        const datePart = new Intl.DateTimeFormat('pt-BR', {
             day: 'numeric',
             month: 'long',
             year: 'numeric',
             timeZone: 'America/Sao_Paulo'
         }).format(new Date(timestamp));
 
-        eventStartDateElement.textContent = `Data de Início: ${formatted}`;
+        const timePart = new Intl.DateTimeFormat('pt-BR', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+            timeZone: 'America/Sao_Paulo'
+        }).format(new Date(timestamp));
+
+        eventStartDateElement.textContent = `Data de Início: ${datePart} às ${timePart}`;
     }
 
     function updateCountdown() {
@@ -102,21 +109,40 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
     }
 
-    async function loadCountdownConfig() {
-        const fallbackTimestamp = new Date('2026-05-04T00:00:00-03:00').getTime();
+    async function fetchRevealStatus(timeoutMs = 5000) {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
         try {
-            const response = await fetch('/api/reveal-status');
-            const data = await response.json();
-            const configuredDate = new Date(data.revealDate).getTime();
-            targetDate = Number.isNaN(configuredDate) ? fallbackTimestamp : configuredDate;
-        } catch (error) {
-            targetDate = fallbackTimestamp;
-        }
+            const response = await fetch('/api/reveal-status', {
+                signal: controller.signal
+            });
 
+            if (!response.ok) {
+                return null;
+            }
+
+            return await response.json();
+        } catch (error) {
+            return null;
+        } finally {
+            clearTimeout(timeoutId);
+        }
+    }
+
+    async function loadCountdownConfig() {
+        const fallbackTimestamp = new Date('2026-05-04T00:00:00-03:00').getTime();
+        targetDate = fallbackTimestamp;
         renderEventDateLabel(targetDate);
         interval = setInterval(updateCountdown, 1000);
         updateCountdown();
+
+        const data = await fetchRevealStatus();
+        if (data?.revealDate) {
+            const configuredDate = new Date(data.revealDate).getTime();
+            targetDate = Number.isNaN(configuredDate) ? fallbackTimestamp : configuredDate;
+            renderEventDateLabel(targetDate);
+        }
     }
 
     loadCountdownConfig();

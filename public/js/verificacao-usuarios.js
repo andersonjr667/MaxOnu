@@ -38,6 +38,17 @@ function accountStatusLabel(status) {
     return 'Ativo';
 }
 
+function getProfileImageUrls(user = {}) {
+    const fallback = user.gender === 'feminino'
+        ? '/images/profile_female.png'
+        : '/images/profile_male.png';
+
+    return {
+        src: user.profileImageUrl || fallback,
+        fallback
+    };
+}
+
 function formatDate(value) {
     if (!value) return 'Não informado';
     const date = new Date(value);
@@ -67,17 +78,93 @@ function getVerificationId(user) {
     return user?._id || user?.id || '';
 }
 
-function matchesFilter(user, queryText, committeeFilter) {
+function parseClassGroup(classGroup = '') {
+    const normalized = String(classGroup || '').trim();
+    if (!normalized) {
+        return {
+            college: '',
+            room: ''
+        };
+    }
+
+    const separatorIndex = normalized.indexOf(' - ');
+    if (separatorIndex === -1) {
+        return {
+            college: normalized,
+            room: normalized
+        };
+    }
+
+    return {
+        college: normalized.slice(0, separatorIndex).trim(),
+        room: normalized.slice(separatorIndex + 3).trim()
+    };
+}
+
+function parseDateOnly(value) {
+    if (!value) return null;
+    const parsed = new Date(`${value}T00:00:00`);
+    return Number.isNaN(parsed.getTime()) ? null : parsed;
+}
+
+function getUserCreatedAtDate(user) {
+    const parsed = new Date(user.createdAt);
+    return Number.isNaN(parsed.getTime()) ? null : parsed;
+}
+
+function isWithinDateRange(user, fromValue, toValue) {
+    if (!fromValue && !toValue) {
+        return true;
+    }
+
+    const createdAt = getUserCreatedAtDate(user);
+    if (!createdAt) {
+        return false;
+    }
+
+    const fromDate = parseDateOnly(fromValue);
+    if (fromDate && createdAt < fromDate) {
+        return false;
+    }
+
+    const toDate = parseDateOnly(toValue);
+    if (toDate) {
+        const endOfDay = new Date(toDate);
+        endOfDay.setHours(23, 59, 59, 999);
+        if (createdAt > endOfDay) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function matchesFilter(user, queryText, committeeFilter, collegeFilter, classGroupFilter, createdFrom, createdTo) {
+    const classInfo = parseClassGroup(user.classGroup);
     const haystack = [
         user.fullName,
         user.username,
         user.email,
         user.classGroup,
-        user.country
+        user.country,
+        classInfo.college,
+        classInfo.room
     ].join(' ').toLowerCase();
 
     const textOk = !queryText || haystack.includes(queryText);
     if (!textOk) {
+        return false;
+    }
+
+    if (collegeFilter !== 'all' && classInfo.college !== collegeFilter) {
+        return false;
+    }
+
+    if (classGroupFilter !== 'all' && user.classGroup !== classGroupFilter) {
+        return false;
+    }
+
+    if (!isWithinDateRange(user, createdFrom, createdTo)) {
         return false;
     }
 
@@ -90,6 +177,72 @@ function matchesFilter(user, queryText, committeeFilter) {
     }
 
     return Number(user.committee) === Number(committeeFilter);
+}
+
+function sortUsers(users, sortBy) {
+    const list = [...users];
+
+    list.sort((a, b) => {
+        const nameA = String(a.fullName || a.username || '').toLowerCase();
+        const nameB = String(b.fullName || b.username || '').toLowerCase();
+        const classA = String(a.classGroup || '').toLowerCase();
+        const classB = String(b.classGroup || '').toLowerCase();
+        const committeeA = Number.isInteger(Number(a.committee)) ? Number(a.committee) : 999;
+        const committeeB = Number.isInteger(Number(b.committee)) ? Number(b.committee) : 999;
+        const createdA = getUserCreatedAtDate(a)?.getTime() || 0;
+        const createdB = getUserCreatedAtDate(b)?.getTime() || 0;
+
+        if (sortBy === 'created_asc') return createdA - createdB || nameA.localeCompare(nameB);
+        if (sortBy === 'name_asc') return nameA.localeCompare(nameB);
+        if (sortBy === 'name_desc') return nameB.localeCompare(nameA);
+        if (sortBy === 'class_asc') return classA.localeCompare(classB) || nameA.localeCompare(nameB);
+        if (sortBy === 'committee_asc') return committeeA - committeeB || nameA.localeCompare(nameB);
+
+        return createdB - createdA || nameA.localeCompare(nameB);
+    });
+
+    return list;
+}
+
+function populateDynamicFilters(users) {
+    const collegeSelect = document.getElementById('userCollegeFilter');
+    const classGroupSelect = document.getElementById('userClassGroupFilter');
+    if (!collegeSelect || !classGroupSelect) {
+        return;
+    }
+
+    const selectedCollege = collegeSelect.value || 'all';
+    const selectedClassGroup = classGroupSelect.value || 'all';
+
+    const colleges = Array.from(new Set(users
+        .map((user) => parseClassGroup(user.classGroup).college)
+        .filter(Boolean)))
+        .sort((a, b) => a.localeCompare(b, 'pt-BR'));
+
+    collegeSelect.innerHTML = [
+        '<option value="all">Todos</option>',
+        ...colleges.map((college) => `<option value="${escapeHtml(college)}">${escapeHtml(college)}</option>`)
+    ].join('');
+
+    if (selectedCollege !== 'all' && colleges.includes(selectedCollege)) {
+        collegeSelect.value = selectedCollege;
+    }
+
+    const effectiveCollege = collegeSelect.value || 'all';
+    const classGroups = Array.from(new Set(users
+        .filter((user) => effectiveCollege === 'all' || parseClassGroup(user.classGroup).college === effectiveCollege)
+        .map((user) => String(user.classGroup || '').trim())
+        .filter(Boolean)))
+        .sort((a, b) => a.localeCompare(b, 'pt-BR'));
+
+    classGroupSelect.innerHTML = [
+        '<option value="all">Todas</option>',
+        ...classGroups.map((group) => `<option value="${escapeHtml(group)}">${escapeHtml(group)}</option>`)
+    ].join('');
+
+    if (selectedClassGroup !== 'all' && classGroups.includes(selectedClassGroup)) {
+        classGroupSelect.value = selectedClassGroup;
+    }
 }
 
 function createDetailRow(label, value) {
@@ -165,31 +318,64 @@ function buildExpandedDetails(user) {
     `;
 }
 
+function bindAvatarFallbacks(root = document) {
+    root.querySelectorAll('img[data-fallback-src]').forEach((image) => {
+        image.addEventListener('error', () => {
+            const fallback = image.dataset.fallbackSrc;
+            if (!fallback || image.src === fallback) {
+                return;
+            }
+            image.src = fallback;
+        }, { once: true });
+    });
+}
+
 function renderUsers() {
     const list = document.getElementById('userVerificationList');
     const meta = document.getElementById('userVerificationMeta');
     const queryText = document.getElementById('userSearchInput')?.value.trim().toLowerCase() || '';
     const committeeFilter = document.getElementById('userCommitteeFilter')?.value || 'all';
+    const collegeFilter = document.getElementById('userCollegeFilter')?.value || 'all';
+    const classGroupFilter = document.getElementById('userClassGroupFilter')?.value || 'all';
+    const createdFrom = document.getElementById('userCreatedFrom')?.value || '';
+    const createdTo = document.getElementById('userCreatedTo')?.value || '';
+    const sortBy = document.getElementById('userSortBy')?.value || 'created_desc';
 
     if (!list || !meta) {
         return;
     }
 
-    const filtered = allCandidates.filter((user) => matchesFilter(user, queryText, committeeFilter));
-    meta.textContent = `${filtered.length} aluno(s) encontrado(s). Clique no nome para ver os dados completos.`;
+    const filtered = allCandidates.filter((user) => matchesFilter(
+        user,
+        queryText,
+        committeeFilter,
+        collegeFilter,
+        classGroupFilter,
+        createdFrom,
+        createdTo
+    ));
+    const ordered = sortUsers(filtered, sortBy);
+    meta.textContent = `${ordered.length} aluno(s) encontrado(s). Clique no nome para ver os dados completos.`;
 
-    if (!filtered.length) {
+    if (!ordered.length) {
         list.innerHTML = '<p class="dashboard-empty">Nenhum aluno encontrado para o filtro atual.</p>';
         return;
     }
 
-    list.innerHTML = filtered.map((user) => {
+    list.innerHTML = ordered.map((user) => {
         const userId = getVerificationId(user);
         const isExpanded = expandedUserId === userId;
+        const avatar = getProfileImageUrls(user);
 
         return `
             <article class="committee-user-card user-verification-card" data-user-id="${escapeHtml(userId)}">
                 <button type="button" class="user-verification-toggle" data-action="toggle-user" data-user-id="${escapeHtml(userId)}">
+                    <img
+                        src="${escapeHtml(avatar.src)}"
+                        alt="Foto de perfil de ${escapeHtml(user.fullName || user.username || 'Aluno')}"
+                        class="user-verification-avatar"
+                        data-fallback-src="${escapeHtml(avatar.fallback)}"
+                    >
                     <div>
                         <h3>${escapeHtml(user.fullName || user.username || 'Aluno')}</h3>
                         <p>${escapeHtml(user.email || 'Email não informado')}</p>
@@ -205,6 +391,8 @@ function renderUsers() {
             </article>
         `;
     }).join('');
+
+    bindAvatarFallbacks(list);
 }
 
 async function fetchUserDetails(userId) {
@@ -245,6 +433,7 @@ async function loadCandidates() {
         }
 
         allCandidates = Array.isArray(data) ? data : [];
+        populateDynamicFilters(allCandidates);
         renderUsers();
     } catch (error) {
         if (list) {
@@ -333,6 +522,39 @@ function bindEvents() {
     document.getElementById('reloadUsersBtn')?.addEventListener('click', loadCandidates);
     document.getElementById('userSearchInput')?.addEventListener('input', renderUsers);
     document.getElementById('userCommitteeFilter')?.addEventListener('change', renderUsers);
+    document.getElementById('userCollegeFilter')?.addEventListener('change', () => {
+        populateDynamicFilters(allCandidates);
+        renderUsers();
+    });
+    document.getElementById('userClassGroupFilter')?.addEventListener('change', renderUsers);
+    document.getElementById('userCreatedFrom')?.addEventListener('change', renderUsers);
+    document.getElementById('userCreatedTo')?.addEventListener('change', renderUsers);
+    document.getElementById('userSortBy')?.addEventListener('change', renderUsers);
+    document.getElementById('clearUserFiltersBtn')?.addEventListener('click', () => {
+        const ids = [
+            'userSearchInput',
+            'userCreatedFrom',
+            'userCreatedTo'
+        ];
+        ids.forEach((id) => {
+            const input = document.getElementById(id);
+            if (input) input.value = '';
+        });
+
+        const selects = [
+            ['userCollegeFilter', 'all'],
+            ['userClassGroupFilter', 'all'],
+            ['userCommitteeFilter', 'all'],
+            ['userSortBy', 'created_desc']
+        ];
+        selects.forEach(([id, value]) => {
+            const select = document.getElementById(id);
+            if (select) select.value = value;
+        });
+
+        populateDynamicFilters(allCandidates);
+        renderUsers();
+    });
 
     document.getElementById('userVerificationList')?.addEventListener('click', async (event) => {
         const toggle = event.target.closest('[data-action="toggle-user"]');

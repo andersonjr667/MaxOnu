@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blog - MaxOnu 2026</title>
     <!-- SHARE_META_TAGS -->
-    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/styles.css?v=20260427-blogfix5">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <link rel="icon" href="/images/logo-maxonu.png" type="image/png">
     <script src="/js/includes.js?v=20260420-headerfix"></script>
-    <script src="/js/blog.js" defer></script>
+    <script src="/js/blog.js?v=20260427-blogfix3" defer></script>
 </head>
 <body>
     <include src="header.html"></include>
@@ -22,12 +22,59 @@
                 <div id="admin-actions" class="blog-admin-actions" hidden>
                     <button class="view-button" id="createPostBtn" type="button">Fazer um Post</button>
                 </div>
-                <div class="blog-posts">
+                <div class="blog-posts" aria-live="polite">
                     <p class="dashboard-empty">Carregando publicações...</p>
                 </div>
             </article>
         </section>
     </main>
+
+    <div id="blogImageViewer" class="blog-image-viewer" hidden>
+        <div class="blog-image-viewer-backdrop" data-image-viewer-action="close"></div>
+        <div class="blog-image-viewer-dialog" role="dialog" aria-modal="true" aria-label="Visualização da imagem do post">
+            <button type="button" class="blog-image-viewer-close" data-image-viewer-action="close" aria-label="Fechar imagem">x</button>
+            <img src="" alt="" class="blog-image-viewer-image" id="blogImageViewerImage">
+        </div>
+    </div>
+
+    <div id="blogEditorModal" class="blog-modal" hidden>
+        <div class="blog-modal-backdrop" data-editor-action="cancel"></div>
+        <div class="blog-modal-card" role="dialog" aria-modal="true" aria-labelledby="blogEditorHeading">
+            <h2 id="blogEditorHeading">Editar post</h2>
+            <form id="blogEditorForm" class="blog-editor-form">
+                <div class="form-group">
+                    <label for="blogEditorTitle">Título</label>
+                    <input type="text" id="blogEditorTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="blogEditorExcerpt">Legenda / Resumo</label>
+                    <input type="text" id="blogEditorExcerpt">
+                </div>
+                <div class="form-group">
+                    <label for="blogEditorContent">Conteúdo</label>
+                    <textarea id="blogEditorContent" rows="8" required></textarea>
+                </div>
+                <div class="blog-modal-actions">
+                    <button type="button" class="auth-btn auth-btn-secondary" data-editor-action="cancel">Cancelar</button>
+                    <button type="submit" class="auth-btn auth-btn-primary">Salvar alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="blogConfirmModal" class="blog-modal" hidden>
+        <div class="blog-modal-backdrop" data-confirm-action="cancel"></div>
+        <div class="blog-modal-card blog-modal-card-sm" role="dialog" aria-modal="true" aria-labelledby="blogConfirmTitle">
+            <h2 id="blogConfirmTitle">Confirmar ação</h2>
+            <p id="blogConfirmMessage">Deseja continuar?</p>
+            <div class="blog-modal-actions">
+                <button type="button" class="auth-btn auth-btn-secondary" data-confirm-action="cancel">Cancelar</button>
+                <button type="button" class="delete-button" id="blogConfirmAction" data-confirm-action="confirm">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="blogToastRoot" class="blog-toast-root" aria-live="polite" aria-atomic="true"></div>
 
     <include src="footer.html"></include>
 </body>
