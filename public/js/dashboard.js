@@ -303,6 +303,7 @@ function setupDashboard(user) {
     const registrationControlPanel = document.getElementById('registrationControlPanel');
     const manualAssignmentPanel = document.getElementById('manualAssignmentPanel');
     const roleBadge = document.getElementById('dashboardRoleBadge');
+    const userVerificationQuickAccess = document.getElementById('userVerificationQuickAccess');
 
     lead.textContent = `${roleLabel(user.role)} autenticado. Este painel reúne perguntas pendentes, consulta por comitê e as permissões operacionais da edição 2026.`;
     roleBadge.textContent = roleLabel(user.role);
@@ -322,6 +323,9 @@ function setupDashboard(user) {
         assignmentPanel.hidden = false;
         registrationControlPanel.hidden = false;
         manualAssignmentPanel.hidden = false;
+        if (userVerificationQuickAccess) {
+            userVerificationQuickAccess.hidden = false;
+        }
     }
 
     summary.innerHTML = cards.map((card) => `

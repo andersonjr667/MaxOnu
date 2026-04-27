@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificação de Usuários - MaxOnu 2026</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="icon" href="/images/logo-maxonu.png" type="image/png">
+    <script src="/js/includes.js?v=20260420-headerfix"></script>
+    <script src="/js/verificacao-usuarios.js?v=20260427-actions" defer></script>
+</head>
+<body>
+    <include src="header.html"></include>
+
+    <main class="main-content">
+        <section class="content-section">
+            <div class="portal-shell">
+                <section class="portal-hero">
+                    <div class="portal-copy">
+                        <span class="portal-kicker">Acompanhamento</span>
+                        <h1>Verificação de usuários</h1>
+                        <p>Área para professores orientadores, coordenação e administração consultarem alunos cadastrados.</p>
+                    </div>
+                    <div class="portal-badge" id="userVerificationBadge">Validando acesso</div>
+                </section>
+
+                <section class="dashboard-panel">
+                    <div class="dashboard-section-heading">
+                        <span class="dashboard-section-kicker">Filtros</span>
+                        <h2>Buscar alunos</h2>
+                        <p>Clique no nome do aluno para expandir todos os dados cadastrados.</p>
+                    </div>
+
+                    <div class="dashboard-inline-form user-verification-filters">
+                        <label for="userSearchInput">Nome, usuário ou email</label>
+                        <input type="text" id="userSearchInput" placeholder="Ex: Ana, ana.silva, ana@email.com">
+                        <label for="userCommitteeFilter">Comitê</label>
+                        <select id="userCommitteeFilter">
+                            <option value="all">Todos</option>
+                            <option value="none">Não definido</option>
+                            <option value="1">Comitê 1</option>
+                            <option value="2">Comitê 2</option>
+                            <option value="3">Comitê 3</option>
+                            <option value="4">Comitê 4</option>
+                            <option value="5">Comitê 5</option>
+                            <option value="6">Comitê 6</option>
+                            <option value="7">Comitê 7</option>
+                        </select>
+                        <button type="button" class="view-button" id="reloadUsersBtn">Atualizar lista</button>
+                    </div>
+                </section>
+
+                <section class="dashboard-panel">
+                    <div class="dashboard-section-heading">
+                        <span class="dashboard-section-kicker">Resultado</span>
+                        <h2>Lista de alunos</h2>
+                        <p id="userVerificationMeta">Carregando alunos...</p>
+                    </div>
+                    <div id="userVerificationList">
+                        <p class="dashboard-empty">Carregando alunos...</p>
+                    </div>
+                </section>
+            </div>
+        </section>
+    </main>
+
+    <include src="footer.html"></include>
+</body>
+</html>

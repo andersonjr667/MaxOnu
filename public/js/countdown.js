@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const countdownElement = document.getElementById('countdown');
     const heroCtaGroup = document.getElementById('heroCtaGroup');
     const countdownMessage = document.querySelector('.countdown-message');
+    const eventStartDateElement = document.getElementById('eventStartDate');
     let interval;
     let targetDate = null;
 
@@ -24,6 +25,21 @@ document.addEventListener('DOMContentLoaded', function() {
         heroCtaGroup.innerHTML = `
             <a href="${getRegistrationLink()}" class="auth-btn auth-btn-primary hero-auth-btn">Faça sua inscrição</a>
         `;
+    }
+
+    function renderEventDateLabel(timestamp) {
+        if (!eventStartDateElement || !Number.isFinite(timestamp)) {
+            return;
+        }
+
+        const formatted = new Intl.DateTimeFormat('pt-BR', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+            timeZone: 'America/Sao_Paulo'
+        }).format(new Date(timestamp));
+
+        eventStartDateElement.textContent = `Data de Início: ${formatted}`;
     }
 
     function updateCountdown() {
@@ -87,15 +103,18 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     async function loadCountdownConfig() {
+        const fallbackTimestamp = new Date('2026-05-04T00:00:00-03:00').getTime();
+
         try {
             const response = await fetch('/api/reveal-status');
             const data = await response.json();
             const configuredDate = new Date(data.revealDate).getTime();
-            targetDate = Number.isNaN(configuredDate) ? new Date('2026-05-04T00:00:00-03:00').getTime() : configuredDate;
+            targetDate = Number.isNaN(configuredDate) ? fallbackTimestamp : configuredDate;
         } catch (error) {
-            targetDate = new Date('2026-05-04T00:00:00-03:00').getTime();
+            targetDate = fallbackTimestamp;
         }
 
+        renderEventDateLabel(targetDate);
         interval = setInterval(updateCountdown, 1000);
         updateCountdown();
     }

@@ -106,6 +106,19 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.add({
+    accountStatus: {
+        type: String,
+        enum: ['active', 'banned', 'expelled'],
+        default: 'active'
+    },
+    accountStatusReason: {
+        type: String,
+        default: ''
+    },
+    accountStatusUpdatedAt: {
+        type: Date,
+        default: null
+    },
     role: {
         type: String,
         enum: ['candidate', 'teacher', 'coordinator', 'admin', 'press'],
@@ -145,6 +158,10 @@ userSchema.add({
     },
     // Forgot Password
     resetPasswordToken: {
+        type: String,
+        default: null
+    },
+    resetPasswordCode: {
         type: String,
         default: null
     },
@@ -220,6 +237,13 @@ userSchema.methods.generatePasswordResetToken = function() {
     return token;
 };
 
+userSchema.methods.generatePasswordResetCode = function() {
+    const code = String(Math.floor(100000 + Math.random() * 900000));
+    this.resetPasswordCode = code;
+    this.resetPasswordExpires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+    return code;
+};
+
 // Verify password reset token
 userSchema.methods.verifyPasswordResetToken = function(token) {
     if (!this.resetPasswordToken || !this.resetPasswordExpires) {
@@ -238,9 +262,22 @@ userSchema.methods.verifyPasswordResetToken = function(token) {
     }
 };
 
+userSchema.methods.verifyPasswordResetCode = function(code) {
+    if (!this.resetPasswordCode || !this.resetPasswordExpires) {
+        return false;
+    }
+
+    if (Date.now() > this.resetPasswordExpires.getTime()) {
+        return false;
+    }
+
+    return String(this.resetPasswordCode) === String(code || '').trim();
+};
+
 // Clear password reset token
 userSchema.methods.clearPasswordResetToken = function() {
     this.resetPasswordToken = null;
+    this.resetPasswordCode = null;
     this.resetPasswordExpires = null;
 };
 

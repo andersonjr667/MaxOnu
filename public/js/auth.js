@@ -11,13 +11,13 @@ function initAuth() {
     }
 
     function displayMessage(message, isError = false) {
-        messageContainer.style.display = 'block';
+        messageContainer.hidden = false;
         messageContainer.className = `login-message ${isError ? 'is-error' : 'is-success'}`;
         messageContainer.textContent = message;
     }
 
     function clearMessage() {
-        messageContainer.style.display = 'none';
+        messageContainer.hidden = true;
         messageContainer.textContent = '';
         messageContainer.className = 'login-message';
     }
@@ -98,8 +98,8 @@ function initAuth() {
 
     function switchTab(tabName) {
         const showLogin = tabName === 'login';
-        loginBox.style.display = showLogin ? 'block' : 'none';
-        registerBox.style.display = showLogin ? 'none' : 'block';
+        loginBox.hidden = !showLogin;
+        registerBox.hidden = showLogin;
         clearMessage();
 
         tabButtons.forEach((button) => {

@@ -8,9 +8,15 @@ const { buildDelegationGroups } = require('../utils/delegation-groups');
 const { hasCommitteeRevealPassed } = require('../utils/event-config');
 
 const router = express.Router();
+const PROTECTED_USERNAMES = new Set(['andersonjr0667']);
 
 function canBypassRevealLock(user) {
   return user?.role === 'admin' || user?.role === 'coordinator' || user?.role === 'teacher';
+}
+
+function isProtectedUser(user) {
+  const username = String(user?.username || '').toLowerCase();
+  return PROTECTED_USERNAMES.has(username) || user?.role === 'admin';
 }
 
 async function generateUniqueUsername(fullName) {
@@ -36,6 +42,61 @@ async function getSettings() {
     settings = await SiteSettings.create({ singletonKey: 'main' });
   }
   return settings;
+}
+
+async function syncPartnerLabelsByUserIds(userIds) {
+  if (!Array.isArray(userIds) || !userIds.length) {
+    return;
+  }
+
+  const users = await User.find({ _id: { $in: userIds } }).select('_id delegationMembers');
+  await Promise.all(users.map(async (currentUser) => {
+    const memberNames = await User.find({ _id: { $in: currentUser.delegationMembers || [] } }).select('username');
+    const partner = memberNames.map((member) => member.username).join(', ');
+    await User.updateOne({ _id: currentUser._id }, { $set: { partner } });
+  }));
+}
+
+async function detachUserFromDelegations(user) {
+  const relatedUserIds = (user.delegationMembers || []).map((memberId) => String(memberId));
+
+  await User.updateMany(
+    { delegationMembers: user._id },
+    { $pull: { delegationMembers: user._id } }
+  );
+
+  await User.updateMany(
+    { 'invitations.fromUser': user._id },
+    {
+      $set: {
+        'invitations.$[inv].status': 'rejected',
+        'invitations.$[inv].respondedAt': new Date()
+      }
+    },
+    {
+      arrayFilters: [{ 'inv.fromUser': user._id, 'inv.status': 'pending' }]
+    }
+  );
+
+  user.delegationMembers = [];
+  user.partner = '';
+  user.registration = {
+    firstChoice: null,
+    secondChoice: null,
+    thirdChoice: null,
+    teamSize: 2,
+    submittedAt: null
+  };
+  user.country = '';
+  user.committee = null;
+  (user.invitations || []).forEach((invitation) => {
+    if (invitation.status === 'pending') {
+      invitation.status = 'rejected';
+      invitation.respondedAt = new Date();
+    }
+  });
+
+  await syncPartnerLabelsByUserIds(relatedUserIds);
 }
 
 // GET /api/users - List users
@@ -261,6 +322,88 @@ router.put('/:id', authMiddleware, requireRole(['admin', 'coordinator', 'teacher
 
     const updated = await User.findByIdAndUpdate(req.params.id, updates, { new: true }).select('-password');
     res.json(updated);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// PATCH /api/users/:id/status - Ban/expel/reactivate user
+router.patch('/:id/status', authMiddleware, requireRole(['admin', 'coordinator', 'teacher']), [
+  body('status').isIn(['active', 'banned', 'expelled']).withMessage('Status inválido.'),
+  body('reason').optional().isLength({ max: 240 }).withMessage('Motivo deve ter no máximo 240 caracteres.')
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ error: errors.array()[0].msg });
+  }
+
+  try {
+    const target = await User.findById(req.params.id);
+    if (!target) {
+      return res.status(404).json({ error: 'Usuário não encontrado.' });
+    }
+
+    if (String(target._id) === String(req.user.id)) {
+      return res.status(400).json({ error: 'Você não pode alterar o status da sua própria conta.' });
+    }
+
+    if (isProtectedUser(target)) {
+      return res.status(403).json({ error: 'Este usuário é protegido e não pode ter o status alterado.' });
+    }
+
+    const nextStatus = String(req.body.status || 'active');
+    const reason = String(req.body.reason || '').trim();
+
+    if (target.role !== 'candidate') {
+      return res.status(400).json({ error: 'Ação disponível apenas para contas de alunos (delegados).' });
+    }
+
+    if (nextStatus === 'expelled') {
+      await detachUserFromDelegations(target);
+    }
+
+    target.accountStatus = nextStatus;
+    target.accountStatusReason = reason;
+    target.accountStatusUpdatedAt = new Date();
+    await target.save();
+
+    res.json({
+      message: nextStatus === 'banned'
+        ? 'Usuário banido com sucesso.'
+        : nextStatus === 'expelled'
+          ? 'Usuário expulso com sucesso.'
+          : 'Usuário reativado com sucesso.',
+      user: target
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// DELETE /api/users/:id - Delete user
+router.delete('/:id', authMiddleware, requireRole(['admin', 'coordinator', 'teacher']), async (req, res) => {
+  try {
+    const target = await User.findById(req.params.id);
+    if (!target) {
+      return res.status(404).json({ error: 'Usuário não encontrado.' });
+    }
+
+    if (String(target._id) === String(req.user.id)) {
+      return res.status(400).json({ error: 'Você não pode excluir sua própria conta.' });
+    }
+
+    if (isProtectedUser(target)) {
+      return res.status(403).json({ error: 'Este usuário é protegido e não pode ser excluído.' });
+    }
+
+    if (target.role !== 'candidate') {
+      return res.status(400).json({ error: 'Exclusão disponível apenas para contas de alunos (delegados).' });
+    }
+
+    await detachUserFromDelegations(target);
+    await User.deleteOne({ _id: target._id });
+
+    res.json({ message: 'Usuário excluído com sucesso.' });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

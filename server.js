@@ -1,4 +1,9 @@
 require('dotenv').config();
+
+if (!process.env.NODE_ENV) {
+  process.env.NODE_ENV = process.env.npm_lifecycle_event === 'dev' ? 'development' : 'production';
+}
+
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -31,7 +36,7 @@ const parsedEnvPort = Number.parseInt(process.env.PORT, 10);
 const DEFAULT_PORT = Number.isInteger(parsedEnvPort) ? parsedEnvPort : 3000;
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 const DEFAULT_ADMIN = {
-  username: 'Anderson',
+  username: 'andersonjr0667',
   fullName: 'Anderson (Admin)',
   password: '152070an',
   email: 'alsj1520@gmail.com',
@@ -184,6 +189,7 @@ async function startServer(port) {
 const banner = figlet.textSync('MaxOnu 2026', { horizontalLayout: 'full' });
   console.log(chalk.green.bold(banner));
   console.log(chalk.blue.bold('🚀 Starting on port ' + port));
+  console.log(chalk.magenta.bold('Mode: ' + process.env.NODE_ENV));
   console.log(chalk.gray('DB Ready: ' + isDbReady()));
   console.log(chalk.gray('PID: ' + process.pid));
 
@@ -268,7 +274,7 @@ const authApiLimiter = createApiLimiter({
 app.use('/api', publicApiLimiter);
 app.use('/api', writeApiLimiter);
 app.use(
-  ['/api/login', '/api/register', '/api/check-admin', '/api/forgot-password', '/api/reset-password', '/api/verify-2fa-login'],
+  ['/api/login', '/api/register', '/api/check-admin', '/api/forgot-password', '/api/verify-reset-code', '/api/reset-password', '/api/verify-2fa-login'],
   authApiLimiter
 );
 

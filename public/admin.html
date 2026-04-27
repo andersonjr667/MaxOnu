@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <link rel="icon" href="/images/logo-maxonu.png" type="image/png">
     <script src="/js/includes.js?v=20260420-headerfix"></script>
-    <script src="/js/role-portals.js" defer></script>
+    <script src="/js/role-portals.js?v=20260427-verificacao" defer></script>
 </head>
 <body data-portal-role="admin">
     <include src="header.html"></include>
@@ -36,6 +36,17 @@
                     <div class="portal-action-grid" id="portalActions"></div>
                 </section>
 
+                <section class="dashboard-panel">
+                    <div class="dashboard-section-heading">
+                        <span class="dashboard-section-kicker">Usuários</span>
+                        <h2>Verificação de usuários</h2>
+                        <p>Acesse a lista de alunos e expanda cada nome para ver todos os dados cadastrados.</p>
+                    </div>
+                    <div class="dashboard-question-actions">
+                        <a href="/verificacao-usuarios" class="view-button">Abrir verificação de usuários</a>
+                    </div>
+                </section>
+
                 <section class="dashboard-panel" id="adminUserCreatePanel">
                     <div class="dashboard-section-heading">
                         <span class="dashboard-section-kicker">Administração</span>
@@ -43,7 +54,7 @@
                         <p>Registre novos membros da equipe de operação da MaxOnu com acesso rápido ao painel administrativo.</p>
                     </div>
                     <form id="createUserForm" class="admin-user-form">
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                        <div class="admin-user-grid">
                             <div class="form-group">
                                 <label for="newUserFullName">
                                     <span>Nome completo</span>
@@ -74,7 +85,7 @@
                             <small class="form-help-text">Se deixar vazio, o usuário poderá configurar depois</small>
                         </div>
 
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                        <div class="admin-user-grid">
                             <div class="form-group">
                                 <label for="newUserPassword">
                                     <span>Senha temporária</span>
@@ -98,7 +109,7 @@
                             </button>
                             <button type="reset" class="view-button">Limpar formulário</button>
                         </div>
-                        <p id="createUserMessage" class="form-message" style="display:none;"></p>
+                        <p id="createUserMessage" class="form-message" hidden></p>
                     </form>
                 </section>
             </div>

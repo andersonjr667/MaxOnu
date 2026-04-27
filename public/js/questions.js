@@ -25,7 +25,7 @@ function isAdmin() {
         if (['admin', 'teacher', 'coordinator', 'press'].includes(role)) return true;
 
         const payload = JSON.parse(atob(token.split('.')[1]));
-        return payload.username === 'Anderson' || ['admin', 'teacher', 'coordinator', 'press'].includes(payload.role);
+        return payload.username === 'andersonjr0667' || ['admin', 'teacher', 'coordinator', 'press'].includes(payload.role);
     } catch (error) {
         return false;
     }

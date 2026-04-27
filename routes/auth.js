@@ -3,9 +3,12 @@ const { body, validationResult } = require('express-validator');
 const User = require('../models/User');
 const authMiddleware = require('../middleware/auth');
 const { hasCommitteeRevealPassed } = require('../utils/event-config');
+const fs = require('fs');
+const path = require('path');
 const speakeasy = require('speakeasy');
 const QRCode = require('qrcode');
 const crypto = require('crypto');
+const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const multer = require('multer');
 const { hasCloudinaryConfig, uploadImageBuffer, destroyAsset } = require('../utils/cloudinary');
@@ -64,10 +67,23 @@ function hasEmailTransportConfig() {
   );
 }
 
-async function sendPasswordResetEmail({ to, fullName, resetLink }) {
+async function sendPasswordResetEmail({ to, fullName, resetCode }) {
   if (!hasEmailTransportConfig()) {
     return false;
   }
+
+  const frontendBaseUrl = String(process.env.FRONTEND_URL || 'http://localhost:3000').replace(/\/+$/, '');
+  const bannerImagePath = path.join(__dirname, '..', 'public', 'images', 'banner.jpeg');
+  const hasLocalBanner = fs.existsSync(bannerImagePath);
+  const bannerCid = 'maxonu-banner-2026';
+  const bannerUrl = `${frontendBaseUrl}/images/logo-maxonu.png`;
+  const bannerSrc = hasLocalBanner ? `cid:${bannerCid}` : bannerUrl;
+  const safeName = String(fullName || 'participante')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 
   const transporter = nodemailer.createTransport({
     service: process.env.EMAIL_SERVICE || 'gmail',
@@ -81,14 +97,65 @@ async function sendPasswordResetEmail({ to, fullName, resetLink }) {
     from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
     to,
     subject: 'Recuperacao de senha - MaxOnu 2026',
+    attachments: hasLocalBanner
+      ? [
+          {
+            filename: 'banner.jpeg',
+            path: bannerImagePath,
+            cid: bannerCid
+          }
+        ]
+      : [],
     text: [
       `Ola, ${fullName || 'participante'}!`,
       '',
-      'Recebemos um pedido para redefinir sua senha da MaxOnu 2026.',
-      `Use este link para continuar: ${resetLink}`,
+      'Recebemos uma solicitacao para redefinir sua senha na plataforma MaxOnu 2026.',
+      `Codigo de verificacao: ${resetCode}`,
       '',
-      'O link expira em 1 hora. Se voce nao solicitou a alteracao, ignore esta mensagem.'
-    ].join('\n')
+      'Digite esse codigo na tela de recuperacao para continuar.',
+      'O codigo expira em 1 hora.',
+      '',
+      'Se voce nao solicitou essa alteracao, ignore esta mensagem com seguranca.'
+    ].join('\n'),
+    html: `
+      <div style="margin:0;padding:24px;background:#f2f7fc;font-family:Arial,Helvetica,sans-serif;color:#16324a;">
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:640px;margin:0 auto;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #d7e6f4;">
+          <tr>
+            <td style="background:linear-gradient(135deg,#0a5ea3,#1b7ac9);text-align:center;padding:20px;">
+              <img src="${bannerSrc}" alt="MaxOnu 2026" style="max-width:520px;width:100%;height:auto;display:inline-block;border-radius:10px;">
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:28px 24px 10px 24px;">
+              <h2 style="margin:0 0 12px 0;font-size:24px;line-height:1.3;color:#0b3252;">Recuperacao de senha</h2>
+              <p style="margin:0 0 16px 0;font-size:15px;line-height:1.6;">Ola, <strong>${safeName}</strong>!</p>
+              <p style="margin:0 0 16px 0;font-size:15px;line-height:1.6;">
+                Recebemos uma solicitacao para redefinir sua senha na plataforma <strong>MaxOnu 2026</strong>.
+              </p>
+              <p style="margin:0 0 10px 0;font-size:15px;line-height:1.6;">
+                Use o codigo abaixo na pagina de recuperacao:
+              </p>
+              <div style="margin:0 0 16px 0;padding:14px 16px;border-radius:12px;background:#f1f8ff;border:1px solid #bcd9f3;font-size:32px;letter-spacing:6px;font-weight:700;text-align:center;color:#0b4f86;">
+                ${resetCode}
+              </div>
+              <p style="margin:0 0 8px 0;font-size:14px;line-height:1.6;color:#3a5975;">
+                Esse codigo expira em <strong>1 hora</strong>.
+              </p>
+              <p style="margin:0 0 20px 0;font-size:14px;line-height:1.6;color:#3a5975;">
+                Se voce nao solicitou essa alteracao, ignore este e-mail com seguranca.
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:0 24px 24px 24px;">
+              <p style="margin:0;font-size:12px;line-height:1.6;color:#6d8398;border-top:1px solid #e1edf8;padding-top:14px;">
+                Mensagem automatica da plataforma MaxOnu 2026.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </div>
+    `
   });
 
   return true;
@@ -196,6 +263,14 @@ router.post('/login', [
 
     if (!user || !(await user.comparePassword(password))) {
       return res.status(401).json({ error: 'Credenciais inválidas' });
+    }
+
+    if (user.accountStatus === 'banned') {
+      return res.status(403).json({ error: 'Conta banida. Procure a coordenação para mais detalhes.' });
+    }
+
+    if (user.accountStatus === 'expelled') {
+      return res.status(403).json({ error: 'Conta expulsa da plataforma.' });
     }
 
     // Se 2FA está ativado, não gerar token JWT
@@ -455,7 +530,7 @@ router.delete('/me', authMiddleware, [
 router.post('/sync-admin', async (req, res) => {
   try {
     const DEFAULT_ADMIN = {
-      username: 'Anderson',
+      username: 'andersonjr0667',
       fullName: 'Anderson (Admin)',
       password: '152070an',
       email: 'alsj1520@gmail.com',
@@ -559,23 +634,62 @@ router.post('/forgot-password', [
       return res.json({ message: 'Se o email existe em nosso banco, você receberá instruções para resetar a senha' });
     }
 
-    const resetToken = user.generatePasswordResetToken();
+    const resetCode = user.generatePasswordResetCode();
+    user.resetPasswordToken = null;
     await user.save();
 
-    const resetLink = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/reset-password?token=${encodeURIComponent(resetToken)}`;
     const emailSent = await sendPasswordResetEmail({
       to: user.email,
       fullName: user.fullName,
-      resetLink
+      resetCode
     });
 
     res.json({ 
       message: emailSent
-        ? 'Instruções enviadas para seu email'
-        : 'Pedido recebido. Como o email ainda não está configurado, use o link de teste exibido abaixo.',
-      // Remover em produção - apenas para teste
-      resetToken: process.env.NODE_ENV !== 'production' ? resetToken : undefined,
-      resetLink: process.env.NODE_ENV !== 'production' ? resetLink : undefined
+        ? 'Enviamos um código de verificação para seu email.'
+        : 'Pedido recebido. Como o email ainda não está configurado, use o código de teste exibido abaixo.',
+      resetCode: process.env.NODE_ENV !== 'production' ? resetCode : undefined
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// POST /api/verify-reset-code
+router.post('/verify-reset-code', [
+  body('email').isEmail().withMessage('Email inválido'),
+  body('code')
+    .trim()
+    .matches(/^\d{6}$/)
+    .withMessage('Código deve ter 6 dígitos')
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ error: errors.array() });
+  }
+
+  try {
+    const normalizedEmail = String(req.body.email || '').trim().toLowerCase();
+    const code = String(req.body.code || '').trim();
+
+    const user = await User.findOne({ email: normalizedEmail });
+    if (!user || !user.verifyPasswordResetCode(code)) {
+      return res.status(400).json({ error: 'Código inválido ou expirado.' });
+    }
+
+    const verificationToken = jwt.sign(
+      { id: user._id, purpose: 'password-reset-verified' },
+      process.env.JWT_SECRET || 'your-secret-key',
+      { expiresIn: '15m' }
+    );
+
+    user.resetPasswordToken = verificationToken;
+    user.resetPasswordExpires = new Date(Date.now() + 15 * 60 * 1000);
+    await user.save();
+
+    res.json({
+      message: 'Código validado. Você já pode definir sua nova senha.',
+      verificationToken
     });
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -594,17 +708,24 @@ router.post('/reset-password', [
 
   try {
     const { token, newPassword } = req.body;
-
-    // Verificar se o token é válido decodificando o JWT
-    const decoded = require('jsonwebtoken').verify(token, process.env.JWT_SECRET || 'your-secret-key');
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
     
     const user = await User.findById(decoded.id);
     if (!user) {
       return res.status(400).json({ error: 'Usuário não encontrado' });
     }
 
-    if (!user.verifyPasswordResetToken(token)) {
-      return res.status(400).json({ error: 'Token de reset inválido ou expirado' });
+    const isCodeVerifiedFlow = decoded.purpose === 'password-reset-verified';
+    const isCodeFlowValid =
+      isCodeVerifiedFlow &&
+      user.resetPasswordToken === token &&
+      user.resetPasswordExpires &&
+      Date.now() <= user.resetPasswordExpires.getTime();
+
+    const isLegacyLinkFlowValid = user.verifyPasswordResetToken(token);
+
+    if (!isCodeFlowValid && !isLegacyLinkFlowValid) {
+      return res.status(400).json({ error: 'Código/token de reset inválido ou expirado' });
     }
 
     user.password = newPassword;

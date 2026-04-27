@@ -85,7 +85,7 @@ async function initBlogPage() {
 
         const user = context.user;
         if (allowedRoles.has(user.role)) {
-            adminActions.style.display = 'block';
+            adminActions.hidden = false;
         }
     } catch (error) {
         console.error('Erro ao verificar permissões do blog:', error);

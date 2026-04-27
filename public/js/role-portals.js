@@ -12,6 +12,7 @@ const portalConfigs = {
         ],
         actions: [
             { href: '/dashboard', title: 'Abrir painel operacional', text: 'Gerencie comitês, respostas pendentes e distribuição de países.' },
+            { href: '/verificacao-usuarios', title: 'Verificar usuários', text: 'Consulte a lista de alunos e expanda cada nome para ver todos os dados cadastrados.' },
             { href: '/blog', title: 'Gerenciar blog', text: 'Acompanhe a área de comunicados e a visibilidade dos conteúdos publicados.' },
             { href: '/create-post', title: 'Criar comunicado', text: 'Acesse a área reservada para publicar avisos e conteúdos oficiais.' },
             { href: '/profile', title: 'Ver meu perfil', text: 'Consulte seus dados e sua função dentro da MaxOnu 2026.' }
@@ -30,6 +31,7 @@ const portalConfigs = {
         ],
         actions: [
             { href: '/dashboard', title: 'Abrir painel da coordenação', text: 'Use o painel para consultar inscritos, responder perguntas e ajustar países.' },
+            { href: '/verificacao-usuarios', title: 'Verificar usuários', text: 'Confira os alunos cadastrados e abra os detalhes completos de cada participante.' },
             { href: '/delegacoes', title: 'Ver delegações públicas', text: 'Acompanhe a experiência pública disponível no site para validar comunicações.' },
             { href: '/guias', title: 'Consultar guias', text: 'Revise materiais e referências que apoiam a operação e a orientação das equipes.' },
             { href: '/profile', title: 'Ver meu perfil', text: 'Confira rapidamente sua identificação, comitê e dados vinculados.' }
@@ -48,6 +50,7 @@ const portalConfigs = {
         ],
         actions: [
             { href: '/dashboard', title: 'Abrir painel dos orientadores', text: 'Consulte alunos, países e perguntas pendentes ligadas à preparação.' },
+            { href: '/verificacao-usuarios', title: 'Verificar usuários', text: 'Abra os dados completos dos alunos para acompanhar cadastro, turma e inscrição.' },
             { href: '/delegacoes', title: 'Acompanhar delegações', text: 'Veja a área pública das delegações e mantenha o alinhamento com seus alunos.' },
             { href: '/faq', title: 'Monitorar dúvidas públicas', text: 'Acompanhe as perguntas comuns que impactam a preparação dos participantes.' },
             { href: '/profile', title: 'Ver meu perfil', text: 'Consulte seus dados pessoais, função e referências da sua área.' }
@@ -180,21 +183,21 @@ function renderAdminUserCreator() {
 
         // Validações
         if (!fullName) {
-            message.style.display = 'block';
+            message.hidden = false;
             message.textContent = '⚠ Nome completo é obrigatório.';
             message.className = 'form-message is-error';
             return;
         }
 
         if (!password || password.length < 6) {
-            message.style.display = 'block';
+            message.hidden = false;
             message.textContent = '⚠ Senha deve ter no mínimo 6 caracteres.';
             message.className = 'form-message is-error';
             return;
         }
 
         if (password !== confirmPassword) {
-            message.style.display = 'block';
+            message.hidden = false;
             message.textContent = '⚠ As senhas não correspondem. Verifique e tente novamente.';
             message.className = 'form-message is-error';
             confirmPasswordInput.focus();
@@ -202,7 +205,7 @@ function renderAdminUserCreator() {
         }
 
         if (!role) {
-            message.style.display = 'block';
+            message.hidden = false;
             message.textContent = '⚠ Selecione uma função para o usuário.';
             message.className = 'form-message is-error';
             return;
@@ -212,7 +215,7 @@ function renderAdminUserCreator() {
         if (email) {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email)) {
-                message.style.display = 'block';
+                message.hidden = false;
                 message.textContent = '⚠ Email inválido. Verifique o formato.';
                 message.className = 'form-message is-error';
                 return;
@@ -257,16 +260,16 @@ function renderAdminUserCreator() {
             form.reset();
             confirmPasswordInput.style.borderColor = '';
             confirmPasswordInput.style.boxShadow = '';
-            message.style.display = 'block';
+            message.hidden = false;
             message.textContent = `✓ Usuário ${data.user.fullName} criado com sucesso! Ele pode fazer login agora.`;
             message.className = 'form-message is-success';
             
             // Limpar mensagem após 5 segundos
             setTimeout(() => {
-                message.style.display = 'none';
+                message.hidden = true;
             }, 5000);
         } catch (error) {
-            message.style.display = 'block';
+            message.hidden = false;
             message.textContent = `✕ ${error.message || 'Erro ao criar usuário.'}`;
             message.className = 'form-message is-error';
         } finally {

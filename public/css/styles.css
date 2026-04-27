@@ -1467,6 +1467,12 @@ svg {
     transform: translateY(-2px);
 }
 
+.admin-user-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
 .admin-user-form .form-actions .view-button:last-child {
     background: rgba(13, 59, 102, 0.08);
     color: var(--azul-principal);
@@ -1489,6 +1495,39 @@ svg {
     cursor: pointer;
     user-select: none;
     flex: 1;
+}
+
+.auth-checkbox-group {
+    margin-top: 0.2rem;
+    padding: 0.9rem 1rem;
+    border-radius: 12px;
+    border: 1px solid rgba(13, 59, 102, 0.14);
+    background: linear-gradient(180deg, rgba(248, 252, 255, 0.95), rgba(240, 247, 253, 0.92));
+}
+
+.auth-checkbox-group .checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+    line-height: 1.45;
+}
+
+.auth-checkbox-group input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-top: 0.15rem;
+    accent-color: var(--azul-principal);
+    flex-shrink: 0;
+}
+
+.auth-checkbox-group a {
+    color: var(--azul-secundario);
+    font-weight: 700;
+}
+
+.auth-checkbox-group a:hover {
+    color: var(--azul-principal);
+    text-decoration: underline;
 }
 
 .password-field {
@@ -2721,6 +2760,18 @@ svg {
     margin-top: 1.25rem;
     display: grid;
     gap: 1rem;
+}
+
+.blog-admin-actions {
+    margin: 1rem 0 1.15rem;
+    padding: 0.8rem;
+    border-radius: 12px;
+    border: 1px dashed rgba(13, 59, 102, 0.2);
+    background: linear-gradient(180deg, rgba(247, 251, 255, 0.95), rgba(240, 248, 255, 0.9));
+}
+
+.blog-admin-actions .view-button {
+    min-height: 44px;
 }
 
 /* ====== MVV Section - Missão, Visão, Valores ====== */
@@ -4706,6 +4757,11 @@ body.profile-image-card-open {
         width: min(220px, 100%);
         height: auto;
     }
+
+    .admin-user-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
 }
 
 /* Profile page refactor */
@@ -5031,5 +5087,139 @@ body.profile-image-card-open {
 
     .profile-page .profile-image-card {
         padding: 0.9rem;
+    }
+}
+
+.user-verification-filters {
+    align-items: end;
+    gap: 1rem;
+    grid-template-columns: 1fr 220px auto;
+}
+
+.user-verification-card {
+    margin-bottom: 1rem;
+}
+
+.user-verification-toggle {
+    width: 100%;
+    border: 1px solid rgba(20, 102, 168, 0.18);
+    border-radius: 12px;
+    padding: 0.9rem 1rem;
+    margin-bottom: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    background: linear-gradient(180deg, #f8fcff 0%, #eef7ff 100%);
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.user-verification-toggle h3 {
+    margin: 0 0 0.2rem 0;
+}
+
+.user-verification-toggle p {
+    margin: 0;
+    color: #4f6b85;
+}
+
+.user-verification-details {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(10, 54, 95, 0.12);
+}
+
+.user-verification-actions {
+    margin-top: 0.9rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+}
+
+.user-verification-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(220px, 1fr));
+    gap: 1rem;
+}
+
+.user-verification-grid section {
+    background: #f8fbfe;
+    border: 1px solid rgba(10, 54, 95, 0.08);
+    border-radius: 10px;
+    padding: 0.8rem;
+}
+
+.user-verification-grid h4 {
+    margin: 0 0 0.7rem 0;
+    color: #0a365f;
+}
+
+.user-verification-grid p {
+    margin: 0 0 0.45rem 0;
+}
+
+@media (max-width: 960px) {
+    .user-verification-filters {
+        grid-template-columns: 1fr;
+    }
+
+    .user-verification-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .user-verification-toggle {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+.code-flow-panel {
+    border: 1px solid rgba(13, 69, 116, 0.14);
+    background:
+        radial-gradient(1200px 400px at 0% -10%, rgba(34, 135, 214, 0.08), transparent 55%),
+        radial-gradient(1000px 350px at 100% 0%, rgba(0, 85, 159, 0.08), transparent 50%),
+        #ffffff;
+}
+
+.password-reset-steps {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.6rem;
+    margin: 1rem 0 1.2rem;
+}
+
+.password-reset-step {
+    border: 1px solid rgba(9, 57, 99, 0.14);
+    border-radius: 999px;
+    padding: 0.5rem 0.75rem;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #3f5f7d;
+    background: #f3f8fd;
+}
+
+.password-reset-step.is-active {
+    color: #ffffff;
+    border-color: #0a5ea3;
+    background: linear-gradient(135deg, #0a5ea3, #1b7ac9);
+}
+
+.password-reset-stage {
+    border: 1px solid rgba(14, 75, 126, 0.12);
+    border-radius: 12px;
+    padding: 1rem;
+    background: #fbfdff;
+}
+
+.password-reset-stage + .password-reset-stage {
+    margin-top: 0.8rem;
+}
+
+@media (max-width: 720px) {
+    .password-reset-steps {
+        grid-template-columns: 1fr;
     }
 }
