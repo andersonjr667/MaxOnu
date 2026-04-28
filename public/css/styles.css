@@ -4266,6 +4266,41 @@ body.is-blog-modal-open {
     #leaveDelegationButton {
         width: 100%;
     }
+
+    .login-card-panel {
+        padding: 0.85rem;
+    }
+
+    .login-box,
+    .register-box {
+        padding: 1.2rem;
+    }
+
+    .auth-checkbox-group {
+        padding: 0.7rem 0.8rem;
+        border-radius: 10px;
+    }
+
+    .auth-checkbox-group .checkbox-label {
+        gap: 0.5rem;
+        line-height: 1.3;
+        font-size: 0.84rem;
+    }
+
+    .auth-checkbox-group .checkbox-label span {
+        min-width: 0;
+        overflow-wrap: anywhere;
+    }
+
+    .auth-checkbox-group input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+        margin-top: 0.08rem;
+    }
+
+    .auth-checkbox-group a {
+        font-size: 0.84rem;
+    }
 }
 
 @media (max-width: 420px) {
@@ -4287,6 +4322,19 @@ body.is-blog-modal-open {
     .hamburger-menu {
         width: 42px;
         height: 42px;
+    }
+
+    .auth-checkbox-group {
+        padding: 0.65rem 0.7rem;
+    }
+
+    .auth-checkbox-group .checkbox-label {
+        font-size: 0.8rem;
+        gap: 0.45rem;
+    }
+
+    .auth-checkbox-group a {
+        font-size: 0.8rem;
     }
 }
 .profile-account-layout {

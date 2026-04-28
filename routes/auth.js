@@ -67,6 +67,34 @@ function hasEmailTransportConfig() {
   );
 }
 
+function createMailTransporter() {
+  return nodemailer.createTransport({
+    service: process.env.EMAIL_SERVICE || 'gmail',
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASSWORD
+    }
+  });
+}
+
+function generateTwoFactorEmailCode() {
+  return String(Math.floor(100000 + Math.random() * 900000));
+}
+
+function getMaskedEmail(email) {
+  const normalized = String(email || '').trim().toLowerCase();
+  const [localPart, domainPart = ''] = normalized.split('@');
+  if (!localPart || !domainPart) {
+    return '';
+  }
+
+  if (localPart.length <= 2) {
+    return `${localPart.charAt(0)}***@${domainPart}`;
+  }
+
+  return `${localPart.slice(0, 2)}***@${domainPart}`;
+}
+
 async function sendPasswordResetEmail({ to, fullName, resetCode }) {
   if (!hasEmailTransportConfig()) {
     return false;
@@ -85,13 +113,7 @@ async function sendPasswordResetEmail({ to, fullName, resetCode }) {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
 
-  const transporter = nodemailer.createTransport({
-    service: process.env.EMAIL_SERVICE || 'gmail',
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASSWORD
-    }
-  });
+  const transporter = createMailTransporter();
 
   await transporter.sendMail({
     from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
@@ -151,6 +173,55 @@ async function sendPasswordResetEmail({ to, fullName, resetCode }) {
               <p style="margin:0;font-size:12px;line-height:1.6;color:#6d8398;border-top:1px solid #e1edf8;padding-top:14px;">
                 Mensagem automatica da plataforma MaxOnu 2026.
               </p>
+            </td>
+          </tr>
+        </table>
+      </div>
+    `
+  });
+
+  return true;
+}
+
+async function sendTwoFactorEmailCode({ to, fullName, code }) {
+  if (!hasEmailTransportConfig()) {
+    return false;
+  }
+
+  const transporter = createMailTransporter();
+  const safeName = String(fullName || 'participante')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+
+  await transporter.sendMail({
+    from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
+    to,
+    subject: 'Seu código de verificação - MaxOnu 2026',
+    text: [
+      `Olá, ${fullName || 'participante'}!`,
+      '',
+      'Seu código de verificação para entrar na MaxOnu 2026 é:',
+      code,
+      '',
+      'Esse código expira em 10 minutos.',
+      'Se você não tentou entrar agora, altere sua senha imediatamente.'
+    ].join('\n'),
+    html: `
+      <div style="margin:0;padding:24px;background:#f2f7fc;font-family:Arial,Helvetica,sans-serif;color:#16324a;">
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:620px;margin:0 auto;background:#ffffff;border-radius:14px;overflow:hidden;border:1px solid #d7e6f4;">
+          <tr>
+            <td style="padding:22px 24px 8px 24px;">
+              <h2 style="margin:0 0 8px 0;color:#0b3252;">Verificação em duas etapas</h2>
+              <p style="margin:0 0 14px 0;font-size:15px;line-height:1.6;">Olá, <strong>${safeName}</strong>!</p>
+              <p style="margin:0 0 10px 0;font-size:15px;line-height:1.6;">Use o código abaixo para concluir o seu login na MaxOnu 2026:</p>
+              <div style="margin:0 0 14px 0;padding:14px 16px;border-radius:12px;background:#f1f8ff;border:1px solid #bcd9f3;font-size:32px;letter-spacing:6px;font-weight:700;text-align:center;color:#0b4f86;">
+                ${code}
+              </div>
+              <p style="margin:0 0 16px 0;font-size:14px;line-height:1.6;color:#3a5975;">Esse código expira em <strong>10 minutos</strong>.</p>
+              <p style="margin:0 0 16px 0;font-size:13px;line-height:1.6;color:#6d8398;">Se você não tentou entrar agora, altere sua senha imediatamente.</p>
             </td>
           </tr>
         </table>
@@ -252,14 +323,17 @@ router.post('/login', [
 
   try {
     const { email, password } = req.body;
-    const loginValue = email.trim().toLowerCase();
+    const loginValueRaw = String(email || '').trim();
+    const loginValue = loginValueRaw.toLowerCase();
+    const looksLikeEmail = loginValue.includes('@');
 
-    const user = await User.findOne({
-      $or: [
-        { email: loginValue },
-        { username: new RegExp(`^${escapeRegex(loginValue)}$`, 'i') }
-      ]
-    });
+    // Regra de identificação:
+    // - Se tiver "@", tratamos explicitamente como email.
+    // - Caso contrário, tratamos como username.
+    // Isso evita ambiguidades quando o começo do email coincide com um username existente.
+    const user = looksLikeEmail
+      ? await User.findOne({ email: loginValue })
+      : await User.findOne({ username: new RegExp(`^${escapeRegex(loginValue)}$`, 'i') });
 
     if (!user || !(await user.comparePassword(password))) {
       return res.status(401).json({ error: 'Credenciais inválidas' });
@@ -273,11 +347,34 @@ router.post('/login', [
       return res.status(403).json({ error: 'Conta expulsa da plataforma.' });
     }
 
-    // Se 2FA está ativado, não gerar token JWT
+    // Se 2FA está ativado, não gerar token JWT imediatamente
     if (user.twoFactorEnabled) {
+      const twoFactorMethod = user.twoFactorMethod || (user.twoFactorSecret ? 'totp' : 'email');
+
+      if (twoFactorMethod === 'email') {
+        const code = generateTwoFactorEmailCode();
+        user.twoFactorEmailCode = code;
+        user.twoFactorEmailCodeExpires = new Date(Date.now() + 10 * 60 * 1000);
+        await user.save();
+
+        const emailSent = await sendTwoFactorEmailCode({
+          to: user.email,
+          fullName: user.fullName,
+          code
+        });
+
+        if (!emailSent) {
+          return res.status(503).json({
+            error: '2FA por email está ativado, mas o envio de email não está configurado.'
+          });
+        }
+      }
+
       return res.json({ 
         userId: user._id,
         twoFactorRequired: true,
+        twoFactorMethod,
+        maskedEmail: twoFactorMethod === 'email' ? getMaskedEmail(user.email) : '',
         message: '2FA obrigatório'
       });
     }
@@ -818,7 +915,10 @@ router.post('/verify-2fa-setup', authMiddleware, [
 
     // Ativar 2FA
     user.twoFactorEnabled = true;
+    user.twoFactorMethod = 'totp';
     user.twoFactorVerified = true;
+    user.twoFactorEmailCode = null;
+    user.twoFactorEmailCodeExpires = null;
     await user.save();
 
     res.json({ 
@@ -856,13 +956,65 @@ router.post('/disable-2fa', authMiddleware, [
     // Desativar 2FA
     user.twoFactorEnabled = false;
     user.twoFactorVerified = false;
+    user.twoFactorMethod = null;
     user.twoFactorSecret = null;
     user.twoFactorBackupCodes = [];
+    user.twoFactorEmailCode = null;
+    user.twoFactorEmailCodeExpires = null;
     await user.save();
 
     res.json({ 
       message: '2FA desativado com sucesso',
       twoFactorEnabled: false
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// POST /api/enable-email-2fa - Ativa 2FA por código no email
+router.post('/enable-email-2fa', authMiddleware, [
+  body('password').notEmpty().withMessage('Senha obrigatória para ativar 2FA por email')
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ error: errors.array() });
+  }
+
+  try {
+    if (!hasEmailTransportConfig()) {
+      return res.status(503).json({ error: 'Envio de email não está configurado no servidor.' });
+    }
+
+    const { password } = req.body;
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({ error: 'Usuário não encontrado' });
+    }
+
+    const passwordMatch = await user.comparePassword(password);
+    if (!passwordMatch) {
+      return res.status(401).json({ error: 'Senha incorreta' });
+    }
+
+    if (!user.email) {
+      return res.status(400).json({ error: 'Sua conta não possui email válido para ativar 2FA por código.' });
+    }
+
+    user.twoFactorEnabled = true;
+    user.twoFactorVerified = true;
+    user.twoFactorMethod = 'email';
+    user.twoFactorSecret = null;
+    user.twoFactorBackupCodes = [];
+    user.twoFactorEmailCode = null;
+    user.twoFactorEmailCodeExpires = null;
+    await user.save();
+
+    res.json({
+      message: '2FA por email ativado com sucesso.',
+      twoFactorEnabled: true,
+      twoFactorMethod: 'email'
     });
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -887,8 +1039,36 @@ router.post('/verify-2fa-login', [
       return res.status(404).json({ error: 'Usuário não encontrado' });
     }
 
-    if (!user.twoFactorEnabled || !user.twoFactorSecret) {
+    if (!user.twoFactorEnabled) {
       return res.status(400).json({ error: '2FA não está ativado' });
+    }
+
+    const twoFactorMethod = user.twoFactorMethod || (user.twoFactorSecret ? 'totp' : 'email');
+
+    if (twoFactorMethod === 'email') {
+      const providedCode = String(token || '').trim();
+      const notExpired = user.twoFactorEmailCodeExpires && Date.now() <= user.twoFactorEmailCodeExpires.getTime();
+      const validCode = user.twoFactorEmailCode && providedCode === user.twoFactorEmailCode;
+
+      if (!notExpired || !validCode) {
+        return res.status(401).json({ error: 'Código de verificação por email inválido ou expirado' });
+      }
+
+      user.twoFactorEmailCode = null;
+      user.twoFactorEmailCodeExpires = null;
+      await user.save();
+
+      const jwtToken = user.generateToken();
+      return res.json({
+        token: jwtToken,
+        isAdmin: user.role === 'admin',
+        role: user.role,
+        message: 'Verificação por email concluída com sucesso'
+      });
+    }
+
+    if (!user.twoFactorSecret) {
+      return res.status(400).json({ error: 'Chave de autenticação 2FA não encontrada.' });
     }
 
     // Tentar código TOTP
@@ -933,13 +1113,68 @@ router.post('/verify-2fa-login', [
   }
 });
 
+// POST /api/resend-2fa-code - Reenvia código de 2FA por email
+router.post('/resend-2fa-code', [
+  body('userId').notEmpty().withMessage('userId obrigatório')
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ error: errors.array() });
+  }
+
+  try {
+    if (!hasEmailTransportConfig()) {
+      return res.status(503).json({ error: 'Envio de email não está configurado no servidor.' });
+    }
+
+    const { userId } = req.body;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: 'Usuário não encontrado' });
+    }
+
+    if (!user.twoFactorEnabled) {
+      return res.status(400).json({ error: '2FA não está ativado para esta conta.' });
+    }
+
+    const twoFactorMethod = user.twoFactorMethod || (user.twoFactorSecret ? 'totp' : 'email');
+    if (twoFactorMethod !== 'email') {
+      return res.status(400).json({ error: 'Reenvio disponível apenas para 2FA por email.' });
+    }
+
+    const code = generateTwoFactorEmailCode();
+    user.twoFactorEmailCode = code;
+    user.twoFactorEmailCodeExpires = new Date(Date.now() + 10 * 60 * 1000);
+    await user.save();
+
+    const emailSent = await sendTwoFactorEmailCode({
+      to: user.email,
+      fullName: user.fullName,
+      code
+    });
+
+    if (!emailSent) {
+      return res.status(503).json({ error: 'Não foi possível enviar o código por email agora.' });
+    }
+
+    res.json({
+      message: 'Novo código enviado para o seu email.',
+      maskedEmail: getMaskedEmail(user.email)
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
 // GET /api/2fa-status - Verificar status de 2FA
 router.get('/2fa-status', authMiddleware, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select('twoFactorEnabled twoFactorVerified');
+    const user = await User.findById(req.user.id).select('twoFactorEnabled twoFactorVerified twoFactorMethod');
     res.json({ 
       twoFactorEnabled: user?.twoFactorEnabled || false,
       twoFactorVerified: user?.twoFactorVerified || false,
+      twoFactorMethod: user?.twoFactorMethod || null,
       message: user?.twoFactorEnabled ? '2FA está ativado' : '2FA não está ativado'
     });
   } catch (error) {

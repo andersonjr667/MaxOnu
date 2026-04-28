@@ -174,6 +174,11 @@ userSchema.add({
         type: Boolean,
         default: false
     },
+    twoFactorMethod: {
+        type: String,
+        enum: ['totp', 'email', null],
+        default: null
+    },
     twoFactorSecret: {
         type: String,
         default: null
@@ -188,6 +193,14 @@ userSchema.add({
     twoFactorVerified: {
         type: Boolean,
         default: false
+    },
+    twoFactorEmailCode: {
+        type: String,
+        default: null
+    },
+    twoFactorEmailCodeExpires: {
+        type: Date,
+        default: null
     },
     // Mark seeds with a field to identify test data
     isTestData: {

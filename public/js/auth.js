@@ -163,6 +163,8 @@ function initAuth() {
             // Se 2FA é obrigatório, redirecionar para verificação
             if (data.twoFactorRequired) {
                 sessionStorage.setItem('2fa_user_id', data.userId);
+                sessionStorage.setItem('2fa_method', data.twoFactorMethod || 'totp');
+                sessionStorage.setItem('2fa_masked_email', data.maskedEmail || '');
                 displayMessage('Verificação de dois fatores necessária...');
                 setTimeout(() => {
                     window.location.href = '/verify-2fa-login';

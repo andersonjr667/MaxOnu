@@ -4,10 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verificar 2FA - MaxOnu 2026</title>
-    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/styles.css?v=20260427-profile2faemail">
     <link rel="icon" href="/images/logo-maxonu.png" type="image/png">
+    <script src="/js/includes.js?v=20260420-headerfix" defer></script>
+    <script src="/js/verify-2fa-login.js?v=20260427-resend2fa" defer></script>
 </head>
 <body class="login-page">
+    <include src="header.html"></include>
+
     <main class="main-content">
         <section class="content-section">
             <div class="login-shell verify-login-shell">
@@ -24,15 +28,30 @@
 
                     <div class="login-panel-copy">
                         <h2>Verificação em duas etapas</h2>
-                        <p>Digite o código do aplicativo autenticador ou use um código de backup salvo anteriormente.</p>
+                        <p id="verify2faIntro">Digite o código do aplicativo autenticador ou use um código de backup salvo anteriormente.</p>
                     </div>
 
                     <div id="messageContainer" class="login-message" hidden></div>
 
-                    <div class="login-tab-bar" role="tablist" aria-label="Verificação 2FA">
+                    <div class="login-tab-bar" id="verifyTabBar" role="tablist" aria-label="Verificação 2FA">
                         <button type="button" class="login-tab is-active" data-verify-tab="totp">Authenticator</button>
                         <button type="button" class="login-tab" data-verify-tab="backup">Backup</button>
                     </div>
+
+                    <section data-verify-panel="email" hidden>
+                        <form id="email-form" class="auth-form">
+                            <div class="form-group">
+                                <label for="email-code">Código enviado por email</label>
+                                <input type="text" id="email-code" placeholder="000000" inputmode="numeric" maxlength="6" pattern="[0-9]{6}" required autofocus>
+                            </div>
+                            <button type="submit" class="view-button auth-submit-btn">Verificar código</button>
+                        </form>
+                        <p class="switch-form" id="resendCodeWrap" hidden>
+                            Não recebeu? 
+                            <button type="button" class="text-link" id="resend2faCodeButton">Reenviar código</button>
+                            <span id="resend2faCountdown"></span>
+                        </p>
+                    </section>
 
                     <section data-verify-panel="totp">
                         <form id="totp-form" class="auth-form">
@@ -60,113 +79,7 @@
         </section>
     </main>
 
-    <script>
-        const API_URL = '/api';
-        const userId = sessionStorage.getItem('2fa_user_id');
-
-        if (!userId) {
-            window.location.href = '/login';
-        }
-
-        function displayMessage(message, isError = false) {
-            const container = document.getElementById('messageContainer');
-            container.hidden = false;
-            container.className = `login-message ${isError ? 'is-error' : 'is-success'}`;
-            container.textContent = message;
-        }
-
-        function clearMessage() {
-            const container = document.getElementById('messageContainer');
-            container.hidden = true;
-            container.className = 'login-message';
-            container.textContent = '';
-        }
-
-        function switchTab(tabName) {
-            document.querySelectorAll('[data-verify-panel]').forEach((panel) => {
-                panel.hidden = panel.dataset.verifyPanel !== tabName;
-            });
-            document.querySelectorAll('[data-verify-tab]').forEach((button) => {
-                button.classList.toggle('is-active', button.dataset.verifyTab === tabName);
-            });
-            clearMessage();
-        }
-
-        function logout() {
-            localStorage.removeItem('token');
-            localStorage.removeItem('role');
-            localStorage.removeItem('isAdmin');
-            sessionStorage.removeItem('2fa_user_id');
-            window.location.href = '/login';
-        }
-
-        function getRoleRedirect(role) {
-            if (role === 'admin') return '/admin';
-            if (role === 'coordinator') return '/coordenacao';
-            if (role === 'teacher') return '/orientadores';
-            if (role === 'press') return '/imprensa-dashboard';
-            return '/profile';
-        }
-
-        async function submitVerification(tokenValue, successMessage) {
-            try {
-                const response = await fetch(`${API_URL}/verify-2fa-login`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        userId,
-                        token: tokenValue
-                    })
-                });
-
-                const data = await response.json().catch(() => ({}));
-                if (!response.ok) {
-                    throw new Error(Array.isArray(data.error) ? data.error[0]?.msg : data.error);
-                }
-
-                localStorage.setItem('token', data.token);
-                localStorage.setItem('role', data.role || 'candidate');
-                localStorage.setItem('isAdmin', data.isAdmin ? 'true' : 'false');
-                sessionStorage.removeItem('2fa_user_id');
-
-                displayMessage(successMessage);
-                setTimeout(() => {
-                    window.location.href = getRoleRedirect(data.role || 'candidate');
-                }, 900);
-            } catch (error) {
-                displayMessage(error.message || 'Código inválido.', true);
-            }
-        }
-
-        document.querySelectorAll('[data-verify-tab]').forEach((button) => {
-            button.addEventListener('click', () => switchTab(button.dataset.verifyTab));
-        });
-
-        document.getElementById('totp-form').addEventListener('submit', async (event) => {
-            event.preventDefault();
-            const code = document.getElementById('totp-code').value.trim();
-            if (!/^\d{6}$/.test(code)) {
-                displayMessage('O código do autenticador deve ter 6 dígitos.', true);
-                return;
-            }
-            await submitVerification(code, '2FA verificado com sucesso.');
-        });
-
-        document.getElementById('backup-form').addEventListener('submit', async (event) => {
-            event.preventDefault();
-            const code = document.getElementById('backup-code').value.trim().toUpperCase();
-            if (!code) {
-                displayMessage('Digite um código de backup válido.', true);
-                return;
-            }
-            await submitVerification(code, 'Código de backup verificado com sucesso.');
-        });
-
-        document.getElementById('logout2fa').addEventListener('click', (event) => {
-            event.preventDefault();
-            logout();
-        });
-    </script>
+    <include src="footer.html"></include>
 </body>
 </html>
 

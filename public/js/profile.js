@@ -517,10 +517,113 @@ function bindPasswordForm() {
 
             feedback.textContent = data.message || 'Senha atualizada com sucesso.';
             form.reset();
+            const passwordOverlay = document.getElementById('passwordCardOverlay');
+            if (passwordOverlay) {
+                passwordOverlay.classList.remove('is-open');
+                passwordOverlay.hidden = true;
+            }
+            document.body.classList.remove('profile-image-card-open');
         } catch (error) {
             feedback.textContent = error.message || 'Erro ao atualizar a senha.';
         } finally {
             button.disabled = false;
+        }
+    });
+}
+
+function bindTwoFactorForm(twoFactorStatus) {
+    const form = document.getElementById('emailTwoFactorForm');
+    if (!form) {
+        return;
+    }
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const feedback = document.getElementById('twoFactorFeedback');
+        const button = form.querySelector('button[type="submit"]');
+        const password = document.getElementById('emailTwoFactorPassword')?.value || '';
+        const isEnabled = Boolean(twoFactorStatus?.twoFactorEnabled);
+        const isEmailMethod = twoFactorStatus?.twoFactorMethod === 'email';
+        const shouldDisable = isEnabled && isEmailMethod;
+
+        button.disabled = true;
+        feedback.textContent = shouldDisable ? 'Desativando 2FA por email...' : 'Ativando 2FA por email...';
+
+        try {
+            const endpoint = shouldDisable ? '/api/disable-2fa' : '/api/enable-email-2fa';
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getToken()}`
+                },
+                body: JSON.stringify({ password })
+            });
+
+            const data = await parseJson(response);
+            if (!response.ok) {
+                const message = Array.isArray(data.error) ? data.error[0]?.msg : data.error;
+                throw new Error(message || 'Não foi possível atualizar o 2FA.');
+            }
+
+            feedback.textContent = data.message || (shouldDisable ? '2FA desativado com sucesso.' : '2FA ativado com sucesso.');
+            form.reset();
+            const twoFactorOverlay = document.getElementById('twoFactorCardOverlay');
+            if (twoFactorOverlay) {
+                twoFactorOverlay.classList.remove('is-open');
+                twoFactorOverlay.hidden = true;
+            }
+            document.body.classList.remove('profile-image-card-open');
+            await loadProfile();
+        } catch (error) {
+            feedback.textContent = error.message || 'Erro ao atualizar o 2FA.';
+        } finally {
+            button.disabled = false;
+        }
+    });
+}
+
+function bindSecurityCards() {
+    const passwordOverlay = document.getElementById('passwordCardOverlay');
+    const twoFactorOverlay = document.getElementById('twoFactorCardOverlay');
+    const openPasswordButton = document.getElementById('openPasswordCardButton');
+    const openTwoFactorButton = document.getElementById('openTwoFactorCardButton');
+    const closePasswordButton = document.getElementById('closePasswordCardButton');
+    const closeTwoFactorButton = document.getElementById('closeTwoFactorCardButton');
+
+    const openOverlay = (overlay) => {
+        if (!overlay) {
+            return;
+        }
+        overlay.hidden = false;
+        overlay.classList.add('is-open');
+        document.body.classList.add('profile-image-card-open');
+    };
+
+    const closeOverlay = (overlay) => {
+        if (!overlay) {
+            return;
+        }
+        overlay.classList.remove('is-open');
+        overlay.hidden = true;
+        document.body.classList.remove('profile-image-card-open');
+    };
+
+    openPasswordButton?.addEventListener('click', () => openOverlay(passwordOverlay));
+    openTwoFactorButton?.addEventListener('click', () => openOverlay(twoFactorOverlay));
+    closePasswordButton?.addEventListener('click', () => closeOverlay(passwordOverlay));
+    closeTwoFactorButton?.addEventListener('click', () => closeOverlay(twoFactorOverlay));
+
+    passwordOverlay?.addEventListener('click', (event) => {
+        if (event.target === passwordOverlay) {
+            closeOverlay(passwordOverlay);
+        }
+    });
+
+    twoFactorOverlay?.addEventListener('click', (event) => {
+        if (event.target === twoFactorOverlay) {
+            closeOverlay(twoFactorOverlay);
         }
     });
 }
@@ -531,13 +634,35 @@ function renderProfileSummary(user, twoFactorStatus) {
     const fallbackUrl = getDefaultProfileImage(user);
     const versionedImageUrl = addProfileImageVersion(imageUrl, user?.profileImagePublicId);
     const imageAlt = user?.fullName ? `Foto de perfil de ${user.fullName}` : 'Foto de perfil';
+    const twoFactorEnabled = Boolean(twoFactorStatus?.twoFactorEnabled);
+    const twoFactorMethod = twoFactorStatus?.twoFactorMethod || (twoFactorEnabled ? 'totp' : null);
+    const twoFactorMethodLabel = twoFactorMethod === 'email' ? 'Código por email' : twoFactorMethod === 'totp' ? 'Aplicativo autenticador' : 'Desativado';
+    const canDisableEmail2fa = twoFactorEnabled && twoFactorMethod === 'email';
+    const twoFactorActionButtonLabel = canDisableEmail2fa
+        ? 'Desativar 2FA por email'
+        : twoFactorEnabled
+            ? 'Trocar para 2FA por email'
+            : 'Ativar 2FA por email';
+    const twoFactorActionLabel = canDisableEmail2fa ? 'Senha para desativar 2FA' : 'Senha para ativar 2FA por email';
     const cards = [
         createEditableCard('Nome completo', 'fullName', user.fullName, { placeholder: 'Digite seu nome completo' }),
         createInfoCard('Usuário de acesso', user.username ? `@${user.username}` : '', { emptyText: 'Usuário não encontrado' }),
         createEditableCard('Email', 'email', user.email, { type: 'email', placeholder: 'Digite seu email' }),
         createInfoCard('Turma', user.classGroup, { emptyText: 'Não informada' }),
-        createInfoCard('Função', getRoleLabelForUser(user), { accent: 'blue-accent' }),
-        createInfoCard('2FA', twoFactorStatus?.twoFactorEnabled ? 'Ativado' : 'Desativado')
+        `
+        <article class="feature-card profile-action-card profile-action-card-wide">
+            <h3>Alterar senha</h3>
+            <p>Atualize sua senha quando quiser, sem sair da página de perfil.</p>
+            <button type="button" id="openPasswordCardButton" class="view-button">Abrir alteração de senha</button>
+        </article>
+        `,
+        `
+        <article class="feature-card profile-action-card profile-action-card-wide">
+            <h3>2FA por email</h3>
+            <p>Status: ${twoFactorEnabled ? 'Ativado' : 'Desativado'} • Método: ${twoFactorMethodLabel}</p>
+            <button type="button" id="openTwoFactorCardButton" class="view-button">${twoFactorActionButtonLabel}</button>
+        </article>
+        `
     ];
 
     return `
@@ -593,6 +718,52 @@ function renderProfileSummary(user, twoFactorStatus) {
                     </form>
                 </div>
             </div>
+            <div class="profile-image-card-overlay" id="passwordCardOverlay" hidden>
+                <div class="profile-image-card" role="dialog" aria-modal="true" aria-labelledby="passwordCardTitle">
+                    <div class="profile-image-card-header">
+                        <h3 id="passwordCardTitle">Alterar senha</h3>
+                        <button type="button" class="profile-image-card-close" id="closePasswordCardButton" aria-label="Fechar card de senha">Fechar</button>
+                    </div>
+                    <form id="passwordChangeForm" class="dashboard-form profile-password-form">
+                        <div class="form-group">
+                            <label for="currentPassword">Senha atual</label>
+                            <input type="password" id="currentPassword" placeholder="Digite sua senha atual" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="newPassword">Nova senha</label>
+                            <input type="password" id="newPassword" placeholder="Digite a nova senha" minlength="6" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmNewPassword">Confirmar nova senha</label>
+                            <input type="password" id="confirmNewPassword" placeholder="Repita a nova senha" minlength="6" required>
+                        </div>
+                        <button type="submit" class="view-button">Atualizar senha</button>
+                    </form>
+                    <p class="register-note registration-feedback" id="passwordFeedback">Atualize sua senha sempre que suspeitar de acesso indevido.</p>
+                </div>
+            </div>
+            <div class="profile-image-card-overlay" id="twoFactorCardOverlay" hidden>
+                <div class="profile-image-card" role="dialog" aria-modal="true" aria-labelledby="twoFactorCardTitle">
+                    <div class="profile-image-card-header">
+                        <h3 id="twoFactorCardTitle">2FA por email</h3>
+                        <button type="button" class="profile-image-card-close" id="closeTwoFactorCardButton" aria-label="Fechar card de 2FA">Fechar</button>
+                    </div>
+                    <form id="emailTwoFactorForm" class="dashboard-form profile-password-form">
+                        <div class="form-group">
+                            <label for="emailTwoFactorPassword">${twoFactorActionLabel}</label>
+                            <input type="password" id="emailTwoFactorPassword" placeholder="Digite sua senha atual" required>
+                        </div>
+                        <button type="submit" class="view-button">${twoFactorActionButtonLabel}</button>
+                    </form>
+                    <p class="register-note registration-feedback" id="twoFactorFeedback">
+                        ${twoFactorEnabled
+                            ? (twoFactorMethod === 'email'
+                                ? '2FA por email ativo. No próximo login, você receberá um código de 6 dígitos.'
+                                : '2FA ativo por aplicativo autenticador.')
+                            : '2FA desativado. Ative para exigir senha + código por email no login.'}
+                    </p>
+                </div>
+            </div>
         </article>
     `;
 }
@@ -602,29 +773,9 @@ function renderSecurityPanel(twoFactorStatus) {
         <article class="dashboard-panel">
             <div class="dashboard-section-heading">
                 <span class="dashboard-section-kicker">Segurança</span>
-                <h2>Redefinir senha</h2>
-                <p>Use sua senha atual para cadastrar uma nova senha de acesso sem sair da página de perfil.</p>
+                <h2>Zona de segurança</h2>
+                <p>As opções de alterar senha e 2FA agora ficam em cards dentro de “Dados da conta”.</p>
             </div>
-            <div class="registration-overview profile-security-overview">
-                ${createInfoCard('Senha', 'Você pode alterar sua senha aqui mesmo.')}
-                ${createInfoCard('2FA', twoFactorStatus?.twoFactorEnabled ? 'Ativado' : 'Desativado', { accent: 'blue-accent' })}
-            </div>
-            <form id="passwordChangeForm" class="dashboard-form profile-password-form">
-                <div class="form-group">
-                    <label for="currentPassword">Senha atual</label>
-                    <input type="password" id="currentPassword" placeholder="Digite sua senha atual" required>
-                </div>
-                <div class="form-group">
-                    <label for="newPassword">Nova senha</label>
-                    <input type="password" id="newPassword" placeholder="Digite a nova senha" minlength="6" required>
-                </div>
-                <div class="form-group">
-                    <label for="confirmNewPassword">Confirmar nova senha</label>
-                    <input type="password" id="confirmNewPassword" placeholder="Repita a nova senha" minlength="6" required>
-                </div>
-                <button type="submit" class="view-button">Atualizar senha</button>
-            </form>
-            <p class="register-note registration-feedback" id="passwordFeedback">Sua conta pode ser protegida ainda mais com a autenticação em duas etapas.</p>
 
             <div class="profile-danger-zone">
                 <h3>Excluir conta</h3>
@@ -1004,13 +1155,26 @@ function bindProfileImageForm() {
             }
 
             const overlay = document.getElementById('profileImageCardOverlay');
-            if (!overlay || overlay.hidden) {
+            const passwordOverlay = document.getElementById('passwordCardOverlay');
+            const twoFactorOverlay = document.getElementById('twoFactorCardOverlay');
+            const hasOpenOverlay = (overlay && !overlay.hidden) || (passwordOverlay && !passwordOverlay.hidden) || (twoFactorOverlay && !twoFactorOverlay.hidden);
+            if (!hasOpenOverlay) {
                 return;
             }
 
             event.preventDefault();
-            overlay.classList.remove('is-open');
-            overlay.hidden = true;
+            if (overlay) {
+                overlay.classList.remove('is-open');
+                overlay.hidden = true;
+            }
+            if (passwordOverlay) {
+                passwordOverlay.classList.remove('is-open');
+                passwordOverlay.hidden = true;
+            }
+            if (twoFactorOverlay) {
+                twoFactorOverlay.classList.remove('is-open');
+                twoFactorOverlay.hidden = true;
+            }
             profileImageCardLastClosedAt = Date.now();
             document.body.classList.remove('profile-image-card-open');
         });
@@ -1372,6 +1536,8 @@ async function loadProfile() {
         bindEditableProfileFields();
         bindProfileImageFallback();
         bindProfileImageForm();
+        bindSecurityCards();
+        bindTwoFactorForm(twoFactorStatus);
         bindPasswordForm();
         bindDeleteAccountForm();
     } catch (error) {
