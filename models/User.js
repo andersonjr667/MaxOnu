@@ -46,6 +46,14 @@ const invitationSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    fromProfileImageUrl: {
+        type: String,
+        default: ''
+    },
+    fromGender: {
+        type: String,
+        default: 'prefiro-nao-informar'
+    },
     teamSize: {
         type: Number,
         enum: [2, 3],

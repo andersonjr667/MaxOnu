@@ -1,4 +1,8 @@
 /* Dedicated profile page stylesheet */
+html.profile-page {
+    scroll-behavior: smooth;
+}
+
 body.profile-page {
     --pf-ink: #082a44;
     --pf-text: #1d3d56;
@@ -14,9 +18,10 @@ body.profile-page {
     --pf-shadow-md: 0 18px 38px rgba(8, 42, 68, 0.14);
     --pf-shadow-lg: 0 24px 56px rgba(8, 42, 68, 0.2);
     --pf-account-card-min-height: 168px;
+    --pf-transition: 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
     background:
-        radial-gradient(circle at 0% 0%, rgba(216, 112, 27, 0.16), transparent 34%),
-        radial-gradient(circle at 100% 0%, rgba(15, 95, 154, 0.16), transparent 30%),
+        radial-gradient(circle at 0% 0%, rgba(216, 112, 27, 0.14), transparent 36%),
+        radial-gradient(circle at 100% 0%, rgba(15, 95, 154, 0.14), transparent 32%),
         linear-gradient(180deg, #eef4f9 0%, #e7eff7 100%);
 }
 
@@ -44,6 +49,12 @@ body.profile-page {
         radial-gradient(circle at 90% 10%, rgba(255, 196, 128, 0.28), transparent 35%),
         linear-gradient(130deg, #05253f 0%, #0a3d66 56%, #0f5f9a 100%);
     box-shadow: 0 24px 56px rgba(4, 27, 45, 0.3);
+    transition: transform var(--pf-transition), box-shadow var(--pf-transition);
+}
+
+.profile-page .dashboard-hero:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 32px 64px rgba(4, 27, 45, 0.38);
 }
 
 .profile-page .dashboard-kicker {
@@ -87,6 +98,38 @@ body.profile-page {
         radial-gradient(circle at 90% 10%, rgba(216, 112, 27, 0.11), transparent 33%),
         linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(246, 250, 255, 0.94));
     box-shadow: var(--pf-shadow-md);
+    transition: transform var(--pf-transition), box-shadow var(--pf-transition), border-color var(--pf-transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.profile-page .profile-panel-shell .dashboard-panel::before,
+.profile-page .profile-summary-shell .dashboard-panel::before,
+.profile-page .profile-security-section .dashboard-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--pf-blue), var(--pf-orange), #ffd166);
+    opacity: 0;
+    transition: opacity var(--pf-transition);
+    z-index: 1;
+}
+
+.profile-page .profile-panel-shell .dashboard-panel:hover,
+.profile-page .profile-summary-shell .dashboard-panel:hover,
+.profile-page .profile-security-section .dashboard-panel:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--pf-shadow-lg);
+    border-color: rgba(15, 95, 154, 0.25);
+}
+
+.profile-page .profile-panel-shell .dashboard-panel:hover::before,
+.profile-page .profile-summary-shell .dashboard-panel:hover::before,
+.profile-page .profile-security-section .dashboard-panel:hover::before {
+    opacity: 1;
 }
 
 .profile-page .dashboard-panel {
@@ -127,11 +170,70 @@ body.profile-page {
     border-radius: 18px;
     border: 1px solid var(--pf-line);
     background: var(--pf-glass);
+    transition: transform var(--pf-transition), box-shadow var(--pf-transition), border-color var(--pf-transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.profile-page .feature-card:hover,
+.profile-page .role-preview-card:hover,
+.profile-page .teammate-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--pf-shadow-md);
+    border-color: rgba(15, 95, 154, 0.25);
 }
 
 .profile-page .feature-card {
     padding: 0.95rem 1rem;
     box-shadow: var(--pf-shadow-sm);
+    transition: transform var(--pf-transition), box-shadow var(--pf-transition), border-color var(--pf-transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.profile-page .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--pf-blue), var(--pf-orange));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--pf-transition);
+}
+
+.profile-page .feature-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--pf-shadow-md);
+    border-color: rgba(15, 95, 154, 0.28);
+}
+
+.profile-page .feature-card:hover::before {
+    transform: scaleX(1);
+}
+
+.profile-page .feature-card.blue-accent {
+    background: linear-gradient(135deg, rgba(15, 95, 154, 0.06) 0%, rgba(255, 255, 255, 0.95) 100%);
+    border-color: rgba(15, 95, 154, 0.18);
+    transition: transform var(--pf-transition), box-shadow var(--pf-transition), border-color var(--pf-transition), background var(--pf-transition);
+}
+
+.profile-page .feature-card.blue-accent:hover {
+    transform: translateY(-5px) scale(1.01);
+    box-shadow: 0 16px 32px rgba(8, 42, 68, 0.18);
+    border-color: rgba(15, 95, 154, 0.32);
+    background: linear-gradient(135deg, rgba(15, 95, 154, 0.1) 0%, rgba(255, 255, 255, 0.98) 100%);
+}
+
+.profile-page .feature-card.blue-accent::before {
+    background: linear-gradient(90deg, var(--pf-blue), #38bdf8);
+}
+
+.profile-page .feature-card.blue-accent:hover {
+    border-color: rgba(15, 95, 154, 0.35);
+    background: linear-gradient(135deg, rgba(15, 95, 154, 0.1) 0%, rgba(255, 255, 255, 0.98) 100%);
 }
 
 .profile-page .profile-action-card {
@@ -146,6 +248,20 @@ body.profile-page {
         linear-gradient(180deg, #ffffff 0%, #f2f8fe 100%);
     box-shadow: 0 12px 26px rgba(8, 42, 68, 0.12);
     transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.profile-page .profile-action-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    pointer-events: none;
+}
+
+.profile-page .profile-action-card:hover::before {
+    opacity: 1;
 }
 
 .profile-page .profile-action-card::after {
@@ -182,10 +298,33 @@ body.profile-page {
     font-weight: 800;
     letter-spacing: 0.01em;
     box-shadow: 0 8px 16px rgba(15, 95, 154, 0.16);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.profile-page .profile-action-card .view-button::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.25) 0%, transparent 50%);
+    opacity: 0;
+    transition: opacity 0.2s ease;
 }
 
 .profile-page .profile-action-card .view-button:hover {
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(15, 95, 154, 0.24);
+    filter: brightness(1.05);
+}
+
+.profile-page .profile-action-card .view-button:hover::before {
+    opacity: 1;
+}
+
+.profile-page .profile-action-card .view-button:active {
+    transform: translateY(0);
+    box-shadow: 0 6px 12px rgba(15, 95, 154, 0.18);
 }
 
 .profile-page .feature-card h3,
@@ -204,6 +343,22 @@ body.profile-page {
 .profile-page .role-preview-card,
 .profile-page .teammate-card {
     padding: 0.95rem 1rem;
+    transition: transform var(--pf-transition), box-shadow var(--pf-transition), border-color var(--pf-transition);
+}
+
+.profile-page .role-preview-card:has(.view-button) {
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-page .role-preview-card .view-button {
+    margin-top: auto;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.profile-page .role-preview-card .view-button:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.05);
 }
 
 .profile-page .registration-choice-box {
@@ -236,6 +391,18 @@ body.profile-page {
     padding: 0.9rem 1rem;
     border-radius: 16px;
     border: 1px solid var(--pf-line);
+    animation: statusCardIn 0.3s ease-out;
+}
+
+@keyframes statusCardIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .profile-page .profile-status-card.is-success {
@@ -350,6 +517,11 @@ body.profile-page {
     border-radius: 999px;
     isolation: isolate;
     margin: 0;
+    transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.profile-page .profile-photo-shell:hover {
+    transform: scale(1.04);
 }
 
 .profile-page .profile-photo-trigger {
@@ -372,6 +544,12 @@ body.profile-page {
     background: conic-gradient(from 180deg, rgba(216, 112, 27, 0.36), rgba(15, 95, 154, 0.3), rgba(14, 146, 161, 0.28), rgba(216, 112, 27, 0.36));
     box-shadow: 0 14px 30px rgba(8, 42, 68, 0.2);
     z-index: 0;
+    transition: transform var(--pf-transition), box-shadow var(--pf-transition);
+}
+
+.profile-page .profile-photo-shell:hover::before {
+    transform: translate(-50%, -50%) scale(1.08);
+    box-shadow: 0 18px 38px rgba(8, 42, 68, 0.28);
 }
 
 .profile-page .profile-photo-preview {
@@ -384,6 +562,12 @@ body.profile-page {
     position: relative;
     z-index: 1;
     box-shadow: 0 16px 38px rgba(8, 42, 68, 0.24);
+    transition: box-shadow var(--pf-transition), transform var(--pf-transition);
+}
+
+.profile-page .profile-photo-shell:hover .profile-photo-preview {
+    transform: scale(1.02);
+    box-shadow: 0 20px 42px rgba(8, 42, 68, 0.28);
 }
 
 .profile-page .profile-photo-camera-badge {
@@ -495,6 +679,13 @@ body.profile-page {
     padding: 0.6rem 1.15rem;
     font-weight: 700;
     cursor: pointer;
+    transition: transform var(--pf-transition), box-shadow var(--pf-transition), border-color var(--pf-transition);
+}
+
+.profile-page .profile-upload-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(8, 42, 68, 0.14);
+    border-color: rgba(15, 95, 154, 0.32);
 }
 
 .profile-page .profile-image-editor {
@@ -515,6 +706,12 @@ body.profile-page {
     cursor: grab;
     touch-action: none;
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.65), 0 12px 26px rgba(8, 42, 68, 0.18);
+    transition: box-shadow var(--pf-transition), transform var(--pf-transition);
+}
+
+.profile-page .profile-image-editor-frame:hover {
+    box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.8), 0 16px 32px rgba(8, 42, 68, 0.24);
+    transform: scale(1.02);
 }
 
 .profile-page .profile-image-editor-frame.is-dragging {
@@ -589,6 +786,7 @@ body.profile-page {
     border: 1px solid var(--pf-line);
     background: #ffffff;
     color: var(--pf-text);
+    transition: border-color 0.22s ease, box-shadow 0.22s ease;
 }
 
 .profile-page .editable-card .edit-input:focus,
@@ -598,6 +796,12 @@ body.profile-page {
     border-color: rgba(15, 95, 154, 0.45);
     box-shadow: 0 0 0 3px rgba(15, 95, 154, 0.16);
     outline: none;
+}
+
+.profile-page .dashboard-form input[type="text"]:hover,
+.profile-page .dashboard-form input[type="email"]:hover,
+.profile-page .dashboard-form input[type="password"]:hover {
+    border-color: rgba(15, 95, 154, 0.28);
 }
 
 .profile-page .dashboard-form .view-button,

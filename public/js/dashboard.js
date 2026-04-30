@@ -4,9 +4,9 @@ const COMMITTEE_LABELS = {
     2: 'Assembleia Geral das Nações Unidas (AGNU)',
     3: 'Alto Comissariado das Nações Unidas para Refugiados (ACNUR)',
     4: 'Bioética e Genética Humana',
-    5: 'Nova Ordem Global',
+5: 'Nova Ordem Global',
     6: 'Conselho de Direitos Humanos das Nações Unidas (UNHRC)',
-    7: 'Organização das Nações Unidas para as Mulheres (ONU Mulheres)'
+    7: 'ONU Mulheres (CSW/2026)'
 };
 
 const COUNTRY_SUGGESTIONS = [

@@ -5,11 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Novo Post - MaxOnu 2026</title>
     <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/create-post.css">
     <link rel="icon" href="/images/logo-maxonu.png" type="image/png">
     <script src="/js/includes.js?v=20260420-headerfix" defer></script>
     <script src="/js/create-post.js" defer></script>
 </head>
-<body>
+<body class="create-post-page">
     <include src="header.html"></include>
 
     <main class="main-content" id="main-content">
@@ -31,7 +32,7 @@
                         <p>Crie um comunicado, aviso ou atualização pública da MaxOnu 2026.</p>
                     </div>
 
-                    <form id="createPostForm" class="dashboard-form" hidden>
+<form id="createPostForm" class="dashboard-form" hidden>
                         <div class="create-post-layout">
                             <div class="create-post-main">
                                 <div class="form-group create-post-title-group">
@@ -39,31 +40,43 @@
                                     <input type="text" id="postTitle" placeholder="Ex: Comunicado oficial sobre os comitês" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="postContent">Conteúdo</label>
-                                    <textarea id="postContent" class="post-editor-textarea" placeholder="Escreva a publicação com contexto, instruções e próximos passos..." required></textarea>
+                                    <label for="postContent">Conteúdo da publicação</label>
+                                    <textarea id="postContent" class="post-editor-textarea" placeholder="Escreva aqui o conteúdo completo da publicação. Inclua contexto, instruções claras, informações importantes e próximos passos para os participantes..." required></textarea>
+                                    <p class="form-help">Publique comunicados, avisos, orientações e materiais de apoio. O conteúdo completo será exibido na página de blog.</p>
+                                </div>
+                                <div class="form-group">
+                                    <span class="dashboard-chip">📸 Imagem de capa</span>
+                                    <label for="postImage">Escolha uma imagem</label>
+                                    <input type="file" id="postImage" accept="image/*">
+                                    <p class="form-help">Adicione uma imagem de destaque para sua publicação (recomendado 16:9). Não é obrigatório.</p>
+                                    <div id="postImagePreviewContainer" class="post-image-preview-container" hidden>
+                                        <img id="postImagePreview" class="post-image-preview" alt="Pré-visualização da imagem">
+                                        <button type="button" class="post-image-remove-btn" id="removeImageBtn" aria-label="Remover imagem">✕</button>
+                                    </div>
                                 </div>
                             </div>
                             <aside class="create-post-side">
-                                <div class="create-post-side-card">
-                                    <span class="dashboard-chip">Resumo</span>
-                                    <div class="form-group">
-                                        <label for="postExcerpt">Resumo curto</label>
-                                        <input type="text" id="postExcerpt" placeholder="Texto breve para o card do blog">
-                                    </div>
-                                </div>
                                 <div class="create-post-side-card create-post-upload-card">
-                                    <span class="dashboard-chip">Capa opcional</span>
-                                    <div class="form-group">
-                                        <label for="postImage">Imagem opcional</label>
-                                        <input type="file" id="postImage" accept="image/*">
-                                        <p class="form-help">Adicione uma imagem para destacar a publicação. Não é obrigatório.</p>
-                                        <img id="postImagePreview" class="post-image-preview" alt="Pré-visualização da imagem" hidden>
+                                    <span class="dashboard-chip">💡 Dicas</span>
+                                    <h3>Antes de publicar</h3>
+                                    <ul class="create-post-tips-list">
+                                        <li>Revise o conteúdo antes de enviar</li>
+                                        <li>Use uma imagem de destaque (16:9)</li>
+                                        <li>Mantenha o título direto e claro</li>
+                                        <li>O post ficará visível no blog</li>
+                                    </ul>
+                                </div>
+                                <div class="create-post-side-card">
+                                    <span class="dashboard-chip">📋 Resumo</span>
+                                    <div class="create-post-summary">
+                                        <p><strong>Título:</strong> <span id="summaryTitle">—</span></p>
+                                        <p><strong>Imagem:</strong> <span id="summaryImage">Nenhuma</span></p>
                                     </div>
                                 </div>
                             </aside>
-                        </div>
-                        <div class="create-post-actions">
-                            <button type="submit" class="view-button">Publicar post</button>
+                            <div class="create-post-actions">
+                                <button type="submit" class="view-button">Publicar post</button>
+                            </div>
                         </div>
                     </form>
 

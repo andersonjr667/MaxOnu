@@ -155,13 +155,15 @@ function buildDelegationSummary(user, options = {}) {
             currentSize: getDelegationCount(user),
             remainingSlots: Math.max(getExpectedTeamSize() - getDelegationCount(user), 0)
         },
-        notifications: (user.invitations || []).map((invitation) => ({
+notifications: (user.invitations || []).map((invitation) => ({
             id: String(invitation._id),
             type: invitation.type,
             fromUser: String(invitation.fromUser?._id || invitation.fromUser),
             fromUsername: invitation.fromUsername,
             fromFullName: invitation.fromUser?.fullName || '',
             fromClassGroup: invitation.fromUser?.classGroup || '',
+            fromProfileImageUrl: invitation.fromProfileImageUrl || invitation.fromUser?.profileImageUrl || '',
+            fromGender: invitation.fromGender || invitation.fromUser?.gender || 'prefiro-nao-informar',
             teamSize: invitation.teamSize,
             status: invitation.status,
             createdAt: invitation.createdAt,
@@ -389,9 +391,11 @@ router.post('/invite', authMiddleware, [
             return res.status(400).json({ error: 'Ja existe um convite pendente enviado para este participante.' });
         }
 
-        invited.invitations.push({
+invited.invitations.push({
             fromUser: inviter._id,
             fromUsername: inviter.username,
+            fromProfileImageUrl: inviter.profileImageUrl || '',
+            fromGender: inviter.gender || 'prefiro-nao-informar',
             teamSize: getExpectedTeamSize()
         });
 

@@ -189,6 +189,12 @@ async function sendTwoFactorEmailCode({ to, fullName, code }) {
   }
 
   const transporter = createMailTransporter();
+  const frontendBaseUrl = String(process.env.FRONTEND_URL || 'http://localhost:3000').replace(/\/+$/, '');
+  const bannerImagePath = path.join(__dirname, '..', 'public', 'images', 'banner.jpeg');
+  const hasLocalBanner = fs.existsSync(bannerImagePath);
+  const bannerCid = 'maxonu-banner-2026';
+  const bannerUrl = `${frontendBaseUrl}/images/logo-maxonu.png`;
+  const bannerSrc = hasLocalBanner ? `cid:${bannerCid}` : bannerUrl;
   const safeName = String(fullName || 'participante')
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
@@ -200,6 +206,9 @@ async function sendTwoFactorEmailCode({ to, fullName, code }) {
     from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
     to,
     subject: 'Seu código de verificação - MaxOnu 2026',
+    attachments: hasLocalBanner
+      ? [{ filename: 'banner.jpeg', path: bannerImagePath, cid: bannerCid }]
+      : [],
     text: [
       `Olá, ${fullName || 'participante'}!`,
       '',
@@ -211,17 +220,29 @@ async function sendTwoFactorEmailCode({ to, fullName, code }) {
     ].join('\n'),
     html: `
       <div style="margin:0;padding:24px;background:#f2f7fc;font-family:Arial,Helvetica,sans-serif;color:#16324a;">
-        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:620px;margin:0 auto;background:#ffffff;border-radius:14px;overflow:hidden;border:1px solid #d7e6f4;">
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:640px;margin:0 auto;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #d7e6f4;">
           <tr>
-            <td style="padding:22px 24px 8px 24px;">
-              <h2 style="margin:0 0 8px 0;color:#0b3252;">Verificação em duas etapas</h2>
-              <p style="margin:0 0 14px 0;font-size:15px;line-height:1.6;">Olá, <strong>${safeName}</strong>!</p>
-              <p style="margin:0 0 10px 0;font-size:15px;line-height:1.6;">Use o código abaixo para concluir o seu login na MaxOnu 2026:</p>
-              <div style="margin:0 0 14px 0;padding:14px 16px;border-radius:12px;background:#f1f8ff;border:1px solid #bcd9f3;font-size:32px;letter-spacing:6px;font-weight:700;text-align:center;color:#0b4f86;">
+            <td style="background:linear-gradient(135deg,#0a5ea3,#1b7ac9);text-align:center;padding:20px;">
+              <img src="${bannerSrc}" alt="MaxOnu 2026" style="max-width:520px;width:100%;height:auto;display:inline-block;border-radius:10px;">
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:28px 24px 10px 24px;">
+              <h2 style="margin:0 0 12px 0;font-size:24px;line-height:1.3;color:#0b3252;">Verificação em duas etapas</h2>
+              <p style="margin:0 0 16px 0;font-size:15px;line-height:1.6;">Olá, <strong>${safeName}</strong>!</p>
+              <p style="margin:0 0 10px 0;font-size:15px;line-height:1.6;">Use o código abaixo para concluir o seu login na <strong>MaxOnu 2026</strong>:</p>
+              <div style="margin:0 0 16px 0;padding:14px 16px;border-radius:12px;background:#f1f8ff;border:1px solid #bcd9f3;font-size:32px;letter-spacing:6px;font-weight:700;text-align:center;color:#0b4f86;">
                 ${code}
               </div>
-              <p style="margin:0 0 16px 0;font-size:14px;line-height:1.6;color:#3a5975;">Esse código expira em <strong>10 minutos</strong>.</p>
-              <p style="margin:0 0 16px 0;font-size:13px;line-height:1.6;color:#6d8398;">Se você não tentou entrar agora, altere sua senha imediatamente.</p>
+              <p style="margin:0 0 8px 0;font-size:14px;line-height:1.6;color:#3a5975;">Esse código expira em <strong>10 minutos</strong>.</p>
+              <p style="margin:0 0 20px 0;font-size:14px;line-height:1.6;color:#3a5975;">Se você não tentou entrar agora, altere sua senha imediatamente.</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:0 24px 24px 24px;">
+              <p style="margin:0;font-size:12px;line-height:1.6;color:#6d8398;border-top:1px solid #e1edf8;padding-top:14px;">
+                Mensagem automática da plataforma MaxOnu 2026.
+              </p>
             </td>
           </tr>
         </table>

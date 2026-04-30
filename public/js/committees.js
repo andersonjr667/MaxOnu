@@ -6,8 +6,8 @@ const COMMITTEE_CATALOG = [
     { id: 3, displayName: 'Alto Comissariado das Nações Unidas para Refugiados (ACNUR)', shortTitle: 'ACNUR', title: 'Proteção e garantia de direitos de pessoas em situação de mobilidade humana em contextos de crises humanitárias' },
     { id: 4, displayName: 'Bioética e Genética Humana', shortTitle: 'Bioética e Genética Humana', title: 'Impactos globais da tecnologia de manipulação e edição genética e seus desafios éticos quanto à dignidade humana e aos direitos das futuras gerações' },
     { id: 5, displayName: 'Nova Ordem Global', shortTitle: 'Nova Ordem Global', title: 'A Nova Ordem Global em Disputa: Recursos Estratégicos, Poder e os Limites do Capitalismo no Século XXI' },
-    { id: 6, displayName: 'Conselho de Direitos Humanos das Nações Unidas (UNHRC)', shortTitle: 'UNHRC', title: 'Identidade, memória e poder: disputas culturais e garantia de direitos em um mundo globalizado' },
-    { id: 7, displayName: 'Organização das Nações Unidas para as Mulheres (ONU Mulheres)', shortTitle: 'ONU Mulheres', title: '' }
+{ id: 6, displayName: 'Conselho de Direitos Humanos das Nações Unidas (UNHRC)', shortTitle: 'UNHRC', title: 'Identidade, memória e poder: disputas culturais e garantia de direitos em um mundo globalizado' },
+    { id: 7, displayName: 'ONU Mulheres (CSW/2026)', shortTitle: 'CSW/2026', title: 'Vozes, Leis e Limites: O Desafio de Enfrentar a Violência contra Mulheres' }
 ];
 
 function readCache(key, ttl) {
@@ -38,6 +38,8 @@ function writeCache(key, data) {
     }
 }
 
+const LOCK_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`;
+
 function buildLockedCards() {
     return COMMITTEE_CATALOG.map((committee) => {
         const lockedTitle = 'Sigilo diplomático';
@@ -46,6 +48,7 @@ function buildLockedCards() {
         return `
             <div class="committee-card committee-card-detailed committee-card-locked">
                 <span class="committee-number">Comitê ${committee.id}</span>
+                <div class="committee-lock-icon">${LOCK_SVG}</div>
                 <h3>${lockedTitle}</h3>
                 <p>${lockedText}</p>
             </div>

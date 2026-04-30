@@ -10,10 +10,61 @@ function initAuth() {
         return;
     }
 
+    // ── Inline field errors ──────────────────────────────────────────────────
+    function setFieldError(inputEl, message) {
+        if (!inputEl) return;
+        const group = inputEl.closest('.form-group, .auth-checkbox-group');
+        if (!group) return;
+
+        clearFieldError(inputEl);
+        inputEl.classList.add('field-has-error');
+
+        const hint = document.createElement('span');
+        hint.className = 'field-error-hint';
+        hint.textContent = message;
+        group.appendChild(hint);
+
+        inputEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        inputEl.focus();
+    }
+
+    function clearFieldError(inputEl) {
+        if (!inputEl) return;
+        inputEl.classList.remove('field-has-error');
+        const group = inputEl.closest('.form-group, .auth-checkbox-group');
+        group?.querySelector('.field-error-hint')?.remove();
+    }
+
+    function clearAllFieldErrors(form) {
+        form.querySelectorAll('.field-has-error').forEach((el) => el.classList.remove('field-has-error'));
+        form.querySelectorAll('.field-error-hint').forEach((el) => el.remove());
+    }
+
+    // ── Global message (success only, or fallback) ───────────────────────────
     function displayMessage(message, isError = false) {
+        if (isError) {
+            // For generic errors with no specific field, show inline at the submit button
+            return;
+        }
         messageContainer.hidden = false;
-        messageContainer.className = `login-message ${isError ? 'is-error' : 'is-success'}`;
+        messageContainer.className = 'login-message is-success';
         messageContainer.textContent = message;
+    }
+
+    function displayGenericError(form, message) {
+        const submitBtn = form.querySelector('button[type="submit"]');
+        if (!submitBtn) return;
+
+        form.querySelector('.auth-generic-error')?.remove();
+        const el = document.createElement('p');
+        el.className = 'auth-generic-error';
+        el.textContent = message;
+        submitBtn.insertAdjacentElement('beforebegin', el);
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function clearGenericError(form) {
+        form.querySelector('.auth-generic-error')?.remove();
     }
 
     function clearMessage() {
@@ -144,31 +195,49 @@ function initAuth() {
         const email = emailInput?.value.trim() || '';
         const password = passwordInput?.value || '';
 
+        clearAllFieldErrors(loginForm);
+        clearGenericError(loginForm);
+
+        // Validações inline antes de enviar
+        if (!email) {
+            setFieldError(emailInput, 'Informe seu email ou usuário.');
+            return;
+        }
+        if (!password) {
+            setFieldError(passwordInput, 'Informe sua senha.');
+            return;
+        }
+
         setButtonLoading(submitButton, true, 'Entrando...');
 
         try {
             const response = await fetch('/api/login', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password })
             });
 
             const data = await parseApiResponse(response);
             if (!response.ok) {
-                throw new Error(parseValidationError(data.error) || 'Erro ao fazer login.');
+                const msg = parseValidationError(data.error) || 'Erro ao fazer login.';
+                // Tenta mapear o erro para o campo certo
+                const msgLower = msg.toLowerCase();
+                if (msgLower.includes('senha') || msgLower.includes('password')) {
+                    setFieldError(passwordInput, msg);
+                } else if (msgLower.includes('usuário') || msgLower.includes('email') || msgLower.includes('usuario') || msgLower.includes('encontrado') || msgLower.includes('não existe')) {
+                    setFieldError(emailInput, msg);
+                } else {
+                    displayGenericError(loginForm, msg);
+                }
+                return;
             }
 
-            // Se 2FA é obrigatório, redirecionar para verificação
             if (data.twoFactorRequired) {
                 sessionStorage.setItem('2fa_user_id', data.userId);
                 sessionStorage.setItem('2fa_method', data.twoFactorMethod || 'totp');
                 sessionStorage.setItem('2fa_masked_email', data.maskedEmail || '');
                 displayMessage('Verificação de dois fatores necessária...');
-                setTimeout(() => {
-                    window.location.href = '/verify-2fa-login';
-                }, 500);
+                setTimeout(() => { window.location.href = '/verify-2fa-login'; }, 500);
                 return;
             }
 
@@ -188,7 +257,7 @@ function initAuth() {
             }
         } catch (error) {
             console.error('Erro no login:', error);
-            displayMessage(error.message || 'Erro ao fazer login.', true);
+            displayGenericError(loginForm, error.message || 'Erro ao fazer login.');
         } finally {
             setButtonLoading(submitButton, false, 'Entrar na MaxOnu');
         }
@@ -215,18 +284,52 @@ function initAuth() {
         const turma = turmaInput?.value || '';
         const password = passwordInput?.value || '';
 
-        if (!unidade || !turma) {
-            displayMessage('Selecione a unidade e a turma para concluir o cadastro.', true);
+        clearAllFieldErrors(registerForm);
+        clearGenericError(registerForm);
+
+        // Validações inline antes de enviar
+        if (!fullName) {
+            setFieldError(fullNameInput, 'Informe seu nome completo.');
             return;
         }
-
+        if (!email) {
+            setFieldError(emailInput, 'Informe seu email.');
+            return;
+        }
+        if (!username) {
+            setFieldError(usernameInput, 'Informe um nome de usuário.');
+            return;
+        }
+        if (username.includes('@')) {
+            setFieldError(usernameInput, 'O usuário não pode conter @. Use apenas letras, números e pontos.');
+            return;
+        }
+        if (/\s/.test(username)) {
+            setFieldError(usernameInput, 'O usuário não pode ter espaços.');
+            return;
+        }
         if (!gender) {
-            displayMessage('Selecione o gênero para concluir o cadastro.', true);
+            setFieldError(genderInput, 'Selecione o gênero.');
             return;
         }
-
+        if (!unidade) {
+            setFieldError(unidadeInput, 'Selecione a unidade.');
+            return;
+        }
+        if (!turma) {
+            setFieldError(turmaInput, 'Selecione a turma.');
+            return;
+        }
+        if (!password) {
+            setFieldError(passwordInput, 'Informe uma senha.');
+            return;
+        }
+        if (password.length < 6) {
+            setFieldError(passwordInput, 'A senha precisa ter no mínimo 6 caracteres.');
+            return;
+        }
         if (!acceptTermsInput?.checked) {
-            displayMessage('Você precisa aceitar os termos de uso para criar a conta.', true);
+            setFieldError(acceptTermsInput, 'Você precisa aceitar os termos de uso.');
             return;
         }
 
@@ -236,15 +339,26 @@ function initAuth() {
         try {
             const response = await fetch('/api/register', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ fullName, username, email, classGroup, password, gender, acceptTerms: true })
             });
 
             const data = await parseApiResponse(response);
             if (!response.ok) {
-                throw new Error(parseValidationError(data.error) || 'Erro ao registrar.');
+                const msg = parseValidationError(data.error) || 'Erro ao registrar.';
+                const msgLower = msg.toLowerCase();
+                if (msgLower.includes('email') || msgLower.includes('e-mail')) {
+                    setFieldError(emailInput, msg);
+                } else if (msgLower.includes('usuário') || msgLower.includes('usuario') || msgLower.includes('username')) {
+                    setFieldError(usernameInput, msg);
+                } else if (msgLower.includes('senha') || msgLower.includes('password')) {
+                    setFieldError(passwordInput, msg);
+                } else if (msgLower.includes('nome')) {
+                    setFieldError(fullNameInput, msg);
+                } else {
+                    displayGenericError(registerForm, msg);
+                }
+                return;
             }
 
             displayMessage(`Cadastro realizado com sucesso! Seu usuário é @${data.username || username}. Faça login para continuar.`);
@@ -252,13 +366,21 @@ function initAuth() {
             setTimeout(() => switchTab('login'), 800);
         } catch (error) {
             console.error('Erro no registro:', error);
-            displayMessage(error.message || 'Erro ao registrar.', true);
+            displayGenericError(registerForm, error.message || 'Erro ao registrar.');
         } finally {
             setButtonLoading(submitButton, false, 'Criar minha conta');
         }
     });
 
     checkLoginStatus();
+
+    // Limpa erro inline ao começar a editar o campo
+    [loginForm, registerForm].forEach((form) => {
+        form.querySelectorAll('input, select').forEach((input) => {
+            input.addEventListener('input', () => clearFieldError(input));
+            input.addEventListener('change', () => clearFieldError(input));
+        });
+    });
 }
 
 document.addEventListener('DOMContentLoaded', initAuth);

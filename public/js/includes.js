@@ -264,11 +264,14 @@ document.addEventListener('DOMContentLoaded', function() {
                         <span>${pendingNotifications.length}</span>
                     </div>
                     <div class="notification-list">
-                        ${pendingNotifications.map((notification) => {
+${pendingNotifications.map((notification) => {
                             const inviterName = notification.fromFullName || notification.fromUsername;
                             const inviterClass = parseClassGroup(notification.fromClassGroup);
+                            const inviterImageUrl = notification.fromProfileImageUrl
+                                || (notification.fromGender === 'feminino' ? '/images/profile_female.png' : '/images/profile_male.png');
                             return `
                             <article class="notification-card" data-notification-id="${notification.id}">
+                                <img src="${inviterImageUrl}" alt="Foto de ${inviterName}" class="notification-avatar" data-fallback-src="/images/profile_male.png">
                                 <p>
                                     <strong>${inviterName}</strong> convidou você para integrar uma delegação com ${notification.teamSize} participantes.
                                     <br>Nome: ${inviterName}

@@ -14,7 +14,8 @@ const portalConfigs = {
             { href: '/dashboard', title: 'Abrir painel operacional', text: 'Gerencie comitês, respostas pendentes e distribuição de países.' },
             { href: '/verificacao-usuarios', title: 'Verificar usuários', text: 'Consulte a lista de alunos e expanda cada nome para ver todos os dados cadastrados.' },
             { href: '/blog', title: 'Gerenciar blog', text: 'Acompanhe a área de comunicados e a visibilidade dos conteúdos publicados.' },
-            { href: '/create-post', title: 'Criar comunicado', text: 'Acesse a área reservada para publicar avisos e conteúdos oficiais.' },
+{ href: '/create-post', title: 'Criar comunicado', text: 'Acesse a área reservada para publicar avisos e conteúdos oficiais.' },
+            { href: '/imprensa-faq', title: 'Gerenciar FAQ', text: 'Responda e gerencie as perguntas frequentes enviadas pelos participantes no site.' },
             { href: '/profile', title: 'Ver meu perfil', text: 'Consulte seus dados e sua função dentro da MaxOnu 2026.' }
         ]
     },
@@ -66,10 +67,11 @@ const portalConfigs = {
             { title: 'Canal principal', text: 'Blog e páginas públicas da MaxOnu' },
             { title: 'Comitê vinculado', text: user.committee ?? 'Cobertura geral' },
             { title: 'Permissões', text: 'Comunicação, cobertura e organização de conteúdo.' }
-        ],
+],
         actions: [
             { href: '/blog', title: 'Acompanhar blog', text: 'Veja a área de comunicados e mantenha a comunicação centralizada.' },
             { href: '/create-post', title: 'Criar publicação', text: 'Acesse a área reservada para montar novos comunicados e atualizações.' },
+            { href: '/imprensa-faq', title: 'Gerenciar FAQ', text: 'Responda e gerencie as perguntas frequentes enviadas pelos participantes no site.' },
             { href: '/imprensa', title: 'Página pública da imprensa', text: 'Revise a apresentação pública da equipe e sua presença institucional.' },
             { href: 'https://www.instagram.com/maxonu26', title: 'Canal do Instagram', text: 'Acesse o perfil oficial da MaxOnu 2026 no Instagram.' }
         ]

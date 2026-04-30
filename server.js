@@ -43,6 +43,25 @@ const DEFAULT_ADMIN = {
   role: 'admin',
   classGroup: 'Administracao'
 };
+
+const COORDINATORS = [
+  {
+    username: 'guilherme_loiola',
+    fullName: 'Guilherme Loiola',
+    password: '12345678',
+    email: 'guilherme_loiola@example.com',
+    role: 'coordinator',
+    classGroup: 'Coordenação'
+  },
+  {
+    username: 'bruno_gusm_o',
+    fullName: 'Bruno Gusm O',
+    password: '12345678',
+    email: 'bruno_gusm_o@example.com',
+    role: 'coordinator',
+    classGroup: 'Coordenação'
+  }
+];
 let serverInstance;
 let PORT = DEFAULT_PORT;
 const COMMITTEE_PAGES = new Set([
@@ -181,6 +200,70 @@ async function ensureAdminUser() {
   if (hasChanges) {
     await existingUser.save();
     console.log(chalk.green(`Admin user ${DEFAULT_ADMIN.username} synchronized.`));
+  }
+}
+
+async function ensureCoordinatorUsers() {
+  for (const coord of COORDINATORS) {
+    const existingUser = await User.findOne({
+      $or: [
+        { username: coord.username },
+        { email: coord.email }
+      ]
+    });
+
+    if (!existingUser) {
+      const coordinatorUser = new User({
+        ...coord,
+        gender: 'prefiro-nao-informar',
+        termsAccepted: true,
+        termsAcceptedAt: new Date(),
+        accountStatus: 'active'
+      });
+      await coordinatorUser.save();
+      console.log(chalk.green(`✅ Coordinator user ${coord.username} created.`));
+      continue;
+    }
+
+    let hasChanges = false;
+
+    if (existingUser.username !== coord.username) {
+      existingUser.username = coord.username;
+      hasChanges = true;
+    }
+
+    if (existingUser.email !== coord.email) {
+      existingUser.email = coord.email;
+      hasChanges = true;
+    }
+
+    if (existingUser.role !== coord.role) {
+      existingUser.role = coord.role;
+      hasChanges = true;
+    }
+
+    if (!existingUser.fullName || existingUser.fullName.trim() === '') {
+      existingUser.fullName = coord.fullName;
+      hasChanges = true;
+    }
+
+    if (existingUser.classGroup !== coord.classGroup) {
+      existingUser.classGroup = coord.classGroup;
+      hasChanges = true;
+    }
+
+    const passwordMatches = await existingUser.comparePassword(coord.password);
+    if (!passwordMatches) {
+      existingUser.password = coord.password;
+      hasChanges = true;
+    }
+
+    if (hasChanges) {
+      await existingUser.save();
+      console.log(chalk.green(`🔄 Coordinator user ${coord.username} synchronized.`));
+    } else {
+      console.log(chalk.gray(`ℹ️ Coordinator user ${coord.username} already up to date.`));
+    }
   }
 }
 
@@ -339,6 +422,7 @@ const connectDB = async () => {
     await mongoose.connect(process.env.MONGODB_URI);
     console.log(chalk.green('MongoDB connected'));
     await ensureAdminUser();
+    await ensureCoordinatorUsers();
   } catch (err) {
     console.error(chalk.red('MongoDB error:'), err);
     setTimeout(connectDB, 5000);

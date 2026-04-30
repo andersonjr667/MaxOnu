@@ -72,20 +72,42 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const imageInput = document.getElementById('postImage');
     const imagePreview = document.getElementById('postImagePreview');
+    const previewContainer = document.getElementById('postImagePreviewContainer');
+    const removeImageBtn = document.getElementById('removeImageBtn');
 
-    imageInput?.addEventListener('change', () => {
+imageInput?.addEventListener('change', () => {
         const file = imageInput.files?.[0];
         if (file) {
             const reader = new FileReader();
             reader.onload = () => {
                 imagePreview.src = reader.result;
-                imagePreview.hidden = false;
+                previewContainer.hidden = false;
+                const summaryImage = document.getElementById('summaryImage');
+                if (summaryImage) summaryImage.textContent = file.name;
             };
             reader.readAsDataURL(file);
         } else {
-            imagePreview.hidden = true;
+            previewContainer.hidden = true;
             imagePreview.src = '';
+            const summaryImage = document.getElementById('summaryImage');
+            if (summaryImage) summaryImage.textContent = 'Nenhuma';
         }
+    });
+
+    // Update summary when title changes
+    const titleInput = document.getElementById('postTitle');
+    titleInput?.addEventListener('input', () => {
+        const summaryTitle = document.getElementById('summaryTitle');
+        if (summaryTitle) {
+            summaryTitle.textContent = titleInput.value.trim() || '—';
+        }
+    });
+
+    removeImageBtn?.addEventListener('click', (e) => {
+        e.preventDefault();
+        imageInput.value = '';
+        previewContainer.hidden = true;
+        imagePreview.src = '';
     });
 
     document.getElementById('createPostForm')?.addEventListener('submit', async (event) => {
@@ -101,7 +123,6 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             const formData = new FormData();
             formData.append('title', document.getElementById('postTitle').value.trim());
-            formData.append('excerpt', document.getElementById('postExcerpt').value.trim());
             formData.append('content', document.getElementById('postContent').value.trim());
 
             if (imageInput?.files?.[0]) {
@@ -124,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             feedback.textContent = 'Post publicado com sucesso. Redirecionando para o blog...';
             event.target.reset();
-            imagePreview.hidden = true;
+            previewContainer.hidden = true;
             imagePreview.src = '';
 
             setTimeout(() => {

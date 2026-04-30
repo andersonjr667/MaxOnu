@@ -18,9 +18,12 @@
 
     <section id="countdown-section">
         <div class="countdown-container">
-            <div class="hero-badge">Edição 2026 do Colégio Maximus</div>
+            <div class="hero-badge">
+                <svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                Edição 2026 do Colégio Maximus
+            </div>
             <h1 class="main-title">MAXONU 2026</h1>
-            <p class="hero-intro">A nova edição da MaxOnu mantém a identidade do projeto e chega com 7 comitês, novas áreas de acompanhamento e uma experiência digital pensada para delegados, professores orientadores e coordenação.</p>
+            <p class="hero-intro">A nova edição da MaxOnu chega com 7 comitês especializados, novas áreas de acompanhamento e uma experiência digital pensada para delegados, professores orientadores e coordenação.</p>
             <div class="hero-cta-group" id="heroCtaGroup">
                 <a href="/login" class="auth-btn auth-btn-secondary hero-auth-btn">Entrar</a>
                 <a href="/login#register" class="auth-btn auth-btn-primary hero-auth-btn">Cadastrar</a>
@@ -32,6 +35,8 @@
     </section>
 
     <main class="main-content index-content">
+
+        <!-- ===== SOBRE / EQUIPE ===== -->
         <section class="content-section">
             <div class="info-tabs">
                 <button class="tab-button active" type="button" data-tab-target="sobre">O que é?</button>
@@ -40,20 +45,35 @@
 
             <div id="sobre" class="tab-content active">
                 <article class="content-box">
+                    <div class="index-section-label">Sobre o projeto</div>
                     <h2>Sobre a MaxOnu</h2>
-                    <p>Conheça a <strong>MaxOnu 2026</strong>, uma simulação realista e imersiva de debates da Organização das Nações Unidas, organizada pelo Colégio Maximus. A MaxOnu é um espaço único onde estudantes de diferentes séries se tornam diplomatas, negociadores e representantes de países do mundo todo. Em 2026, o projeto amplia sua atuação com sete comitês especializados, oferecendo uma experiência digital inovadora que une educação, diplomacia e temas globais urgentes.</p>
+                    <p>Conheça a <strong>MaxOnu 2026</strong>, uma simulação realista e imersiva de debates da Organização das Nações Unidas, organizada pelo Colégio Maximus. Em 2026, o projeto amplia sua atuação com sete comitês especializados, unindo educação, diplomacia e temas globais urgentes.</p>
+                    <div class="index-stats-strip">
+                        <div class="index-stat">
+                            <strong>7</strong>
+                            <span>Comitês</span>
+                        </div>
+                        <div class="index-stat">
+                            <strong>2026</strong>
+                            <span>Edição</span>
+                        </div>
+                        <div class="index-stat">
+                            <strong>EM + 8°/9°</strong>
+                            <span>Séries</span>
+                        </div>
+                    </div>
                     <div class="features-grid">
                         <div class="feature-card blue-accent">
                             <h3>Diplomacia</h3>
-                            <p>Os participantes exercitam negociação, oratória e pensamento estratégico ao representar países e defender posições em debates de alta complexidade sobre questões geopolíticas reais.</p>
+                            <p>Os participantes exercitam negociação, oratória e pensamento estratégico ao representar países em debates de alta complexidade sobre questões geopolíticas reais.</p>
                         </div>
                         <div class="feature-card blue-accent">
                             <h3>Aprendizado</h3>
-                            <p>Os estudantes aprofundam seu repertório sobre geopolítica, direitos humanos, ética, tecnologia, desenvolvimento sustentável e os grandes conflitos do século XXI através de experiência prática.</p>
+                            <p>Os estudantes aprofundam seu repertório sobre geopolítica, direitos humanos, ética, tecnologia e os grandes conflitos do século XXI através de experiência prática.</p>
                         </div>
                         <div class="feature-card blue-accent">
                             <h3>Experiência Digital</h3>
-                            <p>Candidatos poderão se cadastrar, fazer perguntas, acompanhar perfil e ver o país designado. Professores e coordenação terão painéis próprios para monitorar cada comitê em tempo real.</p>
+                            <p>Candidatos se cadastram, fazem perguntas e acompanham seu perfil. Professores e coordenação têm painéis próprios para monitorar cada comitê em tempo real.</p>
                         </div>
                     </div>
                 </article>
@@ -61,6 +81,7 @@
 
             <div id="equipe" class="tab-content">
                 <article class="content-box">
+                    <div class="index-section-label">Quem faz acontecer</div>
                     <h2>Nossa Equipe</h2>
                     <p>Conheça os profissionais dedicados que tornam a MaxOnu possível:</p>
                     <div class="team-grid">
@@ -88,70 +109,110 @@
             </div>
         </section>
 
+        <!-- ===== COMITÊS ===== -->
         <section class="content-section" id="committees-section">
-            <h2>Comitês</h2>
-            <div class="committees-message" id="committeesMessage">Os comitês da edição 2026 seguem sob sigilo e serão revelados automaticamente quando a contagem regressiva chegar ao fim.</div>
+            <div class="committees-section-header">
+                <div class="committees-section-header-copy">
+                    <span class="committees-section-kicker">MaxOnu 2026</span>
+                    <h2>Comitês</h2>
+                    <div class="committees-message" id="committeesMessage">Os comitês da edição 2026 seguem sob sigilo e serão revelados automaticamente quando a contagem regressiva chegar ao fim.</div>
+                </div>
+                <div class="committees-section-badge">7 Comitês</div>
+            </div>
             <div class="committees-grid" id="committeesGrid">
                 <div class="committee-card committee-card-detailed committee-card-locked">
                     <span class="committee-number">Comitê 1</span>
+                    <div class="committee-lock-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    </div>
                     <h3>Sigilo diplomático</h3>
                     <p>A revelação oficial acontecerá somente após o encerramento da contagem regressiva.</p>
                 </div>
                 <div class="committee-card committee-card-detailed committee-card-locked">
                     <span class="committee-number">Comitê 2</span>
+                    <div class="committee-lock-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    </div>
                     <h3>Sigilo diplomático</h3>
                     <p>Estamos preservando o mistério desta edição até o momento de abertura.</p>
                 </div>
                 <div class="committee-card committee-card-detailed committee-card-locked">
                     <span class="committee-number">Comitê 3</span>
+                    <div class="committee-lock-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    </div>
                     <h3>Sigilo diplomático</h3>
                     <p>Os temas só entram em cena quando o cronômetro terminar.</p>
                 </div>
                 <div class="committee-card committee-card-detailed committee-card-locked">
                     <span class="committee-number">Comitê 4</span>
+                    <div class="committee-lock-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    </div>
                     <h3>Sigilo diplomático</h3>
                     <p>Até lá, a página mostra apenas a estrutura da programação sem revelar o conteúdo.</p>
                 </div>
                 <div class="committee-card committee-card-detailed committee-card-locked">
                     <span class="committee-number">Comitê 5</span>
+                    <div class="committee-lock-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    </div>
                     <h3>Sigilo diplomático</h3>
                     <p>O objetivo é evitar qualquer vazamento antes da data oficial.</p>
                 </div>
                 <div class="committee-card committee-card-detailed committee-card-locked">
                     <span class="committee-number">Comitê 6</span>
+                    <div class="committee-lock-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    </div>
                     <h3>Sigilo diplomático</h3>
                     <p>Delegados, orientadores e coordenação verão os temas somente após a liberação.</p>
                 </div>
                 <div class="committee-card committee-card-detailed committee-card-locked">
                     <span class="committee-number">Comitê 7</span>
-                    <h3>Em definição</h3>
+                    <div class="committee-lock-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    </div>
+                    <h3>Sigilo diplomático</h3>
                     <p>O sétimo comitê continua reservado e será publicado somente no momento certo.</p>
                 </div>
             </div>
         </section>
 
+        <!-- ===== PARTICIPE ===== -->
         <section class="content-section">
-            <article class="content-box">
+            <article class="content-box index-participate-box">
+                <div class="index-section-label">Faça parte</div>
                 <h2>Participe da MaxOnu</h2>
-                <div class="features-grid">
-                    <div class="feature-card blue-accent">
+                <p>Tudo que você precisa para acompanhar, se inscrever e participar da edição 2026.</p>
+                <div class="index-participate-grid">
+                    <div class="index-participate-card">
+                        <div class="index-participate-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        </div>
                         <h3>Delegação</h3>
-                        <p>Acesse a plataforma para gerenciar sua delegação, consultar informações do evento e acompanhar o progresso da sua participação na simulação.</p>
+                        <p>Acesse a plataforma para gerenciar sua delegação, consultar informações do evento e acompanhar o progresso da sua participação.</p>
                     </div>
-                    <div class="feature-card blue-accent">
+                    <div class="index-participate-card">
+                        <div class="index-participate-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+                        </div>
                         <h3>Inscrição</h3>
                         <p>Realize seu cadastro na plataforma para participar da MaxOnu 2026 e representar seu país nos debates e negociações diplomáticas.</p>
                     </div>
-                    <div class="feature-card blue-accent">
+                    <div class="index-participate-card">
+                        <div class="index-participate-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                        </div>
                         <h3>Informações</h3>
                         <p>Consulte regras, guias completos e orientações sobre como participar da simulação e aproveitar melhor a experiência.</p>
                     </div>
                 </div>
             </article>
         </section>
+
     </main>
 
     <include src="footer.html"></include>
 </body>
 </html>
-
