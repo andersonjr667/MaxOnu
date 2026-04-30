@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar FAQ - MaxOnu 2026</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" rel="stylesheet">
+    <link rel="icon" href="/images/logo-maxonu.png" type="image/png">
+    <script src="/js/includes.js" defer></script>
+</head>
+<body class="dashboard-page">
+    <include src="header.html"></include>
+
+    <main class="main-content" id="main-content">
+        <section class="content-section">
+            <div class="dashboard-container">
+                <section class="dashboard-hero">
+                    <div class="dashboard-hero-copy">
+                        <span class="dashboard-kicker">Comunicação</span>
+                        <h1>Gerenciar FAQ</h1>
+                        <p id="pageLead">Carregando informações do usuário...</p>
+                    </div>
+                    <div class="dashboard-hero-badge" id="userRoleBadge">Verificando</div>
+                </section>
+
+                <div class="dashboard-summary-grid" id="userSummary"></div>
+
+                <section class="dashboard-panel dashboard-resource-panel">
+                    <div class="dashboard-section-heading">
+                        <span class="dashboard-section-kicker">Moderação</span>
+                        <h2>Perguntas Pendentes</h2>
+                        <p>Responda ou remova perguntas enviadas pelos participantes para manter a área pública de FAQ atualizada.</p>
+                    </div>
+                    <div class="dashboard-question-actions">
+                        <button type="button" class="view-button" id="refreshQuestionsBtn">
+                            <span class="material-symbols-rounded">refresh</span>
+                            Atualizar lista
+                        </button>
+                    </div>
+                    <div class="questions-pending-list" id="pendingQuestionsList">
+                        <p class="dashboard-empty">Carregando perguntas pendentes...</p>
+                    </div>
+                </section>
+
+                <section class="dashboard-panel dashboard-resource-panel">
+                    <div class="dashboard-section-heading">
+                        <span class="dashboard-section-kicker">Histórico</span>
+                        <h2>Perguntas Respondidas</h2>
+                        <p>Veja as perguntas que já foram respondidas. Você pode editar ou excluir conforme necessário.</p>
+                    </div>
+                    <div class="dashboard-question-actions">
+                        <button type="button" class="view-button" id="refreshAnsweredBtn">
+                            <span class="material-symbols-rounded">refresh</span>
+                            Atualizar lista
+                        </button>
+                    </div>
+                    <div class="questions-answered-list" id="answeredQuestionsList">
+                        <p class="dashboard-empty">Carregando perguntas respondidas...</p>
+                    </div>
+                </section>
+            </div>
+        </section>
+    </main>
+
+    <include src="footer.html"></include>
+    <script src="/js/imprensa-questions.js" defer></script>
+</body>
+</html>

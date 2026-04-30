@@ -13,6 +13,16 @@ const questionSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    askerId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        default: null
+    },
+    answererId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        default: null
+    },
     createdAt: {
         type: Date,
         default: Date.now

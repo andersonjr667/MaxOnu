@@ -17,7 +17,9 @@ function ensureQuestionManager(req, res, next) {
 // GET /api/questions - Public answered questions
 router.get('/', async (req, res) => {
   try {
-    const questions = await Question.find({ answered: true }).sort({ createdAt: -1 });
+    const questions = await Question.find({ answered: true }).sort({ createdAt: -1 })
+      .populate('askerId', 'profileImageUrl username fullName classGroup committee')
+      .populate('answererId', 'profileImageUrl username fullName role');
     res.json(questions);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -35,7 +37,7 @@ router.get('/pending', authMiddleware, ensureQuestionManager, async (req, res) =
 });
 
 // POST /api/questions
-router.post('/', [
+router.post('/', authMiddleware, [
   body('question').trim().notEmpty().withMessage('Question cannot be empty')
 ], async (req, res) => {
   const errors = validationResult(req);
@@ -44,7 +46,15 @@ router.post('/', [
   }
 
   try {
-    const question = new Question({ question: req.body.question.trim() });
+    const questionData = {
+      question: req.body.question.trim(),
+      askerId: null
+    };
+    // If user is authenticated, associate their ID
+    if (req.user && req.user.id) {
+      questionData.askerId = req.user.id;
+    }
+    const question = new Question(questionData);
     await question.save();
     res.status(201).json(question);
   } catch (error) {
@@ -61,10 +71,10 @@ router.put('/:id/answer', authMiddleware, ensureQuestionManager, [
     return res.status(400).json({ error: errors.array() });
   }
 
-  try {
+try {
     const question = await Question.findByIdAndUpdate(
       req.params.id,
-      { answer: req.body.answer, answered: true },
+      { answer: req.body.answer, answered: true, answererId: req.user.id },
       { new: true }
     );
     if (!question) return res.status(404).json({ error: 'Question not found' });
