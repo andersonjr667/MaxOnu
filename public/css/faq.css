@@ -3,6 +3,7 @@
 /* Main FAQ Container */
 .faq-page {
     --faq-primary: #0d3b66;
+    --faq-primary-dark: #062140;
     --faq-accent: #ff8c42;
     --faq-gold: #ffd166;
     --faq-success: #22c55e;
@@ -227,7 +228,7 @@
     margin: 0;
     font-size: 1.2rem;
     line-height: 1.45;
-    color: var(--faq-primary);
+    color: var(--faq-primary-dark) !important;
     font-weight: 700;
 }
 
@@ -296,7 +297,7 @@
     margin: 0;
     font-size: 1.02rem;
     line-height: 1.65;
-    color: var(--faq-primary);
+    color: var(--faq-primary-dark) !important;
 }
 
 /* Anonymous fallbacks */

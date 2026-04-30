@@ -10,6 +10,17 @@ function isAuthenticated() {
     return token && token !== 'null' && token !== 'undefined' && token.trim() !== '';
 }
 
+function ensureQuestionMark(questionText) {
+    if (!questionText || questionText.trim() === '') {
+        return questionText;
+    }
+    const trimmed = questionText.trim();
+    if (!trimmed.endsWith('?')) {
+        return trimmed + '?';
+    }
+    return trimmed;
+}
+
 function openQuestionModal() {
     if (!isAuthenticated()) {
         const nextUrl = encodeURIComponent(window.location.pathname);
@@ -283,10 +294,11 @@ function initQuestions() {
         });
     }
 
-    if (questionForm) {
+if (questionForm) {
         questionForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const question = document.getElementById('question').value;
+            const rawQuestion = document.getElementById('question').value;
+            const question = ensureQuestionMark(rawQuestion);
 
             try {
                 const token = getToken();

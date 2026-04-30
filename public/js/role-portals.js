@@ -178,10 +178,13 @@ function renderAdminUserCreator() {
         const originalText = submitButton?.textContent || '✓ Criar usuário';
 
         const fullName = document.getElementById('newUserFullName')?.value.trim();
+        const username = document.getElementById('newUserUsername')?.value.trim();
         const email = document.getElementById('newUserEmail')?.value.trim();
         const password = document.getElementById('newUserPassword')?.value;
         const confirmPassword = document.getElementById('confirmPassword')?.value;
         const role = document.getElementById('newUserRole')?.value;
+        const gender = document.getElementById('newUserGender')?.value;
+        const termsAccepted = document.getElementById('newUserTerms')?.checked;
 
         // Validações
         if (!fullName) {
@@ -238,7 +241,10 @@ function renderAdminUserCreator() {
                     fullName,
                     password,
                     role,
-                    ...(email ? { email } : {})
+                    ...(username ? { username } : {}),
+                    ...(email ? { email } : {}),
+                    ...(gender ? { gender } : {}),
+                    termsAccepted: Boolean(termsAccepted)
                 })
             });
 

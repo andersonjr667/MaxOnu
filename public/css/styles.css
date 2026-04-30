@@ -3171,11 +3171,6 @@ svg {
     font-weight: 800;
 }
 
-.question-card {
-    background: linear-gradient(180deg, rgba(13, 59, 102, 0.94), rgba(31, 111, 168, 0.94));
-    color: var(--branco);
-}
-
 .question-card textarea {
     margin: 0.9rem 0;
 }

@@ -165,7 +165,7 @@ async function ensureAdminUser() {
   if (!existingUser) {
     const adminUser = new User(DEFAULT_ADMIN);
     await adminUser.save();
-    console.log(chalk.green(`Admin user ${DEFAULT_ADMIN.username} created.`));
+    log('ok', chalk.green(`Admin ${chalk.bold(DEFAULT_ADMIN.username)} criado.`));
     return;
   }
 
@@ -199,7 +199,9 @@ async function ensureAdminUser() {
 
   if (hasChanges) {
     await existingUser.save();
-    console.log(chalk.green(`Admin user ${DEFAULT_ADMIN.username} synchronized.`));
+    log('ok', chalk.green(`Admin ${chalk.bold(DEFAULT_ADMIN.username)} sincronizado.`));
+  } else {
+    log('info', chalk.gray(`Admin ${chalk.bold(DEFAULT_ADMIN.username)} já atualizado.`));
   }
 }
 
@@ -221,7 +223,7 @@ async function ensureCoordinatorUsers() {
         accountStatus: 'active'
       });
       await coordinatorUser.save();
-      console.log(chalk.green(`✅ Coordinator user ${coord.username} created.`));
+      log('ok', chalk.green(`Coordenador ${chalk.bold(coord.username)} criado.`));
       continue;
     }
 
@@ -260,53 +262,142 @@ async function ensureCoordinatorUsers() {
 
     if (hasChanges) {
       await existingUser.save();
-      console.log(chalk.green(`🔄 Coordinator user ${coord.username} synchronized.`));
+      log('ok', chalk.green(`Coordenador ${chalk.bold(coord.username)} sincronizado.`));
     } else {
-      console.log(chalk.gray(`ℹ️ Coordinator user ${coord.username} already up to date.`));
+      log('info', chalk.gray(`Coordenador ${chalk.bold(coord.username)} já atualizado.`));
     }
   }
 }
 
-// Simplified startup banner - no complex colors to avoid issues
-async function startServer(port) {
-const banner = figlet.textSync('MaxOnu 2026', { horizontalLayout: 'full' });
-  console.log(chalk.green.bold(banner));
-  console.log(chalk.blue.bold('🚀 Starting on port ' + port));
-  console.log(chalk.magenta.bold('Mode: ' + process.env.NODE_ENV));
-  console.log(chalk.gray('DB Ready: ' + isDbReady()));
-  console.log(chalk.gray('PID: ' + process.pid));
+// ============================================
+// TERMINAL OUTPUTS
+// ============================================
 
+const W = 62;
+const line  = chalk.gray('─'.repeat(W));
+const dline = chalk.gray('═'.repeat(W));
+
+function ts() {
+  return chalk.gray(new Date().toLocaleTimeString('pt-BR', { hour12: false }));
+}
+
+function box(label, color = chalk.cyan) {
+  const pad = Math.floor((W - label.length - 2) / 2);
+  const left  = '─'.repeat(pad);
+  const right = '─'.repeat(W - pad - label.length - 2);
+  return chalk.gray(left) + ' ' + color.bold(label) + ' ' + chalk.gray(right);
+}
+
+function row(icon, label, value, valueColor = chalk.white) {
+  const labelStr = chalk.gray(label.padEnd(18));
+  return `  ${icon}  ${labelStr} ${valueColor(value)}`;
+}
+
+function log(level, msg) {
+  const icons = { info: chalk.blue('◆'), ok: chalk.green('✔'), warn: chalk.yellow('⚠'), err: chalk.red('✖'), db: chalk.magenta('◈') };
+  process.stdout.write(`${ts()}  ${icons[level] || icons.info}  ${msg}\n`);
+}
+
+function printBanner(port) {
+  const banner = figlet.textSync('MaxOnu 2026', { font: 'Standard', horizontalLayout: 'full' });
+  const mode = IS_PRODUCTION ? chalk.red.bold('PRODUCTION') : chalk.yellow.bold('DEVELOPMENT');
+  const started = new Date().toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'medium' });
+
+  console.log('\n' + dline);
+  console.log(chalk.cyan.bold(banner));
+  console.log(dline);
+  console.log(box('INICIALIZANDO SERVIDOR'));
+  console.log(line);
+  console.log(row('🌐', 'URL local',   `http://localhost:${port}`, chalk.cyan.underline));
+  console.log(row('💚', 'Health',      `http://localhost:${port}/health`, chalk.cyan.underline));
+  console.log(row('⚙️', 'Modo',        mode));
+  console.log(row('🕐', 'Iniciado em', started, chalk.gray));
+  console.log(row('🔢', 'Node.js',     process.version, chalk.gray));
+  console.log(row('🔑', 'PID',         String(process.pid), chalk.gray));
+  console.log(line + '\n');
+}
+
+function printServerReady(port) {
+  console.log(line);
+  console.log(box('  SERVIDOR ONLINE  ', chalk.green));
+  console.log(line);
+  console.log(`  ${chalk.green('✔')}  ${chalk.white.bold('Pronto em')}  ${chalk.cyan.underline('http://localhost:' + port)}`);
+  console.log(chalk.gray(`\n  Pressione ${chalk.white('Ctrl+C')} para encerrar.\n`));
+  console.log(line + '\n');
+}
+
+function printPortInUse(currentPort, newPort) {
+  log('warn', chalk.yellow(`Porta ${chalk.bold(currentPort)} em uso — tentando ${chalk.bold(newPort)}...`));
+}
+
+function printServerError(err) {
+  console.log('\n' + line);
+  console.log(box('  ERRO FATAL  ', chalk.red));
+  console.log(line);
+  log('err', chalk.red(err.message));
+  if (err.code) log('err', chalk.gray('Código: ') + chalk.red(err.code));
+  console.log(line + '\n');
+}
+
+function printShutdown() {
+  console.log('\n' + line);
+  log('warn', chalk.yellow('Encerrando servidor...'));
+}
+
+function printServerClosed() {
+  log('ok', chalk.green('Servidor encerrado.'));
+}
+
+function printDbClosed() {
+  log('db', chalk.green('Conexão com MongoDB fechada.'));
+  console.log(chalk.gray(`\n  Até logo! 👋\n`) + line + '\n');
+}
+
+// ============================================
+// END TERMINAL OUTPUTS
+// ============================================
+
+async function startServer(port) {
+  printBanner(port);
+  
   serverInstance = app.listen(port, () => {
-console.log(chalk.green.bold('✅ Server ready on http://localhost:' + port));
-    console.log(chalk.cyan.bold('Health: http://localhost:' + port + '/health'));
+    printServerReady(port);
   });
 
   serverInstance.on('error', (err) => {
     if (err.code === 'EADDRINUSE') {
-      console.log(chalk.yellow('Port ' + port + ' in use, trying ' + (port + 1)));
+      printPortInUse(port, port + 1);
       PORT = port + 1;
       startServer(PORT);
     } else {
-      console.error(chalk.red('Server error:'), err);
+      printServerError(err);
       process.exit(1);
     }
-  });
+});
 }
 
-// Graceful shutdown
+// ============================================
+// GRACEFUL SHUTDOWN
+// ============================================
+
 const gracefulShutdown = () => {
-  console.log(chalk.yellow('Shutting down gracefully'));
+  printShutdown();
   serverInstance.close(() => {
+    printServerClosed();
     mongoose.connection.close(() => {
-      console.log(chalk.green('DB closed'));
+      printDbClosed();
       process.exit(0);
     });
   });
 };
+
 process.on('SIGTERM', gracefulShutdown);
 process.on('SIGINT', gracefulShutdown);
 
-// Env validation
+// ============================================
+// ENV VALIDATION
+// ============================================
+
 const envSchema = Joi.object({
   JWT_SECRET: Joi.string().required(),
   MONGODB_URI: Joi.string().uri().required()
@@ -361,6 +452,12 @@ app.use(
   authApiLimiter
 );
 
+
+// Favicon - serve from images folder to avoid 404 (using logo-maxonu.png since favicon.ico is empty)
+app.get('/favicon.ico', (req, res) => {
+  res.sendFile(path.join(publicDir, 'images', 'logo-maxonu.png'));
+});
+
 // Health
 app.get('/health', (req, res) => res.json({
   status: 'OK',
@@ -368,7 +465,6 @@ app.get('/health', (req, res) => res.json({
   uptime: process.uptime()
 }));
 
-// Committee routes
 app.get('/api/reveal-status', (req, res) => {
   res.setHeader('Cache-Control', 'public, max-age=60');
   res.json({
@@ -419,17 +515,22 @@ app.get('/footer', (req, res) => res.sendFile(path.join(publicDir, 'footer.html'
 // MongoDB
 const connectDB = async () => {
   try {
+    log('db', chalk.gray('Conectando ao MongoDB...'));
     await mongoose.connect(process.env.MONGODB_URI);
-    console.log(chalk.green('MongoDB connected'));
+    log('db', chalk.green('MongoDB conectado com sucesso.'));
     await ensureAdminUser();
     await ensureCoordinatorUsers();
   } catch (err) {
-    console.error(chalk.red('MongoDB error:'), err);
+    log('err', chalk.red('Falha ao conectar ao MongoDB: ') + chalk.gray(err.message));
+    log('warn', chalk.yellow(`Tentando reconectar em 5s...`));
     setTimeout(connectDB, 5000);
   }
 };
 
-mongoose.connection.on('disconnected', connectDB);
+mongoose.connection.on('disconnected', () => {
+  log('warn', chalk.yellow('MongoDB desconectado. Reconectando...'));
+  connectDB();
+});
 
 // Error handler
 app.use((err, req, res, next) => {
@@ -450,3 +551,4 @@ app.use((req, res) => res.status(404).sendFile(path.join(publicDir, '404.html'))
 // Init
 connectDB();
 startServer(PORT);
+ 

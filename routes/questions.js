@@ -29,7 +29,8 @@ router.get('/', async (req, res) => {
 // GET /api/questions/pending
 router.get('/pending', authMiddleware, ensureQuestionManager, async (req, res) => {
   try {
-    const questions = await Question.find({ answered: false }).sort({ createdAt: -1 });
+    const questions = await Question.find({ answered: false }).sort({ createdAt: -1 })
+      .populate('askerId', 'profileImageUrl username fullName classGroup committee');
     res.json(questions);
   } catch (error) {
     res.status(400).json({ error: error.message });

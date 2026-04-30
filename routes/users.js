@@ -228,9 +228,12 @@ router.get('/:id', authMiddleware, requireRole(['admin', 'coordinator', 'teacher
 // POST /api/users - Create user as admin
 router.post('/', authMiddleware, requireRole(['admin']), [
   body('fullName').trim().notEmpty().withMessage('Nome completo é obrigatório'),
+  body('username').optional({ checkFalsy: true }).trim().isLength({ min: 3 }).withMessage('Usuário deve ter ao menos 3 caracteres'),
   body('email').optional({ checkFalsy: true }).isEmail().withMessage('Email inválido').normalizeEmail(),
   body('password').isLength({ min: 6 }).withMessage('Senha deve ter ao menos 6 caracteres'),
-  body('role').isIn(['teacher', 'coordinator', 'press']).withMessage('Permissão inválida')
+  body('role').isIn(['teacher', 'coordinator', 'press']).withMessage('Permissão inválida'),
+  body('gender').optional().isIn(['masculino', 'feminino', 'nao-binario', 'outro', 'prefiro-nao-informar']).withMessage('Gênero inválido'),
+  body('termsAccepted').optional().isBoolean()
 ], async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -238,11 +241,21 @@ router.post('/', authMiddleware, requireRole(['admin']), [
   }
 
   try {
-    const { fullName, email, password, role } = req.body;
+    const { fullName, email, password, role, gender, termsAccepted } = req.body;
     const normalizedEmail = typeof email === 'string' ? email.trim().toLowerCase() : '';
     const normalizedFullName = typeof fullName === 'string' ? fullName.trim() : '';
+    const requestedUsername = typeof req.body.username === 'string' ? req.body.username.trim().toLowerCase().replace(/[^a-z0-9_]/g, '_') : '';
 
-    const username = await generateUniqueUsername(normalizedFullName);
+    let username;
+    if (requestedUsername && requestedUsername.length >= 3) {
+      const exists = await User.exists({ username: requestedUsername });
+      if (exists) {
+        return res.status(400).json({ error: 'Nome de usuário já está em uso. Escolha outro.' });
+      }
+      username = requestedUsername;
+    } else {
+      username = await generateUniqueUsername(normalizedFullName);
+    }
     const effectiveEmail = normalizedEmail || username;
 
     // Verificar se email já existe usando email informado ou fallback pelo username
@@ -253,12 +266,19 @@ router.post('/', authMiddleware, requireRole(['admin']), [
       }
     }
 
+// Set default profile image based on gender
+    const defaultProfileImage = gender === 'feminino' ? '/images/profile_female.png' : '/images/profile_male.png';
+
     const newUserPayload = { 
       username, 
       fullName: normalizedFullName,
       password, 
       role,
-      email: effectiveEmail
+      email: effectiveEmail,
+      gender: gender || 'prefiro-nao-informar',
+      termsAccepted: Boolean(termsAccepted),
+      ...(termsAccepted ? { termsAcceptedAt: new Date() } : {}),
+      profileImageUrl: defaultProfileImage
     };
 
     const newUser = new User(newUserPayload);

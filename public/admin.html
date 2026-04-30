@@ -63,6 +63,17 @@
                                 <input type="text" id="newUserFullName" placeholder="Ex: João Silva" required>
                             </div>
                             <div class="form-group">
+                                <label for="newUserUsername">
+                                    <span>Usuário</span>
+                                    <span class="optional-indicator">(opcional)</span>
+                                </label>
+                                <input type="text" id="newUserUsername" placeholder="Ex: joao_silva">
+                                <small class="form-help-text">Se deixar vazio, será gerado automaticamente pelo nome</small>
+                            </div>
+                        </div>
+
+                        <div class="admin-user-grid">
+                            <div class="form-group">
                                 <label for="newUserRole">
                                     <span>Função</span>
                                     <span class="required-indicator">*</span>
@@ -72,6 +83,19 @@
                                     <option value="teacher">Professor orientador</option>
                                     <option value="coordinator">Coordenação</option>
                                     <option value="press">Imprensa</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="newUserGender">
+                                    <span>Gênero</span>
+                                    <span class="optional-indicator">(opcional)</span>
+                                </label>
+                                <select id="newUserGender">
+                                    <option value="prefiro-nao-informar">Prefiro não informar</option>
+                                    <option value="masculino">Masculino</option>
+                                    <option value="feminino">Feminino</option>
+                                    <option value="nao-binario">Não-binário</option>
+                                    <option value="outro">Outro</option>
                                 </select>
                             </div>
                         </div>
@@ -104,6 +128,12 @@
                         </div>
 
                         <div class="form-actions">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label style="display:flex;align-items:center;gap:0.5rem;font-weight:400;cursor:pointer;">
+                                    <input type="checkbox" id="newUserTerms" style="width:auto;margin:0;">
+                                    <span>Aceito os <a href="/termos-de-uso" target="_blank">termos de uso</a> em nome deste usuário</span>
+                                </label>
+                            </div>
                             <button type="submit" class="view-button view-button-primary">
                                 <span>✓ Criar usuário</span>
                             </button>

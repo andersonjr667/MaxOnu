@@ -105,29 +105,51 @@ function renderPendingQuestions(questions) {
         return;
     }
 
-    container.innerHTML = questions.map((q) => `
-        <article class="question-card dashboard-question-card" data-id="${q._id}">
-            <div class="question-card-header">
-                <span class="dashboard-chip">Pendente</span>
-                <span class="question-date">${new Date(q.createdAt).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
-            </div>
-            <h3 class="question-text">${q.question}</h3>
-            <div class="question-response-form">
-                <label for="answer-${q._id}">Resposta:</label>
-                <textarea id="answer-${q._id}" placeholder="Digite sua resposta aqui..." rows="4"></textarea>
-            </div>
-            <div class="dashboard-question-actions">
-                <button type="button" class="view-button" data-action="answer" data-id="${q._id}">
-                    <span class="material-symbols-rounded">send</span>
-                    Responder
-                </button>
-                <button type="button" class="delete-button" data-action="delete" data-id="${q._id}">
-                    <span class="material-symbols-rounded">delete</span>
-                    Excluir
-                </button>
-            </div>
-        </article>
-    `).join('');
+    // Helper to get asker info display
+    function getAskerInfo(asker) {
+        if (!asker) return '<span class="material-symbols-rounded">person</span><span>Anônimo</span>';
+        const name = asker.fullName || asker.username || 'Usuário';
+        const committee = asker.committee ? ' (Comitê ' + asker.committee + ')' : '';
+        const classGroup = asker.classGroup ? ' - ' + asker.classGroup : '';
+        
+        var profileHtml = '';
+        if (asker.profileImageUrl) {
+            profileHtml = '<img src="' + asker.profileImageUrl + '" alt="' + name + '" class="user-avatar" onerror="this.style.display=\'none\'">';
+        }
+        
+        return profileHtml + '<span>' + name + committee + classGroup + '</span>';
+    }
+
+    var html = '';
+    for (var i = 0; i < questions.length; i++) {
+        var q = questions[i];
+        var askerInfoHtml = getAskerInfo(q.askerId);
+        html += '<article class="question-card dashboard-question-card" data-id="' + q._id + '">' +
+            '<div class="question-card-header">' +
+                '<span class="dashboard-chip">Pendente</span>' +
+                '<span class="question-date">' + new Date(q.createdAt).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) + '</span>' +
+            '</div>' +
+            '<div class="question-asker-info">' +
+                askerInfoHtml +
+            '</div>' +
+            '<h3 class="question-text">' + q.question + '</h3>' +
+            '<div class="question-response-form">' +
+                '<label for="answer-' + q._id + '">Resposta:</label>' +
+                '<textarea id="answer-' + q._id + '" placeholder="Digite sua resposta aqui..." rows="4"></textarea>' +
+            '</div>' +
+            '<div class="dashboard-question-actions">' +
+                '<button type="button" class="view-button" data-action="answer" data-id="' + q._id + '">' +
+                    '<span class="material-symbols-rounded">send</span>' +
+                    'Responder' +
+                '</button>' +
+                '<button type="button" class="delete-button" data-action="delete" data-id="' + q._id + '">' +
+                    '<span class="material-symbols-rounded">delete</span>' +
+                    'Excluir' +
+                '</button>' +
+            '</div>' +
+        '</article>';
+    }
+    container.innerHTML = html;
 }
 
 function renderAnsweredQuestions(questions) {

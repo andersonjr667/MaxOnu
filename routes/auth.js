@@ -311,6 +311,11 @@ router.post('/register', [
       return res.status(400).json({ error: 'Este usuário já está em uso. Escolha outro.' });
     }
 
+// Set default profile image based on gender
+    const defaultProfileImage = gender === 'feminino'
+      ? '/images/profile_female.png'
+      : '/images/profile_male.png';
+
     const user = new User({
       username: normalizedUsername,
       fullName: fullName.trim(),
@@ -319,7 +324,8 @@ router.post('/register', [
       classGroup: classGroup.trim(),
       gender,
       termsAccepted: true,
-      termsAcceptedAt: new Date()
+      termsAcceptedAt: new Date(),
+      profileImageUrl: defaultProfileImage
     });
 
     await user.save();
@@ -567,7 +573,7 @@ router.post('/me/avatar', authMiddleware, uploadProfileImage, async (req, res) =
 
 router.delete('/me/avatar', authMiddleware, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select('profileImagePublicId');
+    const user = await User.findById(req.user.id).select('profileImagePublicId gender');
     if (!user) {
       return res.status(404).json({ error: 'Usuário não encontrado.' });
     }
@@ -576,17 +582,22 @@ router.delete('/me/avatar', authMiddleware, async (req, res) => {
       await destroyAsset(user.profileImagePublicId, { resource_type: 'image' });
     }
 
+    // Reset to default profile image based on gender instead of empty
+    const defaultProfileImage = user.gender === 'feminino'
+      ? '/images/profile_female.png'
+      : '/images/profile_male.png';
+
     const updatedUser = await User.findByIdAndUpdate(
       req.user.id,
       {
-        profileImageUrl: '',
+        profileImageUrl: defaultProfileImage,
         profileImagePublicId: ''
       },
       { new: true }
     ).select('-password');
 
     res.json({
-      message: 'Foto de perfil removida com sucesso.',
+      message: 'Foto de perfil redefinida para o padrão.',
       user: updatedUser
     });
   } catch (error) {

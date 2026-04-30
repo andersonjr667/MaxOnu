@@ -11,7 +11,8 @@
     "dev": "nodemon server.js",
     "populate": "node populate-db.js",
     "populate:heavy": "node populate-db.js --heavy",
-    "cleanup": "node cleanup-db.js"
+    "cleanup": "node cleanup-db.js",
+    "migrate:profile-images": "node migrate-profile-images.js"
   },
   "keywords": [],
   "author": "",
