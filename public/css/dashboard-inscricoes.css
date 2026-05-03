@@ -310,3 +310,45 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* Dark mode compatibility */
+[data-theme="dark"] .dashboard-inscricoes-page {
+    --adv-glass: rgba(14, 24, 38, 0.94);
+}
+
+[data-theme="dark"] .dashboard-inscricoes-page .dashboard-hero,
+[data-theme="dark"] .dashboard-inscricoes-page .dashboard-panel,
+[data-theme="dark"] .dashboard-inscricoes-page .dashboard-card,
+[data-theme="dark"] .dashboard-inscricoes-page .dashboard-inline-form,
+[data-theme="dark"] .dashboard-inscricoes-page .dashboard-resource-list,
+[data-theme="dark"] .dashboard-inscricoes-page .advanced-segment-list li,
+[data-theme="dark"] .dashboard-inscricoes-page .assignment-badge,
+[data-theme="dark"] .dashboard-inscricoes-page .dashboard-empty {
+    background: linear-gradient(180deg, rgba(16, 26, 42, 0.98), rgba(12, 20, 34, 0.95));
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #c8d8e8;
+}
+
+[data-theme="dark"] .dashboard-inscricoes-page h1,
+[data-theme="dark"] .dashboard-inscricoes-page h2,
+[data-theme="dark"] .dashboard-inscricoes-page h3,
+[data-theme="dark"] .dashboard-inscricoes-page h4,
+[data-theme="dark"] .dashboard-inscricoes-page .advanced-segment-list strong {
+    color: #e2edf8;
+}
+
+[data-theme="dark"] .dashboard-inscricoes-page p,
+[data-theme="dark"] .dashboard-inscricoes-page .ranking-meta,
+[data-theme="dark"] .dashboard-inscricoes-page .dashboard-empty {
+    color: #9eb6cd;
+}
+
+[data-theme="dark"] .dashboard-inscricoes-page .dashboard-inline-form select,
+[data-theme="dark"] .dashboard-inscricoes-page .dashboard-inline-form input[type="text"],
+[data-theme="dark"] .dashboard-inscricoes-page input,
+[data-theme="dark"] .dashboard-inscricoes-page select,
+[data-theme="dark"] .dashboard-inscricoes-page textarea {
+    background: rgba(10, 18, 32, 0.9);
+    color: #c8d8e8;
+    border-color: rgba(255, 255, 255, 0.14);
+}

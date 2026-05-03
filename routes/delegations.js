@@ -6,6 +6,7 @@ const User = require('../models/User');
 const SiteSettings = require('../models/SiteSettings');
 const { getRegistrationState, isRegistrationOpen, hasCommitteeRevealPassed, COMMITTEE_REVEAL_DATE } = require('../utils/event-config');
 const { buildDelegationGroups } = require('../utils/delegation-groups');
+const { addUserNotification } = require('../utils/notification-center');
 
 const router = express.Router();
 
@@ -220,6 +221,7 @@ router.get('/public-status', async (req, res) => {
         res.json({
             registrationOpen: await isRegistrationOpen(),
             publicDelegationsReleased: settings.publicDelegationsReleased,
+            dpoSubmissionsReleased: settings.dpoSubmissionsReleased,
             revealDate: COMMITTEE_REVEAL_DATE.toISOString()
         });
     } catch (error) {
@@ -400,6 +402,15 @@ invited.invitations.push({
         });
 
         await invited.save();
+        await addUserNotification(invited._id, {
+            type: 'delegation-invite-received',
+            title: 'Novo convite de delegação',
+            message: `${inviter.fullName || inviter.username} enviou um convite para sua delegação.`,
+            payload: {
+                fromUserId: String(inviter._id),
+                fromUsername: inviter.username
+            }
+        });
         res.json({ message: `Convite enviado para ${invited.username}.` });
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -433,6 +444,16 @@ router.post('/notifications/:id/respond', authMiddleware, [
             invitation.status = 'rejected';
             invitation.respondedAt = new Date();
             await recipient.save();
+
+            await addUserNotification(invitation.fromUser, {
+                type: 'delegation-invite-rejected',
+                title: 'Convite recusado',
+                message: `${recipient.fullName || recipient.username} recusou seu convite de delegação.`,
+                payload: {
+                    responderId: String(recipient._id),
+                    responderUsername: recipient.username
+                }
+            });
 
             const refreshedRejected = await loadCurrentUser(recipient._id);
             return res.json({
@@ -522,6 +543,16 @@ router.post('/notifications/:id/respond', authMiddleware, [
 
         await inviter.save();
         await recipient.save();
+
+        await addUserNotification(inviter._id, {
+            type: 'delegation-invite-accepted',
+            title: 'Convite aceito',
+            message: `${recipient.fullName || recipient.username} aceitou seu convite de delegação.`,
+            payload: {
+                responderId: String(recipient._id),
+                responderUsername: recipient.username
+            }
+        });
 
         const everyone = await User.find({
             _id: {

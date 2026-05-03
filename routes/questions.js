@@ -2,6 +2,7 @@ const express = require('express');
 const { body, validationResult } = require('express-validator');
 const authMiddleware = require('../middleware/auth');
 const Question = require('../models/Question');
+const { addUserNotification } = require('../utils/notification-center');
 
 const router = express.Router();
 const MANAGER_ROLES = new Set(['admin', 'teacher', 'coordinator', 'press']);
@@ -79,6 +80,17 @@ try {
       { new: true }
     );
     if (!question) return res.status(404).json({ error: 'Question not found' });
+
+    if (question.askerId) {
+      await addUserNotification(question.askerId, {
+        type: 'question-answered',
+        title: 'Sua pergunta foi respondida',
+        message: 'Uma pergunta enviada por você recebeu resposta.',
+        payload: {
+          questionId: String(question._id)
+        }
+      });
+    }
     res.json(question);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -88,13 +100,27 @@ try {
 // PUT /api/questions/:id
 router.put('/:id', authMiddleware, ensureQuestionManager, async (req, res) => {
   try {
+    const previous = await Question.findById(req.params.id).select('answered askerId');
+    if (!previous) return res.status(404).json({ error: 'Question not found' });
+
     const updates = {};
     if (req.body.question) updates.question = req.body.question.trim();
     if (req.body.answer !== undefined) updates.answer = req.body.answer;
     updates.answered = !!updates.answer;
 
     const question = await Question.findByIdAndUpdate(req.params.id, updates, { new: true });
-    if (!question) return res.status(404).json({ error: 'Question not found' });
+
+    if (!previous.answered && question.answered && previous.askerId) {
+      await addUserNotification(previous.askerId, {
+        type: 'question-answered',
+        title: 'Sua pergunta foi respondida',
+        message: 'Uma pergunta enviada por você recebeu resposta.',
+        payload: {
+          questionId: String(question._id)
+        }
+      });
+    }
+
     res.json(question);
   } catch (error) {
     res.status(400).json({ error: error.message });

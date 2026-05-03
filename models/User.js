@@ -74,6 +74,33 @@ const invitationSchema = new mongoose.Schema({
     }
 });
 
+const notificationSchema = new mongoose.Schema({
+    type: {
+        type: String,
+        required: true
+    },
+    title: {
+        type: String,
+        required: true
+    },
+    message: {
+        type: String,
+        required: true
+    },
+    payload: {
+        type: mongoose.Schema.Types.Mixed,
+        default: {}
+    },
+    readAt: {
+        type: Date,
+        default: null
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    }
+}, { _id: true });
+
 const userSchema = new mongoose.Schema({
     username: {
         type: String,
@@ -158,6 +185,10 @@ userSchema.add({
     }],
     invitations: {
         type: [invitationSchema],
+        default: []
+    },
+    notifications: {
+        type: [notificationSchema],
         default: []
     },
     createdAt: {

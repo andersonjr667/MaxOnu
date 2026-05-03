@@ -10,6 +10,10 @@ const siteSettingsSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    dpoSubmissionsReleased: {
+        type: Boolean,
+        default: false
+    },
     registrationManuallyClosed: {
         type: Boolean,
         default: false

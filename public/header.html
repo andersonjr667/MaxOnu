@@ -1,35 +1,59 @@
 <!-- header.html -->
-<header class="main-header">
+<script>!function(){var t=localStorage.getItem('maxonu_theme');if(t)document.documentElement.setAttribute('data-theme',t);else if(window.matchMedia('(prefers-color-scheme: dark)').matches)document.documentElement.setAttribute('data-theme','dark');}();</script>
+<header class="main-header" role="banner">
     <div class="header-content">
-        <a href="/" class="logo">
-            <img src="/images/logo-maxonu.png" alt="MaxOnu" class="logo-img">
+
+        <!-- Logo -->
+        <a href="/" class="logo" aria-label="MaxOnu 2026 — Página inicial">
+            <img src="/images/logo-maxonu.png" alt="" class="logo-img" aria-hidden="true">
             <div class="logo-copy">
-                <span class="logo-kicker">Colegio Maximus</span>
+                <span class="logo-kicker">Colégio Maximus</span>
                 <strong>MaxOnu 2026</strong>
             </div>
         </a>
-        <nav class="nav-links" aria-label="Principal">
+
+        <!-- Nav desktop -->
+        <nav class="nav-links" aria-label="Navegação principal">
             <ul id="navLinks">
-                <li><a href="/blog" class="nav-link">Blog</a></li>
-                <li><a href="/guias" class="nav-link">Guias</a></li>
-                <li><a href="/delegacoes" class="nav-link">Delegações</a></li>
-                <li><a href="/dpos" class="nav-link">DPOs</a></li>
-                <li><a href="/regras" class="nav-link">Regras</a></li>
-                <li><a href="/faq" class="nav-link">Perguntas Comuns</a></li>
+                <li><a href="/blog"            class="nav-link">Blog</a></li>
+                <li><a href="/guias"           class="nav-link">Guias</a></li>
+                <li><a href="/delegacoes"      class="nav-link">Delegações</a></li>
+                <li><a href="/dpos"            class="nav-link">DPOs</a></li>
+                <li><a href="/regras"          class="nav-link">Regras</a></li>
+                <li><a href="/faq"             class="nav-link">Perguntas Comuns</a></li>
+                <!-- slots mobile auth injetados pelo JS -->
                 <li class="mobile-auth-link" data-mobile-auth-slot="primary"><a href="/login" class="nav-link mobile-auth-enter">Entrar</a></li>
                 <li class="mobile-auth-link" data-mobile-auth-slot="secondary"><a href="/login#register" class="nav-link mobile-auth-register">Cadastrar</a></li>
             </ul>
         </nav>
-        <div class="header-utilities" data-header-utilities></div>
-        <div class="auth-buttons" data-auth-buttons>
-            <a href="/login" class="auth-btn auth-btn-secondary">Entrar</a>
-            <a href="/login#register" class="auth-btn auth-btn-primary">Cadastrar</a>
+
+        <!-- Ações do lado direito -->
+        <div class="header-actions" aria-label="Ações do cabeçalho">
+            <div class="header-tools" aria-label="Ferramentas">
+                <!-- Notificações (sempre visível, injetado pelo JS) -->
+                <div class="header-notifications" data-header-notifications></div>
+                <!-- Utilitários extras (injetado pelo JS) -->
+                <div class="header-utilities" data-header-utilities></div>
+                <!-- Toggle dark/light -->
+                <button class="theme-toggle" id="themeToggle" type="button" aria-label="Alternar tema">
+                    <svg class="theme-icon theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                    <svg class="theme-icon theme-icon-sun"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                </button>
+            </div>
+            <div class="header-account" aria-label="Conta">
+                <!-- Auth (Entrar / Cadastrar / Avatar) -->
+                <div class="auth-buttons" data-auth-buttons>
+                    <a href="/login"          class="auth-btn auth-btn-secondary">Entrar</a>
+                    <a href="/login#register" class="auth-btn auth-btn-primary">Cadastrar</a>
+                </div>
+            </div>
+            <!-- Hamburger (mobile) -->
+            <button class="hamburger-menu" id="hamburgerMenu" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="navLinks">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
-        <button class="hamburger-menu" id="hamburgerMenu" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="navLinks">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
+
     </div>
 </header>
-

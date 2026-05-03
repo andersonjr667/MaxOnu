@@ -270,6 +270,7 @@ async function initDpoCommitteePage(committeeId) {
             candidate &&
             statusData.registrationOpen &&
             statusData.publicDelegationsReleased &&
+            statusData.dpoSubmissionsReleased &&
             candidate.committee === Number(committeeId) &&
             candidate.country
         );
@@ -294,7 +295,7 @@ async function initDpoCommitteePage(committeeId) {
                         <p class="register-note registration-feedback" id="dpoUploadFeedback">Seu envio ficará vinculado à delegação do país ${candidate.country}.</p>
                     ` : `
                         <div class="dashboard-empty committee-page-empty">
-                            O envio do DPO nesta página será liberado somente após o término da contagem, a definição dos comitês e a divulgação oficial dos países das delegações.
+                            O envio do DPO nesta página será liberado somente após o término da contagem, a definição dos comitês, a divulgação oficial dos países e a autorização de envio feita pela coordenação/orientação.
                         </div>
                     `}
                 </article>

@@ -102,6 +102,10 @@ router.post('/committee/:committee', authMiddleware, uploadDpo, async (req, res)
             return res.status(403).json({ error: 'A submissão de DPOs será liberada após a divulgação pública das delegações e países.' });
         }
 
+        if (!settings.dpoSubmissionsReleased) {
+            return res.status(403).json({ error: 'O envio de DPOs ainda não foi liberado pelo professor orientador ou pela administração.' });
+        }
+
         const user = await User.findById(req.user.id).populate('delegationMembers', '_id');
         if (!user || user.role !== 'candidate') {
             return res.status(403).json({ error: 'Somente delegados podem enviar DPOs.' });

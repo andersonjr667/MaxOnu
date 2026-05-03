@@ -146,6 +146,7 @@ function renderQuestions(questions) {
                         </div>
                     </div>
                 ` : ''}
+                <div class="question-reactions-slot" data-question-id="${q._id || ''}"></div>
                 ${isAdmin() && q._id ? `
                     <div class="dashboard-question-actions">
                         <button type="button" data-question-action="edit">Editar</button>
@@ -155,6 +156,13 @@ function renderQuestions(questions) {
             </article>
         `;
     }).join('');
+
+    if (window.MaxOnuReactions) {
+        questionsList.querySelectorAll('.question-reactions-slot').forEach(slot => {
+            const id = slot.dataset.questionId;
+            if (id) window.MaxOnuReactions.attachReactions(slot, 'question', id);
+        });
+    }
 }
 
 async function loadQuestions(forceRefresh = false) {

@@ -19,6 +19,7 @@ router.get('/public-release', async (req, res) => {
         const settings = await getSettings();
         res.json({
             publicDelegationsReleased: settings.publicDelegationsReleased,
+            dpoSubmissionsReleased: settings.dpoSubmissionsReleased,
             updatedAt: settings.updatedAt
         });
     } catch (error) {
@@ -53,6 +54,36 @@ router.put('/public-release', authMiddleware, requireRole(['admin', 'coordinator
                 ? 'As delegações foram liberadas para visualização pública.'
                 : 'A visualização pública das delegações foi desativada.',
             publicDelegationsReleased: settings.publicDelegationsReleased,
+            updatedAt: settings.updatedAt
+        });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+router.get('/dpo-submissions-release', async (req, res) => {
+    try {
+        const settings = await getSettings();
+        res.json({
+            dpoSubmissionsReleased: settings.dpoSubmissionsReleased,
+            updatedAt: settings.updatedAt
+        });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+router.put('/dpo-submissions-release', authMiddleware, requireRole(['admin', 'coordinator', 'teacher']), async (req, res) => {
+    try {
+        const settings = await getSettings();
+        settings.dpoSubmissionsReleased = Boolean(req.body.dpoSubmissionsReleased);
+        await settings.save();
+
+        res.json({
+            message: settings.dpoSubmissionsReleased
+                ? 'O envio de DPOs foi liberado para os delegados.'
+                : 'O envio de DPOs foi bloqueado temporariamente.',
+            dpoSubmissionsReleased: settings.dpoSubmissionsReleased,
             updatedAt: settings.updatedAt
         });
     } catch (error) {

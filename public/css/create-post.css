@@ -243,8 +243,10 @@
 
 .create-post-side-card .dashboard-chip {
     margin-bottom: 1.2rem;
-    display: inline-block;
-    padding: 0.5rem 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 1.1rem;
     background: var(--gradient-orange-chip);
     border-radius: 8px;
     font-weight: 700;
@@ -252,6 +254,17 @@
     font-size: 0.85rem;
     text-transform: uppercase;
     letter-spacing: 0.02em;
+    transition: all 0.2s ease;
+}
+
+.create-post-side-card .dashboard-chip:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 140, 66, 0.2);
+}
+
+.create-post-side-card .dashboard-chip .emoji-styled {
+    font-size: 1.05rem;
+    display: inline-block;
 }
 
 /* ========================================
@@ -530,4 +543,51 @@
     .create-post-page .create-post-layout {
         grid-template-columns: 1fr;
     }
+}
+
+/* Dark mode compatibility */
+[data-theme="dark"] .create-post-page {
+    --bg-light: #0b1520;
+    --bg-card: rgba(16, 26, 42, 0.98);
+    --bg-card-soft: rgba(12, 20, 34, 0.95);
+    --text-heading: #e2edf8;
+    --text-primary: #c8d8e8;
+    --text-secondary: #9eb6cd;
+    --border-default: rgba(255, 255, 255, 0.1);
+    --border-hover: rgba(255, 209, 102, 0.2);
+    --shadow-card: 0 16px 40px rgba(0, 0, 0, 0.35);
+    --gradient-white-light: linear-gradient(180deg, rgba(16, 26, 42, 0.98), rgba(12, 20, 34, 0.95));
+    --gradient-white-soft: linear-gradient(180deg, rgba(14, 24, 38, 0.95), rgba(10, 18, 32, 0.94));
+}
+
+[data-theme="dark"] .create-post-page .create-post-main,
+[data-theme="dark"] .create-post-page .create-post-side-card,
+[data-theme="dark"] .create-post-page .dashboard-form,
+[data-theme="dark"] .create-post-page .post-image-preview-shell {
+    background: linear-gradient(180deg, rgba(16, 26, 42, 0.98), rgba(12, 20, 34, 0.95));
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #c8d8e8;
+}
+
+[data-theme="dark"] .create-post-page .dashboard-hero h1,
+[data-theme="dark"] .create-post-page .dashboard-form label,
+[data-theme="dark"] .create-post-page .create-post-side-card h3 {
+    color: #e2edf8;
+}
+
+[data-theme="dark"] .create-post-page .dashboard-hero-copy p,
+[data-theme="dark"] .create-post-page .form-help,
+[data-theme="dark"] .create-post-page .create-post-summary span,
+[data-theme="dark"] .create-post-page .create-post-summary p {
+    color: #9eb6cd;
+}
+
+[data-theme="dark"] .create-post-page .dashboard-form input[type="text"],
+[data-theme="dark"] .create-post-page .dashboard-form input[type="file"],
+[data-theme="dark"] .create-post-page .dashboard-form textarea,
+[data-theme="dark"] .create-post-page .create-post-title-group input,
+[data-theme="dark"] .create-post-page .post-editor-textarea {
+    background: rgba(10, 18, 32, 0.9);
+    color: #c8d8e8;
+    border-color: rgba(255, 255, 255, 0.14);
 }

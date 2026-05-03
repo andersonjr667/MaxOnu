@@ -179,6 +179,7 @@ function renderPosts() {
                     <p class="blog-post-excerpt">${formatText(post.excerpt || '')}</p>
                     <div class="blog-post-content">${formatText(post.content || '')}</div>
                     <p class="blog-post-author">Publicado por ${escapeHtml(post.authorName || 'Equipe MaxOnu')}</p>
+                    <div class="post-reactions-slot" data-post-id="${escapeHtml(post._id || '')}"></div>
                 </div>
             </div>
         </article>
@@ -186,6 +187,15 @@ function renderPosts() {
 
     if (state.activeMenuPostId) {
         openPostMenu(state.activeMenuPostId);
+    }
+
+    if (window.MaxOnuReactions) {
+        document.querySelectorAll('.post-reactions-slot').forEach(slot => {
+            if (slot.dataset.reactionsAttached) return;
+            slot.dataset.reactionsAttached = '1';
+            const id = slot.dataset.postId;
+            if (id) window.MaxOnuReactions.attachReactions(slot, 'post', id);
+        });
     }
 }
 

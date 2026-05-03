@@ -1,5 +1,32 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // ── Dark mode ──────────────────────────────────────────────────────────
+    const THEME_KEY = 'maxonu_theme';
+
+    function applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem(THEME_KEY, theme);
+    }
+
+    // Aplica o tema salvo (ou preferência do sistema) antes de qualquer render
+    const savedTheme = localStorage.getItem(THEME_KEY);
+    if (savedTheme) {
+        applyTheme(savedTheme);
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        applyTheme('dark');
+    }
+
+    // Bind do botão após o header ser carregado
+    document.addEventListener('click', function(e) {
+        const btn = e.target.closest('#themeToggle');
+        if (!btn) return;
+        const current = document.documentElement.getAttribute('data-theme');
+        applyTheme(current === 'dark' ? 'light' : 'dark');
+    });
+    // ── fim Dark mode ──────────────────────────────────────────────────────
+
     let headerContext = null;
+    let realtimeSource = null;
+    let notificationsCache = [];
     const AUTH_CONTEXT_CACHE_KEY = 'maxonu_auth_context_v1';
     const AUTH_CONTEXT_TTL = 60 * 1000;
     let authContextPromise = null;
@@ -13,6 +40,15 @@ document.addEventListener('DOMContentLoaded', function() {
             sessionStorage.removeItem(AUTH_CONTEXT_CACHE_KEY);
         } catch (error) {
             // Ignore storage cleanup failures.
+        }
+
+        if (realtimeSource) {
+            try {
+                realtimeSource.close();
+            } catch (error) {
+                // Ignore close errors.
+            }
+            realtimeSource = null;
         }
     };
 
@@ -240,52 +276,130 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     };
 
-    const renderNotifications = (context) => {
+    const showToast = (title, message, tone = 'info') => {
+        let root = document.querySelector('[data-toast-root]');
+        if (!root) {
+            root = document.createElement('div');
+            root.className = 'app-toast-root';
+            root.setAttribute('data-toast-root', 'true');
+            document.body.appendChild(root);
+        }
+
+        const toast = document.createElement('article');
+        const icon = tone === 'success' ? '&#10003;' : (tone === 'error' ? '&#9888;' : '&#9432;');
+        toast.className = `app-toast app-toast-${tone}`;
+        toast.innerHTML = `
+            <span class="app-toast-icon" aria-hidden="true">${icon}</span>
+            <strong>${title}</strong>
+            <p>${message}</p>
+        `;
+        root.appendChild(toast);
+        setTimeout(() => {
+            toast.classList.add('is-leaving');
+            setTimeout(() => toast.remove(), 220);
+        }, 3600);
+    };
+
+    const setActionLoading = (button, isLoading) => {
+        if (!button) return;
+        button.disabled = isLoading;
+        button.classList.toggle('is-loading', isLoading);
+    };
+
+    const mergeNotifications = (context, storedNotifications) => {
+        const pendingInvites = context?.delegationStatus?.notifications?.filter((item) => item.status === 'pending') || [];
+        const inviteCards = pendingInvites.map((notification) => ({
+            id: `invite-${notification.id}`,
+            invitationId: notification.id,
+            type: 'delegation-invite-pending',
+            title: 'Convite pendente',
+            message: `${notification.fromFullName || notification.fromUsername} convidou você para delegação.`,
+            createdAt: notification.createdAt,
+            readAt: null,
+            payload: notification
+        }));
+
+        const persisted = (storedNotifications || []).map((item) => ({ ...item, invitationId: null }));
+        return [...inviteCards, ...persisted]
+            .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+    };
+
+    const renderNotifications = (context, storedNotifications = []) => {
         const utilities = document.querySelector('[data-header-utilities]');
-        if (!utilities) {
+        const notifSlot = document.querySelector('[data-header-notifications]');
+        const target = notifSlot || utilities;
+        if (!target) {
             return;
         }
 
-        const pendingNotifications = context?.delegationStatus?.notifications?.filter((item) => item.status === 'pending') || [];
-        if (!context || !pendingNotifications.length) {
-            utilities.innerHTML = '';
-            return;
-        }
+        const notifications = mergeNotifications(context, storedNotifications);
+        const unreadCount = notifications.filter((item) => !item.readAt).length;
+        const panelCount = unreadCount;
+        const toggleLabel = unreadCount > 0
+            ? `Abrir notificações: ${unreadCount} não lida${unreadCount > 1 ? 's' : ''}`
+            : 'Abrir notificações';
+        const badgeVisibilityAttr = unreadCount > 0 ? '' : ' hidden';
 
-        utilities.innerHTML = `
-            <div class="notification-root" data-notification-root>
-                <button type="button" class="notification-toggle" data-notification-toggle aria-label="Abrir convites pendentes" aria-expanded="false">
-                    <span class="notification-toggle-icon" aria-hidden="true">&#9993;</span>
-                    <span class="notification-badge">${pendingNotifications.length}</span>
-                </button>
-                <div class="notification-panel" data-notification-panel>
-                    <div class="notification-panel-header">
-                        <strong>Convites pendentes</strong>
-                        <span>${pendingNotifications.length}</span>
-                    </div>
-                    <div class="notification-list">
-${pendingNotifications.map((notification) => {
-                            const inviterName = notification.fromFullName || notification.fromUsername;
-                            const inviterClass = parseClassGroup(notification.fromClassGroup);
-                            const inviterImageUrl = notification.fromProfileImageUrl
-                                || (notification.fromGender === 'feminino' ? '/images/profile_female.png' : '/images/profile_male.png');
+        const panelContent = notifications.length
+            ? `
+                <div class="notification-list">
+                    ${notifications.map((item) => {
+                        if (item.type === 'delegation-invite-pending' && item.payload) {
+                            const inviterName = item.payload.fromFullName || item.payload.fromUsername;
+                            const inviterClass = parseClassGroup(item.payload.fromClassGroup);
+                            const inviterImageUrl = item.payload.fromProfileImageUrl
+                                || (item.payload.fromGender === 'feminino' ? '/images/profile_female.png' : '/images/profile_male.png');
                             return `
-                            <article class="notification-card" data-notification-id="${notification.id}">
-                                <img src="${inviterImageUrl}" alt="Foto de ${inviterName}" class="notification-avatar" data-fallback-src="/images/profile_male.png">
+                                <article class="notification-card" data-notification-id="${item.invitationId}">
+                                    <img src="${inviterImageUrl}" alt="Foto de ${inviterName}" class="notification-avatar" data-fallback-src="/images/profile_male.png">
+                                    <p>
+                                        <strong>${inviterName}</strong> convidou você para integrar uma delegação com ${item.payload.teamSize} participantes.
+                                        <br>Unidade: ${inviterClass.unit}
+                                        <br>Série: ${inviterClass.grade}
+                                    </p>
+                                    <div class="notification-actions">
+                                        <button type="button" class="view-button" data-notification-action="accept">Aceitar</button>
+                                        <button type="button" class="delete-button" data-notification-action="reject">Recusar</button>
+                                    </div>
+                                </article>
+                            `;
+                        }
+
+                        return `
+                            <article class="notification-card ${item.readAt ? '' : 'notification-card-unread'}" data-stored-notification-id="${item.id}">
                                 <p>
-                                    <strong>${inviterName}</strong> convidou você para integrar uma delegação com ${notification.teamSize} participantes.
-                                    <br>Nome: ${inviterName}
-                                    <br>Unidade: ${inviterClass.unit}
-                                    <br>Série: ${inviterClass.grade}
+                                    <strong>${item.title}</strong><br>
+                                    ${item.message}
                                 </p>
                                 <div class="notification-actions">
-                                    <button type="button" class="view-button" data-notification-action="accept">Aceitar</button>
-                                    <button type="button" class="delete-button" data-notification-action="reject">Recusar</button>
+                                    <button type="button" class="view-button" data-notification-read="${item.id}">Marcar lida</button>
                                 </div>
                             </article>
                         `;
-                        }).join('')}
+                    }).join('')}
+                </div>
+            `
+            : `
+                <div class="notification-list">
+                    <article class="notification-card notification-card-empty">
+                        <p>Nenhuma notificação no momento.</p>
+                    </article>
+                </div>
+            `;
+
+        target.innerHTML = `
+            <div class="notification-root" data-notification-root>
+                <button type="button" class="notification-toggle" data-notification-toggle aria-label="${toggleLabel}" aria-expanded="false">
+                    <span class="notification-toggle-icon" aria-hidden="true">&#9993;</span>
+                    <span class="notification-badge"${badgeVisibilityAttr}>${panelCount}</span>
+                </button>
+                <div class="notification-panel" data-notification-panel>
+                    <div class="notification-panel-header">
+                        <strong>Central de notificações</strong>
+                        <span>${panelCount}</span>
                     </div>
+                    ${panelContent}
+                    ${notifications.length ? '<div class="notification-actions"><button type="button" class="view-button secondary" data-notification-read-all>Marcar todas como lidas</button></div>' : ''}
                 </div>
             </div>
         `;
@@ -354,6 +468,64 @@ ${pendingNotifications.map((notification) => {
         refreshAuthContext: () => getAuthContext({ forceRefresh: true })
     };
 
+    const fetchStoredNotifications = async () => {
+        const token = getValidToken();
+        if (!token) {
+            notificationsCache = [];
+            return [];
+        }
+
+        try {
+            const response = await fetch('/api/notifications', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (!response.ok) {
+                return notificationsCache;
+            }
+            const data = await parseJson(response);
+            notificationsCache = data.notifications || [];
+            return notificationsCache;
+        } catch (error) {
+            return notificationsCache;
+        }
+    };
+
+    const openRealtimeNotifications = () => {
+        const token = getValidToken();
+        if (!token || realtimeSource) {
+            return;
+        }
+
+        const source = new EventSource(`/api/notifications/stream?token=${encodeURIComponent(token)}`);
+        realtimeSource = source;
+
+        source.addEventListener('notification', async (event) => {
+            try {
+                const payload = JSON.parse(event.data || '{}');
+                if (payload?.title) {
+                    showToast(payload.title, payload.message || '', 'info');
+                }
+                await fetchStoredNotifications();
+                const navLinks = document.getElementById('navLinks');
+                if (navLinks) {
+                    renderNotifications(headerContext || getStoredAuthContext(), notificationsCache);
+                }
+            } catch (error) {
+                // ignore malformed realtime event
+            }
+        });
+
+        source.onerror = () => {
+            try {
+                source.close();
+            } catch (error) {
+                // ignore close errors
+            }
+            realtimeSource = null;
+            setTimeout(openRealtimeNotifications, 2500);
+        };
+    };
+
     const refreshHeader = async (navLinks) => {
         const immediateContext = getStoredAuthContext();
         if (immediateContext) {
@@ -363,9 +535,11 @@ ${pendingNotifications.map((notification) => {
         }
 
         headerContext = await getAuthContext();
-        renderNotifications(headerContext || immediateContext);
+        await fetchStoredNotifications();
+        renderNotifications(headerContext || immediateContext, notificationsCache);
         renderHeaderAuth(navLinks, headerContext || immediateContext);
         setActiveLinks(navLinks);
+        openRealtimeNotifications();
     };
 
     const handleNotificationResponse = async (notificationId, action, trigger) => {
@@ -375,7 +549,7 @@ ${pendingNotifications.map((notification) => {
             return;
         }
 
-        trigger.disabled = true;
+        setActionLoading(trigger, true);
 
         try {
             const response = await fetch(`/api/delegation/notifications/${notificationId}/respond`, {
@@ -392,6 +566,12 @@ ${pendingNotifications.map((notification) => {
                 throw new Error(data.error || 'Nao foi possivel responder ao convite.');
             }
 
+            showToast(
+                action === 'accept' ? 'Convite aceito' : 'Convite recusado',
+                data.message || 'Sua resposta foi registrada com sucesso.',
+                'success'
+            );
+
             if (window.MaxOnuSession?.refreshAuthContext) {
                 await window.MaxOnuSession.refreshAuthContext();
             }
@@ -402,9 +582,9 @@ ${pendingNotifications.map((notification) => {
                 await refreshHeader(navLinks);
             }
         } catch (error) {
-            alert(error.message || 'Erro ao atualizar convite.');
+            showToast('Erro na ação', error.message || 'Erro ao atualizar convite.', 'error');
         } finally {
-            trigger.disabled = false;
+            setActionLoading(trigger, false);
         }
     };
 
@@ -466,20 +646,49 @@ ${pendingNotifications.map((notification) => {
             }
 
             const actionButton = event.target.closest('[data-notification-action]');
-            if (!actionButton) {
+            if (actionButton) {
+                const card = actionButton.closest('[data-notification-id]');
+                if (!card) {
+                    return;
+                }
+
+                await handleNotificationResponse(
+                    card.dataset.notificationId,
+                    actionButton.dataset.notificationAction,
+                    actionButton
+                );
                 return;
             }
 
-            const card = actionButton.closest('[data-notification-id]');
-            if (!card) {
+            const readButton = event.target.closest('[data-notification-read]');
+            if (readButton) {
+                const token = getValidToken();
+                if (!token) return;
+                const id = readButton.getAttribute('data-notification-read');
+                setActionLoading(readButton, true);
+                await fetch(`/api/notifications/${id}/read`, {
+                    method: 'PATCH',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                await fetchStoredNotifications();
+                renderNotifications(headerContext || getStoredAuthContext(), notificationsCache);
+                showToast('Notificação atualizada', 'Marcada como lida.', 'success');
                 return;
             }
 
-            await handleNotificationResponse(
-                card.dataset.notificationId,
-                actionButton.dataset.notificationAction,
-                actionButton
-            );
+            const readAllButton = event.target.closest('[data-notification-read-all]');
+            if (readAllButton) {
+                const token = getValidToken();
+                if (!token) return;
+                setActionLoading(readAllButton, true);
+                await fetch('/api/notifications/read-all', {
+                    method: 'PATCH',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                await fetchStoredNotifications();
+                renderNotifications(headerContext || getStoredAuthContext(), notificationsCache);
+                showToast('Central atualizada', 'Todas as notificações foram marcadas como lidas.', 'success');
+            }
         });
 
         navLinks.querySelectorAll('a').forEach((link) => {

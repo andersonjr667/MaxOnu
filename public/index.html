@@ -24,10 +24,17 @@
             </div>
             <h1 class="main-title">MAXONU 2026</h1>
             <p class="hero-intro">A nova edição da MaxOnu chega com 7 comitês especializados, novas áreas de acompanhamento e uma experiência digital pensada para delegados, professores orientadores e coordenação.</p>
-            <div class="hero-cta-group" id="heroCtaGroup">
+            <div class="hero-cta-group" id="heroCtaGroup" hidden>
                 <a href="/login" class="auth-btn auth-btn-secondary hero-auth-btn">Entrar</a>
                 <a href="/login#register" class="auth-btn auth-btn-primary hero-auth-btn">Cadastrar</a>
             </div>
+            <script>
+                (function() {
+                    var t = localStorage.getItem('token');
+                    var logado = t && t !== 'null' && t !== 'undefined' && t.trim() !== '';
+                    if (!logado) document.getElementById('heroCtaGroup').hidden = false;
+                })();
+            </script>
             <div class="countdown-message">Contagem regressiva para o início da MaxOnu 2026</div>
             <div class="countdown-grid" id="countdown"></div>
             <div class="event-date" id="eventStartDate">Data de Início: carregando...</div>

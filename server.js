@@ -24,6 +24,8 @@ const userRoutes = require('./routes/users');
 const exportRoutes = require('./routes/export');
 const settingsRoutes = require('./routes/settings');
 const dpoRoutes = require('./routes/dpos');
+const notificationRoutes = require('./routes/notifications');
+const reactionRoutes = require('./routes/reactions');
 const { shareMetaMiddleware } = require('./middleware/share-meta');
 const cleanUrlsMiddleware = require('./middleware/clean-urls');
 const { COMMITTEE_REVEAL_DATE } = require('./utils/event-config');
@@ -490,6 +492,8 @@ app.use('/api/users', userRoutes);
 app.use('/api/export', exportRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/dpos', dpoRoutes);
+app.use('/api/notifications', notificationRoutes);
+app.use('/api/reactions', reactionRoutes);
 
 // Share meta tags middleware para melhorar compartilhamento em redes sociais
 app.use(shareMetaMiddleware(publicDir));

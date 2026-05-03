@@ -18,19 +18,46 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function renderRegistrationCta() {
-        if (!heroCtaGroup) {
-            return;
-        }
-
+        if (!heroCtaGroup) return;
+        var t = localStorage.getItem('token');
+        var logado = t && t !== 'null' && t !== 'undefined' && t.trim() !== '';
+        if (logado) return;
+        heroCtaGroup.hidden = false;
         heroCtaGroup.innerHTML = `
             <a href="${getRegistrationLink()}" class="auth-btn auth-btn-primary hero-auth-btn">Faça sua inscrição</a>
         `;
     }
 
+    function showRegistrationBanner() {
+        // Oculta cronômetro, mensagem e data
+        if (countdownElement) countdownElement.style.display = 'none';
+        if (countdownMessage) countdownMessage.style.display = 'none';
+        if (eventStartDateElement) eventStartDateElement.style.display = 'none';
+
+        // Insere banner de CTA no lugar
+        const container = countdownElement?.parentElement;
+        if (!container) return;
+
+        const banner = document.createElement('div');
+        banner.className = 'registration-cta-banner';
+        banner.innerHTML = `
+            <div class="registration-cta-pulse"></div>
+            <div class="registration-cta-inner">
+                <span class="registration-cta-kicker">✦ Inscrições abertas</span>
+                <h2 class="registration-cta-title">Faça sua inscrição na MaxOnu 2026</h2>
+                <p class="registration-cta-desc">Monte sua delegação, escolha seu comitê e represente seu país nos debates.</p>
+                <a href="${getRegistrationLink()}" class="registration-cta-btn">
+                    Inscrever-se agora
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </a>
+            </div>
+        `;
+
+        container.insertBefore(banner, countdownElement);
+    }
+
     function renderEventDateLabel(timestamp) {
-        if (!eventStartDateElement || !Number.isFinite(timestamp)) {
-            return;
-        }
+        if (!eventStartDateElement || !Number.isFinite(timestamp)) return;
 
         const datePart = new Intl.DateTimeFormat('pt-BR', {
             day: 'numeric',
@@ -50,9 +77,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function updateCountdown() {
-        if (!countdownElement || !targetDate) {
-            return;
-        }
+        if (!countdownElement || !targetDate) return;
 
         const now = new Date().getTime();
         const distance = targetDate - now;
@@ -60,32 +85,12 @@ document.addEventListener('DOMContentLoaded', function() {
         if (distance < 0) {
             clearInterval(interval);
             renderRegistrationCta();
-            if (countdownMessage) {
-                countdownMessage.textContent = 'A contagem terminou. Faça sua inscrição para começar a montar sua delegação.';
-            }
-            countdownElement.innerHTML = `
-                <div class="time-unit">
-                    <div class="time-value">00</div>
-                    <div class="time-label">dias</div>
-                </div>
-                <div class="time-unit">
-                    <div class="time-value">00</div>
-                    <div class="time-label">horas</div>
-                </div>
-                <div class="time-unit">
-                    <div class="time-value">00</div>
-                    <div class="time-label">minutos</div>
-                </div>
-                <div class="time-unit">
-                    <div class="time-value">00</div>
-                    <div class="time-label">segundos</div>
-                </div>
-            `;
+            showRegistrationBanner();
             return;
         }
 
-        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const days    = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours   = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
@@ -112,16 +117,9 @@ document.addEventListener('DOMContentLoaded', function() {
     async function fetchRevealStatus(timeoutMs = 5000) {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
-
         try {
-            const response = await fetch('/api/reveal-status', {
-                signal: controller.signal
-            });
-
-            if (!response.ok) {
-                return null;
-            }
-
+            const response = await fetch('/api/reveal-status', { signal: controller.signal });
+            if (!response.ok) return null;
             return await response.json();
         } catch (error) {
             return null;

@@ -1137,3 +1137,147 @@ body.profile-page {
         height: 220px;
     }
 }
+
+/* Dark mode compatibility */
+[data-theme="dark"] body.profile-page {
+    --pf-ink: #e2ebf5;
+    --pf-text: #c8d8e8;
+    --pf-muted: #90a9c2;
+    --pf-line: rgba(255, 255, 255, 0.12);
+    --pf-glass: rgba(15, 26, 40, 0.9);
+    --pf-white: #0f1b2b;
+    --pf-shadow-sm: 0 10px 22px rgba(0, 0, 0, 0.28);
+    --pf-shadow-md: 0 18px 38px rgba(0, 0, 0, 0.34);
+    --pf-shadow-lg: 0 24px 56px rgba(0, 0, 0, 0.42);
+    background:
+        radial-gradient(circle at 0% 0%, rgba(216, 112, 27, 0.1), transparent 36%),
+        radial-gradient(circle at 100% 0%, rgba(15, 95, 154, 0.14), transparent 32%),
+        linear-gradient(180deg, #0b1520 0%, #091220 100%);
+}
+
+[data-theme="dark"] .profile-page .profile-panel-shell .dashboard-panel,
+[data-theme="dark"] .profile-page .profile-summary-shell .dashboard-panel,
+[data-theme="dark"] .profile-page .profile-security-section .dashboard-panel,
+[data-theme="dark"] .profile-page .profile-image-card,
+[data-theme="dark"] .profile-page .profile-delete-card,
+[data-theme="dark"] .profile-page .profile-danger-zone,
+[data-theme="dark"] .profile-page .profile-account-layout,
+[data-theme="dark"] .profile-page .profile-action-card {
+    background:
+        radial-gradient(circle at 90% 10%, rgba(216, 112, 27, 0.08), transparent 33%),
+        linear-gradient(180deg, rgba(16, 26, 42, 0.98), rgba(12, 20, 34, 0.95));
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .profile-page .profile-action-card.is-selected {
+    background: linear-gradient(135deg, rgba(15, 95, 154, 0.2) 0%, rgba(22, 34, 52, 0.95) 100%);
+}
+
+[data-theme="dark"] .profile-page .profile-image-editor-stage {
+    background: #102033;
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+[data-theme="dark"] .profile-page .profile-chip,
+[data-theme="dark"] .profile-page .profile-field-chip,
+[data-theme="dark"] .profile-page .profile-action-chip {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.14);
+    color: var(--pf-text);
+}
+
+/* Additional dark fallback for complex profile widgets */
+[data-theme="dark"] .profile-page .dashboard-form input,
+[data-theme="dark"] .profile-page .dashboard-form select,
+[data-theme="dark"] .profile-page .dashboard-form textarea,
+[data-theme="dark"] .profile-page input,
+[data-theme="dark"] .profile-page select,
+[data-theme="dark"] .profile-page textarea {
+    background: rgba(10, 18, 32, 0.9);
+    color: #c8d8e8;
+    border-color: rgba(255, 255, 255, 0.14);
+}
+
+[data-theme="dark"] .profile-page .dashboard-empty,
+[data-theme="dark"] .profile-page .profile-photo-tip,
+[data-theme="dark"] .profile-page .profile-helper-text,
+[data-theme="dark"] .profile-page .profile-meta {
+    color: #9eb6cd;
+}
+
+/* Edit buttons in profile (dark mode) */
+[data-theme="dark"] .profile-page .editable-card .edit-btn {
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: linear-gradient(180deg, rgba(16, 26, 42, 0.96), rgba(12, 20, 34, 0.94));
+    color: #dbe8f6;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.28);
+}
+
+[data-theme="dark"] .profile-page .editable-card .edit-btn:hover {
+    border-color: rgba(255, 209, 102, 0.34);
+    background: linear-gradient(180deg, rgba(22, 34, 52, 0.98), rgba(14, 24, 40, 0.96));
+    color: #ffffff;
+}
+
+[data-theme="dark"] .profile-page .editable-card .edit-actions .save-btn,
+[data-theme="dark"] .profile-page .editable-card .edit-actions .cancel-btn {
+    border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+[data-theme="dark"] .profile-page .editable-card .edit-actions .cancel-btn {
+    background: rgba(255, 255, 255, 0.07);
+    color: #dbe8f6;
+}
+
+[data-theme="dark"] .profile-page .editable-card .edit-actions .cancel-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+}
+
+/* Profile image upload card + text inputs (dark mode) */
+[data-theme="dark"] .profile-page .profile-image-card,
+[data-theme="dark"] .profile-page .profile-photo-account-shell,
+[data-theme="dark"] .profile-page .profile-image-editor-frame {
+    background: linear-gradient(180deg, rgba(16, 26, 42, 0.98), rgba(12, 20, 34, 0.96));
+    border-color: rgba(255, 255, 255, 0.14);
+}
+
+[data-theme="dark"] .profile-page .profile-upload-button,
+[data-theme="dark"] .profile-page .profile-image-card-close,
+[data-theme="dark"] .profile-page .profile-action-secondary {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.18);
+    color: #dbe8f6;
+}
+
+[data-theme="dark"] .profile-page .profile-upload-button:hover,
+[data-theme="dark"] .profile-page .profile-image-card-close:hover,
+[data-theme="dark"] .profile-page .profile-action-secondary:hover {
+    background: rgba(255, 255, 255, 0.14);
+    color: #ffffff;
+}
+
+[data-theme="dark"] .profile-page .editable-card .edit-input,
+[data-theme="dark"] .profile-page .dashboard-form input[type="text"],
+[data-theme="dark"] .profile-page .dashboard-form input[type="email"],
+[data-theme="dark"] .profile-page .dashboard-form input[type="password"],
+[data-theme="dark"] .profile-page .dashboard-form textarea {
+    background: rgba(10, 18, 32, 0.92);
+    color: #dbe8f6;
+    border-color: rgba(255, 255, 255, 0.18);
+}
+
+[data-theme="dark"] .profile-page .editable-card .edit-input::placeholder,
+[data-theme="dark"] .profile-page .dashboard-form input::placeholder,
+[data-theme="dark"] .profile-page .dashboard-form textarea::placeholder {
+    color: #8ea8c2;
+}
+
+[data-theme="dark"] .profile-page .editable-card .edit-input:focus,
+[data-theme="dark"] .profile-page .dashboard-form input[type="text"]:focus,
+[data-theme="dark"] .profile-page .dashboard-form input[type="email"]:focus,
+[data-theme="dark"] .profile-page .dashboard-form input[type="password"]:focus,
+[data-theme="dark"] .profile-page .dashboard-form textarea:focus {
+    border-color: rgba(99, 167, 216, 0.58);
+    box-shadow: 0 0 0 3px rgba(99, 167, 216, 0.2);
+}
