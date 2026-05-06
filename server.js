@@ -90,14 +90,14 @@ const COMMITTEE_DATA = [
   {
     id: 3,
     displayName: 'Alto Comissariado das Nações Unidas para Refugiados (ACNUR)',
-    shortTitle: '(ACNUR - Alto Comissariado das Nações Unidas para Refugiados)',
+    shortTitle: '(ACNUR)',
     title: 'Proteção e garantia de direitos de pessoas em situação de mobilidade humana em contextos de crises humanitárias'
   },
   {
     id: 4,
     displayName: 'Bioética e Genética Humana',
     shortTitle: 'Bioética e Genética Humana',
-    title: 'Impactos globais da tecnologia de manipulação e edição genética e seus desafios éticos quanto à dignidade humana e aos direitos das futuras gerações'
+    title: 'Impactos globais da tecnologia de manipulação e edição genética e seus desafios éticos quanto à dignidade humana e os direitos das futuras gerações'
   },
   {
     id: 5,
@@ -108,14 +108,14 @@ const COMMITTEE_DATA = [
   {
     id: 6,
     displayName: 'Conselho de Direitos Humanos das Nações Unidas (UNHRC)',
-    shortTitle: '(UNHRC - Conselho de Direitos Humanos das Nações Unidas)',
+    shortTitle: '(UNHRC)',
     title: 'Identidade, memória e poder: disputas culturais e garantia de direitos em um mundo globalizado'
   },
   {
     id: 7,
     displayName: 'Organização das Nações Unidas para as Mulheres (ONU Mulheres)',
-    shortTitle: '(ONU MULHERES)',
-    title: ''
+    shortTitle: '(ONU Mulheres - CSW/2026)',
+    title: 'Vozes, Leis e Limites: O Desafio de Enfrentar a Violência contra Mulheres'
   }
 ];
 

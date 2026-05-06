@@ -351,12 +351,17 @@ document.addEventListener('DOMContentLoaded', function() {
                                 || (item.payload.fromGender === 'feminino' ? '/images/profile_female.png' : '/images/profile_male.png');
                             return `
                                 <article class="notification-card" data-notification-id="${item.invitationId}">
-                                    <img src="${inviterImageUrl}" alt="Foto de ${inviterName}" class="notification-avatar" data-fallback-src="/images/profile_male.png">
-                                    <p>
-                                        <strong>${inviterName}</strong> convidou você para integrar uma delegação com ${item.payload.teamSize} participantes.
-                                        <br>Unidade: ${inviterClass.unit}
-                                        <br>Série: ${inviterClass.grade}
-                                    </p>
+                                    <div style="display: flex; gap: 0.75rem; align-items: flex-start;">
+                                        <img src="${inviterImageUrl}" alt="Foto de ${inviterName}" class="notification-avatar" data-fallback-src="/images/profile_male.png">
+                                        <div style="flex: 1; min-width: 0;">
+                                            <p style="margin-bottom: 0.5rem;">
+                                                <strong>${inviterName}</strong> convidou você para integrar uma delegação com ${item.payload.teamSize} participante${item.payload.teamSize !== 1 ? 's' : ''}.
+                                            </p>
+                                            <p style="font-size: 0.875rem; opacity: 0.85; margin-bottom: 0;">
+                                                📍 <strong>${inviterClass.unit}</strong> • ${inviterClass.grade}
+                                            </p>
+                                        </div>
+                                    </div>
                                     <div class="notification-actions">
                                         <button type="button" class="view-button" data-notification-action="accept">Aceitar</button>
                                         <button type="button" class="delete-button" data-notification-action="reject">Recusar</button>
@@ -581,6 +586,9 @@ document.addEventListener('DOMContentLoaded', function() {
             if (navLinks) {
                 await refreshHeader(navLinks);
             }
+
+            // Close notification panel on mobile after successful action
+            closeNotifications();
         } catch (error) {
             showToast('Erro na ação', error.message || 'Erro ao atualizar convite.', 'error');
         } finally {

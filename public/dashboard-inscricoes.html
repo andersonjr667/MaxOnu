@@ -64,13 +64,13 @@
                             <label for="advancedCommitteeTarget">Comitê alvo</label>
 <select id="advancedCommitteeTarget">
                                 <option value="all">Todos os comitês</option>
-                                <option value="1">Conselho de Direitos Humanos (CDH - 2026)</option>
-                                <option value="2">Assembleia Geral das Nações Unidas (AGNU)</option>
-                                <option value="3">Alto Comissariado das Nações Unidas para Refugiados (ACNUR)</option>
+                                <option value="1">CDH 2026 — O Paradoxo da Hiperconectividade</option>
+                                <option value="2">AGNU — Guerra, Multipolaridade e Disputas Territoriais</option>
+                                <option value="3">ACNUR — Mobilidade humana e crises humanitárias</option>
                                 <option value="4">Bioética e Genética Humana</option>
-                                <option value="5">Nova Ordem Global</option>
-                                <option value="6">Conselho de Direitos Humanos das Nações Unidas (UNHRC)</option>
-                                <option value="7">ONU Mulheres (CSW/2026)</option>
+                                <option value="5">Nova Ordem Global — Recursos Estratégicos e Capitalismo</option>
+                                <option value="6">UNHRC — Identidade, memória e poder</option>
+                                <option value="7">ONU Mulheres (CSW/2026) — Violência contra Mulheres</option>
                             </select>
                         </div>
                         <div>
@@ -101,10 +101,9 @@
                     </div>
 
                     <div class="dashboard-export-actions">
-                        <button type="button" class="view-button" id="advancedExportCsvBtn">Baixar resultados CSV</button>
-                        <button type="button" class="view-button" id="advancedExportXlsxBtn">Baixar resultados XLSX</button>
-                        <button type="button" class="view-button" id="advancedExportEmXlsxBtn">Baixar EM (XLSX)</button>
-                        <button type="button" class="view-button" id="advancedExport89XlsxBtn">Baixar 8º/9º (XLSX)</button>
+                        <button type="button" class="view-button export-open-btn" id="advancedOpenExportModalBtn">
+                            ↓ Baixar resultados
+                        </button>
                     </div>
 
                     <div class="dashboard-summary-grid" id="advancedFilteredSummary"></div>
@@ -121,5 +120,121 @@
     </main>
 
     <include src="footer.html"></include>
+
+    <!-- Modal de exportação — fora de qualquer container para position:fixed funcionar corretamente -->
+    <div class="export-modal-overlay" id="exportModalOverlay" hidden>
+        <div class="export-modal" role="dialog" aria-modal="true" aria-labelledby="exportModalTitle">
+            <div class="export-modal-header">
+                <h3 id="exportModalTitle">Baixar resultados</h3>
+                <button type="button" class="export-modal-close" id="exportModalCloseBtn" aria-label="Fechar">&times;</button>
+            </div>
+
+            <div class="export-modal-body">
+
+                <!-- Grupo: Geral -->
+                <div class="export-group">
+                    <span class="export-group-label">Geral</span>
+                    <div class="export-group-btns">
+                        <button type="button" class="view-button" id="advancedExportXlsxBtn">Todos os inscritos (XLSX)</button>
+                        <button type="button" class="view-button" id="advancedExportCsvBtn">Todos os inscritos (CSV)</button>
+                        <button type="button" class="view-button" id="advancedExportAllDelegationsBtn">Todas as delegações com nomes dos comitês (XLSX)</button>
+                        <button type="button" class="view-button" id="advancedExportUnassignedBtn">Pendentes sem comitê final (XLSX)</button>
+                    </div>
+                </div>
+
+                <!-- Grupo: Por segmento -->
+                <div class="export-group">
+                    <span class="export-group-label">Por segmento</span>
+                    <div class="export-group-btns">
+                        <button type="button" class="view-button" id="advancedExportEmXlsxBtn">Ensino Médio (XLSX)</button>
+                        <button type="button" class="view-button" id="advancedExport89XlsxBtn">8º e 9º ano (XLSX)</button>
+                        <button type="button" class="view-button" id="advancedExportByUnitBtn">Por unidade — Sta Inês / Palmares (XLSX)</button>
+                    </div>
+                </div>
+
+                <!-- Grupo: Por comitê -->
+                <div class="export-group">
+                    <span class="export-group-label">Por comitê</span>
+                    <div class="export-group-btns">
+                        <button type="button" class="view-button" id="advancedExportComite1Btn">Comitê 1 — CDH (XLSX)</button>
+                        <button type="button" class="view-button" id="advancedExportComite2Btn">Comitê 2 — AGNU (XLSX)</button>
+                        <button type="button" class="view-button" id="advancedExportComite3Btn">Comitê 3 — ACNUR (XLSX)</button>
+                        <button type="button" class="view-button" id="advancedExportComite4Btn">Comitê 4 — Bioética (XLSX)</button>
+                        <button type="button" class="view-button" id="advancedExportComite5Btn">Comitê 5 — Nova Ordem Global (XLSX)</button>
+                        <button type="button" class="view-button" id="advancedExportComite6Btn">Comitê 6 — UNHRC (XLSX)</button>
+                        <button type="button" class="view-button" id="advancedExportComite7Btn">Comitê 7 — ONU Mulheres (XLSX)</button>
+                    </div>
+                </div>
+
+                <!-- Grupo: Download personalizado -->
+                <div class="export-group export-group--custom">
+                    <span class="export-group-label">Download personalizado</span>
+                    <p class="export-custom-hint">Escolha os filtros e baixe exatamente o que precisa.</p>
+
+                    <div class="export-custom-grid">
+                        <div class="export-custom-field">
+                            <label>Segmento</label>
+                            <select id="customExportSegment">
+                                <option value="all">Todos</option>
+                                <option value="em">Ensino Médio</option>
+                                <option value="fundamental">8º e 9º ano</option>
+                            </select>
+                        </div>
+                        <div class="export-custom-field">
+                            <label>Unidade</label>
+                            <select id="customExportUnit">
+                                <option value="all">Todas</option>
+                                <option value="Sta Ines">Sta Inês</option>
+                                <option value="Palmares">Palmares</option>
+                            </select>
+                        </div>
+                        <div class="export-custom-field">
+                            <label>Comitê final</label>
+                            <select id="customExportCommittee">
+                                <option value="all">Todos</option>
+                                <option value="unassigned">Sem comitê</option>
+                                <option value="1">CDH 2026</option>
+                                <option value="2">AGNU</option>
+                                <option value="3">ACNUR</option>
+                                <option value="4">Bioética</option>
+                                <option value="5">Nova Ordem Global</option>
+                                <option value="6">UNHRC</option>
+                                <option value="7">ONU Mulheres</option>
+                            </select>
+                        </div>
+                        <div class="export-custom-field">
+                            <label>Status de alocação</label>
+                            <select id="customExportStatus">
+                                <option value="all">Todos</option>
+                                <option value="assigned">Com comitê final</option>
+                                <option value="unassigned">Sem comitê final</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="export-custom-cols">
+                        <p class="export-custom-cols-label">Colunas a incluir</p>
+                        <div class="export-custom-checks">
+                            <label><input type="checkbox" name="exportCol" value="delegado1" checked> Delegado 1</label>
+                            <label><input type="checkbox" name="exportCol" value="turmaDelegado1" checked> Turma Delegado 1</label>
+                            <label><input type="checkbox" name="exportCol" value="delegado2" checked> Delegado 2</label>
+                            <label><input type="checkbox" name="exportCol" value="turmaDelegado2" checked> Turma Delegado 2</label>
+                            <label><input type="checkbox" name="exportCol" value="primeiraOpcao" checked> 1ª opção</label>
+                            <label><input type="checkbox" name="exportCol" value="segundaOpcao" checked> 2ª opção</label>
+                            <label><input type="checkbox" name="exportCol" value="terceiraOpcao" checked> 3ª opção</label>
+                            <label><input type="checkbox" name="exportCol" value="comiteFinal" checked> Comitê final</label>
+                            <label><input type="checkbox" name="exportCol" value="pais"> País</label>
+                            <label><input type="checkbox" name="exportCol" value="enviadoEm"> Enviado em</label>
+                        </div>
+                    </div>
+
+                    <button type="button" class="view-button export-custom-btn" id="advancedExportCustomBtn">
+                        Gerar download personalizado (XLSX)
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
 </body>
 </html>

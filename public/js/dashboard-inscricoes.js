@@ -2,13 +2,13 @@ let currentUser = null;
 let registrationsCache = [];
 
 const COMMITTEE_LABELS = {
-    1: 'Conselho de Direitos Humanos (CDH - 2026)',
-    2: 'Assembleia Geral das Nações Unidas (AGNU)',
-    3: 'Alto Comissariado das Nações Unidas para Refugiados (ACNUR)',
-    4: 'Bioética e Genética Humana',
-    5: 'Nova Ordem Global',
-6: 'Conselho de Direitos Humanos das Nações Unidas (UNHRC)',
-    7: 'ONU Mulheres (CSW/2026)'
+    1: 'CDH 2026 — O Paradoxo da Hiperconectividade: Regulamentação da Vigilância Massiva, Ética da Inteligência Artificial e Proteção da Democracia na Era do Big Data',
+    2: 'AGNU — Guerra, Multipolaridade e Disputas Territoriais: Desafios à Soberania, Segurança Global e Justiça Internacional no Século XXI',
+    3: 'ACNUR — Proteção e garantia de direitos de pessoas em situação de mobilidade humana em contextos de crises humanitárias',
+    4: 'Bioética e Genética Humana — Impactos globais da tecnologia de manipulação e edição genética e seus desafios éticos quanto à dignidade humana e os direitos das futuras gerações',
+    5: 'Nova Ordem Global — A Nova Ordem Global em Disputa: Recursos Estratégicos, Poder e os Limites do Capitalismo no Século XXI',
+    6: 'UNHRC — Identidade, memória e poder: disputas culturais e garantia de direitos em um mundo globalizado',
+    7: 'ONU Mulheres (CSW/2026) — Vozes, Leis e Limites: O Desafio de Enfrentar a Violência contra Mulheres'
 };
 
 const ALLOWED_ROLES = new Set(['admin', 'coordinator', 'teacher']);
@@ -54,7 +54,10 @@ function getEducationSegmentFromText(value = '') {
     if (
         normalized.includes('ensino medio') ||
         normalized.includes('medio') ||
-        /\bem\b/.test(normalized)
+        normalized.includes('serie') ||
+        /\bem\b/.test(normalized) ||
+        /[123]\s*serie/.test(normalized) ||
+        /[123]a\s*serie/.test(normalized)
     ) {
         return 'em';
     }
@@ -62,8 +65,10 @@ function getEducationSegmentFromText(value = '') {
     if (
         normalized.includes('8o') ||
         normalized.includes('8 ano') ||
+        normalized.includes('8ano') ||
         normalized.includes('9o') ||
         normalized.includes('9 ano') ||
+        normalized.includes('9ano') ||
         normalized.includes('8 e 9') ||
         normalized.includes('8/9')
     ) {
@@ -661,6 +666,62 @@ async function assignCommittee(assignButton) {
     }
 }
 
+function openExportModal() {
+    const overlay = document.getElementById('exportModalOverlay');
+    if (overlay) {
+        overlay.hidden = false;
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeExportModal() {
+    const overlay = document.getElementById('exportModalOverlay');
+    if (overlay) {
+        overlay.hidden = true;
+        document.body.style.overflow = '';
+    }
+}
+
+async function exportCustom() {
+    const button = document.getElementById('advancedExportCustomBtn');
+    const segment   = document.getElementById('customExportSegment')?.value   || 'all';
+    const unit      = document.getElementById('customExportUnit')?.value      || 'all';
+    const committee = document.getElementById('customExportCommittee')?.value || 'all';
+    const status    = document.getElementById('customExportStatus')?.value    || 'all';
+    const cols = Array.from(document.querySelectorAll('input[name="exportCol"]:checked'))
+        .map((cb) => cb.value);
+
+    if (!cols.length) {
+        alert('Selecione ao menos uma coluna.');
+        return;
+    }
+
+    setButtonLoading(button, true, 'Gerando...');
+    try {
+        const params = new URLSearchParams({ segment, unit, committee, status, cols: cols.join(',') });
+        const response = await fetch(`/api/export/results/custom?${params}`, {
+            headers: { 'Authorization': `Bearer ${getToken()}` }
+        });
+        if (!response.ok) {
+            const data = await response.json().catch(() => ({}));
+            throw new Error(data.error || 'Erro ao gerar export personalizado.');
+        }
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'export-personalizado.xlsx';
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+    } catch (error) {
+        alert(error.message || 'Erro ao gerar export personalizado.');
+    } finally {
+        setButtonLoading(button, false, '');
+    }
+}
+
 async function exportResults(format) {
     const button = format === 'csv'
         ? document.getElementById('advancedExportCsvBtn')
@@ -722,6 +783,105 @@ async function exportSegmentResults(segment) {
         URL.revokeObjectURL(url);
     } catch (error) {
         alert(error.message || 'Erro ao exportar resultados por segmento.');
+    } finally {
+        setButtonLoading(button, false, '');
+    }
+}
+
+async function exportByCommittee(committeeNum) {
+    const button = document.getElementById(`advancedExportComite${committeeNum}Btn`);
+    setButtonLoading(button, true, 'Baixando...');
+    try {
+        const response = await fetch(`/api/export/results/by-committee/${committeeNum}`, {
+            headers: { 'Authorization': `Bearer ${getToken()}` }
+        });
+        if (!response.ok) {
+            const data = await response.json().catch(() => ({}));
+            throw new Error(data.error || 'Erro ao exportar por comitê.');
+        }
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `delegacoes-comite-${committeeNum}.xlsx`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+    } catch (error) {
+        alert(error.message || 'Erro ao exportar por comitê.');
+    } finally {
+        setButtonLoading(button, false, '');
+    }
+}
+
+async function exportByUnit() {
+    const button = document.getElementById('advancedExportByUnitBtn');
+    setButtonLoading(button, true, 'Baixando...');
+    try {
+        const response = await fetch('/api/export/results/by-unit', {
+            headers: { 'Authorization': `Bearer ${getToken()}` }
+        });
+        if (!response.ok) throw new Error('Erro ao exportar por unidade.');
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'delegacoes-por-unidade.xlsx';
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+    } catch (error) {
+        alert(error.message || 'Erro ao exportar por unidade.');
+    } finally {
+        setButtonLoading(button, false, '');
+    }
+}
+
+async function exportUnassigned() {
+    const button = document.getElementById('advancedExportUnassignedBtn');
+    setButtonLoading(button, true, 'Baixando...');
+    try {
+        const response = await fetch('/api/export/results/unassigned', {
+            headers: { 'Authorization': `Bearer ${getToken()}` }
+        });
+        if (!response.ok) throw new Error('Erro ao exportar pendentes.');
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'delegacoes-sem-comite.xlsx';
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+    } catch (error) {
+        alert(error.message || 'Erro ao exportar pendentes.');
+    } finally {
+        setButtonLoading(button, false, '');
+    }
+}
+
+async function exportAllDelegations() {
+    const button = document.getElementById('advancedExportAllDelegationsBtn');
+    setButtonLoading(button, true, 'Baixando...');
+    try {
+        const response = await fetch('/api/export/results/all-delegations', {
+            headers: { 'Authorization': `Bearer ${getToken()}` }
+        });
+        if (!response.ok) throw new Error('Erro ao exportar todas as delegações.');
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'todas-delegacoes.xlsx';
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+    } catch (error) {
+        alert(error.message || 'Erro ao exportar todas as delegações.');
     } finally {
         setButtonLoading(button, false, '');
     }
@@ -790,10 +950,25 @@ function initPageEvents() {
         loadRegistrations({ forceFetch: false });
     });
     document.getElementById('advancedResetBtn')?.addEventListener('click', resetFilters);
+    document.getElementById('advancedOpenExportModalBtn')?.addEventListener('click', openExportModal);
+    document.getElementById('exportModalCloseBtn')?.addEventListener('click', closeExportModal);
+    document.getElementById('exportModalOverlay')?.addEventListener('click', (e) => {
+        if (e.target === e.currentTarget) closeExportModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeExportModal();
+    });
+    document.getElementById('advancedExportCustomBtn')?.addEventListener('click', exportCustom);
     document.getElementById('advancedExportCsvBtn')?.addEventListener('click', () => exportResults('csv'));
     document.getElementById('advancedExportXlsxBtn')?.addEventListener('click', () => exportResults('xlsx'));
     document.getElementById('advancedExportEmXlsxBtn')?.addEventListener('click', () => exportSegmentResults('em'));
     document.getElementById('advancedExport89XlsxBtn')?.addEventListener('click', () => exportSegmentResults('fundamental'));
+    document.getElementById('advancedExportByUnitBtn')?.addEventListener('click', exportByUnit);
+    document.getElementById('advancedExportUnassignedBtn')?.addEventListener('click', exportUnassigned);
+    document.getElementById('advancedExportAllDelegationsBtn')?.addEventListener('click', exportAllDelegations);
+    Array.from({ length: 7 }, (_, i) => i + 1).forEach((num) => {
+        document.getElementById(`advancedExportComite${num}Btn`)?.addEventListener('click', () => exportByCommittee(num));
+    });
 
     document.getElementById('advancedSearchFilter')?.addEventListener('input', () => {
         renderAllAdvancedData();

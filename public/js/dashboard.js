@@ -1,12 +1,12 @@
 let currentUser = null;
 const COMMITTEE_LABELS = {
-    1: 'Conselho de Direitos Humanos (CDH - 2026)',
-    2: 'Assembleia Geral das Nações Unidas (AGNU)',
-    3: 'Alto Comissariado das Nações Unidas para Refugiados (ACNUR)',
-    4: 'Bioética e Genética Humana',
-5: 'Nova Ordem Global',
-    6: 'Conselho de Direitos Humanos das Nações Unidas (UNHRC)',
-    7: 'ONU Mulheres (CSW/2026)'
+    1: 'CDH 2026 — O Paradoxo da Hiperconectividade: Regulamentação da Vigilância Massiva, Ética da Inteligência Artificial e Proteção da Democracia na Era do Big Data',
+    2: 'AGNU — Guerra, Multipolaridade e Disputas Territoriais: Desafios à Soberania, Segurança Global e Justiça Internacional no Século XXI',
+    3: 'ACNUR — Proteção e garantia de direitos de pessoas em situação de mobilidade humana em contextos de crises humanitárias',
+    4: 'Bioética e Genética Humana — Impactos globais da tecnologia de manipulação e edição genética e seus desafios éticos quanto à dignidade humana e os direitos das futuras gerações',
+    5: 'Nova Ordem Global — A Nova Ordem Global em Disputa: Recursos Estratégicos, Poder e os Limites do Capitalismo no Século XXI',
+    6: 'UNHRC — Identidade, memória e poder: disputas culturais e garantia de direitos em um mundo globalizado',
+    7: 'ONU Mulheres (CSW/2026) — Vozes, Leis e Limites: O Desafio de Enfrentar a Violência contra Mulheres'
 };
 
 const COUNTRY_SUGGESTIONS = [
@@ -77,7 +77,9 @@ function getEducationSegmentFromText(value = '') {
     if (
         normalized.includes('ensino medio') ||
         normalized.includes('medio') ||
-        /\bem\b/.test(normalized)
+        normalized.includes('serie') ||
+        /\bem\b/.test(normalized) ||
+        /[123]\s*serie/.test(normalized)
     ) {
         return 'em';
     }
@@ -85,8 +87,10 @@ function getEducationSegmentFromText(value = '') {
     if (
         normalized.includes('8o') ||
         normalized.includes('8 ano') ||
+        normalized.includes('8ano') ||
         normalized.includes('9o') ||
         normalized.includes('9 ano') ||
+        normalized.includes('9ano') ||
         normalized.includes('8 e 9') ||
         normalized.includes('8/9')
     ) {

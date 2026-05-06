@@ -1,13 +1,13 @@
 const COMMITTEES_CACHE_KEY = 'maxonu_committees_cache_v1';
 const REVEAL_STATUS_CACHE_KEY = 'maxonu_reveal_status_cache_v1';
 const COMMITTEE_CATALOG = [
-    { id: 1, displayName: 'Conselho de Direitos Humanos (CDH - 2026)', shortTitle: 'CDH - 2026', title: 'O Paradoxo da Hiperconectividade: Regulamentação da Vigilância Massiva, Ética da Inteligência Artificial e Proteção da Democracia na Era do Big Data' },
-    { id: 2, displayName: 'Assembleia Geral das Nações Unidas (AGNU)', shortTitle: 'AGNU', title: 'Guerra, Multipolaridade e Disputas Territoriais: Desafios à Soberania, Segurança Global e Justiça Internacional no Século XXI' },
-    { id: 3, displayName: 'Alto Comissariado das Nações Unidas para Refugiados (ACNUR)', shortTitle: 'ACNUR', title: 'Proteção e garantia de direitos de pessoas em situação de mobilidade humana em contextos de crises humanitárias' },
-    { id: 4, displayName: 'Bioética e Genética Humana', shortTitle: 'Bioética e Genética Humana', title: 'Impactos globais da tecnologia de manipulação e edição genética e seus desafios éticos quanto à dignidade humana e aos direitos das futuras gerações' },
+    { id: 1, displayName: 'CDH 2026', shortTitle: 'CDH 2026', title: 'O Paradoxo da Hiperconectividade: Regulamentação da Vigilância Massiva, Ética da Inteligência Artificial e Proteção da Democracia na Era do Big Data' },
+    { id: 2, displayName: 'AGNU', shortTitle: 'AGNU', title: 'Guerra, Multipolaridade e Disputas Territoriais: Desafios à Soberania, Segurança Global e Justiça Internacional no Século XXI' },
+    { id: 3, displayName: 'ACNUR', shortTitle: 'ACNUR', title: 'Proteção e garantia de direitos de pessoas em situação de mobilidade humana em contextos de crises humanitárias' },
+    { id: 4, displayName: 'Bioética e Genética Humana', shortTitle: 'Bioética', title: 'Impactos globais da tecnologia de manipulação e edição genética e seus desafios éticos quanto à dignidade humana e os direitos das futuras gerações' },
     { id: 5, displayName: 'Nova Ordem Global', shortTitle: 'Nova Ordem Global', title: 'A Nova Ordem Global em Disputa: Recursos Estratégicos, Poder e os Limites do Capitalismo no Século XXI' },
-{ id: 6, displayName: 'Conselho de Direitos Humanos das Nações Unidas (UNHRC)', shortTitle: 'UNHRC', title: 'Identidade, memória e poder: disputas culturais e garantia de direitos em um mundo globalizado' },
-    { id: 7, displayName: 'ONU Mulheres (CSW/2026)', shortTitle: 'CSW/2026', title: 'Vozes, Leis e Limites: O Desafio de Enfrentar a Violência contra Mulheres' }
+    { id: 6, displayName: 'UNHRC', shortTitle: 'UNHRC', title: 'Identidade, memória e poder: disputas culturais e garantia de direitos em um mundo globalizado' },
+    { id: 7, displayName: 'ONU Mulheres (CSW/2026)', shortTitle: 'ONU Mulheres', title: 'Vozes, Leis e Limites: O Desafio de Enfrentar a Violência contra Mulheres' }
 ];
 
 function readCache(key, ttl) {

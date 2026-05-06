@@ -6,6 +6,7 @@
     <title>Inscrição - MaxOnu 2026</title>
     <!-- SHARE_META_TAGS -->
     <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/inscricao.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <link rel="icon" href="/images/logo-maxonu.png" type="image/png">
     <script src="/js/includes.js?v=20260420-headerfix" defer></script>
@@ -17,76 +18,187 @@
     <main class="main-content">
         <section class="content-section">
             <div class="dashboard-container">
-                <section class="dashboard-hero">
-                    <div class="dashboard-hero-copy">
-                        <span class="dashboard-kicker">Inscrição oficial</span>
-                        <h1>Forme sua delegação</h1>
-                        <p>Escolha seus comitês preferidos, confirme sua turma e defina a composição da sua delegação.</p>
+
+                <!-- Hero -->
+                <section class="reg-hero">
+                    <div class="reg-hero-copy">
+                        <span class="reg-hero-kicker">Inscrição oficial · MaxOnu 2026</span>
+                        <h1>Garanta sua vaga</h1>
+                        <p>Preencha em menos de 2 minutos. Escolha seus comitês, confirme sua turma e monte sua delegação.</p>
                     </div>
-                    <div class="dashboard-hero-badge">MaxOnu 2026</div>
+                    <div class="reg-hero-badge" aria-hidden="true">MaxOnu<br>2026</div>
                 </section>
 
-                <section class="dashboard-panel registration-panel">
-                    <div class="dashboard-section-heading">
-                        <span class="dashboard-section-kicker">Formulário</span>
-                        <h2>Inscrição do delegado</h2>
-                        <p id="registrationLead">Carregando sua inscrição...</p>
+                <!-- Painel principal -->
+                <section class="reg-panel">
+
+                    <!-- Cabeçalho do painel -->
+                    <div class="reg-panel-head">
+                        <div>
+                            <span class="reg-kicker">Formulário</span>
+                            <h2>Inscrição do delegado</h2>
+                            <p id="registrationLead" class="reg-lead">Carregando sua inscrição...</p>
+                        </div>
                     </div>
 
-                    <div class="registration-layout">
-                        <div class="registration-side-card">
-                            <span class="dashboard-chip">Etapas</span>
-                            <h3>Como funciona</h3>
-                            <p>Escolha três comitês em ordem de prioridade, confirme a composição da sua delegação e envie.</p>
-                            <div class="registration-step-list">
-                                <div class="registration-step-item">
-                                    <strong>1.</strong>
-                                    <span>Turma preenchida automaticamente pelo cadastro.</span>
-                                </div>
-                                <div class="registration-step-item">
-                                    <strong>2.</strong>
-                                    <span>Selecione 1ª, 2ª e 3ª opção de comitê.</span>
-                                </div>
-                                <div class="registration-step-item">
-                                    <strong>3.</strong>
-                                    <span>A delegação é formada por exatamente 2 integrantes.</span>
-                                </div>
-                            </div>
+                    <!-- Stepper -->
+                    <div class="reg-stepper" aria-label="Etapas do formulário">
+                        <div class="reg-step is-done">
+                            <span class="reg-step-dot"></span>
+                            <span class="reg-step-label">Turma</span>
                         </div>
+                        <div class="reg-step-line"></div>
+                        <div class="reg-step is-active">
+                            <span class="reg-step-dot"></span>
+                            <span class="reg-step-label">Comitês</span>
+                        </div>
+                        <div class="reg-step-line"></div>
+                        <div class="reg-step">
+                            <span class="reg-step-dot"></span>
+                            <span class="reg-step-label">Delegação</span>
+                        </div>
+                        <div class="reg-step-line"></div>
+                        <div class="reg-step">
+                            <span class="reg-step-dot"></span>
+                            <span class="reg-step-label">Confirmar</span>
+                        </div>
+                    </div>
 
-                    <form id="registrationForm" class="dashboard-form registration-form-shell">
-                        <div class="form-group">
-                            <label for="registrationClassGroup">Turma</label>
-                            <input type="text" id="registrationClassGroup" readonly>
-                        </div>
-                        <div class="registration-grid">
-                            <div class="form-group">
-                                <label for="firstChoice">1ª opção de comitê</label>
-                                <select id="firstChoice" required></select>
+                    <!-- Layout: sidebar + form -->
+                    <div class="reg-layout">
+
+                        <!-- Sidebar "Como funciona" -->
+                        <aside class="reg-sidebar">
+                            <span class="reg-sidebar-chip">Como funciona</span>
+                            <h3>Três etapas rápidas</h3>
+                            <p>Faremos o possível para alocar sua 1ª opção de comitê.</p>
+                            <ol class="reg-steps-list">
+                                <li>
+                                    <strong>1</strong>
+                                    <span>Sua turma já vem confirmada pelo cadastro.</span>
+                                </li>
+                                <li>
+                                    <strong>2</strong>
+                                    <span>Escolha 3 comitês em ordem de preferência — sem repetir.</span>
+                                </li>
+                                <li>
+                                    <strong>3</strong>
+                                    <span>Cada delegação tem exatamente 2 integrantes.</span>
+                                </li>
+                                <li>
+                                    <strong>4</strong>
+                                    <span>Convide seu colega agora ou depois pelo perfil.</span>
+                                </li>
+                            </ol>
+                        </aside>
+
+                        <!-- Formulário -->
+                        <form id="registrationForm" class="reg-form">
+
+                            <!-- Turma -->
+                            <div class="reg-field-group">
+                                <label for="registrationClassGroup" class="reg-label">
+                                    <span class="reg-label-icon">🔒</span>
+                                    Sua turma (confirmada)
+                                </label>
+                                <input
+                                    type="text"
+                                    id="registrationClassGroup"
+                                    class="reg-input reg-input--readonly"
+                                    readonly
+                                    title="Turma herdada do seu cadastro"
+                                >
                             </div>
-                            <div class="form-group">
-                                <label for="secondChoice">2ª opção de comitê</label>
-                                <select id="secondChoice" required></select>
+
+                            <!-- Divisor -->
+                            <div class="reg-divider">
+                                <span>Preferências de comitê</span>
                             </div>
-                            <div class="form-group">
-                                <label for="thirdChoice">3ª opção de comitê</label>
-                                <select id="thirdChoice" required></select>
+
+                            <!-- Seleções de comitê -->
+                            <div class="reg-choices">
+                                <div class="reg-field-group">
+                                    <label class="reg-label" id="label-firstChoice">
+                                        <span class="reg-badge reg-badge--1">1</span>
+                                        1ª opção
+                                    </label>
+                                    <div class="reg-combo" id="combo-firstChoice" role="combobox" aria-labelledby="label-firstChoice" aria-expanded="false" aria-haspopup="listbox" tabindex="0">
+                                        <span class="reg-combo-value">Selecione</span>
+                                        <span class="reg-combo-arrow" aria-hidden="true"></span>
+                                        <ul class="reg-combo-list" role="listbox" aria-labelledby="label-firstChoice"></ul>
+                                    </div>
+                                    <select id="firstChoice" class="reg-select-hidden" required tabindex="-1" aria-hidden="true"></select>
+                                </div>
+                                <div class="reg-field-group">
+                                    <label class="reg-label" id="label-secondChoice">
+                                        <span class="reg-badge reg-badge--2">2</span>
+                                        2ª opção
+                                    </label>
+                                    <div class="reg-combo" id="combo-secondChoice" role="combobox" aria-labelledby="label-secondChoice" aria-expanded="false" aria-haspopup="listbox" tabindex="0">
+                                        <span class="reg-combo-value">Selecione</span>
+                                        <span class="reg-combo-arrow" aria-hidden="true"></span>
+                                        <ul class="reg-combo-list" role="listbox" aria-labelledby="label-secondChoice"></ul>
+                                    </div>
+                                    <select id="secondChoice" class="reg-select-hidden" required tabindex="-1" aria-hidden="true"></select>
+                                </div>
+                                <div class="reg-field-group">
+                                    <label class="reg-label" id="label-thirdChoice">
+                                        <span class="reg-badge reg-badge--3">3</span>
+                                        3ª opção
+                                    </label>
+                                    <div class="reg-combo" id="combo-thirdChoice" role="combobox" aria-labelledby="label-thirdChoice" aria-expanded="false" aria-haspopup="listbox" tabindex="0">
+                                        <span class="reg-combo-value">Selecione</span>
+                                        <span class="reg-combo-arrow" aria-hidden="true"></span>
+                                        <ul class="reg-combo-list" role="listbox" aria-labelledby="label-thirdChoice"></ul>
+                                    </div>
+                                    <select id="thirdChoice" class="reg-select-hidden" required tabindex="-1" aria-hidden="true"></select>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label for="teamSize">Composição da delegação</label>
-                                <select id="teamSize" required>
-                                    <option value="2">2 integrantes</option>
+
+                            <!-- Divisor -->
+                            <div class="reg-divider">
+                                <span>Delegação</span>
+                            </div>
+
+                            <!-- Composição -->
+                            <div class="reg-field-group">
+                                <label for="teamSize" class="reg-label">
+                                    <span class="reg-label-icon">👥</span>
+                                    Como você quer participar?
+                                </label>
+                                <select id="teamSize" class="reg-select" required>
+                                    <option value="2">Em dupla (2 integrantes)</option>
                                 </select>
                             </div>
-                        </div>
 
-                        <div class="registration-submit-row">
-                            <button type="submit" class="view-button">Enviar inscrição</button>
-                        </div>
-                    </form>
+                            <!-- Convite -->
+                            <div class="reg-invite-box">
+                                <label for="regInviteUsername" class="reg-label">
+                                    Convidar colega para a dupla
+                                    <span class="reg-label-optional">(opcional)</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    id="regInviteUsername"
+                                    class="reg-input"
+                                    placeholder="Nome de usuário do colega"
+                                >
+                                <p class="reg-hint" id="regInviteFeedback">
+                                    💡 O convite é enviado automaticamente. Seu colega também precisa se inscrever separadamente.
+                                </p>
+                            </div>
+
+                            <!-- CTA -->
+                            <button type="submit" class="reg-cta">
+                                Confirmar minha inscrição →
+                            </button>
+
+                        </form>
                     </div>
 
-                    <p class="register-note registration-feedback" id="registrationFeedback">A turma é herdada do cadastro e já vem preenchida.</p>
+                    <!-- Feedback global -->
+                    <p class="reg-feedback" id="registrationFeedback"></p>
+
                 </section>
             </div>
         </section>
@@ -95,4 +207,3 @@
     <include src="footer.html"></include>
 </body>
 </html>
-
