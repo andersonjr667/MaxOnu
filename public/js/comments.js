@@ -159,7 +159,7 @@
         // Delete buttons
         container.querySelectorAll('.delete-btn').forEach(btn => {
             btn.addEventListener('click', async () => {
-                if (!confirm('Remover este comentário?')) return;
+                if (!await MaxOnuNotify.confirm('Remover este comentário?', 'Confirmar remoção')) return;
                 try {
                     const res = await fetch(`/api/comments/${btn.dataset.id}`, {
                         method: 'DELETE',
@@ -173,14 +173,14 @@
         // Report buttons
         container.querySelectorAll('.report-btn').forEach(btn => {
             btn.addEventListener('click', async () => {
-                if (!confirm('Denunciar este comentário?')) return;
+                if (!await MaxOnuNotify.confirm('Denunciar este comentário?', 'Confirmar denúncia')) return;
                 try {
                     const res = await fetch(`/api/comments/${btn.dataset.id}/report`, {
                         method: 'POST',
                         headers: authHeaders()
                     });
                     const data = await res.json();
-                    alert(data.message || data.error);
+                    MaxOnuNotify.alert(data.message || data.error);
                 } catch {}
             });
         });
@@ -197,10 +197,10 @@
                 loadComments(postId, container, user);
             } else {
                 const data = await res.json();
-                alert(data.error || 'Erro ao comentar.');
+                MaxOnuNotify.error(data.error || 'Erro ao comentar.');
             }
         } catch {
-            alert('Erro de conexão.');
+            MaxOnuNotify.error('Erro de conexão.');
         }
     }
 

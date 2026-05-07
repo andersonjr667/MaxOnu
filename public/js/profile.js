@@ -316,6 +316,12 @@ function getQuickActions(user, delegationStatus) {
                 label: 'Abrir portal'
             },
             {
+                title: 'Gerenciar delegações',
+                description: 'Crie duplas e trios diretamente sem sistema de convites.',
+                href: '/admin-delegations',
+                label: 'Abrir gerenciamento'
+            },
+            {
                 title: 'Enviar notificações',
                 description: 'Envie avisos para a caixa de notificações dos alunos.',
                 href: '/notificacoes-admin',
@@ -468,7 +474,7 @@ function bindEditableProfileFields() {
         saveBtn.addEventListener('click', async () => {
             const newValue = editInput.value.trim();
             if (!newValue) {
-                alert('Campo não pode estar vazio.');
+                MaxOnuNotify.warning('Campo não pode estar vazio.');
                 return;
             }
 
@@ -489,7 +495,7 @@ function bindEditableProfileFields() {
 
                 await loadProfile();
             } catch (error) {
-                alert(error.message || 'Erro ao atualizar informação.');
+                MaxOnuNotify.error(error.message || 'Erro ao atualizar informação.');
             }
         });
     });
@@ -1652,7 +1658,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        const confirmed = window.confirm('Tem certeza que deseja sair da delegação?');
+        const confirmed = await MaxOnuNotify.confirm('Tem certeza que deseja sair da delegação?', 'Confirmar saída');
         if (!confirmed) {
             return;
         }

@@ -632,7 +632,7 @@ async function toggleRegistrationStatus() {
         }
         renderRegistrationControl(data);
     } catch (error) {
-        alert(error.message || 'Erro ao atualizar o status das inscrições.');
+        MaxOnuNotify.error(error.message || 'Erro ao atualizar o status das inscrições.');
     } finally {
         setButtonLoading(button, false, '');
     }
@@ -645,7 +645,7 @@ async function assignCommittee(assignButton) {
     const committeeValue = Number(select?.value);
 
     if (!delegationKey || !committeeValue) {
-        alert('Selecione um comitê final antes de salvar.');
+        MaxOnuNotify.warning('Selecione um comitê final antes de salvar.');
         return;
     }
 
@@ -664,7 +664,7 @@ async function assignCommittee(assignButton) {
 
         await loadRegistrations({ forceFetch: true });
     } catch (error) {
-        alert(error.message || 'Erro ao definir comitê da delegação.');
+        MaxOnuNotify.error(error.message || 'Erro ao definir comitê da delegação.');
     } finally {
         setButtonLoading(assignButton, false, '');
     }
@@ -694,7 +694,7 @@ async function exportCustom() {
     const cols = Array.from(document.querySelectorAll('input[name="exportCol"]:checked')).map((cb) => cb.value);
 
     if (!cols.length) {
-        alert('Selecione ao menos uma coluna.');
+        MaxOnuNotify.warning('Selecione ao menos uma coluna.');
         return;
     }
 
@@ -704,7 +704,7 @@ async function exportCustom() {
         : Array.from(document.querySelectorAll('input[name="customExportTurma"]:checked:not(#customExportTurmaAll)')).map((cb) => cb.value);
 
     if (!selectedTurmas.length) {
-        alert('Selecione ao menos uma turma.');
+        MaxOnuNotify.warning('Selecione ao menos uma turma.');
         return;
     }
 
@@ -728,7 +728,7 @@ async function exportCustom() {
         link.remove();
         URL.revokeObjectURL(url);
     } catch (error) {
-        alert(error.message || 'Erro ao gerar export personalizado.');
+        MaxOnuNotify.error(error.message || 'Erro ao gerar export personalizado.');
     } finally {
         setButtonLoading(button, false, '');
     }
@@ -798,7 +798,7 @@ async function exportResults(format) {
         link.remove();
         URL.revokeObjectURL(url);
     } catch (error) {
-        alert(error.message || 'Erro ao exportar resultados.');
+        MaxOnuNotify.error(error.message || 'Erro ao exportar resultados.');
     } finally {
         setButtonLoading(button, false, '');
     }
@@ -832,7 +832,7 @@ async function exportSegmentResults(segment) {
         link.remove();
         URL.revokeObjectURL(url);
     } catch (error) {
-        alert(error.message || 'Erro ao exportar resultados por segmento.');
+        MaxOnuNotify.error(error.message || 'Erro ao exportar resultados por segmento.');
     } finally {
         setButtonLoading(button, false, '');
     }
@@ -859,7 +859,7 @@ async function exportByCommittee(committeeNum) {
         link.remove();
         URL.revokeObjectURL(url);
     } catch (error) {
-        alert(error.message || 'Erro ao exportar por comitê.');
+        MaxOnuNotify.error(error.message || 'Erro ao exportar por comitê.');
     } finally {
         setButtonLoading(button, false, '');
     }
@@ -883,7 +883,7 @@ async function exportByUnit() {
         link.remove();
         URL.revokeObjectURL(url);
     } catch (error) {
-        alert(error.message || 'Erro ao exportar por unidade.');
+        MaxOnuNotify.error(error.message || 'Erro ao exportar por unidade.');
     } finally {
         setButtonLoading(button, false, '');
     }
@@ -907,7 +907,7 @@ async function exportUnassigned() {
         link.remove();
         URL.revokeObjectURL(url);
     } catch (error) {
-        alert(error.message || 'Erro ao exportar pendentes.');
+        MaxOnuNotify.error(error.message || 'Erro ao exportar pendentes.');
     } finally {
         setButtonLoading(button, false, '');
     }
@@ -931,7 +931,7 @@ async function exportAllDelegations() {
         link.remove();
         URL.revokeObjectURL(url);
     } catch (error) {
-        alert(error.message || 'Erro ao exportar todas as delegações.');
+        MaxOnuNotify.error(error.message || 'Erro ao exportar todas as delegações.');
     } finally {
         setButtonLoading(button, false, '');
     }

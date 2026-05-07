@@ -251,14 +251,33 @@ function formatRelativeTime(dateStr) {
     return new Date(dateStr).toLocaleDateString('pt-BR');
 }
 
+async function deleteNotification(title, createdAt) {
+    if (!await MaxOnuNotify.confirm('Tem certeza que deseja excluir esta notificação? Ela será removida de todos os alunos.', 'Confirmar exclusão')) return;
+
+    try {
+        const timestamp = new Date(createdAt).getTime();
+        const response = await fetch(`/api/notifications/broadcast/${encodeURIComponent(title)}/${timestamp}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${getToken()}` }
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(data.error || 'Erro ao excluir notificação.');
+
+        showFeedback(`Notificação excluída de ${data.deletedFrom} aluno(s).`, 'success');
+        await loadHistory();
+    } catch (error) {
+        showFeedback(error.message || 'Erro ao excluir notificação.', 'error');
+    }
+}
+
 async function loadHistory() {
     const container = document.getElementById('notifHistory');
     if (!container) return;
     container.innerHTML = '<div class="notif-history-loading"><span>Carregando...</span></div>';
     try {
-        const response = await fetch('/api/notifications', { headers: { 'Authorization': `Bearer ${getToken()}` } });
+        const response = await fetch('/api/notifications/history', { headers: { 'Authorization': `Bearer ${getToken()}` } });
         const data = await response.json().catch(() => ({}));
-        const broadcasts = (data.notifications || []).filter((n) => n.type === 'admin-broadcast').slice(0, 20);
+        const broadcasts = data.notifications || [];
         if (!broadcasts.length) {
             container.innerHTML = '<div class="notif-history-empty"><span>📭</span><p>Nenhuma notificação enviada ainda.</p></div>';
             return;
@@ -266,16 +285,34 @@ async function loadHistory() {
         container.innerHTML = broadcasts.map((n) => `
             <div class="notif-history-item">
                 <div class="notif-history-item-header">
-                    <strong>${n.title}</strong>
+                    <strong>${escapeHtml(n.title)}</strong>
                     <span class="notif-history-time">${formatRelativeTime(n.createdAt)}</span>
                 </div>
-                <p>${n.message}</p>
-                ${n.payload?.sentBy ? `<span class="notif-history-sender">@${n.payload.sentBy}</span>` : ''}
+                <p>${escapeHtml(n.message)}</p>
+                <div class="notif-history-footer">
+                    ${n.payload?.sentBy ? `<span class="notif-history-sender">@${escapeHtml(n.payload.sentBy)}</span>` : ''}
+                    <button class="notif-history-delete" data-title="${escapeHtml(n.title)}" data-created="${n.createdAt}" title="Excluir notificação">×</button>
+                </div>
             </div>
         `).join('');
+
+        // Event delegation para botões de excluir
+        container.querySelectorAll('.notif-history-delete').forEach((btn) => {
+            btn.addEventListener('click', async () => {
+                const title = btn.dataset.title;
+                const createdAt = btn.dataset.created;
+                await deleteNotification(title, createdAt);
+            });
+        });
     } catch {
         container.innerHTML = '<div class="notif-history-empty"><span>⚠️</span><p>Erro ao carregar histórico.</p></div>';
     }
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }
 
 // ── Acesso ────────────────────────────────────────────────────────────────────

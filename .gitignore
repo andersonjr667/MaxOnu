@@ -63,5 +63,5 @@ dist/
 # SvelteKit build / generate output
 .svelte-kit
 
-# VS Code settings
-.vscode/
+# Version control
+version.json

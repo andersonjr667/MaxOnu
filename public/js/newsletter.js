@@ -183,7 +183,7 @@
                 return;
             }
 
-            if (!confirm('Tem certeza que deseja enviar este email para todos os inscritos?')) {
+            if (!await MaxOnuNotify.confirm('Tem certeza que deseja enviar este email para todos os inscritos?', 'Confirmar envio')) {
                 return;
             }
 

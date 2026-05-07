@@ -308,6 +308,7 @@ function setupDashboard(user) {
     const manualAssignmentPanel = document.getElementById('manualAssignmentPanel');
     const roleBadge = document.getElementById('dashboardRoleBadge');
     const userVerificationQuickAccess = document.getElementById('userVerificationQuickAccess');
+    const adminToolsPanel = document.getElementById('adminToolsPanel');
 
     lead.textContent = `${roleLabel(user.role)} autenticado. Este painel reúne perguntas pendentes, consulta por comitê e as permissões operacionais da edição 2026.`;
     roleBadge.textContent = roleLabel(user.role);
@@ -323,13 +324,12 @@ function setupDashboard(user) {
         cards.push({ title: 'Permissão', text: 'Responder perguntas comuns e acompanhar a comunicação pública.', accent: 'blue-accent' });
     } else {
         cards.push({ title: 'Permissão', text: 'Consultar, distribuir países por delegação e controlar a liberação pública.', accent: 'blue-accent' });
-        exportActions.hidden = false;
-        assignmentPanel.hidden = false;
-        registrationControlPanel.hidden = false;
-        manualAssignmentPanel.hidden = false;
-        if (userVerificationQuickAccess) {
-            userVerificationQuickAccess.hidden = false;
-        }
+        if (exportActions) exportActions.hidden = false;
+        if (assignmentPanel) assignmentPanel.hidden = false;
+        if (registrationControlPanel) registrationControlPanel.hidden = false;
+        if (manualAssignmentPanel) manualAssignmentPanel.hidden = false;
+        if (userVerificationQuickAccess) userVerificationQuickAccess.hidden = false;
+        if (adminToolsPanel && user.role === 'admin') adminToolsPanel.hidden = false;
     }
 
     summary.innerHTML = cards.map((card) => `
@@ -409,7 +409,7 @@ async function loadPendingQuestions() {
 async function submitAnswer(id, button) {
     const answer = document.getElementById(`answer-${id}`)?.value.trim();
     if (!answer) {
-        alert('Digite uma resposta antes de enviar.');
+        MaxOnuNotify.warning('Digite uma resposta antes de enviar.');
         return;
     }
 
@@ -427,11 +427,11 @@ async function submitAnswer(id, button) {
             throw new Error(data.error || 'Erro ao enviar resposta.');
         }
 
-        alert('Resposta enviada com sucesso!');
+        MaxOnuNotify.success('Resposta enviada com sucesso!');
         loadPendingQuestions();
     } catch (error) {
         console.error('Erro ao enviar resposta:', error);
-        alert(error.message || 'Erro ao enviar resposta.');
+        MaxOnuNotify.error(error.message || 'Erro ao enviar resposta.');
     } finally {
         setButtonLoading(button, false, '');
     }
@@ -453,11 +453,11 @@ async function deleteQuestion(id, button) {
             throw new Error(data.error || 'Erro ao excluir pergunta.');
         }
 
-        alert('Pergunta excluida com sucesso!');
+        MaxOnuNotify.success('Pergunta excluída com sucesso!');
         loadPendingQuestions();
     } catch (error) {
         console.error('Erro ao excluir pergunta:', error);
-        alert(error.message || 'Erro ao excluir pergunta.');
+        MaxOnuNotify.error(error.message || 'Erro ao excluir pergunta.');
     } finally {
         setButtonLoading(button, false, '');
     }
@@ -695,7 +695,7 @@ async function exportCommittee(format) {
         URL.revokeObjectURL(url);
     } catch (error) {
         console.error(error);
-        alert(error.message || 'Erro ao exportar arquivo.');
+        MaxOnuNotify.error(error.message || 'Erro ao exportar arquivo.');
     } finally {
         setButtonLoading(button, false, '');
     }
@@ -838,7 +838,7 @@ async function assignCommitteeToUser(button) {
     const committeeValue = select?.value;
 
     if (!delegationKey || !committeeValue) {
-        alert('Selecione um comitê final antes de salvar.');
+        MaxOnuNotify.warning('Selecione um comitê final antes de salvar.');
         return;
     }
 
@@ -858,7 +858,7 @@ async function assignCommitteeToUser(button) {
         await Promise.all([loadManualAssignments(), loadCommitteeUsers(), loadDelegationManager()]);
     } catch (error) {
         console.error(error);
-        alert(error.message || 'Erro ao definir comitê da delegação.');
+        MaxOnuNotify.error(error.message || 'Erro ao definir comitê da delegação.');
     } finally {
         setButtonLoading(button, false, '');
     }
@@ -891,7 +891,7 @@ async function exportResults(format) {
         URL.revokeObjectURL(url);
     } catch (error) {
         console.error(error);
-        alert(error.message || 'Erro ao exportar resultados.');
+        MaxOnuNotify.error(error.message || 'Erro ao exportar resultados.');
     } finally {
         setButtonLoading(button, false, '');
     }
@@ -904,7 +904,7 @@ async function assignCountryToDelegation(button) {
     const country = input?.value.trim();
 
     if (!delegationKey || !country) {
-        alert('Selecione ou digite um país antes de salvar.');
+        MaxOnuNotify.warning('Selecione ou digite um país antes de salvar.');
         return;
     }
 
@@ -926,7 +926,7 @@ async function assignCountryToDelegation(button) {
         loadCommitteeUsers();
     } catch (error) {
         console.error(error);
-        alert(error.message || 'Erro ao salvar país da delegação.');
+        MaxOnuNotify.error(error.message || 'Erro ao salvar país da delegação.');
     } finally {
         setButtonLoading(button, false, '');
     }
@@ -954,7 +954,7 @@ async function toggleDelegationRelease() {
         await loadDelegationManager();
     } catch (error) {
         console.error(error);
-        alert(error.message || 'Erro ao atualizar a liberação pública.');
+        MaxOnuNotify.error(error.message || 'Erro ao atualizar a liberação pública.');
         setButtonLoading(button, false, '');
     }
 }
@@ -981,7 +981,7 @@ async function toggleRegistrationStatus() {
         renderRegistrationControl(data);
     } catch (error) {
         console.error(error);
-        alert(error.message || 'Erro ao atualizar o status das inscrições.');
+        MaxOnuNotify.error(error.message || 'Erro ao atualizar o status das inscrições.');
         setButtonLoading(button, false, '');
     }
 }

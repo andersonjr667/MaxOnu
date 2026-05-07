@@ -15,6 +15,7 @@ const rateLimit = require('express-rate-limit');
 const Joi = require('joi');
 const chalk = require('chalk').default;
 const figlet = require('figlet');
+const fs = require('fs');
 const User = require('./models/User');
 const authRoutes = require('./routes/auth');
 const delegationRoutes = require('./routes/delegations');
@@ -31,7 +32,17 @@ const commentRoutes = require('./routes/comments');
 const analyticsRoutes = require('./routes/analytics');
 const { shareMetaMiddleware } = require('./middleware/share-meta');
 const cleanUrlsMiddleware = require('./middleware/clean-urls');
+const { injectVersionMiddleware } = require('./middleware/version-inject');
 const { COMMITTEE_REVEAL_DATE } = require('./utils/event-config');
+
+// Load version for cache busting
+let APP_VERSION = Date.now().toString();
+try {
+  const versionData = JSON.parse(fs.readFileSync(path.join(__dirname, 'version.json'), 'utf8'));
+  APP_VERSION = versionData.version || APP_VERSION;
+} catch (error) {
+  console.warn('Could not load version.json, using timestamp as version');
+}
 
 const app = express();
 app.disable('x-powered-by');
@@ -481,7 +492,16 @@ app.get('/api/reveal-status', (req, res) => {
 app.get('/api/features', (req, res) => {
   res.setHeader('Cache-Control', 'public, max-age=300');
   res.json({
-    newsletter: process.env.NEWSLETTER_ENABLED === 'true'
+    newsletter: process.env.NEWSLETTER_ENABLED === 'true',
+    version: APP_VERSION
+  });
+});
+
+app.get('/api/version', (req, res) => {
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+  res.json({
+    version: APP_VERSION,
+    timestamp: Date.now()
   });
 });
 
@@ -519,6 +539,9 @@ app.use('/api/analytics', analyticsRoutes);
 
 // Share meta tags middleware para melhorar compartilhamento em redes sociais
 app.use(shareMetaMiddleware(publicDir));
+
+// Version injection middleware - inject version in HTML files
+app.use(injectVersionMiddleware(publicDir));
 
 // Clean URLs middleware - remove extensão .html e oferece rotas amigáveis
 app.use(cleanUrlsMiddleware(publicDir));

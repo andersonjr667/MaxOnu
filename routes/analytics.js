@@ -17,15 +17,22 @@ router.get('/overview', authMiddleware, roleAuth(['admin', 'coordinator']), asyn
             totalNewsletter,
             totalComments,
             registeredUsers,
-            assignedUsers
+            assignedUsers,
+            lastWeekUsers,
+            lastWeekRegistrations
         ] = await Promise.all([
             User.countDocuments({ role: 'candidate' }),
             Post.countDocuments({ published: true }),
             Newsletter.countDocuments({ active: true }),
             Comment.countDocuments({ status: 'active' }),
             User.countDocuments({ role: 'candidate', 'registration.submittedAt': { $ne: null } }),
-            User.countDocuments({ role: 'candidate', committee: { $gte: 1, $lte: 7 } })
+            User.countDocuments({ role: 'candidate', committee: { $gte: 1, $lte: 7 } }),
+            User.countDocuments({ role: 'candidate', createdAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) } }),
+            User.countDocuments({ role: 'candidate', 'registration.submittedAt': { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) } })
         ]);
+
+        const conversionRate = totalUsers > 0 ? ((registeredUsers / totalUsers) * 100).toFixed(1) : 0;
+        const avgCommentsPerPost = totalPosts > 0 ? (totalComments / totalPosts).toFixed(1) : 0;
 
         res.json({
             totalUsers,
@@ -33,7 +40,11 @@ router.get('/overview', authMiddleware, roleAuth(['admin', 'coordinator']), asyn
             totalNewsletter,
             totalComments,
             registeredUsers,
-            assignedUsers
+            assignedUsers,
+            conversionRate,
+            avgCommentsPerPost,
+            lastWeekUsers,
+            lastWeekRegistrations
         });
     } catch {
         res.status(500).json({ error: 'Erro ao buscar métricas.' });
@@ -129,6 +140,57 @@ router.get('/newsletter-over-time', authMiddleware, roleAuth(['admin', 'coordina
         ]);
 
         res.json({ data });
+    } catch {
+        res.status(500).json({ error: 'Erro ao buscar dados.' });
+    }
+});
+
+// GET /api/analytics/class-distribution — distribuição por turma
+router.get('/class-distribution', authMiddleware, roleAuth(['admin', 'coordinator']), async (req, res) => {
+    try {
+        const data = await User.aggregate([
+            { $match: { role: 'candidate', 'registration.classGroup': { $exists: true, $ne: null } } },
+            { $group: { _id: '$registration.classGroup', count: { $sum: 1 } } },
+            { $sort: { _id: 1 } }
+        ]);
+
+        res.json({ data });
+    } catch {
+        res.status(500).json({ error: 'Erro ao buscar dados.' });
+    }
+});
+
+// GET /api/analytics/engagement-over-time — posts e comentários por dia
+router.get('/engagement-over-time', authMiddleware, roleAuth(['admin', 'coordinator']), async (req, res) => {
+    try {
+        const days = Number(req.query.days) || 30;
+        const since = new Date();
+        since.setDate(since.getDate() - days);
+
+        const [posts, comments] = await Promise.all([
+            Post.aggregate([
+                { $match: { createdAt: { $gte: since }, published: true } },
+                {
+                    $group: {
+                        _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+                        count: { $sum: 1 }
+                    }
+                },
+                { $sort: { _id: 1 } }
+            ]),
+            Comment.aggregate([
+                { $match: { createdAt: { $gte: since }, status: 'active' } },
+                {
+                    $group: {
+                        _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+                        count: { $sum: 1 }
+                    }
+                },
+                { $sort: { _id: 1 } }
+            ])
+        ]);
+
+        res.json({ posts, comments });
     } catch {
         res.status(500).json({ error: 'Erro ao buscar dados.' });
     }

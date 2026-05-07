@@ -608,7 +608,7 @@ function bindEvents() {
                     ? 'Confirmar reativação deste usuário?'
                     : 'Confirmar exclusão permanente deste usuário?';
 
-        if (!window.confirm(confirmationText)) {
+        if (!await MaxOnuNotify.confirm(confirmationText, 'Confirmar ação')) {
             return;
         }
 
@@ -631,9 +631,9 @@ function bindEvents() {
             }
 
             await loadCandidates();
-            window.alert('Ação executada com sucesso.');
+            MaxOnuNotify.success('Ação executada com sucesso.');
         } catch (error) {
-            window.alert(error.message || 'Não foi possível concluir a ação.');
+            MaxOnuNotify.error(error.message || 'Não foi possível concluir a ação.');
         } finally {
             actionButton.disabled = false;
             actionButton.textContent = originalText;

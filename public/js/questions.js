@@ -217,7 +217,7 @@ async function saveQuestion(id) {
             throw new Error('Erro ao atualizar pergunta');
         }
 
-        alert('Pergunta atualizada com sucesso!');
+        MaxOnuNotify.success('Pergunta atualizada com sucesso!');
         clearQuestionsCache();
         loadQuestions(true);
     } catch (error) {
@@ -254,7 +254,7 @@ async function deleteQuestion(id) {
             throw new Error('Erro ao excluir pergunta');
         }
 
-        alert('Pergunta excluída com sucesso!');
+        MaxOnuNotify.success('Pergunta excluída com sucesso!');
         clearQuestionsCache();
         loadQuestions(true);
     } catch (error) {
@@ -323,7 +323,7 @@ if (questionForm) {
                 });
 
                 if (response.ok) {
-                    alert('Pergunta enviada com sucesso! Aguarde a resposta.');
+                    MaxOnuNotify.success('Pergunta enviada com sucesso! Aguarde a resposta.');
                     questionForm.reset();
                     closeQuestionModal();
                     clearQuestionsCache();
@@ -334,7 +334,7 @@ if (questionForm) {
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert(error.message || 'Erro ao enviar pergunta. Tente novamente.');
+                MaxOnuNotify.error(error.message || 'Erro ao enviar pergunta. Tente novamente.');
             }
         });
     }

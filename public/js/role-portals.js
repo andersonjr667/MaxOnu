@@ -12,6 +12,7 @@ const portalConfigs = {
         ],
         actions: [
             { href: '/dashboard', title: 'Abrir painel operacional', text: 'Gerencie comitês, respostas pendentes e distribuição de países.' },
+            { href: '/admin-delegations', title: 'Gerenciar delegações', text: 'Crie duplas e trios diretamente sem sistema de convites.' },
             { href: '/verificacao-usuarios', title: 'Verificar usuários', text: 'Consulte a lista de alunos e expanda cada nome para ver todos os dados cadastrados.' },
             { href: '/notificacoes-admin', title: 'Enviar notificações', text: 'Envie avisos diretamente para a caixa de notificações dos alunos, com filtros por turma, comitê ou segmento.' },
             { href: '/blog', title: 'Gerenciar blog', text: 'Acompanhe a área de comunicados e a visibilidade dos conteúdos publicados.' },

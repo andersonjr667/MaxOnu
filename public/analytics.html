@@ -26,8 +26,41 @@
                         <h1>Painel de Métricas</h1>
                         <p id="analyticsLead">Visão geral do crescimento e engajamento da plataforma MaxOnu 2026.</p>
                     </div>
-                    <div class="dashboard-hero-badge" id="analyticsRoleBadge">Carregando...</div>
+                    <div class="dashboard-hero-actions">
+                        <button class="analytics-export-btn" id="exportBtn" title="Exportar relatório">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="7 10 12 15 17 10"/>
+                                <line x1="12" y1="15" x2="12" y2="3"/>
+                            </svg>
+                            Exportar
+                        </button>
+                        <div class="dashboard-hero-badge" id="analyticsRoleBadge">Carregando...</div>
+                    </div>
                 </section>
+
+                <!-- Stats Summary Bar -->
+                <div class="analytics-summary-bar">
+                    <div class="analytics-summary-item">
+                        <span class="analytics-summary-label">Taxa de Conclusão</span>
+                        <span class="analytics-summary-value" id="summaryCompletion">—</span>
+                    </div>
+                    <div class="analytics-summary-divider"></div>
+                    <div class="analytics-summary-item">
+                        <span class="analytics-summary-label">Crescimento Semanal</span>
+                        <span class="analytics-summary-value analytics-summary-trend" id="summaryGrowth">—</span>
+                    </div>
+                    <div class="analytics-summary-divider"></div>
+                    <div class="analytics-summary-item">
+                        <span class="analytics-summary-label">Engajamento Médio</span>
+                        <span class="analytics-summary-value" id="summaryEngagement">—</span>
+                    </div>
+                    <div class="analytics-summary-divider"></div>
+                    <div class="analytics-summary-item">
+                        <span class="analytics-summary-label">Última Atualização</span>
+                        <span class="analytics-summary-value" id="summaryLastUpdate">—</span>
+                    </div>
+                </div>
 
                 <!-- KPI Cards -->
                 <div class="analytics-kpi-grid" id="kpiGrid">
@@ -71,6 +104,27 @@
                         <div class="analytics-kpi-body">
                             <strong id="kpiComments">—</strong>
                             <span>Comentários ativos</span>
+                        </div>
+                    </div>
+                    <div class="analytics-kpi-card analytics-kpi-skeleton analytics-kpi-highlight">
+                        <div class="analytics-kpi-icon">📈</div>
+                        <div class="analytics-kpi-body">
+                            <strong id="kpiConversion">—</strong>
+                            <span>Taxa de conversão</span>
+                        </div>
+                    </div>
+                    <div class="analytics-kpi-card analytics-kpi-skeleton analytics-kpi-highlight">
+                        <div class="analytics-kpi-icon">🔥</div>
+                        <div class="analytics-kpi-body">
+                            <strong id="kpiAvgComments">—</strong>
+                            <span>Média comentários/post</span>
+                        </div>
+                    </div>
+                    <div class="analytics-kpi-card analytics-kpi-skeleton analytics-kpi-accent">
+                        <div class="analytics-kpi-icon">⭐</div>
+                        <div class="analytics-kpi-body">
+                            <strong id="kpiWeekUsers">—</strong>
+                            <span>Novos usuários (7d)</span>
                         </div>
                     </div>
                 </div>
@@ -128,6 +182,74 @@
                         </div>
                         <div class="analytics-chart-wrap">
                             <canvas id="newsletterChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts row 3 -->
+                <div class="analytics-charts-grid">
+                    <div class="dashboard-panel analytics-chart-panel">
+                        <div class="analytics-chart-header">
+                            <h2>Distribuição por turma</h2>
+                        </div>
+                        <div class="analytics-chart-wrap analytics-chart-wrap-bar">
+                            <canvas id="classChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-panel analytics-chart-panel">
+                        <div class="analytics-chart-header">
+                            <h2>Engajamento (Posts & Comentários)</h2>
+                            <div class="analytics-period-selector">
+                                <button class="analytics-period-btn is-active" data-days="7" data-chart="eng">7d</button>
+                                <button class="analytics-period-btn" data-days="30" data-chart="eng">30d</button>
+                                <button class="analytics-period-btn" data-days="90" data-chart="eng">90d</button>
+                            </div>
+                        </div>
+                        <div class="analytics-chart-wrap">
+                            <canvas id="engagementChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts row 4 - Full width -->
+                <div class="analytics-charts-grid-full">
+                    <div class="dashboard-panel analytics-chart-panel">
+                        <div class="analytics-chart-header">
+                            <h2>Comparativo de Crescimento</h2>
+                            <div class="analytics-period-selector">
+                                <button class="analytics-period-btn is-active" data-days="30" data-chart="comp">30d</button>
+                                <button class="analytics-period-btn" data-days="60" data-chart="comp">60d</button>
+                                <button class="analytics-period-btn" data-days="90" data-chart="comp">90d</button>
+                            </div>
+                        </div>
+                        <div class="analytics-chart-wrap analytics-chart-wrap-large">
+                            <canvas id="comparisonChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Insights Cards -->
+                <div class="analytics-insights-grid">
+                    <div class="analytics-insight-card analytics-insight-success">
+                        <div class="analytics-insight-icon">✅</div>
+                        <div class="analytics-insight-body">
+                            <h3>Ponto Forte</h3>
+                            <p id="insightStrong">Carregando insights...</p>
+                        </div>
+                    </div>
+                    <div class="analytics-insight-card analytics-insight-warning">
+                        <div class="analytics-insight-icon">⚠️</div>
+                        <div class="analytics-insight-body">
+                            <h3>Atenção Necessária</h3>
+                            <p id="insightWarning">Carregando insights...</p>
+                        </div>
+                    </div>
+                    <div class="analytics-insight-card analytics-insight-info">
+                        <div class="analytics-insight-icon">💡</div>
+                        <div class="analytics-insight-body">
+                            <h3>Recomendação</h3>
+                            <p id="insightRecommendation">Carregando insights...</p>
                         </div>
                     </div>
                 </div>

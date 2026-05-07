@@ -60,7 +60,7 @@ async function checkAuth() {
 
         // Allow admin and press roles
         if (currentUser.role !== 'admin' && currentUser.role !== 'press') {
-            alert('Acesso restrito para admin e imprensa.');
+            MaxOnuNotify.warning('Acesso restrito para admin e imprensa.');
             window.location.href = '/profile.html';
             return;
         }
@@ -228,7 +228,7 @@ async function loadAnsweredQuestions() {
 async function submitAnswer(id, button) {
     const answer = document.getElementById(`answer-${id}`)?.value.trim();
     if (!answer) {
-        alert('Digite uma resposta antes de enviar.');
+        MaxOnuNotify.warning('Digite uma resposta antes de enviar.');
         return;
     }
 
@@ -246,19 +246,19 @@ async function submitAnswer(id, button) {
             throw new Error(data.error || 'Erro ao enviar resposta.');
         }
 
-        alert('Resposta enviada com sucesso!');
+        MaxOnuNotify.success('Resposta enviada com sucesso!');
         loadPendingQuestions();
         loadAnsweredQuestions();
     } catch (error) {
         console.error('Erro ao enviar resposta:', error);
-        alert(error.message || 'Erro ao enviar resposta.');
+        MaxOnuNotify.error(error.message || 'Erro ao enviar resposta.');
     } finally {
         setButtonLoading(button, false, '');
     }
 }
 
 async function deleteQuestion(id, button) {
-    if (!confirm('Tem certeza que deseja excluir esta pergunta? Esta ação não pode ser desfeita.')) {
+    if (!await MaxOnuNotify.confirm('Tem certeza que deseja excluir esta pergunta? Esta ação não pode ser desfeita.', 'Confirmar exclusão')) {
         return;
     }
 
@@ -275,12 +275,12 @@ async function deleteQuestion(id, button) {
             throw new Error(data.error || 'Erro ao excluir pergunta.');
         }
 
-        alert('Pergunta excluída com sucesso!');
+        MaxOnuNotify.success('Pergunta excluída com sucesso!');
         loadPendingQuestions();
         loadAnsweredQuestions();
     } catch (error) {
         console.error('Erro ao excluir pergunta:', error);
-        alert(error.message || 'Erro ao excluir pergunta.');
+        MaxOnuNotify.error(error.message || 'Erro ao excluir pergunta.');
     } finally {
         setButtonLoading(button, false, '');
     }
@@ -319,7 +319,7 @@ async function saveEditedQuestion(id, button) {
     const answer = document.getElementById(`edit-answer-${id}`)?.value.trim();
 
     if (!question || !answer) {
-        alert('Preencha a pergunta e a resposta antes de salvar.');
+        MaxOnuNotify.warning('Preencha a pergunta e a resposta antes de salvar.');
         return;
     }
 
@@ -337,12 +337,12 @@ async function saveEditedQuestion(id, button) {
             throw new Error(data.error || 'Erro ao salvar alterações.');
         }
 
-        alert('Alterações salvas com sucesso!');
+        MaxOnuNotify.success('Alterações salvas com sucesso!');
         loadAnsweredQuestions();
         loadPendingQuestions();
     } catch (error) {
         console.error('Erro ao salvar:', error);
-        alert(error.message || 'Erro ao salvar alterações.');
+        MaxOnuNotify.error(error.message || 'Erro ao salvar alterações.');
     } finally {
         setButtonLoading(button, false, '');
     }

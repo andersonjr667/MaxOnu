@@ -37,6 +37,39 @@ router.get('/', authMiddleware, async (req, res) => {
     }
 });
 
+router.get('/history', authMiddleware, async (req, res) => {
+    const ALLOWED = new Set(['admin', 'coordinator', 'teacher', 'press']);
+    if (!ALLOWED.has(req.user?.role)) {
+        return res.status(403).json({ error: 'Sem permissão.' });
+    }
+
+    try {
+        const users = await User.find({ 'notifications.type': 'admin-broadcast' })
+            .select('notifications')
+            .lean();
+
+        const allBroadcasts = [];
+        const seen = new Set();
+
+        users.forEach((user) => {
+            (user.notifications || []).forEach((notif) => {
+                if (notif.type === 'admin-broadcast') {
+                    const key = `${notif.title}-${notif.createdAt}`;
+                    if (!seen.has(key)) {
+                        seen.add(key);
+                        allBroadcasts.push(normalizeNotification(notif));
+                    }
+                }
+            });
+        });
+
+        allBroadcasts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        res.json({ notifications: allBroadcasts.slice(0, 20) });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
 router.patch('/:id/read', authMiddleware, async (req, res) => {
     try {
         const user = await User.findById(req.user.id).select('notifications');
@@ -151,6 +184,27 @@ router.patch('/read-all', authMiddleware, async (req, res) => {
 
         emitToUser(req.user.id, 'notification-read-all', { readAt: new Date() });
         res.json({ success: true });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+router.delete('/broadcast/:title/:timestamp', authMiddleware, async (req, res) => {
+    const ALLOWED = new Set(['admin', 'coordinator', 'teacher', 'press']);
+    if (!ALLOWED.has(req.user?.role)) {
+        return res.status(403).json({ error: 'Sem permissão.' });
+    }
+
+    try {
+        const { title, timestamp } = req.params;
+        const targetDate = new Date(parseInt(timestamp));
+
+        const result = await User.updateMany(
+            { 'notifications.type': 'admin-broadcast' },
+            { $pull: { notifications: { type: 'admin-broadcast', title, createdAt: targetDate } } }
+        );
+
+        res.json({ success: true, deletedFrom: result.modifiedCount });
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
