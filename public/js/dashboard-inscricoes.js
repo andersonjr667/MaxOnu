@@ -45,7 +45,8 @@ function getEducationSegmentFromText(value = '') {
     const normalized = String(value || '')
         .toLowerCase()
         .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '');
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[ºª]/g, (match) => (match === 'º' ? 'o' : 'a'));
 
     if (!normalized) {
         return '';
@@ -56,8 +57,9 @@ function getEducationSegmentFromText(value = '') {
         normalized.includes('medio') ||
         normalized.includes('serie') ||
         /\bem\b/.test(normalized) ||
+        /[123]\s*a?\s*serie/i.test(normalized) ||
         /[123]\s*serie/.test(normalized) ||
-        /[123]a\s*serie/.test(normalized)
+        (/\b[123]\s*ano\b/i.test(normalized) && !normalized.includes('8o') && !normalized.includes('9o'))
     ) {
         return 'em';
     }
@@ -70,7 +72,9 @@ function getEducationSegmentFromText(value = '') {
         normalized.includes('9 ano') ||
         normalized.includes('9ano') ||
         normalized.includes('8 e 9') ||
-        normalized.includes('8/9')
+        normalized.includes('8/9') ||
+        /\b8\s*ano\b/i.test(normalized) ||
+        /\b9\s*ano\b/i.test(normalized)
     ) {
         return 'fundamental';
     }
@@ -996,15 +1000,17 @@ function normalizeClassGroupForTurmaValue(classGroup = '') {
     const gradeLower = gradePart
         .toLowerCase()
         .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '');
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[ºª]/g, (match) => (match === 'º' ? 'o' : 'a'));
 
-    const hasA = /(\ba\b|\bano\s*a\b|\bserie\s*a\b|\ba)/.test(gradeLower) && gradeLower.includes('a');
-    const hasB = /(\bb\b|\banob\b|\bserie\s*b\b|\b\b)/.test(gradeLower) && gradeLower.includes('b');
+    // Melhoradas regex para detectar A/B com mais precisão
+    const hasA = /\ba\b/.test(gradeLower) || (/ano\s*a/.test(gradeLower) && !gradeLower.includes('anob')) || /serie\s*a/.test(gradeLower);
+    const hasB = /\bb\b/.test(gradeLower) || /ano\s*b/.test(gradeLower) || /serie\s*b/.test(gradeLower);
 
-    const is8 = gradeLower.includes('8') && (gradeLower.includes('ano') || gradeLower.includes('8ano') || gradeLower.includes('8 ano'));
-    const is9 = gradeLower.includes('9') && (gradeLower.includes('ano') || gradeLower.includes('9ano') || gradeLower.includes('9 ano'));
-
-    const is1Serie = (gradeLower.includes('1') && (gradeLower.includes('serie') || gradeLower.includes('1serie')));
+    // Melhores verificações para 8o ano, 9o ano, e 1a serie
+    const is8 = /\b8\s*(o\s*)?ano\b/.test(gradeLower) || gradeLower.includes('8ano') || (gradeLower.includes('8') && gradeLower.includes('ano'));
+    const is9 = /\b9\s*(o\s*)?ano\b/.test(gradeLower) || gradeLower.includes('9ano') || (gradeLower.includes('9') && gradeLower.includes('ano'));
+    const is1Serie = /\b1\s*(a\s*)?serie\b/.test(gradeLower) || gradeLower.includes('1serie') || (gradeLower.includes('1') && gradeLower.includes('serie') && !gradeLower.includes('ensino'));
 
     // mapeia para os valores que o backend já entende no filtro customExport/results/custom
     if (is8 && hasA) return '8anoA';

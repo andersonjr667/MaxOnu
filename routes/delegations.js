@@ -28,12 +28,14 @@ function getEducationSegment(classGroup = '') {
     if (
         normalized.includes('8o') ||
         normalized.includes('8 ano') ||
+        normalized.includes('8ano') ||
         normalized.includes('9o') ||
         normalized.includes('9 ano') ||
+        normalized.includes('9ano') ||
         normalized.includes('8 e 9') ||
         normalized.includes('8/9') ||
-        /8\s*ano/i.test(normalized) ||
-        /9\s*ano/i.test(normalized)
+        /\b8\s*ano\b/i.test(normalized) ||
+        /\b9\s*ano\b/i.test(normalized)
     ) {
         return 'fundamental';
     }
@@ -42,8 +44,9 @@ function getEducationSegment(classGroup = '') {
         normalized.includes('ensino medio') ||
         normalized.includes('medio') ||
         /\bem\b/.test(normalized) ||
-        /\b[123]\s*serie\b/.test(normalized) ||
-        /\b[123]\s*ano\b/.test(normalized) // Frequentemente usado para Ensino Médio (1º ano, 2º ano...)
+        /[123]\s*a?\s*serie/i.test(normalized) ||
+        (/[123]\s*serie/i.test(normalized)) ||
+        (/\b[123]\s*ano\b/i.test(normalized) && !normalized.includes('8o') && !normalized.includes('9o')) // Frequentemente usado para Ensino Médio
     ) {
         return 'em';
     }

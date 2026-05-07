@@ -18,6 +18,14 @@ function normalizeCommitteeNumber(value) {
   return Number.isInteger(committee) ? committee : NaN;
 }
 
+function normalizeGradePart(value = '') {
+  return String(value || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[ºª]/g, (match) => (match === 'º' ? 'o' : 'a'));
+}
+
 function buildRows(users) {
   return users.map((user) => ({
     id: String(user._id),
@@ -55,7 +63,8 @@ function getEducationSegmentFromText(value = '') {
   const normalized = String(value || '')
     .toLowerCase()
     .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '');
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[ºª]/g, (match) => (match === 'º' ? 'o' : 'a'));
 
   if (!normalized) {
     return '';
@@ -65,7 +74,9 @@ function getEducationSegmentFromText(value = '') {
     normalized.includes('ensino medio') ||
     normalized.includes('medio') ||
     normalized.includes('serie') ||
-    /\bem\b/.test(normalized)
+    /\bem\b/.test(normalized) ||
+    /[123]\s*a?\s*serie/i.test(normalized) ||
+    (/\b[123]\s*ano\b/i.test(normalized) && !normalized.includes('8o') && !normalized.includes('9o'))
   ) {
     return 'em';
   }
@@ -78,7 +89,9 @@ function getEducationSegmentFromText(value = '') {
     normalized.includes('9 ano') ||
     normalized.includes('9ano') ||
     normalized.includes('8 e 9') ||
-    normalized.includes('8/9')
+    normalized.includes('8/9') ||
+    /\b8\s*ano\b/i.test(normalized) ||
+    /\b9\s*ano\b/i.test(normalized)
   ) {
     return 'fundamental';
   }
@@ -325,11 +338,15 @@ router.get('/results/custom', authMiddleware, requireRole(['admin', 'coordinator
         if (Number(group.committee) !== Number(committee)) return false;
       }
 
-      // filtro turmas — comparação direta com a parte após " - " do classGroup
+      // filtro turmas — comparação com normalização de caracteres especiais
       if (!(turmas.length === 1 && turmas[0] === 'all')) {
         const memberClassGroup = (Array.isArray(group.members) ? group.members[0] : null)?.classGroup || '';
         const gradePart = String(memberClassGroup).split(' - ')[1]?.trim() || '';
-        const matchAny = turmas.some((t) => gradePart.toLowerCase() === String(t).toLowerCase());
+        const normalizedGradePart = normalizeGradePart(gradePart);
+        const matchAny = turmas.some((t) => {
+          const normalizedTurma = normalizeGradePart(t);
+          return normalizedGradePart === normalizedTurma;
+        });
         if (!matchAny) return false;
       }
 

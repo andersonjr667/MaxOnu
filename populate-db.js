@@ -104,7 +104,8 @@ function normalizeText(value = '') {
   return String(value || '')
     .toLowerCase()
     .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '');
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[ºª]/g, (match) => (match === 'º' ? 'o' : 'a'));
 }
 
 function getEducationSegmentFromClassGroup(classGroup = '') {
@@ -113,10 +114,14 @@ function getEducationSegmentFromClassGroup(classGroup = '') {
   if (
     normalized.includes('8o') ||
     normalized.includes('8 ano') ||
+    normalized.includes('8ano') ||
     normalized.includes('9o') ||
     normalized.includes('9 ano') ||
+    normalized.includes('9ano') ||
     normalized.includes('8 e 9') ||
-    normalized.includes('8/9')
+    normalized.includes('8/9') ||
+    /\b8\s*ano\b/i.test(normalized) ||
+    /\b9\s*ano\b/i.test(normalized)
   ) {
     return 'fundamental';
   }
@@ -125,7 +130,8 @@ function getEducationSegmentFromClassGroup(classGroup = '') {
     normalized.includes('ensino medio') ||
     normalized.includes('medio') ||
     /\bem\b/.test(normalized) ||
-    /\b[123]\s*serie\b/.test(normalized)
+    /\b[123]\s*serie\b/.test(normalized) ||
+    /\b[123]\s*ano\b/i.test(normalized)
   ) {
     return 'em';
   }
@@ -135,10 +141,10 @@ function getEducationSegmentFromClassGroup(classGroup = '') {
 
 function getFundamentalYear(classGroup = '') {
   const normalized = normalizeText(classGroup);
-  if (normalized.includes('8 ano') || normalized.includes('8o') || normalized.includes('8º')) {
+  if (normalized.includes('8') && (normalized.includes('ano') || normalized.includes('8ano'))) {
     return 8;
   }
-  if (normalized.includes('9 ano') || normalized.includes('9o') || normalized.includes('9º')) {
+  if (normalized.includes('9') && (normalized.includes('ano') || normalized.includes('9ano'))) {
     return 9;
   }
   return null;
