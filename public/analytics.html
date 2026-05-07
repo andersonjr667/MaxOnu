@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - MaxOnu 2026</title>
+    <link rel="stylesheet" href="/css/styles.css?v=20260506-analytics-fix">
+    <link rel="stylesheet" href="/css/dashboard.css?v=20260506-analytics-fix">
+    <link rel="stylesheet" href="/css/analytics.css?v=20260506-analytics-fix">
+    <link rel="icon" href="/images/logo-maxonu.png" type="image/png">
+    <script src="/js/includes.js?v=20260420-headerfix" defer></script>
+    <script src="/js/chart.min.js?v=20260506" defer></script>
+    <script src="/js/analytics.js?v=20260506-analytics-fix" defer></script>
+</head>
+<body class="dashboard-page">
+    <include src="header.html"></include>
+
+    <main class="main-content" id="main-content">
+        <section class="content-section">
+            <div class="dashboard-container">
+
+                <!-- Hero -->
+                <section class="dashboard-hero">
+                    <div class="dashboard-hero-copy">
+                        <span class="dashboard-kicker">📊 Analytics</span>
+                        <h1>Painel de Métricas</h1>
+                        <p id="analyticsLead">Visão geral do crescimento e engajamento da plataforma MaxOnu 2026.</p>
+                    </div>
+                    <div class="dashboard-hero-badge" id="analyticsRoleBadge">Carregando...</div>
+                </section>
+
+                <!-- KPI Cards -->
+                <div class="analytics-kpi-grid" id="kpiGrid">
+                    <div class="analytics-kpi-card analytics-kpi-skeleton">
+                        <div class="analytics-kpi-icon">👥</div>
+                        <div class="analytics-kpi-body">
+                            <strong id="kpiUsers">—</strong>
+                            <span>Candidatos cadastrados</span>
+                        </div>
+                    </div>
+                    <div class="analytics-kpi-card analytics-kpi-skeleton">
+                        <div class="analytics-kpi-icon">📝</div>
+                        <div class="analytics-kpi-body">
+                            <strong id="kpiRegistered">—</strong>
+                            <span>Com inscrição enviada</span>
+                        </div>
+                    </div>
+                    <div class="analytics-kpi-card analytics-kpi-skeleton">
+                        <div class="analytics-kpi-icon">🏛️</div>
+                        <div class="analytics-kpi-body">
+                            <strong id="kpiAssigned">—</strong>
+                            <span>Com comitê definido</span>
+                        </div>
+                    </div>
+                    <div class="analytics-kpi-card analytics-kpi-skeleton">
+                        <div class="analytics-kpi-icon">📬</div>
+                        <div class="analytics-kpi-body">
+                            <strong id="kpiNewsletter">—</strong>
+                            <span>Inscritos na newsletter</span>
+                        </div>
+                    </div>
+                    <div class="analytics-kpi-card analytics-kpi-skeleton">
+                        <div class="analytics-kpi-icon">📰</div>
+                        <div class="analytics-kpi-body">
+                            <strong id="kpiPosts">—</strong>
+                            <span>Posts publicados</span>
+                        </div>
+                    </div>
+                    <div class="analytics-kpi-card analytics-kpi-skeleton">
+                        <div class="analytics-kpi-icon">💬</div>
+                        <div class="analytics-kpi-body">
+                            <strong id="kpiComments">—</strong>
+                            <span>Comentários ativos</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts row 1 -->
+                <div class="analytics-charts-grid">
+                    <div class="dashboard-panel analytics-chart-panel">
+                        <div class="analytics-chart-header">
+                            <h2>Cadastros ao longo do tempo</h2>
+                            <div class="analytics-period-selector">
+                                <button class="analytics-period-btn is-active" data-days="7">7d</button>
+                                <button class="analytics-period-btn" data-days="30">30d</button>
+                                <button class="analytics-period-btn" data-days="90">90d</button>
+                            </div>
+                        </div>
+                        <div class="analytics-chart-wrap">
+                            <canvas id="usersChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-panel analytics-chart-panel">
+                        <div class="analytics-chart-header">
+                            <h2>Inscrições enviadas</h2>
+                            <div class="analytics-period-selector">
+                                <button class="analytics-period-btn is-active" data-days="7" data-chart="reg">7d</button>
+                                <button class="analytics-period-btn" data-days="30" data-chart="reg">30d</button>
+                                <button class="analytics-period-btn" data-days="90" data-chart="reg">90d</button>
+                            </div>
+                        </div>
+                        <div class="analytics-chart-wrap">
+                            <canvas id="registrationsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts row 2 -->
+                <div class="analytics-charts-grid analytics-charts-grid-asymmetric">
+                    <div class="dashboard-panel analytics-chart-panel">
+                        <div class="analytics-chart-header">
+                            <h2>Distribuição por comitê</h2>
+                        </div>
+                        <div class="analytics-chart-wrap analytics-chart-wrap-pie">
+                            <canvas id="committeeChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-panel analytics-chart-panel">
+                        <div class="analytics-chart-header">
+                            <h2>Crescimento da newsletter</h2>
+                            <div class="analytics-period-selector">
+                                <button class="analytics-period-btn is-active" data-days="7" data-chart="nl">7d</button>
+                                <button class="analytics-period-btn" data-days="30" data-chart="nl">30d</button>
+                                <button class="analytics-period-btn" data-days="90" data-chart="nl">90d</button>
+                            </div>
+                        </div>
+                        <div class="analytics-chart-wrap">
+                            <canvas id="newsletterChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="analytics-updated" id="analyticsUpdated"></p>
+
+            </div>
+        </section>
+    </main>
+
+    <include src="footer.html"></include>
+</body>
+</html>

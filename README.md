@@ -23,6 +23,7 @@ MaxOnu 2026 is a web application that simulates UN debates. It includes features
 
 - User registration and login
 - Admin dashboard for managing questions
+- Newsletter system with subscribe/unsubscribe functionality (can be toggled via .env)
 - Public pages for event information, team details, and committees
 - Responsive design with a hamburger menu for small screens
 - In-memory fallback for database operations when MongoDB is unavailable
@@ -61,6 +62,25 @@ MaxOnu 2026 is a web application that simulates UN debates. It includes features
 - `PORT`: The port on which the server will run.
 - `MONGODB_URI`: The connection string for your MongoDB database.
 - `JWT_SECRET`: The secret key used for signing JWT tokens.
+- `NEWSLETTER_ENABLED`: Set to `true` to enable newsletter feature, `false` to disable (default: `false`).
+- `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`: Email configuration for newsletter functionality.
+- `APP_URL`: The base URL of your application (used in newsletter emails).
+
+### Newsletter Feature Toggle
+
+The newsletter feature can be enabled or disabled via the `.env` file:
+
+```env
+NEWSLETTER_ENABLED=true  # Enable newsletter
+NEWSLETTER_ENABLED=false # Disable newsletter
+```
+
+When disabled:
+- The `/newsletter` page redirects to home
+- All newsletter API endpoints return 503 error
+- Existing subscriber data is preserved
+
+For more details, see [NEWSLETTER_TOGGLE.md](NEWSLETTER_TOGGLE.md).
 
 ## Render Deploy
 
@@ -181,6 +201,32 @@ maxonu2026/
 - **GET** `/api/check-admin`
     - Checks if the user is an admin.
     - Response: `{ "isAdmin": "boolean" }`
+
+### Newsletter
+
+- **GET** `/api/newsletter/status`
+    - Checks if newsletter feature is enabled.
+    - Response: `{ "enabled": "boolean" }`
+
+- **POST** `/api/newsletter/subscribe`
+    - Subscribes an email to the newsletter.
+    - Request body: `{ "email": "string", "name": "string" (optional) }`
+    - Response: `{ "message": "string" }`
+
+- **DELETE** `/api/newsletter/unsubscribe`
+    - Unsubscribes an email from the newsletter.
+    - Request body: `{ "email": "string" }`
+    - Response: `{ "message": "string" }`
+
+- **GET** `/api/newsletter/subscribers` (Admin only)
+    - Retrieves all newsletter subscribers.
+    - Query params: `?active=true` (optional)
+    - Response: `{ "total": "number", "subscribers": "array" }`
+
+- **POST** `/api/newsletter/send` (Admin only)
+    - Sends newsletter to all active subscribers.
+    - Request body: `{ "subject": "string", "title": "string", "content": "string" }`
+    - Response: `{ "message": "string", "sent": "number", "failed": "number", "total": "number" }`
 
 ## Contributing
 

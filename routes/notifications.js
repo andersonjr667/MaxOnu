@@ -61,6 +61,86 @@ router.patch('/:id/read', authMiddleware, async (req, res) => {
     }
 });
 
+// POST /api/notifications/send — envia notificação para alunos com filtros
+router.post('/send', authMiddleware, async (req, res) => {
+    const ALLOWED = new Set(['admin', 'coordinator', 'teacher', 'press']);
+    if (!ALLOWED.has(req.user?.role)) {
+        return res.status(403).json({ error: 'Sem permissão para enviar notificações.' });
+    }
+
+    const { title, message, target, committee, unit, classGroup } = req.body;
+
+    if (!title?.trim() || !message?.trim()) {
+        return res.status(400).json({ error: 'Título e mensagem são obrigatórios.' });
+    }
+
+    if (!target) {
+        return res.status(400).json({ error: 'Defina o público-alvo.' });
+    }
+
+    try {
+        const filter = { role: 'candidate' };
+
+        if (target === 'committee') {
+            const committeeVal = String(committee || '');
+            if (committeeVal === 'unassigned') {
+                filter.$or = [{ committee: null }, { committee: { $exists: false } }];
+            } else if (committeeVal) {
+                filter.committee = Number(committeeVal);
+            }
+        } else if (target === 'unit' && unit) {
+            filter.classGroup = { $regex: new RegExp(`^${unit.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'i') };
+        } else if (target === 'allUnits') {
+            filter.classGroup = { $regex: /^(Sta Ines|Palmares)/i };
+        } else if (target === 'classGroup') {
+            // classGroups é um array de turmas selecionadas; classGroup é turma única (legado)
+            const { classGroups } = req.body;
+            if (Array.isArray(classGroups) && classGroups.length) {
+                filter.classGroup = { $in: classGroups.map((cg) => new RegExp(cg.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i')) };
+            } else if (classGroup) {
+                filter.classGroup = { $regex: new RegExp(classGroup.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i') };
+            }
+        } else if (target === 'noCommittee') {
+            filter.$or = [{ committee: null }, { committee: { $exists: false } }];
+        } else if (target === 'segment') {
+            const seg = String(req.body.segment || '').toLowerCase();
+            if (seg === 'em') {
+                filter.classGroup = { $regex: /serie/i };
+            } else if (seg === 'fundamental') {
+                filter.classGroup = { $regex: /ano/i };
+            }
+            // seg === 'all' → sem filtro adicional
+        }
+        // target === 'all' ou unit/allUnits sem valor → sem filtro adicional
+
+        const recipients = await User.find(filter).select('_id');
+        if (!recipients.length) {
+            return res.status(404).json({ error: 'Nenhum aluno encontrado para o público-alvo selecionado.' });
+        }
+
+        const notification = {
+            type: 'admin-broadcast',
+            title: title.trim(),
+            message: message.trim(),
+            payload: { sentBy: req.user.username || req.user.id },
+            createdAt: new Date()
+        };
+
+        await User.updateMany(
+            { _id: { $in: recipients.map((r) => r._id) } },
+            { $push: { notifications: { $each: [notification], $position: 0 } } }
+        );
+
+        // Emitir SSE em tempo real para quem estiver online
+        const { emitToUser } = require('../utils/notification-center');
+        recipients.forEach((r) => emitToUser(String(r._id), 'new-notification', notification));
+
+        res.json({ success: true, sent: recipients.length });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
 router.patch('/read-all', authMiddleware, async (req, res) => {
     try {
         await User.updateOne(

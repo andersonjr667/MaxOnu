@@ -180,6 +180,7 @@ function renderPosts() {
                     <div class="blog-post-content">${formatText(post.content || '')}</div>
                     <p class="blog-post-author">Publicado por ${escapeHtml(post.authorName || 'Equipe MaxOnu')}</p>
                     <div class="post-reactions-slot" data-post-id="${escapeHtml(post._id || '')}"></div>
+                    <div class="post-comments-slot" data-post-id="${escapeHtml(post._id || '')}"></div>
                 </div>
             </div>
         </article>
@@ -195,6 +196,15 @@ function renderPosts() {
             slot.dataset.reactionsAttached = '1';
             const id = slot.dataset.postId;
             if (id) window.MaxOnuReactions.attachReactions(slot, 'post', id);
+        });
+    }
+
+    if (window.CommentsSystem) {
+        document.querySelectorAll('.post-comments-slot').forEach(slot => {
+            if (slot.dataset.commentsAttached) return;
+            slot.dataset.commentsAttached = '1';
+            const id = slot.dataset.postId;
+            if (id) window.CommentsSystem.init(id, slot);
         });
     }
 }

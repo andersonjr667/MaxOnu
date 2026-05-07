@@ -8920,3 +8920,101 @@ body {
     border-color: rgba(255, 255, 255, 0.14);
     box-shadow: 0 18px 36px rgba(0, 0, 0, 0.5);
 }
+
+/* ══════════════════════════════════════════
+   Página de envio de notificações (admin)
+══════════════════════════════════════════ */
+.notif-compose-form {
+    display: grid;
+    gap: 1.1rem;
+}
+
+.notif-field-group {
+    display: grid;
+    gap: 0.35rem;
+}
+
+.notif-field-group label {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--texto);
+}
+
+.notif-field-group input[type="text"],
+.notif-field-group textarea,
+.notif-field-group select {
+    border-radius: 12px;
+    border: 1px solid rgba(6, 38, 67, 0.18);
+    background: rgba(255, 255, 255, 0.9);
+    padding: 0.6rem 0.85rem;
+    font-size: 0.92rem;
+    color: var(--texto);
+    font-family: inherit;
+    resize: vertical;
+    transition: border-color 0.14s, box-shadow 0.14s;
+}
+
+.notif-field-group input[type="text"]:focus,
+.notif-field-group textarea:focus,
+.notif-field-group select:focus {
+    border-color: rgba(24, 97, 143, 0.5);
+    box-shadow: 0 0 0 3px rgba(24, 97, 143, 0.12);
+    outline: none;
+}
+
+.notif-char-count {
+    font-size: 0.78rem;
+    color: var(--texto-suave);
+    text-align: right;
+}
+
+.notif-char-count.is-near-limit {
+    color: #b45309;
+    font-weight: 700;
+}
+
+.notif-preview-box {
+    border-radius: 14px;
+    border: 1px solid rgba(6, 38, 67, 0.14);
+    background: rgba(237, 246, 255, 0.7);
+    padding: 0.9rem 1rem;
+    display: grid;
+    gap: 0.5rem;
+}
+
+.notif-preview-label {
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--azul-secundario);
+}
+
+.notif-preview-card {
+    display: grid;
+    gap: 0.3rem;
+}
+
+.notif-preview-card strong {
+    font-size: 0.95rem;
+    color: var(--texto);
+}
+
+.notif-preview-card p {
+    font-size: 0.88rem;
+    color: var(--texto-suave);
+    margin: 0;
+}
+
+[data-theme="dark"] .notif-field-group input[type="text"],
+[data-theme="dark"] .notif-field-group textarea,
+[data-theme="dark"] .notif-field-group select {
+    background: rgba(10, 18, 32, 0.9);
+    border-color: rgba(255, 255, 255, 0.14);
+    color: #c8d8e8;
+}
+
+[data-theme="dark"] .notif-preview-box {
+    background: rgba(10, 22, 38, 0.7);
+    border-color: rgba(255, 255, 255, 0.1);
+}

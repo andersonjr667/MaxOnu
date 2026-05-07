@@ -13,6 +13,7 @@ const portalConfigs = {
         actions: [
             { href: '/dashboard', title: 'Abrir painel operacional', text: 'Gerencie comitês, respostas pendentes e distribuição de países.' },
             { href: '/verificacao-usuarios', title: 'Verificar usuários', text: 'Consulte a lista de alunos e expanda cada nome para ver todos os dados cadastrados.' },
+            { href: '/notificacoes-admin', title: 'Enviar notificações', text: 'Envie avisos diretamente para a caixa de notificações dos alunos, com filtros por turma, comitê ou segmento.' },
             { href: '/blog', title: 'Gerenciar blog', text: 'Acompanhe a área de comunicados e a visibilidade dos conteúdos publicados.' },
 { href: '/create-post', title: 'Criar comunicado', text: 'Acesse a área reservada para publicar avisos e conteúdos oficiais.' },
             { href: '/imprensa-faq', title: 'Gerenciar FAQ', text: 'Responda e gerencie as perguntas frequentes enviadas pelos participantes no site.' },
@@ -33,6 +34,7 @@ const portalConfigs = {
         actions: [
             { href: '/dashboard', title: 'Abrir painel da coordenação', text: 'Use o painel para consultar inscritos, responder perguntas e ajustar países.' },
             { href: '/verificacao-usuarios', title: 'Verificar usuários', text: 'Confira os alunos cadastrados e abra os detalhes completos de cada participante.' },
+            { href: '/notificacoes-admin', title: 'Enviar notificações', text: 'Envie avisos diretamente para a caixa de notificações dos alunos, com filtros por turma, comitê ou segmento.' },
             { href: '/delegacoes', title: 'Ver delegações públicas', text: 'Acompanhe a experiência pública disponível no site para validar comunicações.' },
             { href: '/guias', title: 'Consultar guias', text: 'Revise materiais e referências que apoiam a operação e a orientação das equipes.' },
             { href: '/profile', title: 'Ver meu perfil', text: 'Confira rapidamente sua identificação, comitê e dados vinculados.' }
@@ -52,6 +54,7 @@ const portalConfigs = {
         actions: [
             { href: '/dashboard', title: 'Abrir painel dos orientadores', text: 'Consulte alunos, países e perguntas pendentes ligadas à preparação.' },
             { href: '/verificacao-usuarios', title: 'Verificar usuários', text: 'Abra os dados completos dos alunos para acompanhar cadastro, turma e inscrição.' },
+            { href: '/notificacoes-admin', title: 'Enviar notificações', text: 'Envie avisos diretamente para a caixa de notificações dos alunos, com filtros por turma, comitê ou segmento.' },
             { href: '/delegacoes', title: 'Acompanhar delegações', text: 'Veja a área pública das delegações e mantenha o alinhamento com seus alunos.' },
             { href: '/faq', title: 'Monitorar dúvidas públicas', text: 'Acompanhe as perguntas comuns que impactam a preparação dos participantes.' },
             { href: '/profile', title: 'Ver meu perfil', text: 'Consulte seus dados pessoais, função e referências da sua área.' }
@@ -71,6 +74,7 @@ const portalConfigs = {
         actions: [
             { href: '/blog', title: 'Acompanhar blog', text: 'Veja a área de comunicados e mantenha a comunicação centralizada.' },
             { href: '/create-post', title: 'Criar publicação', text: 'Acesse a área reservada para montar novos comunicados e atualizações.' },
+            { href: '/notificacoes-admin', title: 'Enviar notificações', text: 'Envie avisos diretamente para a caixa de notificações dos alunos, com filtros por turma, comitê ou segmento.' },
             { href: '/imprensa-faq', title: 'Gerenciar FAQ', text: 'Responda e gerencie as perguntas frequentes enviadas pelos participantes no site.' },
             { href: '/imprensa', title: 'Página pública da imprensa', text: 'Revise a apresentação pública da equipe e sua presença institucional.' },
             { href: 'https://www.instagram.com/maxonu26', title: 'Canal do Instagram', text: 'Acesse o perfil oficial da MaxOnu 2026 no Instagram.' }

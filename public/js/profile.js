@@ -258,6 +258,12 @@ function getQuickActions(user, delegationStatus) {
                 label: 'Abrir portal'
             },
             {
+                title: 'Enviar notificações',
+                description: 'Envie avisos para a caixa de notificações dos alunos.',
+                href: '/notificacoes-admin',
+                label: 'Enviar aviso'
+            },
+            {
                 title: 'Painel operacional',
                 description: 'Acompanhe distribuição, países e inscrições.',
                 href: '/dashboard',
@@ -279,6 +285,12 @@ function getQuickActions(user, delegationStatus) {
                 description: 'Acesse o hub principal de gestão e distribuição.',
                 href: '/coordenacao',
                 label: 'Abrir portal'
+            },
+            {
+                title: 'Enviar notificações',
+                description: 'Envie avisos para a caixa de notificações dos alunos.',
+                href: '/notificacoes-admin',
+                label: 'Enviar aviso'
             },
             {
                 title: 'Painel operacional',
@@ -304,6 +316,12 @@ function getQuickActions(user, delegationStatus) {
                 label: 'Abrir portal'
             },
             {
+                title: 'Enviar notificações',
+                description: 'Envie avisos para a caixa de notificações dos alunos.',
+                href: '/notificacoes-admin',
+                label: 'Enviar aviso'
+            },
+            {
                 title: 'Painel operacional',
                 description: 'Visualize a operação ampla da edição 2026.',
                 href: '/dashboard',
@@ -325,6 +343,12 @@ function getQuickActions(user, delegationStatus) {
                 description: 'Organize a cobertura, produção de conteúdo e chamadas públicas.',
                 href: '/imprensa-dashboard',
                 label: 'Abrir painel'
+            },
+            {
+                title: 'Enviar notificações',
+                description: 'Envie avisos para a caixa de notificações dos alunos.',
+                href: '/notificacoes-admin',
+                label: 'Enviar aviso'
             },
             {
                 title: 'Blog',
@@ -1550,6 +1574,23 @@ async function loadProfile() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Check newsletter feature status
+    fetch('/api/features')
+        .then(res => res.json())
+        .then(features => {
+            const newsletterSection = document.getElementById('profileNewsletterSection');
+            if (newsletterSection) {
+                newsletterSection.hidden = !features.newsletter;
+            }
+        })
+        .catch(() => {
+            // If feature check fails, keep newsletter hidden
+            const newsletterSection = document.getElementById('profileNewsletterSection');
+            if (newsletterSection) {
+                newsletterSection.hidden = true;
+            }
+        });
+
     loadProfile();
 
     document.addEventListener('submit', async (event) => {

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newsletter - MaxOnu 2026</title>
+    <link rel="stylesheet" href="/css/styles.css?v=20260507-newsletter">
+    <link rel="stylesheet" href="/css/dashboard.css?v=20260507-newsletter">
+    <link rel="stylesheet" href="/css/newsletter.css?v=20260507-newsletter">
+    <link rel="icon" href="/images/logo-maxonu.png" type="image/png">
+    <script src="/js/includes.js?v=20260420-headerfix" defer></script>
+    <script src="/js/newsletter.js?v=20260507-newsletter" defer></script>
+</head>
+<body class="dashboard-page">
+    <include src="header.html"></include>
+
+    <main class="main-content" id="main-content">
+        <section class="content-section">
+            <div class="newsletter-shell">
+
+                <!-- Hero -->
+                <div class="newsletter-hero">
+                    <div class="newsletter-hero-inner">
+                        <span class="newsletter-kicker">📬 Newsletter</span>
+                        <h1 class="newsletter-title">Fique por dentro da MaxOnu 2026</h1>
+                        <p class="newsletter-subtitle">Receba atualizações sobre o evento, novidades dos comitês, avisos importantes e muito mais diretamente no seu email.</p>
+                    </div>
+                </div>
+
+                <!-- Cards grid -->
+                <div class="newsletter-grid">
+
+                    <!-- Subscribe card -->
+                    <div class="newsletter-card" id="subscribeCard">
+                        <div class="newsletter-card-icon">✉️</div>
+                        <h2>Inscrever-se</h2>
+                        <p>Cadastre seu email para receber as novidades da MaxOnu 2026.</p>
+
+                        <div id="subscribeMessage" class="newsletter-feedback" hidden></div>
+
+                        <form id="subscribeForm" class="newsletter-form" novalidate>
+                            <div class="form-group">
+                                <label for="subName">Nome (opcional)</label>
+                                <input type="text" id="subName" name="name" placeholder="Seu nome" autocomplete="name">
+                            </div>
+                            <div class="form-group">
+                                <label for="subEmail">Email <span class="required-indicator">*</span></label>
+                                <input type="email" id="subEmail" name="email" placeholder="seu@email.com" required autocomplete="email">
+                            </div>
+                            <div class="newsletter-consent">
+                                <input type="checkbox" id="subConsent" required>
+                                <label for="subConsent">Concordo em receber emails da MaxOnu 2026 e posso cancelar a qualquer momento.</label>
+                            </div>
+                            <button type="submit" class="view-button newsletter-submit-btn" id="subscribeBtn">
+                                Inscrever-se
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Unsubscribe card -->
+                    <div class="newsletter-card" id="unsubscribeCard">
+                        <div class="newsletter-card-icon">🚫</div>
+                        <h2>Cancelar inscrição</h2>
+                        <p>Não quer mais receber nossos emails? Cancele sua inscrição abaixo.</p>
+
+                        <div id="unsubscribeMessage" class="newsletter-feedback" hidden></div>
+
+                        <form id="unsubscribeForm" class="newsletter-form" novalidate>
+                            <div class="form-group">
+                                <label for="unsubEmail">Email <span class="required-indicator">*</span></label>
+                                <input type="email" id="unsubEmail" name="email" placeholder="seu@email.com" required autocomplete="email">
+                            </div>
+                            <button type="submit" class="view-button newsletter-unsub-btn" id="unsubscribeBtn">
+                                Cancelar inscrição
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Info card -->
+                    <div class="newsletter-card">
+                        <div class="newsletter-card-icon">🔒</div>
+                        <h2>Privacidade</h2>
+                        <ul class="newsletter-info-list">
+                            <li>Seus dados são usados apenas para envio de emails da MaxOnu 2026.</li>
+                            <li>Nunca compartilhamos seu email com terceiros.</li>
+                            <li>Você pode cancelar a inscrição a qualquer momento.</li>
+                            <li>Enviamos apenas conteúdo relevante sobre o evento.</li>
+                        </ul>
+                    </div>
+
+                </div>
+
+                <!-- Admin panel (hidden for non-admins) -->
+                <div class="newsletter-admin-panel" id="newsletterAdminPanel" hidden>
+                    <div class="dashboard-section-heading">
+                        <span class="dashboard-section-kicker">Administração</span>
+                        <h2>Enviar newsletter</h2>
+                        <p>Envie um email para todos os inscritos ativos.</p>
+                    </div>
+
+                    <div class="newsletter-stats-row" id="newsletterStats">
+                        <div class="newsletter-stat">
+                            <strong id="statTotal">—</strong>
+                            <span>Inscritos ativos</span>
+                        </div>
+                    </div>
+
+                    <div id="sendMessage" class="newsletter-feedback" hidden></div>
+
+                    <form id="sendNewsletterForm" class="newsletter-send-form">
+                        <div class="form-group">
+                            <label for="sendSubject">Assunto do email <span class="required-indicator">*</span></label>
+                            <input type="text" id="sendSubject" required placeholder="Ex: Novidades da MaxOnu 2026">
+                        </div>
+                        <div class="form-group">
+                            <label for="sendTitle">Título do email <span class="required-indicator">*</span></label>
+                            <input type="text" id="sendTitle" required placeholder="Ex: Atualização importante">
+                        </div>
+                        <div class="form-group">
+                            <label for="sendContent">Conteúdo <span class="required-indicator">*</span></label>
+                            <textarea id="sendContent" rows="6" required placeholder="Escreva o conteúdo do email aqui..."></textarea>
+                        </div>
+                        <button type="submit" class="view-button" id="sendNewsletterBtn">Enviar para todos os inscritos</button>
+                    </form>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <include src="footer.html"></include>
+</body>
+</html>

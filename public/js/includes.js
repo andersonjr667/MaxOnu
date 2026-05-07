@@ -419,6 +419,13 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
+        // Show/hide admin-only links
+        const adminLinks = navLinks?.querySelectorAll('.admin-only-link');
+        if (adminLinks && context?.user) {
+            const isAdminOrCoord = context.user.role === 'admin' || context.user.role === 'coordinator';
+            adminLinks.forEach(link => link.hidden = !isAdminOrCoord);
+        }
+
         if (!context) {
             authButtons.innerHTML = `
                 <a href="/login" class="auth-btn auth-btn-secondary">Entrar</a>
@@ -605,6 +612,21 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         hamburgerMenu.dataset.initialized = 'true';
+        
+        // Check newsletter feature status
+        try {
+            const featuresRes = await fetch('/api/features');
+            if (featuresRes.ok) {
+                const features = await featuresRes.json();
+                const newsletterLinks = document.querySelectorAll('.newsletter-link');
+                newsletterLinks.forEach(link => {
+                    link.hidden = !features.newsletter;
+                });
+            }
+        } catch (error) {
+            // If feature check fails, keep newsletter hidden
+        }
+        
         await refreshHeader(navLinks);
 
         hamburgerMenu.addEventListener('click', function(event) {

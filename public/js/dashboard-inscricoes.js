@@ -684,21 +684,29 @@ function closeExportModal() {
 
 async function exportCustom() {
     const button = document.getElementById('advancedExportCustomBtn');
-    const segment   = document.getElementById('customExportSegment')?.value   || 'all';
     const unit      = document.getElementById('customExportUnit')?.value      || 'all';
     const committee = document.getElementById('customExportCommittee')?.value || 'all';
     const status    = document.getElementById('customExportStatus')?.value    || 'all';
-    const cols = Array.from(document.querySelectorAll('input[name="exportCol"]:checked'))
-        .map((cb) => cb.value);
+    const cols = Array.from(document.querySelectorAll('input[name="exportCol"]:checked')).map((cb) => cb.value);
 
     if (!cols.length) {
         alert('Selecione ao menos uma coluna.');
         return;
     }
 
+    const allChecked = document.getElementById('customExportTurmaAll')?.checked;
+    const selectedTurmas = allChecked
+        ? ['all']
+        : Array.from(document.querySelectorAll('input[name="customExportTurma"]:checked:not(#customExportTurmaAll)')).map((cb) => cb.value);
+
+    if (!selectedTurmas.length) {
+        alert('Selecione ao menos uma turma.');
+        return;
+    }
+
     setButtonLoading(button, true, 'Gerando...');
     try {
-        const params = new URLSearchParams({ segment, unit, committee, status, cols: cols.join(',') });
+        const params = new URLSearchParams({ turmas: selectedTurmas.join(','), unit, committee, status, cols: cols.join(',') });
         const response = await fetch(`/api/export/results/custom?${params}`, {
             headers: { 'Authorization': `Bearer ${getToken()}` }
         });
@@ -720,6 +728,44 @@ async function exportCustom() {
     } finally {
         setButtonLoading(button, false, '');
     }
+}
+
+function updateExportColsCounter() {
+    const counter = document.getElementById('exportColsSelected');
+    if (!counter) return;
+    const selected = document.querySelectorAll('input[name="exportCol"]:checked').length;
+    counter.textContent = `${selected} selecionadas`;
+    counter.dataset.count = String(selected);
+}
+
+function initExportColsActions() {
+    const selectAllBtn = document.getElementById('exportColsSelectAllBtn');
+    const clearBtn = document.getElementById('exportColsClearBtn');
+
+    const colCbs = Array.from(document.querySelectorAll('input[name="exportCol"]'));
+    if (!colCbs.length) return;
+
+    colCbs.forEach((cb) => {
+        cb.addEventListener('change', () => {
+            updateExportColsCounter();
+        });
+    });
+
+    selectAllBtn?.addEventListener('click', () => {
+        colCbs.forEach((cb) => {
+            if (!cb.disabled) cb.checked = true;
+        });
+        updateExportColsCounter();
+    });
+
+    clearBtn?.addEventListener('click', () => {
+        colCbs.forEach((cb) => {
+            if (!cb.disabled) cb.checked = false;
+        });
+        updateExportColsCounter();
+    });
+
+    updateExportColsCounter();
 }
 
 async function exportResults(format) {
@@ -938,14 +984,178 @@ async function verifyAccess() {
     }
 }
 
+function normalizeClassGroupForTurmaValue(classGroup = '') {
+    // Esperado no cadastro: "Unidade - Série" ou "Série"
+    // Ex.: "Sta Inês - 8º ano A" | "Sta Inês - 1ª série B"...
+    const normalized = String(classGroup || '').trim();
+    if (!normalized) return '';
+
+    const parts = normalized.split(' - ');
+    const gradePart = (parts[1] || parts[0] || '').trim();
+
+    const gradeLower = gradePart
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '');
+
+    const hasA = /(\ba\b|\bano\s*a\b|\bserie\s*a\b|\ba)/.test(gradeLower) && gradeLower.includes('a');
+    const hasB = /(\bb\b|\banob\b|\bserie\s*b\b|\b\b)/.test(gradeLower) && gradeLower.includes('b');
+
+    const is8 = gradeLower.includes('8') && (gradeLower.includes('ano') || gradeLower.includes('8ano') || gradeLower.includes('8 ano'));
+    const is9 = gradeLower.includes('9') && (gradeLower.includes('ano') || gradeLower.includes('9ano') || gradeLower.includes('9 ano'));
+
+    const is1Serie = (gradeLower.includes('1') && (gradeLower.includes('serie') || gradeLower.includes('1serie')));
+
+    // mapeia para os valores que o backend já entende no filtro customExport/results/custom
+    if (is8 && hasA) return '8anoA';
+    if (is8 && hasB) return '8anoB';
+    if (is9 && hasA) return '9anoA';
+    if (is9 && hasB) return '9anoB';
+    if (is1Serie && hasA) return '1serieA';
+    if (is1Serie && hasB) return '1serieB';
+
+    return '';
+}
+
+function getTurmaLabelFromValue(turmaValue = '') {
+    const map = {
+        '8anoA': '8º ano A',
+        '8anoB': '8º ano B',
+        '9anoA': '9º ano A',
+        '9anoB': '9º ano B',
+        '1serieA': '1ª série A',
+        '1serieB': '1ª série B'
+    };
+    return map[turmaValue] || turmaValue;
+}
+
+async function loadCustomExportTurmas() {
+    const container = document.getElementById('customExportTurmasContainer');
+    if (!container) return;
+
+    container.innerHTML = '<div class="export-custom-hint">Carregando turmas disponíveis...</div>';
+
+    try {
+        // Fonte de verdade: a lista de inscrições carregada no dashboard (registrationsCache)
+        // Onde cada participante tem classGroup e unidade/série.
+        if (!registrationsCache || !registrationsCache.length) {
+            container.innerHTML = '<p class="dashboard-empty">Nenhum dado de inscrições carregado.</p>';
+            return;
+        }
+
+        const turmaValues = new Set();
+        registrationsCache.forEach((delegation) => {
+            const regMembers = Array.isArray(delegation?.members)
+                ? delegation.members
+                : [];
+
+            // Em registrosCache, delegações também podem vir com members em alguns cenários.
+            regMembers.forEach((m) => {
+                const v = normalizeClassGroupForTurmaValue(m?.classGroup);
+                if (v) turmaValues.add(v);
+            });
+
+            // Caso members não exista na delegação, tenta usar classGroup da registration.
+            const regClass = delegation?.registration?.classGroup || delegation?.classGroup || '';
+            const v2 = normalizeClassGroupForTurmaValue(regClass);
+            if (v2) turmaValues.add(v2);
+        });
+
+        // fallback: se por algum motivo não achou, mostra ao menos as opções A/B atuais
+        if (!turmaValues.size) {
+            turmaValues.add('8anoA');
+            turmaValues.add('8anoB');
+            turmaValues.add('9anoA');
+            turmaValues.add('9anoB');
+            turmaValues.add('1serieA');
+            turmaValues.add('1serieB');
+        }
+
+        const ordered = ['8anoA', '8anoB', '9anoA', '9anoB', '1serieA', '1serieB']
+            .filter((v) => turmaValues.has(v));
+
+        const groups = {
+            A: ordered.filter((v) => v.endsWith('A')),
+            B: ordered.filter((v) => v.endsWith('B'))
+        };
+
+        container.innerHTML = '';
+
+        ['A', 'B'].forEach((g) => {
+            const items = groups[g];
+            if (!items.length) return;
+
+            const title = g === 'A' ? 'Turmas A' : 'Turmas B';
+
+            const groupEl = document.createElement('div');
+            groupEl.className = 'turma-group';
+            groupEl.dataset.turmaGroup = g;
+
+            groupEl.innerHTML = `
+                <div class="turma-group-title">${title}</div>
+                <div class="turma-group-items">
+                    ${items.map((v) => `
+                        <label class="turma-option">
+                            <input type="checkbox" name="customExportTurma" value="${v}" checked>
+                            ${getTurmaLabelFromValue(v)}
+                        </label>
+                    `).join('')}
+                </div>
+            `;
+
+            container.appendChild(groupEl);
+        });
+
+        // Mantém regra: se “Todas” estiver marcada, desmarca específicas e vice-versa.
+        // O listener será configurado em initPageEvents depois.
+    } catch (error) {
+        container.innerHTML = '<p class="dashboard-empty">Falha ao carregar turmas disponíveis.</p>';
+    }
+}
+
 function initPageEvents() {
-    document.getElementById('advancedToggleRegistrationBtn')?.addEventListener('click', toggleRegistrationStatus);
-    document.getElementById('advancedRefreshBtn')?.addEventListener('click', async () => {
-        await Promise.all([
-            loadRegistrationControl(),
-            loadRegistrations({ forceFetch: true })
-        ]);
+    // Checkbox "Todas as turmas" controla os demais
+    const allTurmasCb = document.getElementById('customExportTurmaAll');
+    const specificCbs = () => document.querySelectorAll('input[name="customExportTurma"]:not(#customExportTurmaAll)');
+
+    allTurmasCb?.addEventListener('change', () => {
+        specificCbs().forEach((cb) => { cb.checked = false; cb.disabled = allTurmasCb.checked; });
     });
+
+    specificCbs().forEach((cb) => {
+        cb.addEventListener('change', () => {
+            if (cb.checked && allTurmasCb) allTurmasCb.checked = false;
+            const anyChecked = Array.from(specificCbs()).some((c) => c.checked);
+            if (!anyChecked && allTurmasCb) {
+                allTurmasCb.checked = true;
+                specificCbs().forEach((c) => { c.disabled = true; });
+            }
+        });
+    });
+
+    // Estado inicial: todas marcadas e específicas desabilitadas
+    // (em seguida, o usuário pode escolher explicitamente por turma)
+    specificCbs().forEach((cb) => { cb.disabled = true; });
+
+    // Microinteração visual: manter um estado consistente mesmo com layout de “pill/card”
+    const syncTurmaVisual = () => {
+        specificCbs().forEach((cb) => {
+            const label = cb.closest('label');
+            if (!label) return;
+            // Visual auxiliar (mantém compatibilidade com UI anterior)
+            if (cb.checked) label.classList.add('is-active');
+            else label.classList.remove('is-active');
+
+        });
+    };
+
+    allTurmasCb?.addEventListener('change', syncTurmaVisual);
+    specificCbs().forEach((cb) => cb.addEventListener('change', syncTurmaVisual));
+
+    syncTurmaVisual();
+
+
+    document.getElementById('advancedToggleRegistrationBtn')?.addEventListener('click', toggleRegistrationStatus);
     document.getElementById('advancedLoadBtn')?.addEventListener('click', () => {
         loadRegistrations({ forceFetch: false });
     });
@@ -958,6 +1168,7 @@ function initPageEvents() {
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') closeExportModal();
     });
+
     document.getElementById('advancedExportCustomBtn')?.addEventListener('click', exportCustom);
     document.getElementById('advancedExportCsvBtn')?.addEventListener('click', () => exportResults('csv'));
     document.getElementById('advancedExportXlsxBtn')?.addEventListener('click', () => exportResults('xlsx'));
@@ -966,9 +1177,12 @@ function initPageEvents() {
     document.getElementById('advancedExportByUnitBtn')?.addEventListener('click', exportByUnit);
     document.getElementById('advancedExportUnassignedBtn')?.addEventListener('click', exportUnassigned);
     document.getElementById('advancedExportAllDelegationsBtn')?.addEventListener('click', exportAllDelegations);
+
     Array.from({ length: 7 }, (_, i) => i + 1).forEach((num) => {
         document.getElementById(`advancedExportComite${num}Btn`)?.addEventListener('click', () => exportByCommittee(num));
     });
+
+    initExportColsActions();
 
     document.getElementById('advancedSearchFilter')?.addEventListener('input', () => {
         renderAllAdvancedData();
@@ -1000,5 +1214,6 @@ async function initAdvancedDashboard() {
         loadRegistrations({ forceFetch: true })
     ]);
 }
+
 
 document.addEventListener('DOMContentLoaded', initAdvancedDashboard);

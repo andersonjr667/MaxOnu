@@ -345,17 +345,74 @@
 ══════════════════════════════════════════ */
 
 .export-open-btn {
+    /* Card-like CTA */
+    width: 100%;
+    min-height: 48px;
+    padding: 0.75rem 1.05rem;
+    border-radius: 16px;
+
+    border: 1px solid rgba(6, 38, 67, 0.16);
     background: linear-gradient(135deg, #0d446d, #18618f);
     color: #fff !important;
-    border: none;
-    font-weight: 700;
+
+    font-weight: 800;
     letter-spacing: 0.01em;
+
+    box-shadow: 0 16px 30px rgba(8, 31, 56, 0.14);
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.65rem;
+
+    transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease, border-color 0.18s ease;
+}
+
+.export-open-btn::before {
+    content: '↓';
+    display: inline-flex;
+    width: 28px;
+    height: 28px;
+    border-radius: 10px;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-weight: 900;
+    line-height: 1;
 }
 
 .export-open-btn:hover {
     background: linear-gradient(135deg, #0a3558, #0d5278);
     color: #fff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 22px 44px rgba(8, 31, 56, 0.18);
+    border-color: rgba(24, 97, 143, 0.35);
 }
+
+.export-open-btn:active {
+    transform: translateY(0);
+}
+
+.export-open-btn:focus-visible {
+    outline: none;
+    box-shadow:
+        0 22px 44px rgba(8, 31, 56, 0.18),
+        0 0 0 4px rgba(24, 97, 143, 0.22);
+    border-color: rgba(24, 97, 143, 0.55);
+}
+
+.export-open-btn:disabled {
+    opacity: 0.72;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: 0 10px 22px rgba(8, 31, 56, 0.1);
+}
+
+.export-open-btn:disabled::before {
+    opacity: 0.9;
+}
+
 
 .export-modal-overlay[hidden] {
     display: none !important;
@@ -599,6 +656,23 @@
     color: #e2edf8;
 }
 
+[data-theme="dark"] .export-open-btn {
+    border-color: rgba(255, 255, 255, 0.14);
+    background: linear-gradient(135deg, #1a5e96, #0d446d);
+    box-shadow: 0 20px 46px rgba(0, 0, 0, 0.35);
+}
+
+[data-theme="dark"] .export-open-btn::before {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.14);
+}
+
+[data-theme="dark"] .export-open-btn:hover {
+    box-shadow: 0 26px 60px rgba(0, 0, 0, 0.42);
+    border-color: rgba(74, 159, 212, 0.42);
+}
+
+
 [data-theme="dark"] .export-group-label {
     background: rgba(74, 159, 212, 0.14);
     border-color: rgba(74, 159, 212, 0.28);
@@ -626,6 +700,377 @@
     color: #c8d8e8;
 }
 
+/* ─────────────────────────────────────────────
+   Download personalizado — Painel por etapas
+─────────────────────────────────────────────*/
+
+.export-steps {
+    display: grid;
+    gap: 1rem;
+}
+
+.export-step {
+    border-radius: 16px;
+    border: 1px solid rgba(6, 38, 67, 0.12);
+    background: rgba(255, 255, 255, 0.55);
+    padding: 1rem;
+    display: grid;
+    gap: 0.85rem;
+}
+
+.export-step-head {
+    display: grid;
+    gap: 0.25rem;
+}
+
+.export-step-title {
+    font-weight: 950;
+    letter-spacing: -0.01em;
+    color: #062643;
+    font-size: 1rem;
+}
+
+.export-step-subtitle {
+    color: #4a697f;
+    font-size: 0.88rem;
+}
+
+.export-step-content {
+    display: grid;
+    gap: 0.8rem;
+}
+
+.export-two-cols {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    align-items: start;
+}
+
+.export-turma-all {
+    margin-bottom: 0.1rem;
+}
+
+.export-turma-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.9rem;
+}
+
+.export-turma-col {
+    border-radius: 14px;
+    border: 1px solid rgba(6, 38, 67, 0.10);
+    background: rgba(255, 255, 255, 0.7);
+    padding: 0.9rem;
+}
+
+.export-turma-col-title {
+    font-weight: 900;
+    color: #0d446d;
+    font-size: 0.86rem;
+    margin-bottom: 0.75rem;
+}
+
+.export-turma-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.5rem;
+}
+
+/* Botões selecionáveis para turmas */
+.turma-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: 12px;
+    border: 1px solid rgba(6, 38, 67, 0.14);
+    background: rgba(255, 255, 255, 0.88);
+    color: #062643;
+    cursor: pointer;
+    transition: transform 0.14s ease, box-shadow 0.14s ease, border-color 0.14s ease, background 0.14s ease;
+    font-weight: 800;
+    font-size: 0.88rem;
+    user-select: none;
+}
+
+.turma-pill input[type="checkbox"] {
+    width: 1rem;
+    height: 1rem;
+    margin: 0;
+    accent-color: #0d446d;
+}
+
+.turma-pill:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 14px 26px rgba(8, 31, 56, 0.10);
+    border-color: rgba(24, 97, 143, 0.35);
+}
+
+.turma-pill:has(input:checked) {
+    background: rgba(13, 68, 109, 0.10);
+    border-color: rgba(13, 68, 109, 0.35);
+}
+
+.turma-pill:has(input:disabled) {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.turma-pill--all {
+    width: fit-content;
+    border-radius: 999px;
+    padding: 0.6rem 1rem;
+    background: linear-gradient(135deg, rgba(13, 68, 109, 0.12), rgba(24, 97, 143, 0.08));
+    border-color: rgba(13, 68, 109, 0.22);
+}
+
+.export-cols-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+}
+
+.export-cols-head-left {
+    display: grid;
+    gap: 0.25rem;
+}
+
+.export-cols-label {
+    font-weight: 900;
+    color: #062643;
+}
+
+.export-cols-actions {
+    display: flex;
+    gap: 0.6rem;
+}
+
+.export-custom-link-btn {
+    border-radius: 12px;
+    min-height: 40px;
+    padding: 0.5rem 0.85rem;
+    border: 1px solid rgba(6, 38, 67, 0.16);
+    background: rgba(255, 255, 255, 0.75);
+    color: #062643;
+    font-weight: 850;
+    cursor: pointer;
+    transition: transform 0.14s ease, border-color 0.14s ease, box-shadow 0.14s ease, background 0.14s ease;
+}
+
+.export-custom-link-btn:hover {
+    transform: translateY(-1px);
+    border-color: rgba(24, 97, 143, 0.35);
+    box-shadow: 0 16px 32px rgba(8, 31, 56, 0.10);
+}
+
+.export-custom-link-btn:active {
+    transform: translateY(0);
+}
+
+.export-cols-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0.8rem;
+}
+
+.export-col-group {
+    border-radius: 14px;
+    border: 1px solid rgba(6, 38, 67, 0.10);
+    background: rgba(255, 255, 255, 0.7);
+    padding: 0.9rem;
+}
+
+.export-col-group-title {
+    font-weight: 950;
+    color: #0d446d;
+    font-size: 0.88rem;
+    margin-bottom: 0.75rem;
+}
+
+.export-custom-checks {
+    display: grid;
+    gap: 0.45rem;
+}
+
+.export-col-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-weight: 700;
+    color: #2c4a60;
+}
+
+.export-col-checkbox input[type="checkbox"] {
+    width: 1rem;
+    height: 1rem;
+    accent-color: #0d446d;
+}
+
+.export-step--final {
+    background: linear-gradient(180deg, rgba(13, 68, 109, 0.10), rgba(255, 255, 255, 0.55));
+    border-color: rgba(13, 68, 109, 0.18);
+}
+
+.export-final-btn {
+    width: 100%;
+    min-height: 52px;
+    border-radius: 16px;
+    border: none;
+    background: linear-gradient(135deg, #0d446d, #18618f);
+    color: #fff !important;
+    font-weight: 950;
+    font-size: 1rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+}
+
+.export-final-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 26px 60px rgba(8, 31, 56, 0.18);
+    filter: brightness(1.03);
+}
+
+.export-final-btn:active {
+    transform: translateY(0);
+}
+
+.export-final-btn:focus-visible {
+    outline: none;
+    box-shadow:
+        0 26px 60px rgba(8, 31, 56, 0.18),
+        0 0 0 4px rgba(24, 97, 143, 0.22);
+}
+
+.export-final-btn-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    display: inline-grid;
+    place-items: center;
+    font-size: 1.1rem;
+}
+
+@media (max-width: 720px) {
+    .export-turma-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+[data-theme="dark"] .export-step {
+    background: rgba(10, 18, 32, 0.35);
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+[data-theme="dark"] .export-turma-col,
+[data-theme="dark"] .export-col-group {
+    background: rgba(10, 18, 32, 0.55);
+    border-color: rgba(255, 255, 255, 0.10);
+}
+
+[data-theme="dark"] .export-turma-col-title {
+    color: #7ec8f0;
+}
+
+[data-theme="dark"] .export-col-group-title {
+    color: #7ec8f0;
+}
+
+[data-theme="dark"] .turma-pill {
+    background: rgba(14, 26, 44, 0.9);
+    border-color: rgba(255, 255, 255, 0.12);
+    color: #c8d8e8;
+}
+
+[data-theme="dark"] .turma-pill:has(input:checked) {
+    background: rgba(74, 159, 212, 0.12);
+    border-color: rgba(74, 159, 212, 0.35);
+}
+
+[data-theme="dark"] .export-cols-label,
+[data-theme="dark"] .export-col-checkbox {
+    color: #c8d8e8;
+}
+
+[data-theme="dark"] .export-custom-link-btn {
+    background: rgba(10, 18, 32, 0.75);
+    border-color: rgba(255, 255, 255, 0.14);
+    color: #c8d8e8;
+}
+
+/* (Mantido abaixo: estilos antigos — removidos nesta refatoração do painel) */
+
+
+
+.export-custom-turmas--split {
+    grid-template-columns: 1fr;
+}
+
+.export-custom-turmas .turma-group {
+    border-radius: 16px;
+    border: 1px solid rgba(6, 38, 67, 0.12);
+    background: rgba(255, 255, 255, 0.55);
+    padding: 0.85rem 0.85rem 0.9rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+
+.export-custom-turmas .turma-group::after {
+    content: '';
+    position: absolute;
+    top: -30px;
+    right: -30px;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(13, 68, 109, 0.12), transparent 65%);
+    pointer-events: none;
+}
+
+
+.export-custom-turmas .turma-group[data-turma-group="A"] {
+    border-color: rgba(74, 159, 212, 0.35);
+    box-shadow: inset 0 0 0 1px rgba(74, 159, 212, 0.08);
+}
+
+.export-custom-turmas .turma-group[data-turma-group="B"] {
+    border-color: rgba(255, 140, 66, 0.32);
+    box-shadow: inset 0 0 0 1px rgba(255, 140, 66, 0.08);
+}
+
+.export-custom-turmas .turma-group-title {
+    font-weight: 900;
+    font-size: 0.85rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #062643;
+    margin-bottom: 0.6rem;
+}
+
+.export-custom-turmas .turma-group[data-turma-group="A"] .turma-group-title {
+    color: #0b5b8f;
+}
+
+.export-custom-turmas .turma-group[data-turma-group="B"] .turma-group-title {
+    color: #9a3412;
+}
+
+.export-custom-turmas .turma-group-items {
+    display: grid;
+    gap: 0.45rem;
+}
+
 @media (max-width: 560px) {
     .export-modal {
         border-radius: 18px;
@@ -647,4 +1092,117 @@
     .export-custom-checks {
         grid-template-columns: 1fr 1fr;
     }
+
+    .export-custom-turmas .turma-group {
+        padding: 0.75rem 0.75rem 0.85rem;
+    }
+}
+
+[data-theme="dark"] .export-custom-turmas .turma-group {
+    background: rgba(10, 18, 32, 0.35);
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+[data-theme="dark"] .export-custom-turmas .turma-group::after {
+    background: radial-gradient(circle, rgba(74, 159, 212, 0.14), transparent 65%);
+}
+
+[data-theme="dark"] .export-custom-turmas .turma-group[data-turma-group="A"] {
+    border-color: rgba(74, 159, 212, 0.22);
+}
+
+[data-theme="dark"] .export-custom-turmas .turma-group[data-turma-group="B"] {
+    border-color: rgba(255, 140, 66, 0.20);
+}
+
+
+
+/* ── Turmas no export personalizado ── */
+.export-custom-turmas {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.turma-option--all {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.7rem;
+    border-radius: 10px;
+    border: 1.5px solid rgba(13, 68, 109, 0.22);
+    background: linear-gradient(135deg, rgba(13, 68, 109, 0.08), rgba(24, 97, 143, 0.1));
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #062643;
+    cursor: pointer;
+}
+
+.turma-group {
+    display: grid;
+    gap: 0.3rem;
+}
+
+.turma-group-title {
+    font-size: 0.74rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #4a697f;
+    padding: 0 0.2rem;
+}
+
+.turma-group-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 0.3rem;
+}
+
+.turma-option {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.4rem 0.6rem;
+    border-radius: 8px;
+    border: 1px solid rgba(6, 38, 67, 0.12);
+    background: #fff;
+    font-size: 0.84rem;
+    color: #062643;
+    cursor: pointer;
+    transition: border-color 0.13s, background 0.13s;
+}
+
+.turma-option:has(input:checked) {
+    border-color: rgba(13, 68, 109, 0.3);
+    background: rgba(13, 68, 109, 0.07);
+}
+
+.turma-option:has(input:disabled) {
+    opacity: 0.45;
+    cursor: default;
+}
+
+.turma-option input[type="checkbox"] {
+    width: 0.85rem;
+    height: 0.85rem;
+    accent-color: #0d446d;
+    flex-shrink: 0;
+}
+
+[data-theme="dark"] .turma-option--all {
+    background: rgba(74, 159, 212, 0.14);
+    border-color: rgba(74, 159, 212, 0.28);
+    color: #c8d8e8;
+}
+
+[data-theme="dark"] .turma-group-title { color: #7a9ab8; }
+
+[data-theme="dark"] .turma-option {
+    background: rgba(14, 26, 44, 0.9);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #c8d8e8;
+}
+
+[data-theme="dark"] .turma-option:has(input:checked) {
+    border-color: rgba(74, 159, 212, 0.35);
+    background: rgba(74, 159, 212, 0.12);
 }

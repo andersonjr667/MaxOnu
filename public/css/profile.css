@@ -91,7 +91,8 @@ body.profile-page {
 
 .profile-page .profile-panel-shell .dashboard-panel,
 .profile-page .profile-summary-shell .dashboard-panel,
-.profile-page .profile-security-section .dashboard-panel {
+.profile-page .profile-security-section .dashboard-panel,
+.profile-page .profile-newsletter-section .dashboard-panel {
     border-radius: 26px;
     border: 1px solid var(--pf-line);
     background:
@@ -105,7 +106,8 @@ body.profile-page {
 
 .profile-page .profile-panel-shell .dashboard-panel::before,
 .profile-page .profile-summary-shell .dashboard-panel::before,
-.profile-page .profile-security-section .dashboard-panel::before {
+.profile-page .profile-security-section .dashboard-panel::before,
+.profile-page .profile-newsletter-section .dashboard-panel::before {
     content: '';
     position: absolute;
     top: 0;
@@ -120,7 +122,8 @@ body.profile-page {
 
 .profile-page .profile-panel-shell .dashboard-panel:hover,
 .profile-page .profile-summary-shell .dashboard-panel:hover,
-.profile-page .profile-security-section .dashboard-panel:hover {
+.profile-page .profile-security-section .dashboard-panel:hover,
+.profile-page .profile-newsletter-section .dashboard-panel:hover {
     transform: translateY(-4px);
     box-shadow: var(--pf-shadow-lg);
     border-color: rgba(15, 95, 154, 0.25);
@@ -128,7 +131,8 @@ body.profile-page {
 
 .profile-page .profile-panel-shell .dashboard-panel:hover::before,
 .profile-page .profile-summary-shell .dashboard-panel:hover::before,
-.profile-page .profile-security-section .dashboard-panel:hover::before {
+.profile-page .profile-security-section .dashboard-panel:hover::before,
+.profile-page .profile-newsletter-section .dashboard-panel:hover::before {
     opacity: 1;
 }
 
@@ -830,6 +834,62 @@ body.profile-page {
     border-radius: 999px;
 }
 
+.profile-page .profile-newsletter-content {
+    display: grid;
+    gap: 0.85rem;
+}
+
+.profile-page .profile-newsletter-content .profile-action-card {
+    padding: 1.4rem 1.6rem;
+}
+
+.profile-page .profile-newsletter-content .profile-action-card h3 {
+    font-size: 1.15rem;
+    margin-bottom: 0.4rem;
+}
+
+.profile-page .profile-newsletter-content .profile-action-card p {
+    font-size: 0.94rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+}
+
+.profile-page .profile-newsletter-content .view-button {
+    width: 100%;
+    min-height: 48px;
+    border-radius: 14px;
+    font-weight: 800;
+    letter-spacing: 0.01em;
+    box-shadow: 0 8px 16px rgba(15, 95, 154, 0.16);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.profile-page .profile-newsletter-content .view-button::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.25) 0%, transparent 50%);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.profile-page .profile-newsletter-content .view-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(15, 95, 154, 0.24);
+    filter: brightness(1.05);
+}
+
+.profile-page .profile-newsletter-content .view-button:hover::before {
+    opacity: 1;
+}
+
+.profile-page .profile-newsletter-content .view-button:active {
+    transform: translateY(0);
+    box-shadow: 0 6px 12px rgba(15, 95, 154, 0.18);
+}
+
 .profile-page .profile-danger-zone {
     margin-top: 0.7rem;
     padding: 1rem;
@@ -1031,7 +1091,8 @@ body.profile-page {
     .profile-page .content-box,
     .profile-page .registration-feedback,
     .profile-page .profile-delete-card,
-    .profile-page .profile-danger-zone {
+    .profile-page .profile-danger-zone,
+    .profile-page .profile-newsletter-zone {
         border-radius: 16px;
     }
 
@@ -1158,6 +1219,7 @@ body.profile-page {
 [data-theme="dark"] .profile-page .profile-panel-shell .dashboard-panel,
 [data-theme="dark"] .profile-page .profile-summary-shell .dashboard-panel,
 [data-theme="dark"] .profile-page .profile-security-section .dashboard-panel,
+[data-theme="dark"] .profile-page .profile-newsletter-section .dashboard-panel,
 [data-theme="dark"] .profile-page .profile-image-card,
 [data-theme="dark"] .profile-page .profile-delete-card,
 [data-theme="dark"] .profile-page .profile-danger-zone,

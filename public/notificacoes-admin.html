@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notificações — MaxOnu 2026</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/notificacoes-admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="icon" href="/images/logo-maxonu.png" type="image/png">
+    <script src="/js/includes.js?v=20260420-headerfix" defer></script>
+    <script src="/js/notificacoes-admin.js" defer></script>
+</head>
+<body class="dashboard-page notif-admin-page">
+    <include src="header.html"></include>
+
+    <main class="main-content" id="main-content">
+        <section class="content-section">
+            <div class="dashboard-container">
+
+                <!-- Hero -->
+                <section class="dashboard-hero notif-hero">
+                    <div class="dashboard-hero-copy">
+                        <span class="dashboard-kicker">Comunicação direta</span>
+                        <h1>Central de notificações</h1>
+                        <p id="notifLead">Carregando permissões...</p>
+                    </div>
+                    <div class="dashboard-hero-badge" id="notifRoleBadge">Validando</div>
+                </section>
+
+                <!-- Layout principal: composer + sidebar -->
+                <div class="notif-layout">
+
+                    <!-- Coluna principal: composer -->
+                    <div class="notif-main">
+
+                        <!-- Passo 1: Público-alvo -->
+                        <section class="dashboard-panel notif-step-panel">
+                            <div class="notif-step-header">
+                                <span class="notif-step-badge">1</span>
+                                <div>
+                                    <h2>Para quem?</h2>
+                                    <p>Defina o público que vai receber esta notificação.</p>
+                                </div>
+                            </div>
+
+                            <div class="notif-target-grid" id="notifTargetGrid">
+                                <button type="button" class="notif-target-card is-active" data-target="all">
+                                    <span class="notif-target-icon">👥</span>
+                                    <strong>Todos os alunos</strong>
+                                    <span>Toda a base de delegados</span>
+                                </button>
+                                <button type="button" class="notif-target-card" data-target="segment">
+                                    <span class="notif-target-icon">🎓</span>
+                                    <strong>Por segmento</strong>
+                                    <span>EM, 8º/9º ou todos</span>
+                                </button>
+                                <button type="button" class="notif-target-card" data-target="unit">
+                                    <span class="notif-target-icon">🏫</span>
+                                    <strong>Por unidade</strong>
+                                    <span>Sta Inês, Palmares ou todas</span>
+                                </button>
+                                <button type="button" class="notif-target-card" data-target="classGroup">
+                                    <span class="notif-target-icon">📋</span>
+                                    <strong>Por turma</strong>
+                                    <span>Uma ou várias turmas</span>
+                                </button>
+                                <button type="button" class="notif-target-card" data-target="committee">
+                                    <span class="notif-target-icon">🏛️</span>
+                                    <strong>Por comitê</strong>
+                                    <span>Comitê específico ou sem alocação</span>
+                                </button>
+                            </div>
+
+                            <!-- Filtro: Segmento -->
+                            <div class="notif-filter-row" id="notifFilterSegment" hidden>
+                                <label>Segmento</label>
+                                <div class="notif-radio-group">
+                                    <label class="notif-radio-card">
+                                        <input type="radio" name="segment" value="all" checked>
+                                        <span>👥 Todos</span>
+                                        <small>EM e 8º/9º</small>
+                                    </label>
+                                    <label class="notif-radio-card">
+                                        <input type="radio" name="segment" value="em">
+                                        <span>🎓 Ensino Médio</span>
+                                        <small>1ª, 2ª e 3ª série</small>
+                                    </label>
+                                    <label class="notif-radio-card">
+                                        <input type="radio" name="segment" value="fundamental">
+                                        <span>📚 8º e 9º ano</span>
+                                        <small>Ensino Fundamental</small>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Filtro: Unidade -->
+                            <div class="notif-filter-row" id="notifFilterUnit" hidden>
+                                <label>Unidade</label>
+                                <div class="notif-radio-group">
+                                    <label class="notif-radio-card">
+                                        <input type="radio" name="unit" value="all" checked>
+                                        <span>🏫 Todas</span>
+                                        <small>Sta Inês e Palmares</small>
+                                    </label>
+                                    <label class="notif-radio-card">
+                                        <input type="radio" name="unit" value="Sta Ines">
+                                        <span>🏫 Sta Inês</span>
+                                    </label>
+                                    <label class="notif-radio-card">
+                                        <input type="radio" name="unit" value="Palmares">
+                                        <span>🏫 Palmares</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Filtro: Turma (checkboxes) -->
+                            <div class="notif-filter-row" id="notifFilterClassGroup" hidden>
+                                <label>Turmas</label>
+                                <div class="notif-check-group">
+                                    <label class="notif-check-all-label">
+                                        <input type="checkbox" id="notifClassGroupAll" checked>
+                                        <span>Todas as turmas</span>
+                                    </label>
+                                    <div class="notif-checks" id="notifClassGroupChecks">
+                                        <label class="notif-check-item"><input type="checkbox" name="classGroup" value="8º ano A" checked> 8º ano A</label>
+                                        <label class="notif-check-item"><input type="checkbox" name="classGroup" value="8º ano B" checked> 8º ano B</label>
+                                        <label class="notif-check-item"><input type="checkbox" name="classGroup" value="9º ano A" checked> 9º ano A</label>
+                                        <label class="notif-check-item"><input type="checkbox" name="classGroup" value="9º ano B" checked> 9º ano B</label>
+                                        <label class="notif-check-item"><input type="checkbox" name="classGroup" value="1ª série A" checked> 1ª série A</label>
+                                        <label class="notif-check-item"><input type="checkbox" name="classGroup" value="1ª série B" checked> 1ª série B</label>
+                                        <label class="notif-check-item"><input type="checkbox" name="classGroup" value="2ª série" checked> 2ª série</label>
+                                        <label class="notif-check-item"><input type="checkbox" name="classGroup" value="3ª série" checked> 3ª série</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Filtro: Comitê -->
+                            <div class="notif-filter-row" id="notifFilterCommittee" hidden>
+                                <label for="notifCommittee">Comitê final</label>
+                                <select id="notifCommittee" class="notif-select">
+                                    <option value="unassigned">Não definido ainda</option>
+                                    <option value="1">CDH 2026</option>
+                                    <option value="2">AGNU</option>
+                                    <option value="3">ACNUR</option>
+                                    <option value="4">Bioética e Genética Humana</option>
+                                    <option value="5">Nova Ordem Global</option>
+                                    <option value="6">UNHRC</option>
+                                    <option value="7">ONU Mulheres (CSW/2026)</option>
+                                </select>
+                            </div>
+
+                            <!-- Estimativa de destinatários -->
+                            <div class="notif-recipients-bar" id="notifRecipientsBar">
+                                <span class="notif-recipients-dot"></span>
+                                <span id="notifRecipientsLabel">Todos os alunos serão notificados</span>
+                            </div>
+                        </section>
+
+                        <!-- Passo 2: Mensagem -->
+                        <section class="dashboard-panel notif-step-panel">
+                            <div class="notif-step-header">
+                                <span class="notif-step-badge">2</span>
+                                <div>
+                                    <h2>O que comunicar?</h2>
+                                    <p>Escreva um título claro e uma mensagem objetiva.</p>
+                                </div>
+                            </div>
+
+                            <div class="notif-compose-fields">
+                                <div class="notif-field">
+                                    <div class="notif-field-label-row">
+                                        <label for="notifTitle">Título</label>
+                                        <span class="notif-char-count" id="notifTitleCount">0 / 80</span>
+                                    </div>
+                                    <input type="text" id="notifTitle" class="notif-input" placeholder="Ex.: Aviso sobre o cronograma do evento" maxlength="80" autocomplete="off">
+                                </div>
+
+                                <div class="notif-field">
+                                    <div class="notif-field-label-row">
+                                        <label for="notifMessage">Mensagem</label>
+                                        <span class="notif-char-count" id="notifMessageCount">0 / 500</span>
+                                    </div>
+                                    <textarea id="notifMessage" class="notif-textarea" rows="4" placeholder="Escreva aqui o conteúdo da notificação de forma clara e direta..." maxlength="500"></textarea>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Passo 3: Revisar e enviar -->
+                        <section class="dashboard-panel notif-step-panel notif-send-panel">
+                            <div class="notif-step-header">
+                                <span class="notif-step-badge">3</span>
+                                <div>
+                                    <h2>Revisar e enviar</h2>
+                                    <p>Confira a pré-visualização antes de confirmar o envio.</p>
+                                </div>
+                            </div>
+
+                            <!-- Preview -->
+                            <div class="notif-preview-shell" id="notifPreviewShell">
+                                <div class="notif-preview-empty" id="notifPreviewEmpty">
+                                    <span>✏️</span>
+                                    <p>Preencha o título e a mensagem para ver a pré-visualização aqui.</p>
+                                </div>
+                                <div class="notif-preview-card" id="notifPreviewCard" hidden>
+                                    <div class="notif-preview-badge">Como o aluno vai ver</div>
+                                    <div class="notif-preview-content">
+                                        <div class="notif-preview-dot"></div>
+                                        <div>
+                                            <strong id="notifPreviewTitle"></strong>
+                                            <p id="notifPreviewMessage"></p>
+                                            <span class="notif-preview-time">Agora mesmo</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="notif-send-row">
+                                <button type="button" class="notif-send-btn" id="notifSubmitBtn" disabled>
+                                    <span class="notif-send-icon">🔔</span>
+                                    Enviar notificação
+                                </button>
+                                <p class="notif-send-hint" id="notifSendHint">Preencha todos os campos para habilitar o envio.</p>
+                            </div>
+
+                            <!-- Feedback de envio -->
+                            <div class="notif-feedback" id="notifFeedback" hidden></div>
+                        </section>
+
+                    </div>
+
+                    <!-- Sidebar: histórico -->
+                    <aside class="notif-sidebar">
+                        <div class="notif-sidebar-header">
+                            <h3>Histórico recente</h3>
+                            <button type="button" class="notif-refresh-btn" id="notifRefreshHistory" title="Atualizar histórico">↻</button>
+                        </div>
+                        <div id="notifHistory" class="notif-history-list">
+                            <div class="notif-history-loading">
+                                <span>Carregando...</span>
+                            </div>
+                        </div>
+                    </aside>
+
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <include src="footer.html"></include>
+</body>
+</html>

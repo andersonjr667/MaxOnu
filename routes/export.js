@@ -260,6 +260,11 @@ router.get('/results/custom', authMiddleware, requireRole(['admin', 'coordinator
   };
 
   const segment   = String(req.query.segment   || 'all').toLowerCase();
+  const turmasRaw = String(req.query.turmas || 'all');
+  const turmas = turmasRaw
+    ? turmasRaw.split(',').map((t) => String(t).trim()).filter(Boolean)
+    : ['all'];
+
   const unit      = String(req.query.unit      || 'all');
   const committee = String(req.query.committee || 'all').toLowerCase();
   const status    = String(req.query.status    || 'all').toLowerCase();
@@ -318,6 +323,14 @@ router.get('/results/custom', authMiddleware, requireRole(['admin', 'coordinator
         if (c >= 1 && c <= 7) return false;
       } else if (committee !== 'all') {
         if (Number(group.committee) !== Number(committee)) return false;
+      }
+
+      // filtro turmas — comparação direta com a parte após " - " do classGroup
+      if (!(turmas.length === 1 && turmas[0] === 'all')) {
+        const memberClassGroup = (Array.isArray(group.members) ? group.members[0] : null)?.classGroup || '';
+        const gradePart = String(memberClassGroup).split(' - ')[1]?.trim() || '';
+        const matchAny = turmas.some((t) => gradePart.toLowerCase() === String(t).toLowerCase());
+        if (!matchAny) return false;
       }
 
       // filtro status

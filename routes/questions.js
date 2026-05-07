@@ -52,12 +52,32 @@ router.post('/', authMiddleware, [
       question: req.body.question.trim(),
       askerId: null
     };
-    // If user is authenticated, associate their ID
     if (req.user && req.user.id) {
       questionData.askerId = req.user.id;
     }
     const question = new Question(questionData);
     await question.save();
+
+    // Notificar admin, teacher, coordinator e press
+    const User = require('../models/User');
+    const managers = await User.find(
+      { role: { $in: ['admin', 'teacher', 'coordinator', 'press'] } },
+      '_id'
+    );
+    const senderLabel = req.user?.username ? `@${req.user.username}` : 'Um participante';
+    const preview = question.question.length > 80
+      ? question.question.slice(0, 80) + '...'
+      : question.question;
+
+    await Promise.all(managers.map((m) =>
+      addUserNotification(m._id, {
+        type: 'new-question',
+        title: 'Nova pergunta recebida',
+        message: `${senderLabel} enviou: "${preview}"`,
+        payload: { questionId: String(question._id) }
+      })
+    ));
+
     res.status(201).json(question);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -82,13 +102,14 @@ try {
     if (!question) return res.status(404).json({ error: 'Question not found' });
 
     if (question.askerId) {
+      const preview = question.question.length > 80
+        ? question.question.slice(0, 80) + '...'
+        : question.question;
       await addUserNotification(question.askerId, {
         type: 'question-answered',
         title: 'Sua pergunta foi respondida',
-        message: 'Uma pergunta enviada por você recebeu resposta.',
-        payload: {
-          questionId: String(question._id)
-        }
+        message: `Sua pergunta "${preview}" acaba de receber uma resposta. Confira na página de perguntas comuns.`,
+        payload: { questionId: String(question._id) }
       });
     }
     res.json(question);
@@ -111,13 +132,14 @@ router.put('/:id', authMiddleware, ensureQuestionManager, async (req, res) => {
     const question = await Question.findByIdAndUpdate(req.params.id, updates, { new: true });
 
     if (!previous.answered && question.answered && previous.askerId) {
+      const preview = question.question.length > 80
+        ? question.question.slice(0, 80) + '...'
+        : question.question;
       await addUserNotification(previous.askerId, {
         type: 'question-answered',
         title: 'Sua pergunta foi respondida',
-        message: 'Uma pergunta enviada por você recebeu resposta.',
-        payload: {
-          questionId: String(question._id)
-        }
+        message: `Sua pergunta "${preview}" acaba de receber uma resposta. Confira na página de perguntas comuns.`,
+        payload: { questionId: String(question._id) }
       });
     }
 

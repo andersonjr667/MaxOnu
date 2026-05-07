@@ -166,72 +166,197 @@
                     </div>
                 </div>
 
-                <!-- Grupo: Download personalizado -->
+                <!-- Grupo: Download personalizado (painel por etapas) -->
                 <div class="export-group export-group--custom">
                     <span class="export-group-label">Download personalizado</span>
-                    <p class="export-custom-hint">Escolha os filtros e baixe exatamente o que precisa.</p>
+                    <p class="export-custom-hint">Painel de configuração para exportar exatamente o que você precisa.</p>
 
-                    <div class="export-custom-grid">
-                        <div class="export-custom-field">
-                            <label>Segmento</label>
-                            <select id="customExportSegment">
-                                <option value="all">Todos</option>
-                                <option value="em">Ensino Médio</option>
-                                <option value="fundamental">8º e 9º ano</option>
-                            </select>
+                    <div class="export-steps" role="group" aria-label="Configuração de exportação">
+                        <!-- Etapa 1: Turmas -->
+                        <div class="export-step">
+                            <div class="export-step-head">
+                                <div class="export-step-title">1) Turmas</div>
+                                <div class="export-step-subtitle">Escolha o nível desejado ou use “Todas as turmas”.</div>
+                            </div>
+
+                            <div class="export-step-content">
+                                <div class="export-turma-all">
+                                    <label class="turma-pill turma-pill--all">
+                                        <input type="checkbox" name="customExportTurma" value="all" id="customExportTurmaAll" checked>
+                                        <span>Todas as turmas</span>
+                                    </label>
+                                </div>
+
+                                <div class="export-turma-grid">
+                                    <div class="export-turma-col" data-segment="fundamental">
+                                        <div class="export-turma-col-title">8º e 9º ano</div>
+                                        <div class="export-turma-options">
+                                            <label class="turma-pill">
+                                                <input type="checkbox" name="customExportTurma" value="8º ano A" checked>
+                                                <span>8º ano A</span>
+                                            </label>
+                                            <label class="turma-pill">
+                                                <input type="checkbox" name="customExportTurma" value="8º ano B" checked>
+                                                <span>8º ano B</span>
+                                            </label>
+                                            <label class="turma-pill">
+                                                <input type="checkbox" name="customExportTurma" value="9º ano A" checked>
+                                                <span>9º ano A</span>
+                                            </label>
+                                            <label class="turma-pill">
+                                                <input type="checkbox" name="customExportTurma" value="9º ano B" checked>
+                                                <span>9º ano B</span>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="export-turma-col" data-segment="em">
+                                        <div class="export-turma-col-title">Ensino Médio</div>
+                                        <div class="export-turma-options">
+                                            <label class="turma-pill">
+                                                <input type="checkbox" name="customExportTurma" value="1ª série A" checked>
+                                                <span>1ª série A</span>
+                                            </label>
+                                            <label class="turma-pill">
+                                                <input type="checkbox" name="customExportTurma" value="1ª série B" checked>
+                                                <span>1ª série B</span>
+                                            </label>
+                                            <label class="turma-pill">
+                                                <input type="checkbox" name="customExportTurma" value="2ª série" checked>
+                                                <span>2ª série</span>
+                                            </label>
+                                            <label class="turma-pill">
+                                                <input type="checkbox" name="customExportTurma" value="3ª série" checked>
+                                                <span>3ª série</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="export-custom-field">
-                            <label>Unidade</label>
-                            <select id="customExportUnit">
-                                <option value="all">Todas</option>
-                                <option value="Sta Ines">Sta Inês</option>
-                                <option value="Palmares">Palmares</option>
-                            </select>
+
+                        <!-- Etapa 2: Unidade e Comitê -->
+                        <div class="export-step">
+                            <div class="export-step-head">
+                                <div class="export-step-title">2) Unidade e Comitê</div>
+                                <div class="export-step-subtitle">Filtre por origem e comitê final.</div>
+                            </div>
+
+                            <div class="export-step-content export-two-cols">
+                                <div class="export-custom-field">
+                                    <label>Unidade</label>
+                                    <select id="customExportUnit">
+                                        <option value="all">Todas</option>
+                                        <option value="Sta Ines">Sta Inês</option>
+                                        <option value="Palmares">Palmares</option>
+                                    </select>
+                                </div>
+
+                                <div class="export-custom-field">
+                                    <label>Comitê final</label>
+                                    <select id="customExportCommittee">
+                                        <option value="all">Todos</option>
+                                        <option value="unassigned">Sem comitê</option>
+                                        <option value="1">CDH 2026</option>
+                                        <option value="2">AGNU</option>
+                                        <option value="3">ACNUR</option>
+                                        <option value="4">Bioética</option>
+                                        <option value="5">Nova Ordem Global</option>
+                                        <option value="6">UNHRC</option>
+                                        <option value="7">ONU Mulheres</option>
+                                    </select>
+                                </div>
+
+                                <div class="export-custom-field">
+                                    <label>Status de alocação</label>
+                                    <select id="customExportStatus">
+                                        <option value="all">Todos</option>
+                                        <option value="assigned">Com comitê final</option>
+                                        <option value="unassigned">Sem comitê final</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
-                        <div class="export-custom-field">
-                            <label>Comitê final</label>
-                            <select id="customExportCommittee">
-                                <option value="all">Todos</option>
-                                <option value="unassigned">Sem comitê</option>
-                                <option value="1">CDH 2026</option>
-                                <option value="2">AGNU</option>
-                                <option value="3">ACNUR</option>
-                                <option value="4">Bioética</option>
-                                <option value="5">Nova Ordem Global</option>
-                                <option value="6">UNHRC</option>
-                                <option value="7">ONU Mulheres</option>
-                            </select>
+
+                        <!-- Etapa 3: Colunas -->
+                        <div class="export-step">
+                            <div class="export-step-head">
+                                <div class="export-step-title">3) Colunas</div>
+                                <div class="export-step-subtitle">Selecione o que entra na planilha.</div>
+                            </div>
+
+                            <div class="export-step-content">
+                                <div class="export-cols-head">
+                                    <div class="export-cols-head-left">
+                                        <div class="export-cols-label">Colunas a incluir</div>
+                                        <span class="export-custom-selected" id="exportColsSelected">0 selecionadas</span>
+                                    </div>
+
+                                    <div class="export-cols-actions">
+                                        <button type="button" class="export-custom-link-btn" id="exportColsSelectAllBtn">Selecionar tudo</button>
+                                        <button type="button" class="export-custom-link-btn" id="exportColsClearBtn">Limpar</button>
+                                    </div>
+                                </div>
+
+                                <div class="export-cols-grid">
+                                    <!-- Delegação -->
+                                    <div class="export-col-group">
+                                        <div class="export-col-group-title">Delegação</div>
+                                        <div class="export-custom-checks">
+                                            <label class="export-col-checkbox"><input type="checkbox" name="exportCol" value="delegado1" checked> Delegado 1</label>
+                                            <label class="export-col-checkbox"><input type="checkbox" name="exportCol" value="turmaDelegado1" checked> Turma Delegado 1</label>
+                                            <label class="export-col-checkbox"><input type="checkbox" name="exportCol" value="delegado2" checked> Delegado 2</label>
+                                            <label class="export-col-checkbox"><input type="checkbox" name="exportCol" value="turmaDelegado2" checked> Turma Delegado 2</label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Preferências -->
+                                    <div class="export-col-group">
+                                        <div class="export-col-group-title">Preferências</div>
+                                        <div class="export-custom-checks">
+                                            <label class="export-col-checkbox"><input type="checkbox" name="exportCol" value="primeiraOpcao" checked> 1ª opção</label>
+                                            <label class="export-col-checkbox"><input type="checkbox" name="exportCol" value="segundaOpcao" checked> 2ª opção</label>
+                                            <label class="export-col-checkbox"><input type="checkbox" name="exportCol" value="terceiraOpcao" checked> 3ª opção</label>
+                                            <label class="export-col-checkbox"><input type="checkbox" name="exportCol" value="comiteFinal" checked> Comitê final</label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Organização -->
+                                    <div class="export-col-group">
+                                        <div class="export-col-group-title">Organização</div>
+                                        <div class="export-custom-checks">
+                                            <label class="export-col-checkbox"><input type="checkbox" name="exportCol" value="pais"> País</label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Sistema -->
+                                    <div class="export-col-group">
+                                        <div class="export-col-group-title">Sistema</div>
+                                        <div class="export-custom-checks">
+                                            <label class="export-col-checkbox"><input type="checkbox" name="exportCol" value="enviadoEm"> Enviado em</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="export-custom-field">
-                            <label>Status de alocação</label>
-                            <select id="customExportStatus">
-                                <option value="all">Todos</option>
-                                <option value="assigned">Com comitê final</option>
-                                <option value="unassigned">Sem comitê final</option>
-                            </select>
+
+                        <!-- Etapa 4: Ação final -->
+                        <div class="export-step export-step--final">
+                            <div class="export-step-head">
+                                <div class="export-step-title">4) Ação final</div>
+                                <div class="export-step-subtitle">Gere a planilha no formato XLSX.</div>
+                            </div>
+
+                            <div class="export-step-content">
+                                <button type="button" class="export-final-btn" id="advancedExportCustomBtn">
+                                    <span class="export-final-btn-icon" aria-hidden="true">↓</span>
+                                    <span>Baixar planilha (.XLSX)</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
-
-                    <div class="export-custom-cols">
-                        <p class="export-custom-cols-label">Colunas a incluir</p>
-                        <div class="export-custom-checks">
-                            <label><input type="checkbox" name="exportCol" value="delegado1" checked> Delegado 1</label>
-                            <label><input type="checkbox" name="exportCol" value="turmaDelegado1" checked> Turma Delegado 1</label>
-                            <label><input type="checkbox" name="exportCol" value="delegado2" checked> Delegado 2</label>
-                            <label><input type="checkbox" name="exportCol" value="turmaDelegado2" checked> Turma Delegado 2</label>
-                            <label><input type="checkbox" name="exportCol" value="primeiraOpcao" checked> 1ª opção</label>
-                            <label><input type="checkbox" name="exportCol" value="segundaOpcao" checked> 2ª opção</label>
-                            <label><input type="checkbox" name="exportCol" value="terceiraOpcao" checked> 3ª opção</label>
-                            <label><input type="checkbox" name="exportCol" value="comiteFinal" checked> Comitê final</label>
-                            <label><input type="checkbox" name="exportCol" value="pais"> País</label>
-                            <label><input type="checkbox" name="exportCol" value="enviadoEm"> Enviado em</label>
-                        </div>
-                    </div>
-
-                    <button type="button" class="view-button export-custom-btn" id="advancedExportCustomBtn">
-                        Gerar download personalizado (XLSX)
-                    </button>
                 </div>
+
 
             </div>
         </div>

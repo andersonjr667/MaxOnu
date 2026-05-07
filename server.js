@@ -26,6 +26,9 @@ const settingsRoutes = require('./routes/settings');
 const dpoRoutes = require('./routes/dpos');
 const notificationRoutes = require('./routes/notifications');
 const reactionRoutes = require('./routes/reactions');
+const newsletterRoutes = require('./routes/newsletter');
+const commentRoutes = require('./routes/comments');
+const analyticsRoutes = require('./routes/analytics');
 const { shareMetaMiddleware } = require('./middleware/share-meta');
 const cleanUrlsMiddleware = require('./middleware/clean-urls');
 const { COMMITTEE_REVEAL_DATE } = require('./utils/event-config');
@@ -475,6 +478,13 @@ app.get('/api/reveal-status', (req, res) => {
   });
 });
 
+app.get('/api/features', (req, res) => {
+  res.setHeader('Cache-Control', 'public, max-age=300');
+  res.json({
+    newsletter: process.env.NEWSLETTER_ENABLED === 'true'
+  });
+});
+
 app.get('/api/committees', (req, res) => {
   const revealed = Date.now() >= COMMITTEE_REVEAL_DATE.getTime();
   res.setHeader('Cache-Control', revealed ? 'public, max-age=3600' : 'public, max-age=300');
@@ -494,6 +504,18 @@ app.use('/api/settings', settingsRoutes);
 app.use('/api/dpos', dpoRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/reactions', reactionRoutes);
+app.use('/api/newsletter', newsletterRoutes);
+
+// Middleware to block newsletter page if disabled
+app.use('/newsletter', (req, res, next) => {
+    if (process.env.NEWSLETTER_ENABLED !== 'true') {
+        return res.redirect('/');
+    }
+    next();
+});
+
+app.use('/api/comments', commentRoutes);
+app.use('/api/analytics', analyticsRoutes);
 
 // Share meta tags middleware para melhorar compartilhamento em redes sociais
 app.use(shareMetaMiddleware(publicDir));
