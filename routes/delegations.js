@@ -18,7 +18,8 @@ function normalizeText(value = '') {
     return String(value || '')
         .toLowerCase()
         .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '');
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[ºª]/g, (match) => (match === 'º' ? 'o' : 'a'));
 }
 
 function getEducationSegment(classGroup = '') {
@@ -30,7 +31,9 @@ function getEducationSegment(classGroup = '') {
         normalized.includes('9o') ||
         normalized.includes('9 ano') ||
         normalized.includes('8 e 9') ||
-        normalized.includes('8/9')
+        normalized.includes('8/9') ||
+        /8\s*ano/i.test(normalized) ||
+        /9\s*ano/i.test(normalized)
     ) {
         return 'fundamental';
     }
@@ -39,7 +42,8 @@ function getEducationSegment(classGroup = '') {
         normalized.includes('ensino medio') ||
         normalized.includes('medio') ||
         /\bem\b/.test(normalized) ||
-        /\b[123]\s*serie\b/.test(normalized)
+        /\b[123]\s*serie\b/.test(normalized) ||
+        /\b[123]\s*ano\b/.test(normalized) // Frequentemente usado para Ensino Médio (1º ano, 2º ano...)
     ) {
         return 'em';
     }
