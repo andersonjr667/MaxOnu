@@ -16,6 +16,7 @@ const Joi = require('joi');
 const chalk = require('chalk').default;
 const figlet = require('figlet');
 const fs = require('fs');
+const nodemailer = require('nodemailer');
 const User = require('./models/User');
 const authRoutes = require('./routes/auth');
 const delegationRoutes = require('./routes/delegations');
@@ -286,6 +287,114 @@ async function ensureCoordinatorUsers() {
 }
 
 // ============================================
+// EMAIL TEST FUNCTION
+// ============================================
+
+function hasEmailTransportConfig() {
+  return Boolean(
+    process.env.EMAIL_USER &&
+    process.env.EMAIL_PASSWORD &&
+    !String(process.env.EMAIL_USER).includes('seu-email') &&
+    !String(process.env.EMAIL_PASSWORD).includes('sua-senha')
+  );
+}
+
+async function sendTestEmail() {
+  if (!hasEmailTransportConfig()) {
+    log('warn', chalk.yellow('Email não configurado. Pulando teste de email.'));
+    return;
+  }
+
+  try {
+    log('info', chalk.blue('Enviando email de teste...'));
+
+    const transporter = nodemailer.createTransport({
+      service: process.env.EMAIL_SERVICE || 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASSWORD
+      }
+    });
+
+    const testTime = new Date().toLocaleString('pt-BR', { 
+      dateStyle: 'short', 
+      timeStyle: 'medium' 
+    });
+
+    await transporter.sendMail({
+      from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
+      to: 'alsj1520@gmail.com',
+      subject: `✅ Servidor MaxOnu 2026 Iniciado - ${testTime}`,
+      html: `
+        <div style="margin:0;padding:24px;background:#f2f7fc;font-family:Arial,Helvetica,sans-serif;color:#16324a;">
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:640px;margin:0 auto;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #d7e6f4;">
+            <tr>
+              <td style="background:linear-gradient(135deg,#0a5ea3,#1b7ac9);text-align:center;padding:30px;">
+                <h1 style="margin:0;color:#ffffff;font-size:28px;font-weight:900;">🚀 MaxOnu 2026</h1>
+                <p style="margin:8px 0 0;color:rgba(255,255,255,0.9);font-size:14px;">Sistema de Gerenciamento</p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:32px 24px;">
+                <h2 style="margin:0 0 16px 0;font-size:22px;color:#0b3252;">✅ Servidor Iniciado com Sucesso</h2>
+                <p style="margin:0 0 16px 0;font-size:15px;line-height:1.6;color:#3a5975;">
+                  O servidor <strong>MaxOnu 2026</strong> foi iniciado com sucesso e está pronto para receber requisições.
+                </p>
+                
+                <div style="margin:20px 0;padding:16px;border-radius:12px;background:#f1f8ff;border:1px solid #bcd9f3;">
+                  <p style="margin:0 0 8px 0;font-size:14px;color:#0b4f86;"><strong>📅 Data/Hora:</strong></p>
+                  <p style="margin:0;font-size:16px;font-weight:700;color:#0b4f86;">${testTime}</p>
+                </div>
+
+                <div style="margin:20px 0;padding:16px;border-radius:12px;background:#f0fdf4;border:1px solid #bbf7d0;">
+                  <p style="margin:0 0 8px 0;font-size:14px;color:#166534;"><strong>🌐 Ambiente:</strong></p>
+                  <p style="margin:0;font-size:16px;font-weight:700;color:#166534;">${IS_PRODUCTION ? 'PRODUCTION' : 'DEVELOPMENT'}</p>
+                </div>
+
+                <div style="margin:20px 0;padding:16px;border-radius:12px;background:#fef3c7;border:1px solid #fde68a;">
+                  <p style="margin:0 0 8px 0;font-size:14px;color:#92400e;"><strong>📧 Configuração de Email:</strong></p>
+                  <p style="margin:0;font-size:14px;color:#92400e;">✅ Funcionando corretamente</p>
+                </div>
+
+                <p style="margin:24px 0 0;font-size:14px;line-height:1.6;color:#3a5975;">
+                  Este é um email automático de teste enviado ao iniciar o servidor. Se você recebeu esta mensagem, significa que o sistema de envio de emails está funcionando perfeitamente.
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:0 24px 24px 24px;">
+                <p style="margin:0;font-size:12px;line-height:1.6;color:#6d8398;border-top:1px solid #e1edf8;padding-top:14px;">
+                  Mensagem automática da plataforma MaxOnu 2026 • Não responda este email
+                </p>
+              </td>
+            </tr>
+          </table>
+        </div>
+      `,
+      text: `
+Servidor MaxOnu 2026 Iniciado
+
+O servidor foi iniciado com sucesso!
+
+Data/Hora: ${testTime}
+Ambiente: ${IS_PRODUCTION ? 'PRODUCTION' : 'DEVELOPMENT'}
+Configuração de Email: Funcionando
+
+Este é um email automático de teste.
+      `
+    });
+
+    log('ok', chalk.green('✉️  Email de teste enviado para alsj1520@gmail.com'));
+  } catch (error) {
+    log('err', chalk.red('Falha ao enviar email de teste: ') + chalk.gray(error.message));
+  }
+}
+
+// ============================================
+// END EMAIL TEST FUNCTION
+// ============================================
+
+// ============================================
 // TERMINAL OUTPUTS
 // ============================================
 
@@ -376,8 +485,11 @@ function printDbClosed() {
 async function startServer(port) {
   printBanner(port);
   
-  serverInstance = app.listen(port, () => {
+  serverInstance = app.listen(port, async () => {
     printServerReady(port);
+    
+    // Enviar email de teste após servidor iniciar
+    await sendTestEmail();
   });
 
   serverInstance.on('error', (err) => {

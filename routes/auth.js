@@ -774,14 +774,18 @@ router.post('/forgot-password', [
     user.resetPasswordToken = null;
     await user.save();
 
-    const emailSent = await sendPasswordResetEmail({
+    // Enviar email de forma assíncrona (não bloquear a resposta)
+    sendPasswordResetEmail({
       to: user.email,
       fullName: user.fullName,
       resetCode
-    }).catch(() => false);
+    }).catch(err => {
+      console.error('Erro ao enviar email de recuperação:', err);
+    });
 
+    // Responder imediatamente sem esperar o email
     res.json({ 
-      message: emailSent
+      message: hasEmailTransportConfig()
         ? 'Enviamos um código de verificação para seu email.'
         : 'Pedido recebido. Como o email ainda não está configurado, use o código de teste exibido abaixo.',
       resetCode: process.env.NODE_ENV !== 'production' ? resetCode : undefined

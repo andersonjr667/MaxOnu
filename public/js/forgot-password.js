@@ -34,7 +34,7 @@ function setStep(stepNumber) {
 
 async function requestCode(email, showOnlyMessage = false) {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 30000);
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 segundos
     
     try {
         if (!email || !email.trim()) {
@@ -80,7 +80,7 @@ async function requestCode(email, showOnlyMessage = false) {
     } catch (error) {
         clearTimeout(timeoutId);
         if (error.name === 'AbortError') {
-            throw new Error('A requisição demorou muito. Verifique sua conexão e tente novamente.');
+            throw new Error('Tempo esgotado. Verifique sua conexão.');
         }
         throw error;
     }
@@ -160,19 +160,22 @@ function initForgotPasswordPage() {
         button.textContent = 'Validando...';
 
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 30000);
+        const timeoutId = setTimeout(() => controller.abort(), 15000);
 
         try {
             const response = await fetch(`${API_URL}/verify-reset-code`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
                 body: JSON.stringify({ email, code }),
                 signal: controller.signal
             });
 
             clearTimeout(timeoutId);
 
-            const data = await response.json().catch(() => ({}));
+            const data = await response.json().catch(() => ({ error: 'Erro ao processar resposta' }));
             if (!response.ok) {
                 throw new Error(Array.isArray(data.error) ? data.error[0]?.msg : data.error || 'Código inválido.');
             }
@@ -187,7 +190,7 @@ function initForgotPasswordPage() {
         } catch (error) {
             clearTimeout(timeoutId);
             if (error.name === 'AbortError') {
-                setAlert('A requisição demorou muito. Verifique sua conexão e tente novamente.', true);
+                setAlert('Tempo esgotado. Tente novamente.', true);
             } else {
                 setAlert(error.message || 'Não foi possível validar o código.', true);
             }
@@ -225,19 +228,22 @@ function initForgotPasswordPage() {
         button.textContent = 'Salvando...';
 
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 30000);
+        const timeoutId = setTimeout(() => controller.abort(), 15000);
 
         try {
             const response = await fetch(`${API_URL}/reset-password`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
                 body: JSON.stringify({ token: verifiedResetToken, newPassword }),
                 signal: controller.signal
             });
 
             clearTimeout(timeoutId);
 
-            const data = await response.json().catch(() => ({}));
+            const data = await response.json().catch(() => ({ error: 'Erro ao processar resposta' }));
             if (!response.ok) {
                 throw new Error(Array.isArray(data.error) ? data.error[0]?.msg : data.error || 'Falha ao salvar nova senha.');
             }
@@ -249,7 +255,7 @@ function initForgotPasswordPage() {
         } catch (error) {
             clearTimeout(timeoutId);
             if (error.name === 'AbortError') {
-                setAlert('A requisição demorou muito. Verifique sua conexão e tente novamente.', true);
+                setAlert('Tempo esgotado. Tente novamente.', true);
             } else {
                 setAlert(error.message || 'Não foi possível redefinir a senha.', true);
             }
