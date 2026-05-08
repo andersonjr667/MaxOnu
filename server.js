@@ -307,28 +307,33 @@ async function sendTestEmail() {
     return;
   }
 
-  try {
-    log('info', chalk.blue('Enviando email de teste...'));
+  // Enviar email em background sem bloquear o startup
+  setImmediate(async () => {
+    try {
+      log('info', chalk.blue('Enviando email de teste em background...'));
 
-    const transporter = nodemailer.createTransport({
-      service: process.env.EMAIL_SERVICE || 'gmail',
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASSWORD
-      }
-    });
+      const transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASSWORD
+        },
+        tls: {
+          rejectUnauthorized: false
+        },
+        connectionTimeout: 30000,
+        greetingTimeout: 30000,
+        socketTimeout: 30000
+      });
 
-    log('info', chalk.blue(`Transporter criado com service: ${process.env.EMAIL_SERVICE || 'gmail'}`));
+      const testTime = new Date().toLocaleString('pt-BR', { 
+        dateStyle: 'short', 
+        timeStyle: 'medium' 
+      });
 
-    const testTime = new Date().toLocaleString('pt-BR', { 
-      dateStyle: 'short', 
-      timeStyle: 'medium' 
-    });
-
-    log('info', chalk.blue('Enviando email para alsj1520@gmail.com...'));
-
-    const info = await Promise.race([
-      transporter.sendMail({
+      const info = await transporter.sendMail({
         from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
         to: 'alsj1520@gmail.com',
         subject: `✅ Servidor MaxOnu 2026 Iniciado - ${testTime}`,
@@ -389,20 +394,21 @@ Configuração de Email: Funcionando
 
 Este é um email automático de teste.
       `
-      }),
-      new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Timeout: Email demorou mais de 10s')), 10000)
-      )
-    ]);
+      });
 
-    log('ok', chalk.green('✉️  Email de teste enviado para alsj1520@gmail.com'));
-    log('info', chalk.gray(`Message ID: ${info.messageId}`));
-  } catch (error) {
-    log('err', chalk.red('Falha ao enviar email de teste: ') + chalk.gray(error.message));
-    if (error.code) {
-      log('err', chalk.gray(`Código de erro: ${error.code}`));
+      log('ok', chalk.green('✉️  Email de teste enviado com sucesso!'));
+      log('info', chalk.gray(`Message ID: ${info.messageId}`));
+    } catch (error) {
+      log('warn', chalk.yellow('Email de teste falhou (não crítico): ') + chalk.gray(error.message));
+      if (error.code) {
+        log('info', chalk.gray(`Código: ${error.code}`));
+      }
+      log('info', chalk.gray('O servidor continuará funcionando normalmente.'));
     }
-  }
+  });
+
+  // Retorna imediatamente sem esperar o email
+  log('info', chalk.gray('Email de teste agendado para envio em background.'));
 }
 
 // ============================================
@@ -500,11 +506,11 @@ function printDbClosed() {
 async function startServer(port) {
   printBanner(port);
   
-  serverInstance = app.listen(port, async () => {
+  serverInstance = app.listen(port, () => {
     printServerReady(port);
     
-    // Enviar email de teste após servidor iniciar
-    await sendTestEmail();
+    // Enviar email de teste em background (não bloqueia o startup)
+    sendTestEmail();
   });
 
   serverInstance.on('error', (err) => {
