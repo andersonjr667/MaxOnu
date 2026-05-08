@@ -291,12 +291,14 @@ async function ensureCoordinatorUsers() {
 // ============================================
 
 function hasEmailTransportConfig() {
-  return Boolean(
-    process.env.EMAIL_USER &&
-    process.env.EMAIL_PASSWORD &&
-    !String(process.env.EMAIL_USER).includes('seu-email') &&
-    !String(process.env.EMAIL_PASSWORD).includes('sua-senha')
-  );
+  const hasUser = Boolean(process.env.EMAIL_USER);
+  const hasPass = Boolean(process.env.EMAIL_PASSWORD);
+  const isValidUser = hasUser && !String(process.env.EMAIL_USER).includes('seu-email');
+  const isValidPass = hasPass && !String(process.env.EMAIL_PASSWORD).includes('sua-senha');
+  
+  log('info', chalk.blue(`Email config check: USER=${hasUser}, PASS=${hasPass}, VALID_USER=${isValidUser}, VALID_PASS=${isValidPass}`));
+  
+  return Boolean(hasUser && hasPass && isValidUser && isValidPass);
 }
 
 async function sendTestEmail() {
