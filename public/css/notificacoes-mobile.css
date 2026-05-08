@@ -1,0 +1,215 @@
+/* Overlay full-screen da central de notificações no mobile */
+
+.notifications-mobile-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1400;
+  background: rgba(0, 0, 0, 0.62);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+
+  display: none;
+  opacity: 0;
+  transition: opacity 0.22s ease;
+}
+
+.notifications-mobile-overlay.is-open {
+  display: block;
+  opacity: 1;
+}
+
+.notifications-mobile-panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+
+  background: rgba(5, 18, 36, 0.98);
+  border-top-left-radius: 22px;
+  border-top-right-radius: 22px;
+  border: 1px solid rgba(255, 209, 102, 0.16);
+  box-shadow: 0 -18px 60px rgba(0, 0, 0, 0.55);
+
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  overflow: hidden;
+}
+
+.notifications-mobile-header {
+  padding: 1.15rem 1.1rem 0.95rem;
+  display: grid;
+  gap: 0.6rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(5, 18, 36, 0.98);
+}
+
+.notifications-mobile-header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+
+.notifications-mobile-title {
+  color: #ffffff;
+  font-weight: 900;
+  font-size: 1.05rem;
+}
+
+.notifications-mobile-subtitle {
+  color: rgba(255, 255, 255, 0.72);
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.notifications-mobile-close {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.92);
+  cursor: pointer;
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.notifications-mobile-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 209, 102, 0.28);
+}
+
+.notifications-mobile-actions {
+  padding: 0.95rem 1.1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+  display: flex;
+  gap: 0.7rem;
+}
+
+.notifications-mobile-actions button {
+  flex: 1;
+  min-height: 48px;
+  border-radius: 14px;
+  font-weight: 900;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.notifications-mobile-actions .btn-secondary {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.notifications-mobile-actions .btn-primary {
+  background: linear-gradient(135deg, rgba(255, 209, 102, 0.22), rgba(255, 140, 66, 0.18));
+  border-color: rgba(255, 209, 102, 0.28);
+  color: rgba(255, 247, 214, 0.98);
+}
+
+.notifications-mobile-actions button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.notifications-mobile-list-wrapper {
+  overflow-y: auto;
+  padding: 0.85rem 1.0rem 1.1rem;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.notifications-mobile-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.notifications-mobile-loading {
+  color: rgba(255, 255, 255, 0.75);
+  font-weight: 800;
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.notifications-mobile-empty {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 800;
+  padding: 2.2rem 0.5rem;
+  border: 1px dashed rgba(255, 255, 255, 0.16);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.notifications-mobile-item {
+  border-radius: 16px;
+  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.notifications-mobile-item.is-unread {
+  border-color: rgba(255, 209, 102, 0.25);
+}
+
+.notifications-mobile-item strong {
+  color: rgba(255, 255, 255, 0.96);
+}
+
+.notifications-mobile-item p {
+  margin-top: 0.45rem;
+  color: rgba(255, 255, 255, 0.82);
+  font-weight: 650;
+}
+
+.notifications-mobile-item .meta {
+  margin-top: 0.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  color: rgba(255, 255, 255, 0.55);
+  font-weight: 800;
+  font-size: 0.78rem;
+}
+
+.notifications-mobile-item .meta .time {
+  white-space: nowrap;
+}
+
+.notifications-mobile-item .actions {
+  margin-top: 0.85rem;
+  display: flex;
+  gap: 0.65rem;
+}
+
+.notifications-mobile-item .actions button {
+  flex: 1;
+  min-height: 44px;
+  border-radius: 12px;
+  font-weight: 900;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.notifications-mobile-item .actions .btn-secondary {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.notifications-mobile-item .actions .btn-primary {
+  background: linear-gradient(135deg, rgba(255, 209, 102, 0.2), rgba(255, 140, 66, 0.16));
+  border-color: rgba(255, 209, 102, 0.25);
+  color: rgba(255, 247, 214, 0.98);
+}
+
+.notifications-mobile-footer-spacer {
+  height: env(safe-area-inset-bottom);
+}
+
+@media (min-width: 641px) {
+  /* garante que não apareça fora do mobile (mas funciona mesmo assim) */
+  .notifications-mobile-overlay { display: none !important; }
+}
+

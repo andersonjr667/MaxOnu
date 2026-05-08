@@ -6,619 +6,14 @@
     <title>Gerenciar Delegações - MaxOnu 2026</title>
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/admin-delegations.css">
     <link rel="icon" href="/images/logo-maxonu.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <script src="/js/includes.js" defer></script>
-    <script src="/js/admin-delegations.js" defer></script>
-    <style>
-        .delegation-form-grid {
-            display: grid;
-            gap: 1.25rem;
-        }
-        
-        .search-filter-bar {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-        }
-        
-        .search-input {
-            flex: 1;
-            min-width: 250px;
-            padding: 0.875rem 1.125rem;
-            border-radius: 14px;
-            border: 1.5px solid var(--dash-line);
-            background: rgba(255, 255, 255, 0.95);
-            font-size: 0.95rem;
-            transition: all 0.2s ease;
-        }
-        
-        .search-input:focus {
-            outline: none;
-            border-color: rgba(255, 140, 66, 0.5);
-            box-shadow: 0 0 0 4px rgba(255, 140, 66, 0.1);
-        }
-        
-        .filter-select {
-            padding: 0.875rem 1.125rem;
-            border-radius: 14px;
-            border: 1.5px solid var(--dash-line);
-            background: rgba(255, 255, 255, 0.95);
-            font-size: 0.95rem;
-            cursor: pointer;
-            min-width: 150px;
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .stat-card {
-            padding: 1.25rem;
-            border-radius: 16px;
-            background: linear-gradient(135deg, rgba(255, 140, 66, 0.1) 0%, rgba(255, 140, 66, 0.05) 100%);
-            border: 1.5px solid rgba(255, 140, 66, 0.2);
-        }
-        
-        .stat-value {
-            font-size: 2rem;
-            font-weight: 900;
-            color: var(--dash-ink);
-            line-height: 1;
-            margin-bottom: 0.25rem;
-        }
-        
-        .stat-label {
-            font-size: 0.85rem;
-            color: var(--dash-muted);
-            font-weight: 600;
-        }
-        
-        .member-input-group {
-            display: grid;
-            gap: 0.5rem;
-            padding: 1.25rem;
-            border-radius: 16px;
-            background: rgba(7, 40, 68, 0.04);
-            border: 1.5px solid var(--dash-line);
-            transition: all 0.2s ease;
-        }
-        
-        .member-input-group:hover {
-            border-color: rgba(255, 140, 66, 0.3);
-            background: rgba(7, 40, 68, 0.06);
-        }
-        
-        .member-input-group label {
-            font-weight: 700;
-            color: var(--dash-ink);
-            font-size: 0.9rem;
-        }
-        
-        .member-input-group input {
-            padding: 0.75rem 1rem;
-            border-radius: 12px;
-            border: 1.5px solid var(--dash-line);
-            background: rgba(255, 255, 255, 0.95);
-            font-size: 0.95rem;
-        }
-        
-        .member-input-group input:focus {
-            outline: none;
-            border-color: rgba(255, 140, 66, 0.5);
-            box-shadow: 0 0 0 4px rgba(255, 140, 66, 0.1);
-        }
-        
-        .delegation-size-selector {
-            display: flex;
-            gap: 0.75rem;
-            margin-bottom: 1rem;
-        }
-        
-        .size-option {
-            flex: 1;
-            padding: 1.25rem;
-            border-radius: 16px;
-            border: 2px solid var(--dash-line);
-            background: rgba(255, 255, 255, 0.95);
-            cursor: pointer;
-            text-align: center;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .size-option:hover {
-            border-color: rgba(255, 140, 66, 0.4);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(255, 140, 66, 0.15);
-        }
-        
-        .size-option.active {
-            border-color: #ff8c42;
-            background: linear-gradient(135deg, rgba(255, 140, 66, 0.15) 0%, rgba(255, 140, 66, 0.08) 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(255, 140, 66, 0.2);
-        }
-        
-        .size-option input[type="radio"] {
-            display: none;
-        }
-        
-        .size-option-label {
-            font-weight: 700;
-            color: var(--dash-ink);
-            display: block;
-            margin-bottom: 0.25rem;
-        }
-        
-        .size-option-desc {
-            font-size: 0.85rem;
-            color: var(--dash-muted);
-        }
-        
-        .delegations-list {
-            display: grid;
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
-        
-        .delegation-item {
-            padding: 1.75rem;
-            border-radius: 20px;
-            border: 1.5px solid var(--dash-line);
-            background: rgba(255, 255, 255, 0.98);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .delegation-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background: linear-gradient(180deg, #ff8c42 0%, #ff6b35 100%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .delegation-item:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 32px rgba(7, 40, 68, 0.15);
-            border-color: rgba(255, 140, 66, 0.3);
-        }
-        
-        .delegation-item:hover::before {
-            opacity: 1;
-        }
-        
-        .delegation-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--dash-line);
-        }
-        
-        .delegation-id {
-            font-weight: 800;
-            color: var(--dash-ink);
-            font-size: 1.1rem;
-        }
-        
-        .delegation-size-badge {
-            padding: 0.5rem 1rem;
-            border-radius: 999px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, rgba(255, 140, 66, 0.2) 0%, rgba(255, 140, 66, 0.1) 100%);
-            color: #d97706;
-            border: 1.5px solid rgba(255, 140, 66, 0.35);
-            display: inline-flex;
-            align-items: center;
-            gap: 0.35rem;
-        }
-        
-        .delegation-size-badge::before {
-            content: '👥';
-            font-size: 0.9rem;
-        }
-        
-        .delegation-members {
-            display: grid;
-            gap: 0.75rem;
-            margin-bottom: 1rem;
-        }
-        
-        .member-item {
-            display: flex;
-            align-items: center;
-            gap: 0.875rem;
-            padding: 0.875rem 1rem;
-            border-radius: 14px;
-            background: rgba(7, 40, 68, 0.04);
-            transition: all 0.2s ease;
-        }
-        
-        .member-item:hover {
-            background: rgba(7, 40, 68, 0.08);
-            transform: translateX(4px);
-        }
-        
-        .member-avatar {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2.5px solid #fff;
-            box-shadow: 0 3px 10px rgba(7, 40, 68, 0.18);
-            transition: transform 0.2s ease;
-        }
-        
-        .member-item:hover .member-avatar {
-            transform: scale(1.08);
-        }
-        
-        .member-info {
-            flex: 1;
-        }
-        
-        .member-name {
-            font-weight: 700;
-            color: var(--dash-ink);
-            font-size: 0.95rem;
-        }
-        
-        .member-username {
-            font-size: 0.85rem;
-            color: var(--dash-muted);
-        }
-        
-        .delegation-actions {
-            display: flex;
-            gap: 0.75rem;
-            justify-content: flex-end;
-            margin-top: 1rem;
-        }
-        
-        .action-btn {
-            padding: 0.625rem 1.125rem;
-            border-radius: 12px;
-            border: 1.5px solid var(--dash-line);
-            background: rgba(255, 255, 255, 0.95);
-            font-size: 0.875rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .action-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(7, 40, 68, 0.12);
-        }
-        
-        .action-btn-danger {
-            border-color: rgba(209, 73, 91, 0.3);
-            color: #d1495b;
-        }
-        
-        .action-btn-danger:hover {
-            background: rgba(209, 73, 91, 0.08);
-            border-color: rgba(209, 73, 91, 0.5);
-        }
-        
-        .delegation-meta {
-            font-size: 0.85rem;
-            color: var(--dash-muted);
-            margin-top: 0.75rem;
-            padding-top: 0.75rem;
-            border-top: 1px solid var(--dash-line);
-        }
-        
-        .empty-state {
-            text-align: center;
-            padding: 4rem 2rem;
-            color: var(--dash-muted);
-            border-radius: 20px;
-            background: rgba(7, 40, 68, 0.02);
-            border: 2px dashed var(--dash-line);
-        }
-        
-        .empty-state-icon {
-            font-size: 4rem;
-            margin-bottom: 1.25rem;
-            opacity: 0.4;
-            filter: grayscale(0.3);
-        }
-        
-        .loading-spinner {
-            display: inline-block;
-            width: 24px;
-            height: 24px;
-            border: 3px solid rgba(255, 140, 66, 0.2);
-            border-top-color: #ff8c42;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        /* Dark mode support - Enhanced */
-        [data-theme="dark"] .dashboard-container {
-            background: linear-gradient(180deg, rgba(16, 26, 42, 0.98), rgba(12, 20, 34, 0.96));
-            border-color: rgba(255, 255, 255, 0.08);
-        }
-        
-        [data-theme="dark"] .dashboard-hero {
-            background:
-                radial-gradient(circle at top right, rgba(255, 209, 102, 0.16), transparent 32%),
-                linear-gradient(135deg, rgba(4, 10, 22, 0.98), rgba(6, 16, 34, 0.97));
-            border-color: rgba(255, 255, 255, 0.12);
-        }
-        
-        [data-theme="dark"] .dashboard-hero-copy h1,
-        [data-theme="dark"] .dashboard-hero-copy p {
-            color: #e2edf8;
-        }
-        
-        [data-theme="dark"] .dashboard-kicker {
-            background: rgba(255, 255, 255, 0.12);
-            border-color: rgba(255, 209, 102, 0.3);
-            color: #ffe6b0;
-        }
-        
-        [data-theme="dark"] .dashboard-hero-badge {
-            background: rgba(255, 255, 255, 0.14);
-            border-color: rgba(255, 255, 255, 0.2);
-            color: #ffd166;
-        }
-        
-        [data-theme="dark"] .dashboard-panel {
-            background: linear-gradient(180deg, rgba(16, 26, 42, 0.98), rgba(12, 20, 34, 0.96));
-            border-color: rgba(255, 255, 255, 0.08);
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
-        }
-        
-        [data-theme="dark"] .dashboard-section-heading h2 {
-            color: #e2edf8;
-        }
-        
-        [data-theme="dark"] .dashboard-section-heading p {
-            color: #b7cbe0;
-        }
-        
-        [data-theme="dark"] .dashboard-section-kicker {
-            background: rgba(255, 140, 66, 0.15);
-            border-color: rgba(255, 140, 66, 0.25);
-            color: #ff9f5a;
-        }
-        
-        [data-theme="dark"] .delegation-item,
-        [data-theme="dark"] .member-input-group,
-        [data-theme="dark"] .stat-card {
-            background: linear-gradient(180deg, rgba(20, 32, 50, 0.95), rgba(16, 26, 42, 0.92));
-            border-color: rgba(255, 255, 255, 0.1);
-        }
-        
-        [data-theme="dark"] .delegation-item:hover {
-            background: linear-gradient(180deg, rgba(24, 36, 56, 0.98), rgba(20, 32, 50, 0.95));
-            border-color: rgba(255, 140, 66, 0.4);
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
-        }
-        
-        [data-theme="dark"] .delegation-id,
-        [data-theme="dark"] .member-name,
-        [data-theme="dark"] .stat-value {
-            color: #e2edf8;
-        }
-        
-        [data-theme="dark"] .member-username,
-        [data-theme="dark"] .stat-label,
-        [data-theme="dark"] .delegation-meta {
-            color: #9eb6cd;
-        }
-        
-        [data-theme="dark"] .member-item {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        
-        [data-theme="dark"] .member-item:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(255, 255, 255, 0.1);
-        }
-        
-        [data-theme="dark"] .member-avatar {
-            border-color: rgba(255, 255, 255, 0.15);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        }
-        
-        [data-theme="dark"] .size-option {
-            background: rgba(20, 32, 50, 0.9);
-            border-color: rgba(255, 255, 255, 0.15);
-            color: #c8d8e8;
-        }
-        
-        [data-theme="dark"] .size-option:hover {
-            background: rgba(24, 36, 56, 0.95);
-            border-color: rgba(255, 140, 66, 0.5);
-        }
-        
-        [data-theme="dark"] .size-option.active {
-            background: linear-gradient(135deg, rgba(255, 140, 66, 0.3) 0%, rgba(255, 140, 66, 0.2) 100%);
-            border-color: #ff8c42;
-            box-shadow: 0 6px 20px rgba(255, 140, 66, 0.25);
-        }
-        
-        [data-theme="dark"] .size-option-label {
-            color: #e2edf8;
-        }
-        
-        [data-theme="dark"] .size-option-desc {
-            color: #9eb6cd;
-        }
-        
-        [data-theme="dark"] .search-input,
-        [data-theme="dark"] .filter-select,
-        [data-theme="dark"] .member-input-group input,
-        [data-theme="dark"] .member-input-group select {
-            background: rgba(10, 18, 32, 0.9);
-            border-color: rgba(255, 255, 255, 0.12);
-            color: #c8d8e8;
-        }
-        
-        [data-theme="dark"] .search-input::placeholder,
-        [data-theme="dark"] .member-input-group input::placeholder {
-            color: rgba(200, 216, 232, 0.4);
-        }
-        
-        [data-theme="dark"] .search-input:hover,
-        [data-theme="dark"] .filter-select:hover,
-        [data-theme="dark"] .member-input-group input:hover,
-        [data-theme="dark"] .member-input-group select:hover {
-            background: rgba(14, 24, 40, 0.95);
-            border-color: rgba(255, 255, 255, 0.18);
-        }
-        
-        [data-theme="dark"] .search-input:focus,
-        [data-theme="dark"] .filter-select:focus,
-        [data-theme="dark"] .member-input-group input:focus,
-        [data-theme="dark"] .member-input-group select:focus {
-            border-color: rgba(74, 159, 212, 0.6);
-            box-shadow: 0 0 0 4px rgba(74, 159, 212, 0.18);
-            background: rgba(14, 24, 40, 0.98);
-        }
-        
-        [data-theme="dark"] .member-input-group label {
-            color: #d7e8f8;
-        }
-        
-        [data-theme="dark"] .member-input-group:hover {
-            border-color: rgba(255, 140, 66, 0.35);
-            background: rgba(255, 255, 255, 0.03);
-        }
-        
-        [data-theme="dark"] .delegation-size-badge {
-            background: linear-gradient(135deg, rgba(255, 140, 66, 0.25) 0%, rgba(255, 140, 66, 0.15) 100%);
-            border-color: rgba(255, 140, 66, 0.4);
-            color: #ffb366;
-        }
-        
-        [data-theme="dark"] .delegation-header {
-            border-bottom-color: rgba(255, 255, 255, 0.08);
-        }
-        
-        [data-theme="dark"] .delegation-meta {
-            border-top-color: rgba(255, 255, 255, 0.08);
-        }
-        
-        [data-theme="dark"] .action-btn {
-            background: rgba(20, 32, 50, 0.9);
-            border-color: rgba(255, 255, 255, 0.15);
-            color: #c8d8e8;
-        }
-        
-        [data-theme="dark"] .action-btn:hover {
-            background: rgba(24, 36, 56, 0.95);
-            border-color: rgba(255, 255, 255, 0.25);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
-        }
-        
-        [data-theme="dark"] .action-btn-danger {
-            border-color: rgba(239, 68, 68, 0.4);
-            color: #fca5a5;
-        }
-        
-        [data-theme="dark"] .action-btn-danger:hover {
-            background: rgba(239, 68, 68, 0.15);
-            border-color: rgba(239, 68, 68, 0.6);
-        }
-        
-        [data-theme="dark"] .empty-state {
-            background: rgba(255, 255, 255, 0.03);
-            border-color: rgba(255, 255, 255, 0.1);
-            color: #9eb6cd;
-        }
-        
-        [data-theme="dark"] .empty-state-icon {
-            opacity: 0.3;
-        }
-        
-        [data-theme="dark"] .loading-spinner {
-            border-color: rgba(255, 140, 66, 0.25);
-            border-top-color: #ff8c42;
-        }
-        
-        [data-theme="dark"] .view-button {
-            background: linear-gradient(135deg, #ff8c42, #ffd166);
-            color: #0b1520;
-            box-shadow: 0 8px 20px rgba(255, 140, 66, 0.3);
-        }
-        
-        [data-theme="dark"] .view-button:hover {
-            box-shadow: 0 12px 28px rgba(255, 140, 66, 0.4);
-            filter: brightness(1.1);
-        }
-        
-        [data-theme="dark"] .newsletter-feedback {
-            background: rgba(20, 32, 50, 0.9);
-            border-color: rgba(255, 255, 255, 0.1);
-            color: #c8d8e8;
-        }
-        
-        [data-theme="dark"] .newsletter-feedback.is-success {
-            background: rgba(34, 197, 94, 0.15);
-            border-color: rgba(34, 197, 94, 0.3);
-            color: #86efac;
-        }
-        
-        [data-theme="dark"] .newsletter-feedback.is-error {
-            background: rgba(239, 68, 68, 0.15);
-            border-color: rgba(239, 68, 68, 0.3);
-            color: #fca5a5;
-        }
-        
-        /* Committee info box in dark mode */
-        [data-theme="dark"] .delegation-item > div[style*="background: rgba(74, 159, 212"] {
-            background: rgba(74, 159, 212, 0.15) !important;
-            border-color: rgba(74, 159, 212, 0.3) !important;
-        }
-        
-        [data-theme="dark"] .delegation-item > div[style*="background: rgba(74, 159, 212"] strong,
-        [data-theme="dark"] .delegation-item > div[style*="background: rgba(74, 159, 212"] p {
-            color: #93c5fd !important;
-        }
-        
-        @media (max-width: 768px) {
-            .delegation-size-selector {
-                flex-direction: column;
-            }
-            
-            .delegation-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.5rem;
-            }
-            
-            .delegation-actions {
-                width: 100%;
-                flex-direction: column;
-            }
-        }
-    </style>
+    <script src="/js/notification-system.js"></script>
+    <script src="/js/admin-delegations.js?v=6" defer></script>
 </head>
-<body class="dashboard-page">
+<body class="dashboard-page admin-delegations-page">
     <include src="header.html"></include>
 
     <main class="main-content" id="main-content">
@@ -627,44 +22,84 @@
                 <!-- Hero -->
                 <section class="dashboard-hero">
                     <div class="dashboard-hero-copy">
-                        <span class="dashboard-kicker">🛡️ Administração</span>
+                        <span class="dashboard-kicker"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Administração</span>
                         <h1>Gerenciar Delegações</h1>
                         <p>Crie e gerencie delegações diretamente, sem necessidade de convites. Você pode criar duplas ou trios e acompanhar todas as delegações ativas.</p>
                     </div>
-                    <div class="dashboard-hero-badge">🔑 Admin</div>
+                    <div class="dashboard-hero-badge"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg> Admin</div>
                 </section>
 
                 <!-- Estatísticas -->
                 <article class="dashboard-panel">
                     <div class="dashboard-section-heading">
-                        <span class="dashboard-section-kicker">📊 Visão Geral</span>
+                        <span class="dashboard-section-kicker"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg> Visão Geral</span>
                         <h2>Estatísticas</h2>
-                        <p>Resumo das delegações criadas no sistema.</p>
+                        <p>Resumo completo das delegações criadas no sistema.</p>
                     </div>
+                    
+                    <!-- Grid Principal -->
                     <div class="stats-grid" id="statsGrid">
-                        <div class="stat-card">
+                        <div class="stat-card stat-card-primary">
+                            <div class="stat-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2"/></svg></div>
                             <div class="stat-value" id="totalDelegations">-</div>
                             <div class="stat-label">Total de Delegações</div>
                         </div>
-                        <div class="stat-card">
+                        <div class="stat-card stat-card-success">
+                            <div class="stat-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87m-4-12a4 4 0 0 1 0 7.75"/></svg></div>
                             <div class="stat-value" id="totalMembers">-</div>
                             <div class="stat-label">Total de Integrantes</div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-value" id="totalDuplas">-</div>
-                            <div class="stat-label">Duplas</div>
+                        <div class="stat-card stat-card-info">
+                            <div class="stat-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
+                            <div class="stat-value" id="completionRate">-</div>
+                            <div class="stat-label">Taxa de Completude</div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-value" id="totalTrios">-</div>
-                            <div class="stat-label">Trios</div>
+                        <div class="stat-card stat-card-warning">
+                            <div class="stat-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+                            <div class="stat-value" id="withCountry">-</div>
+                            <div class="stat-label">Com País Definido</div>
                         </div>
                     </div>
+                    
+                    <!-- Grid Secundário -->
+                    <div class="stats-grid-secondary">
+                        <div class="stat-card-small">
+                            <div class="stat-small-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+                            <div class="stat-small-content">
+                                <div class="stat-small-value" id="totalIndividuais">-</div>
+                                <div class="stat-small-label">Individuais</div>
+                            </div>
+                        </div>
+                        <div class="stat-card-small">
+                            <div class="stat-small-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87m-4-12a4 4 0 0 1 0 7.75"/></svg></div>
+                            <div class="stat-small-content">
+                                <div class="stat-small-value" id="totalDuplas">-</div>
+                                <div class="stat-small-label">Duplas</div>
+                            </div>
+                        </div>
+                        <div class="stat-card-small">
+                            <div class="stat-small-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 0-4-4h10a4 4 0 0 0 4 4v2"/><circle cx="16" cy="11" r="3"/><path d="M22 21v-2a3 3 0 0 0-3-3h-2"/><circle cx="16" cy="4" r="2"/><path d="M19 7h-6"/></svg></div>
+                            <div class="stat-small-content">
+                                <div class="stat-small-value" id="totalTrios">-</div>
+                                <div class="stat-small-label">Trios</div>
+                            </div>
+                        </div>
+                        <div class="stat-card-small">
+                            <div class="stat-small-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+                            <div class="stat-small-content">
+                                <div class="stat-small-value" id="withoutCountry">-</div>
+                                <div class="stat-small-label">Sem País</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+
                 </article>
 
                 <!-- Criar Nova Delegação -->
                 <article class="dashboard-panel">
                     <div class="dashboard-section-heading">
-                        <span class="dashboard-section-kicker">➕ Nova Delegação</span>
+                        <span class="dashboard-section-kicker"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Nova Delegação</span>
                         <h2>Criar delegação</h2>
                         <p>Adicione os usuários que farão parte da delegação. Digite o nome de usuário (username) de cada integrante.</p>
                     </div>
@@ -705,7 +140,7 @@
 
                         <div class="member-input-group">
                             <label for="committeeSelect">Comitê <span style="color: #d1495b;">*</span></label>
-                            <select id="committeeSelect" required style="padding: 0.75rem 1rem; border-radius: 12px; border: 1.5px solid var(--dash-line); background: rgba(255, 255, 255, 0.95); font-size: 0.95rem; width: 100%; cursor: pointer;">
+                            <select id="committeeSelect" required>
                                 <option value="">Selecione o comitê</option>
                                 <option value="1">CDH 2026 — O Paradoxo da Hiperconectividade</option>
                                 <option value="2">AGNU — Guerra, Multipolaridade e Disputas Territoriais</option>
@@ -717,34 +152,25 @@
                             </select>
                         </div>
 
-                        <div class="member-input-group">
-                            <label for="committeeSelect">Comitê <span style="color: #d1495b;">*</span></label>
-                            <select id="committeeSelect" required style="padding: 0.75rem 1rem; border-radius: 12px; border: 1.5px solid var(--dash-line); background: rgba(255, 255, 255, 0.95); font-size: 0.95rem; width: 100%; cursor: pointer;">
-                                <option value="">Selecione o comitê</option>
-                                <option value="AGNU">AGNU - Assembleia Geral das Nações Unidas</option>
-                                <option value="CSNU">CSNU - Conselho de Segurança das Nações Unidas</option>
-                                <option value="OEA">OEA - Organização dos Estados Americanos</option>
-                            </select>
-                        </div>
-
                         <div id="createFeedback" class="newsletter-feedback" hidden></div>
 
-                        <button type="submit" class="view-button" id="createBtn">✓ Criar delegação</button>
+                        <button type="submit" class="view-button" id="createBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Criar delegação</button>
                     </form>
                 </article>
 
                 <!-- Lista de Delegações -->
                 <article class="dashboard-panel">
                     <div class="dashboard-section-heading">
-                        <span class="dashboard-section-kicker">📋 Delegações Existentes</span>
+                        <span class="dashboard-section-kicker"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2m-6 9l2 2 4-4"/></svg> Delegações Existentes</span>
                         <h2>Todas as delegações</h2>
                         <p>Visualize e gerencie todas as delegações criadas no sistema.</p>
                     </div>
 
                     <div class="search-filter-bar">
-                        <input type="text" id="searchInput" class="search-input" placeholder="🔍 Buscar por nome, usuário ou turma...">
+                        <input type="text" id="searchInput" class="search-input" placeholder="Buscar por nome, usuário, turma ou país...">
                         <select id="filterSize" class="filter-select">
                             <option value="all">Todos os tamanhos</option>
+                            <option value="1">Apenas individuais</option>
                             <option value="2">Apenas duplas</option>
                             <option value="3">Apenas trios</option>
                         </select>

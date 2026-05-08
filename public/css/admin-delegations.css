@@ -1,0 +1,971 @@
+/* Admin Delegações - CSS coeso com o resto do projeto */
+
+/* Base inputs/containers da página (usa variáveis de public/css/styles.css) */
+.admin-delegations-page {
+  /* Garante isolamento sem depender do <body> global */
+  min-height: 100vh;
+}
+
+.admin-delegations-page .delegation-form-grid {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.admin-delegations-page .search-filter-bar {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+/* Inputs/selects padrão do projeto */
+.admin-delegations-page .search-input,
+.admin-delegations-page .filter-select,
+.admin-delegations-page .member-input-group input,
+.admin-delegations-page .member-input-group select {
+  width: 100%;
+}
+
+.admin-delegations-page .search-input {
+  flex: 1;
+  min-width: 250px;
+  padding: 0.875rem 1.125rem;
+  border-radius: 14px;
+  border: 1.5px solid var(--dash-line);
+  background: rgba(255, 255, 255, 0.95);
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.admin-delegations-page .search-input:focus {
+  outline: none;
+  border-color: rgba(255, 140, 66, 0.5);
+  box-shadow: 0 0 0 4px rgba(255, 140, 66, 0.1);
+}
+
+.admin-delegations-page .filter-select {
+  padding: 0.875rem 1.125rem;
+  border-radius: 14px;
+  border: 1.5px solid var(--dash-line);
+  background: rgba(255, 255, 255, 0.95);
+  font-size: 0.95rem;
+  cursor: pointer;
+  min-width: 150px;
+}
+
+.admin-delegations-page .stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.admin-delegations-page .stat-card {
+  padding: 1.5rem;
+  border-radius: 20px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 140, 66, 0.12) 0%,
+    rgba(255, 140, 66, 0.06) 100%
+  );
+  border: 2px solid rgba(255, 140, 66, 0.25);
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(7, 40, 68, 0.1);
+}
+
+.admin-delegations-page .stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(255, 140, 66, 0.2);
+  border-color: rgba(255, 140, 66, 0.4);
+}
+
+.admin-delegations-page .stat-value {
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--dash-ink);
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+
+.admin-delegations-page .stat-label {
+  font-size: 0.85rem;
+  color: var(--dash-muted);
+  font-weight: 600;
+}
+
+.admin-delegations-page .member-input-group {
+  display: grid;
+  gap: 0.5rem;
+  padding: 1.25rem;
+  border-radius: 16px;
+  background: rgba(7, 40, 68, 0.04);
+  border: 1.5px solid var(--dash-line);
+  transition: all 0.2s ease;
+}
+
+.admin-delegations-page .member-input-group:hover {
+  border-color: rgba(255, 140, 66, 0.3);
+  background: rgba(7, 40, 68, 0.06);
+}
+
+.admin-delegations-page .member-input-group label {
+  font-weight: 700;
+  color: var(--dash-ink);
+  font-size: 0.9rem;
+}
+
+.admin-delegations-page .member-input-group input {
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  border: 1.5px solid var(--dash-line);
+  background: rgba(255, 255, 255, 0.95);
+  font-size: 0.95rem;
+}
+
+.admin-delegations-page .member-input-group input:focus {
+  outline: none;
+  border-color: rgba(255, 140, 66, 0.5);
+  box-shadow: 0 0 0 4px rgba(255, 140, 66, 0.1);
+}
+
+.admin-delegations-page .member-input-group select {
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  border: 1.5px solid var(--dash-line);
+  background: rgba(255, 255, 255, 0.95);
+  font-size: 0.95rem;
+}
+
+.admin-delegations-page .member-input-group select:focus {
+  outline: none;
+  border-color: rgba(255, 140, 66, 0.5);
+  box-shadow: 0 0 0 4px rgba(255, 140, 66, 0.1);
+}
+
+.admin-delegations-page .delegation-size-selector {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.admin-delegations-page .size-option {
+  flex: 1;
+  padding: 1.25rem;
+  border-radius: 16px;
+  border: 2px solid var(--dash-line);
+  background: rgba(255, 255, 255, 0.95);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.admin-delegations-page .size-option:hover {
+  border-color: rgba(255, 140, 66, 0.4);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(255, 140, 66, 0.15);
+}
+
+.admin-delegations-page .size-option.active {
+  border-color: #ff8c42;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 140, 66, 0.15) 0%,
+    rgba(255, 140, 66, 0.08) 100%
+  );
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(255, 140, 66, 0.2);
+}
+
+.admin-delegations-page .size-option input[type="radio"] {
+  display: none;
+}
+
+.admin-delegations-page .size-option-label {
+  font-weight: 700;
+  color: var(--dash-ink);
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.admin-delegations-page .size-option-desc {
+  font-size: 0.85rem;
+  color: var(--dash-muted);
+}
+
+.admin-delegations-page .delegations-list {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.admin-delegations-page .delegation-item {
+  padding: 2rem;
+  border-radius: 24px;
+  border: 2px solid var(--dash-line);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.98) 0%,
+    rgba(250, 250, 252, 0.95) 100%
+  );
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(7, 40, 68, 0.08);
+}
+
+.admin-delegations-page .delegation-item::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 100%;
+  background: linear-gradient(180deg, #ff8c42 0%, #ff6b35 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.admin-delegations-page .delegation-item::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 140, 66, 0.08) 0%,
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.admin-delegations-page .delegation-item:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 40px rgba(7, 40, 68, 0.18);
+  border-color: rgba(255, 140, 66, 0.4);
+}
+
+.admin-delegations-page .delegation-item:hover::before {
+  opacity: 1;
+}
+
+.admin-delegations-page .delegation-item:hover::after {
+  opacity: 1;
+}
+
+.admin-delegations-page .delegation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 2px solid var(--dash-line);
+}
+
+.admin-delegations-page .delegation-id {
+  font-weight: 900;
+  color: var(--dash-ink);
+  font-size: 1.2rem;
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-delegations-page .delegation-id svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.admin-delegations-page .delegation-size-badge {
+  padding: 0.625rem 1.25rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 140, 66, 0.25) 0%,
+    rgba(255, 140, 66, 0.15) 100%
+  );
+  color: #d97706;
+  border: 2px solid rgba(255, 140, 66, 0.4);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  box-shadow: 0 2px 8px rgba(255, 140, 66, 0.15);
+}
+
+.admin-delegations-page .delegation-size-badge svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.admin-delegations-page .delegation-members {
+  display: grid;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.admin-delegations-page .member-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-radius: 16px;
+  background: linear-gradient(
+    135deg,
+    rgba(7, 40, 68, 0.05) 0%,
+    rgba(7, 40, 68, 0.03) 100%
+  );
+  border: 1px solid rgba(7, 40, 68, 0.08);
+  transition: all 0.25s ease;
+}
+
+.admin-delegations-page .member-item:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(7, 40, 68, 0.08) 0%,
+    rgba(7, 40, 68, 0.05) 100%
+  );
+  transform: translateX(6px);
+  border-color: rgba(255, 140, 66, 0.3);
+  box-shadow: 0 4px 12px rgba(7, 40, 68, 0.1);
+}
+
+.admin-delegations-page .member-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #fff;
+  box-shadow: 0 4px 12px rgba(7, 40, 68, 0.2);
+  transition: transform 0.25s ease;
+}
+
+.admin-delegations-page .member-item:hover .member-avatar {
+  transform: scale(1.1) rotate(3deg);
+  box-shadow: 0 6px 16px rgba(7, 40, 68, 0.25);
+}
+
+.admin-delegations-page .member-info {
+  flex: 1;
+}
+
+.admin-delegations-page .member-name {
+  font-weight: 700;
+  color: var(--dash-ink);
+  font-size: 0.95rem;
+}
+
+.admin-delegations-page .member-username {
+  font-size: 0.85rem;
+  color: var(--dash-muted);
+}
+
+.admin-delegations-page .delegation-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+.admin-delegations-page .action-btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 14px;
+  border: 2px solid var(--dash-line);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.98) 0%,
+    rgba(250, 250, 252, 0.95) 100%
+  );
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 2px 8px rgba(7, 40, 68, 0.08);
+}
+
+.admin-delegations-page .action-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(7, 40, 68, 0.15);
+  border-color: rgba(255, 140, 66, 0.5);
+}
+
+.admin-delegations-page .action-btn-danger {
+  border-color: rgba(209, 73, 91, 0.4);
+  color: #d1495b;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.98) 0%,
+    rgba(254, 242, 242, 0.95) 100%
+  );
+}
+
+.admin-delegations-page .action-btn-danger:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(254, 226, 226, 0.98) 0%,
+    rgba(254, 242, 242, 0.95) 100%
+  );
+  border-color: rgba(209, 73, 91, 0.6);
+  box-shadow: 0 6px 16px rgba(209, 73, 91, 0.2);
+}
+
+.admin-delegations-page .delegation-meta {
+  font-size: 0.85rem;
+  color: var(--dash-muted);
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--dash-line);
+}
+
+.admin-delegations-page .empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--dash-muted);
+  border-radius: 20px;
+  background: rgba(7, 40, 68, 0.02);
+  border: 2px dashed var(--dash-line);
+}
+
+.admin-delegations-page .loading-spinner {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border: 3px solid rgba(255, 140, 66, 0.2);
+  border-top-color: #ff8c42;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Notification System Styles */
+.notification-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.notification-overlay.is-open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.notification-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 2rem;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+}
+
+.notification-overlay.is-open .notification-card {
+  transform: scale(1);
+}
+
+.notification-header {
+  margin-bottom: 1.5rem;
+}
+
+.notification-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--dash-ink);
+  margin: 0 0 0.5rem 0;
+}
+
+.notification-message {
+  color: var(--dash-muted);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.notification-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}
+
+.notification-btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  border: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.notification-btn-primary {
+  background: linear-gradient(135deg, #ff8c42, #ffd166);
+  color: #fff;
+}
+
+.notification-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 140, 66, 0.3);
+}
+
+.notification-btn-secondary {
+  background: rgba(7, 40, 68, 0.08);
+  color: var(--dash-ink);
+}
+
+.notification-btn-secondary:hover {
+  background: rgba(7, 40, 68, 0.12);
+}
+
+.notification-btn-danger {
+  background: #d1495b;
+  color: #fff;
+}
+
+.notification-btn-danger:hover {
+  background: #b83a4a;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(209, 73, 91, 0.3);
+}
+
+[data-theme="dark"] .notification-card {
+  background: linear-gradient(
+    180deg,
+    rgba(16, 26, 42, 0.98),
+    rgba(12, 20, 34, 0.96)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .notification-title {
+  color: #e2edf8;
+}
+
+[data-theme="dark"] .notification-message {
+  color: #9eb6cd;
+}
+
+[data-theme="dark"] .notification-btn-secondary {
+  background: rgba(255, 255, 255, 0.08);
+  color: #c8d8e8;
+}
+
+[data-theme="dark"] .notification-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* ====== Dark mode: reaproveita padrão do projeto ====== */
+[data-theme="dark"] .admin-delegations-page .delegation-item,
+[data-theme="dark"] .admin-delegations-page .member-input-group,
+[data-theme="dark"] .admin-delegations-page .stat-card {
+  background: linear-gradient(
+    135deg,
+    rgba(20, 32, 50, 0.98) 0%,
+    rgba(16, 26, 42, 0.95) 100%
+  );
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .admin-delegations-page .delegation-item:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(24, 36, 56, 0.98) 0%,
+    rgba(20, 32, 50, 0.95) 100%
+  );
+  border-color: rgba(255, 140, 66, 0.5);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="dark"] .admin-delegations-page .delegation-id,
+[data-theme="dark"] .admin-delegations-page .member-name,
+[data-theme="dark"] .admin-delegations-page .stat-value {
+  color: #e2edf8;
+}
+
+[data-theme="dark"] .admin-delegations-page .member-username,
+[data-theme="dark"] .admin-delegations-page .stat-label,
+[data-theme="dark"] .admin-delegations-page .delegation-meta {
+  color: #9eb6cd;
+}
+
+[data-theme="dark"] .admin-delegations-page .member-item {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.06) 0%,
+    rgba(255, 255, 255, 0.04) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] .admin-delegations-page .member-item:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.07) 100%
+  );
+  border-color: rgba(255, 140, 66, 0.4);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .admin-delegations-page .member-avatar {
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .admin-delegations-page .search-input,
+[data-theme="dark"] .admin-delegations-page .filter-select,
+[data-theme="dark"] .admin-delegations-page .member-input-group input,
+[data-theme="dark"] .admin-delegations-page .member-input-group select {
+  background: rgba(10, 18, 32, 0.9);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #c8d8e8;
+}
+
+[data-theme="dark"] .admin-delegations-page .action-btn {
+  background: linear-gradient(
+    135deg,
+    rgba(20, 32, 50, 0.95) 0%,
+    rgba(16, 26, 42, 0.92) 100%
+  );
+  border-color: rgba(255, 255, 255, 0.18);
+  color: #c8d8e8;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .admin-delegations-page .action-btn:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(24, 36, 56, 0.98) 0%,
+    rgba(20, 32, 50, 0.95) 100%
+  );
+  border-color: rgba(255, 140, 66, 0.5);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .admin-delegations-page .action-btn-danger {
+  border-color: rgba(239, 68, 68, 0.5);
+  color: #fca5a5;
+  background: linear-gradient(
+    135deg,
+    rgba(20, 32, 50, 0.95) 0%,
+    rgba(30, 20, 25, 0.92) 100%
+  );
+}
+
+[data-theme="dark"] .admin-delegations-page .action-btn-danger:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(60, 20, 30, 0.95) 0%,
+    rgba(40, 20, 25, 0.92) 100%
+  );
+  border-color: rgba(239, 68, 68, 0.7);
+  box-shadow: 0 6px 16px rgba(239, 68, 68, 0.3);
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .admin-delegations-page .delegation-size-selector {
+    flex-direction: column;
+  }
+
+  .admin-delegations-page .delegation-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .admin-delegations-page .delegation-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+}
+
+
+/* ====== Enhanced Statistics Styles ====== */
+
+/* Stat Cards with Icons */
+.admin-delegations-page .stat-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.admin-delegations-page .stat-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.75rem;
+  display: block;
+  opacity: 0.9;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.admin-delegations-page .stat-card-primary {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.12) 0%, rgba(59, 130, 246, 0.06) 100%);
+  border-color: rgba(59, 130, 246, 0.25);
+}
+
+.admin-delegations-page .stat-card-primary:hover {
+  border-color: rgba(59, 130, 246, 0.4);
+  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.2);
+}
+
+.admin-delegations-page .stat-card-success {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.12) 0%, rgba(34, 197, 94, 0.06) 100%);
+  border-color: rgba(34, 197, 94, 0.25);
+}
+
+.admin-delegations-page .stat-card-success:hover {
+  border-color: rgba(34, 197, 94, 0.4);
+  box-shadow: 0 8px 24px rgba(34, 197, 94, 0.2);
+}
+
+.admin-delegations-page .stat-card-info {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.12) 0%, rgba(168, 85, 247, 0.06) 100%);
+  border-color: rgba(168, 85, 247, 0.25);
+}
+
+.admin-delegations-page .stat-card-info:hover {
+  border-color: rgba(168, 85, 247, 0.4);
+  box-shadow: 0 8px 24px rgba(168, 85, 247, 0.2);
+}
+
+.admin-delegations-page .stat-card-warning {
+  background: linear-gradient(135deg, rgba(251, 146, 60, 0.12) 0%, rgba(251, 146, 60, 0.06) 100%);
+  border-color: rgba(251, 146, 60, 0.25);
+}
+
+.admin-delegations-page .stat-card-warning:hover {
+  border-color: rgba(251, 146, 60, 0.4);
+  box-shadow: 0 8px 24px rgba(251, 146, 60, 0.2);
+}
+
+/* Secondary Stats Grid */
+.admin-delegations-page .stats-grid-secondary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.admin-delegations-page .stat-card-small {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(7, 40, 68, 0.05) 0%, rgba(7, 40, 68, 0.03) 100%);
+  border: 1.5px solid var(--dash-line);
+  transition: all 0.3s ease;
+}
+
+.admin-delegations-page .stat-card-small:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(7, 40, 68, 0.12);
+  border-color: rgba(255, 140, 66, 0.3);
+}
+
+.admin-delegations-page .stat-small-icon {
+  font-size: 1.8rem;
+  flex-shrink: 0;
+  opacity: 0.85;
+}
+
+.admin-delegations-page .stat-small-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.admin-delegations-page .stat-small-value {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: var(--dash-ink);
+  line-height: 1;
+  margin-bottom: 0.15rem;
+}
+
+.admin-delegations-page .stat-small-label {
+  font-size: 0.75rem;
+  color: var(--dash-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Committee Chart */
+.admin-delegations-page .committee-chart-section {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 2px solid var(--dash-line);
+}
+
+.admin-delegations-page .committee-chart-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--dash-ink);
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-delegations-page .committee-chart {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.admin-delegations-page .committee-bar-item {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.admin-delegations-page .committee-bar-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-delegations-page .committee-bar-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--dash-ink);
+}
+
+.admin-delegations-page .committee-bar-count {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--dash-muted);
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(7, 40, 68, 0.08);
+  min-width: 28px;
+  text-align: center;
+}
+
+.admin-delegations-page .committee-bar-track {
+  height: 12px;
+  background: rgba(7, 40, 68, 0.08);
+  border-radius: 999px;
+  overflow: hidden;
+  position: relative;
+}
+
+.admin-delegations-page .committee-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ff8c42 0%, #ffd166 100%);
+  border-radius: 999px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  box-shadow: 0 2px 8px rgba(255, 140, 66, 0.3);
+}
+
+.admin-delegations-page .committee-bar-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Dark Mode for Enhanced Stats */
+[data-theme="dark"] .admin-delegations-page .stat-card-primary {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(59, 130, 246, 0.08) 100%);
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+[data-theme="dark"] .admin-delegations-page .stat-card-success {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(34, 197, 94, 0.08) 100%);
+  border-color: rgba(34, 197, 94, 0.3);
+}
+
+[data-theme="dark"] .admin-delegations-page .stat-card-info {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.15) 0%, rgba(168, 85, 247, 0.08) 100%);
+  border-color: rgba(168, 85, 247, 0.3);
+}
+
+[data-theme="dark"] .admin-delegations-page .stat-card-warning {
+  background: linear-gradient(135deg, rgba(251, 146, 60, 0.15) 0%, rgba(251, 146, 60, 0.08) 100%);
+  border-color: rgba(251, 146, 60, 0.3);
+}
+
+[data-theme="dark"] .admin-delegations-page .stat-card-small {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.04) 100%);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+[data-theme="dark"] .admin-delegations-page .stat-small-value {
+  color: #e2edf8;
+}
+
+[data-theme="dark"] .admin-delegations-page .stat-small-label,
+[data-theme="dark"] .admin-delegations-page .committee-bar-name {
+  color: #9eb6cd;
+}
+
+[data-theme="dark"] .admin-delegations-page .committee-bar-track {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] .admin-delegations-page .committee-bar-count {
+  background: rgba(255, 255, 255, 0.1);
+  color: #c8d8e8;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .admin-delegations-page .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .admin-delegations-page .stats-grid-secondary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .admin-delegations-page .stat-icon {
+    font-size: 2rem;
+  }
+  
+  .admin-delegations-page .stat-value {
+    font-size: 1.75rem;
+  }
+  
+  .admin-delegations-page .stat-small-value {
+    font-size: 1.25rem;
+  }
+}

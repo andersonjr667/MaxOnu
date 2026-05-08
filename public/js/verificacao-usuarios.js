@@ -559,6 +559,7 @@ function bindEvents() {
     document.getElementById('userVerificationList')?.addEventListener('click', async (event) => {
         const toggle = event.target.closest('[data-action="toggle-user"]');
         if (toggle) {
+            event.preventDefault();
             const userId = toggle.dataset.userId;
             if (!userId) {
                 return;
@@ -566,7 +567,6 @@ function bindEvents() {
 
             const clickedSameUser = expandedUserId === userId;
             expandedUserId = clickedSameUser ? null : userId;
-            renderUsers();
 
             if (!clickedSameUser) {
                 try {
@@ -575,17 +575,12 @@ function bindEvents() {
                         const id = getVerificationId(item);
                         return id === userId ? { ...item, ...fullDetails } : item;
                     });
-                    renderUsers();
                 } catch (error) {
-                    const list = document.getElementById('userVerificationList');
-                    if (list) {
-                        list.insertAdjacentHTML(
-                            'afterbegin',
-                            `<p class="dashboard-empty">${escapeHtml(error.message || 'Erro ao carregar detalhes do aluno.')}</p>`
-                        );
-                    }
+                    console.error('Erro ao carregar detalhes:', error);
                 }
             }
+            
+            renderUsers();
             return;
         }
 

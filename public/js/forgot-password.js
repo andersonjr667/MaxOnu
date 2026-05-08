@@ -33,29 +33,56 @@ function setStep(stepNumber) {
 }
 
 async function requestCode(email, showOnlyMessage = false) {
-    const response = await fetch(`${API_URL}/forgot-password`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email })
-    });
-
-    const data = await response.json().catch(() => ({}));
-    if (!response.ok) {
-        throw new Error(Array.isArray(data.error) ? data.error[0]?.msg : data.error || 'Erro ao solicitar código.');
-    }
-
-    const baseMessage = data.message || 'Código enviado com sucesso.';
-    const debugSnippet = data.resetCode
-        ? `<br><br><strong>Modo teste:</strong><br><code>${data.resetCode}</code>`
-        : '';
-    setAlert(`${baseMessage}${debugSnippet}`);
-
-    if (!showOnlyMessage) {
-        const verificationEmail = document.getElementById('verification-email');
-        if (verificationEmail) {
-            verificationEmail.value = email;
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000);
+    
+    try {
+        if (!email || !email.trim()) {
+            throw new Error('Email é obrigatório');
         }
-        setStep(2);
+
+        const normalizedEmail = email.trim().toLowerCase();
+        
+        const response = await fetch(`${API_URL}/forgot-password`, {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ email: normalizedEmail }),
+            signal: controller.signal
+        });
+
+        clearTimeout(timeoutId);
+        
+        const data = await response.json().catch(() => ({ error: 'Erro ao processar resposta do servidor' }));
+        
+        if (!response.ok) {
+            const errorMsg = Array.isArray(data.error) 
+                ? (data.error[0]?.msg || data.error[0] || 'Erro ao solicitar código')
+                : (data.error || 'Erro ao solicitar código');
+            throw new Error(errorMsg);
+        }
+
+        const baseMessage = data.message || 'Código enviado com sucesso.';
+        const debugSnippet = data.resetCode
+            ? `<br><br><strong>Modo teste:</strong><br><code>${data.resetCode}</code>`
+            : '';
+        setAlert(`${baseMessage}${debugSnippet}`);
+
+        if (!showOnlyMessage) {
+            const verificationEmail = document.getElementById('verification-email');
+            if (verificationEmail) {
+                verificationEmail.value = normalizedEmail;
+            }
+            setStep(2);
+        }
+    } catch (error) {
+        clearTimeout(timeoutId);
+        if (error.name === 'AbortError') {
+            throw new Error('A requisição demorou muito. Verifique sua conexão e tente novamente.');
+        }
+        throw error;
     }
 }
 
@@ -132,12 +159,18 @@ function initForgotPasswordPage() {
         button.disabled = true;
         button.textContent = 'Validando...';
 
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000);
+
         try {
             const response = await fetch(`${API_URL}/verify-reset-code`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, code })
+                body: JSON.stringify({ email, code }),
+                signal: controller.signal
             });
+
+            clearTimeout(timeoutId);
 
             const data = await response.json().catch(() => ({}));
             if (!response.ok) {
@@ -152,7 +185,12 @@ function initForgotPasswordPage() {
             setStep(3);
             setAlert(data.message || 'Código validado com sucesso. Agora defina sua nova senha.');
         } catch (error) {
-            setAlert(error.message || 'Não foi possível validar o código.', true);
+            clearTimeout(timeoutId);
+            if (error.name === 'AbortError') {
+                setAlert('A requisição demorou muito. Verifique sua conexão e tente novamente.', true);
+            } else {
+                setAlert(error.message || 'Não foi possível validar o código.', true);
+            }
         } finally {
             button.disabled = false;
             button.textContent = 'Validar código';
@@ -186,12 +224,18 @@ function initForgotPasswordPage() {
         button.disabled = true;
         button.textContent = 'Salvando...';
 
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000);
+
         try {
             const response = await fetch(`${API_URL}/reset-password`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ token: verifiedResetToken, newPassword })
+                body: JSON.stringify({ token: verifiedResetToken, newPassword }),
+                signal: controller.signal
             });
+
+            clearTimeout(timeoutId);
 
             const data = await response.json().catch(() => ({}));
             if (!response.ok) {
@@ -203,7 +247,12 @@ function initForgotPasswordPage() {
             verifiedResetToken = '';
             setStep(1);
         } catch (error) {
-            setAlert(error.message || 'Não foi possível redefinir a senha.', true);
+            clearTimeout(timeoutId);
+            if (error.name === 'AbortError') {
+                setAlert('A requisição demorou muito. Verifique sua conexão e tente novamente.', true);
+            } else {
+                setAlert(error.message || 'Não foi possível redefinir a senha.', true);
+            }
         } finally {
             button.disabled = false;
             button.textContent = 'Salvar nova senha';

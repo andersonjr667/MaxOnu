@@ -543,6 +543,31 @@ app.use(shareMetaMiddleware(publicDir));
 // Version injection middleware - inject version in HTML files
 app.use(injectVersionMiddleware(publicDir));
 
+// Expose version globally in client-side code (helps dynamic loaders like ensureCss)
+app.use((req, res, next) => {
+  // used by middleware/version-inject (already injects ?v=APP_VERSION on HTML)
+  // but also exposed as a global for scripts that dynamically load CSS/JS
+  res.locals.APP_VERSION = APP_VERSION;
+  res.setHeader('X-App-Version', APP_VERSION);
+  next();
+});
+
+// Expose as a global variable on HTML pages (best-effort)
+app.use((req, res, next) => {
+  const originalSend = res.send;
+  res.send = function (data) {
+    if (typeof data === 'string' && data.includes('</head>')) {
+      const injected = data.replace(
+        '</head>',
+        `<script>window.__APP_VERSION=${JSON.stringify(APP_VERSION)};</script></head>`
+      );
+      return originalSend.call(this, injected);
+    }
+    return originalSend.call(this, data);
+  };
+  next();
+});
+
 // Clean URLs middleware - remove extensão .html e oferece rotas amigáveis
 app.use(cleanUrlsMiddleware(publicDir));
 

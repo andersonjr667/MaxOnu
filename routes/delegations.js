@@ -624,8 +624,8 @@ router.post('/leave', authMiddleware, async (req, res) => {
 // Admin routes
 const roleAuth = require('../middleware/roleAuth');
 
-// POST /api/delegation/admin/create - Create delegation directly (admin only)
-router.post('/admin/create', authMiddleware, roleAuth(['admin']), [
+// POST /api/delegation/admin/create - Create delegation directly (admin, press, or coordinator)
+router.post('/admin/create', authMiddleware, roleAuth(['admin', 'press', 'coordinator']), [
     body('members').isArray({ min: 2, max: 3 }).withMessage('Delegação deve ter 2 ou 3 integrantes'),
     body('teamSize').isIn([2, 3]).withMessage('Tamanho deve ser 2 ou 3')
 ], async (req, res) => {
@@ -749,16 +749,14 @@ router.post('/admin/create', authMiddleware, roleAuth(['admin']), [
     }
 });
 
-// GET /api/delegation/admin/list - List all delegations (admin only)
-router.get('/admin/list', authMiddleware, roleAuth(['admin', 'coordinator']), async (req, res) => {
+// GET /api/delegation/admin/list - List all delegations (admin, press, or coordinator)
+router.get('/admin/list', authMiddleware, roleAuth(['admin', 'press', 'coordinator']), async (req, res) => {
     try {
-        const users = await User.find({ 
-            role: 'candidate',
-            delegationMembers: { $exists: true, $ne: [] }
-        })
-        .populate('delegationMembers', 'fullName username classGroup gender profileImageUrl')
-        .select('fullName username classGroup delegationMembers registration createdAt')
-        .sort({ createdAt: -1 });
+        // Get all candidates (with or without delegations)
+        const users = await User.find({ role: 'candidate' })
+            .populate('delegationMembers', 'fullName username classGroup gender profileImageUrl committee country')
+            .select('fullName username classGroup delegationMembers registration committee country createdAt gender profileImageUrl')
+            .sort({ createdAt: -1 });
 
         // Build unique delegations
         const delegationMap = new Map();
@@ -772,11 +770,17 @@ router.get('/admin/list', authMiddleware, roleAuth(['admin', 'coordinator']), as
 
             if (!delegationMap.has(delegationKey)) {
                 const allMembers = await User.find({ _id: { $in: memberIds } })
-                    .select('fullName username classGroup gender profileImageUrl');
+                    .select('fullName username classGroup gender profileImageUrl committee country');
+
+                // Get committee from any member that has it
+                const committeeValue = allMembers.find(m => m.committee)?.committee || user.committee || null;
+                const countryValue = allMembers.find(m => m.country)?.country || user.country || null;
 
                 delegationMap.set(delegationKey, {
                     _id: delegationKey,
                     teamSize: memberIds.length,
+                    committee: committeeValue,
+                    country: countryValue,
                     members: allMembers.map(m => ({
                         id: String(m._id),
                         username: m.username,
@@ -808,8 +812,8 @@ router.get('/admin/list', authMiddleware, roleAuth(['admin', 'coordinator']), as
     }
 });
 
-// DELETE /api/delegation/admin/:delegationId - Dissolve delegation (admin only)
-router.delete('/admin/:delegationId', authMiddleware, roleAuth(['admin']), async (req, res) => {
+// DELETE /api/delegation/admin/:delegationId - Dissolve delegation (admin, press, or coordinator)
+router.delete('/admin/:delegationId', authMiddleware, roleAuth(['admin', 'press', 'coordinator']), async (req, res) => {
     try {
         const { delegationId } = req.params;
         const admin = await User.findById(req.user.id);
@@ -861,6 +865,170 @@ router.delete('/admin/:delegationId', authMiddleware, roleAuth(['admin']), async
         });
     } catch (error) {
         console.error('Admin delete delegation error:', error);
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// PUT /api/delegation/admin/:delegationId - Update delegation (admin, press, or coordinator)
+router.put('/admin/:delegationId', authMiddleware, roleAuth(['admin', 'press', 'coordinator']), [
+    body('members').isArray({ min: 2, max: 3 }).withMessage('Delegação deve ter 2 ou 3 integrantes'),
+    body('teamSize').isIn([2, 3]).withMessage('Tamanho deve ser 2 ou 3'),
+    body('committee').optional().isInt({ min: 1, max: 7 }).withMessage('Comitê inválido')
+], async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ error: errors.array()[0].msg });
+    }
+
+    try {
+        const { delegationId } = req.params;
+        const { members, teamSize, committee } = req.body;
+        const admin = await User.findById(req.user.id);
+
+        if (!admin) {
+            return res.status(404).json({ error: 'Admin não encontrado.' });
+        }
+
+        // Validate members count matches teamSize
+        if (members.length !== teamSize) {
+            return res.status(400).json({ error: `Número de integrantes (${members.length}) não corresponde ao tamanho da delegação (${teamSize}).` });
+        }
+
+        // DelegationId is a composite key of member IDs
+        const oldMemberIds = delegationId.split('-');
+
+        if (oldMemberIds.length < 1) {
+            return res.status(400).json({ error: 'ID de delegação inválido.' });
+        }
+
+        // Allow completing individual delegations (1 member -> 2 or 3)
+        // Block editing complete delegations to become individual
+        if (oldMemberIds.length > 1 && teamSize < oldMemberIds.length) {
+            return res.status(400).json({ error: 'Não é possível reduzir o tamanho de uma delegação existente.' });
+        }
+
+        // Normalize new usernames
+        const normalizedMembers = members.map(m => m.trim().toLowerCase());
+
+        // Check for duplicates
+        if (new Set(normalizedMembers).size !== normalizedMembers.length) {
+            return res.status(400).json({ error: 'Os integrantes devem ser diferentes.' });
+        }
+
+        // Find new users
+        const newUsers = await User.find({ username: { $in: normalizedMembers } });
+
+        if (newUsers.length !== normalizedMembers.length) {
+            const foundUsernames = newUsers.map(u => u.username);
+            const notFound = normalizedMembers.filter(m => !foundUsernames.includes(m));
+            return res.status(404).json({ error: `Usuários não encontrados: ${notFound.join(', ')}` });
+        }
+
+        // Validate all are candidates
+        const nonCandidates = newUsers.filter(u => u.role !== 'candidate');
+        if (nonCandidates.length > 0) {
+            return res.status(400).json({ error: `Apenas delegados podem fazer parte de delegações: ${nonCandidates.map(u => u.username).join(', ')}` });
+        }
+
+        // Check if any NEW user (not in old delegation) is already in another delegation
+        const newUserIds = newUsers.map(u => String(u._id));
+        const usersNotInOldDelegation = newUsers.filter(u => !oldMemberIds.includes(String(u._id)));
+        const alreadyInDelegation = usersNotInOldDelegation.filter(u => (u.delegationMembers || []).length > 0);
+        
+        if (alreadyInDelegation.length > 0) {
+            return res.status(400).json({ error: `Usuários já estão em outras delegações: ${alreadyInDelegation.map(u => u.username).join(', ')}` });
+        }
+
+        // Validate class group compatibility
+        if (newUsers.length >= 2) {
+            const pairValidation = validateDelegationPairByClassGroup(newUsers[0], newUsers[1]);
+            if (!pairValidation.valid) {
+                return res.status(400).json({ error: pairValidation.message });
+            }
+        }
+
+        // Find old users
+        const oldUsers = await User.find({ _id: { $in: oldMemberIds } });
+
+        // Clear old delegation for users who are being removed
+        const removedUsers = oldUsers.filter(oldUser => !newUserIds.includes(String(oldUser._id)));
+        for (const user of removedUsers) {
+            user.delegationMembers = [];
+            await user.save();
+        }
+
+        // Create new delegation links
+        for (const user of newUsers) {
+            const otherMembers = newUsers.filter(u => !sameId(u._id, user._id));
+            user.delegationMembers = otherMembers.map(m => m._id);
+            
+            if (committee) {
+                user.committee = parseInt(committee);
+                if (!user.registration) {
+                    user.registration = {};
+                }
+                user.registration.firstChoice = parseInt(committee);
+                user.registration.teamSize = teamSize;
+                user.registration.submittedAt = user.registration.submittedAt || new Date();
+            }
+            
+            await user.save();
+        }
+
+        // Sync partner labels
+        await syncPartnerLabels([...removedUsers, ...newUsers]);
+
+        // Send notifications
+        const adminName = admin.fullName || admin.username;
+        
+        // Notify removed users
+        for (const user of removedUsers) {
+            await addUserNotification(user._id, {
+                type: 'delegation-removed-by-admin',
+                title: 'Removido da delegação',
+                message: `${adminName} removeu você da delegação.`,
+                payload: {
+                    adminId: String(admin._id),
+                    adminName
+                }
+            });
+        }
+        
+        // Notify all new delegation members
+        for (const user of newUsers) {
+            const otherMembers = newUsers.filter(u => !sameId(u._id, user._id));
+            const otherNames = otherMembers.map(m => m.fullName || m.username).join(' e ');
+            
+            await addUserNotification(user._id, {
+                type: 'delegation-updated-by-admin',
+                title: 'Delegação atualizada',
+                message: `${adminName} atualizou sua delegação. Você está agora com ${otherNames}.`,
+                payload: {
+                    adminId: String(admin._id),
+                    adminName,
+                    members: otherMembers.map(m => ({
+                        id: String(m._id),
+                        username: m.username,
+                        fullName: m.fullName
+                    }))
+                }
+            });
+        }
+
+        res.json({
+            message: 'Delegação atualizada com sucesso.',
+            delegation: {
+                teamSize,
+                members: newUsers.map(u => ({
+                    id: String(u._id),
+                    username: u.username,
+                    fullName: u.fullName,
+                    classGroup: u.classGroup
+                }))
+            }
+        });
+    } catch (error) {
+        console.error('Admin update delegation error:', error);
         res.status(400).json({ error: error.message });
     }
 });

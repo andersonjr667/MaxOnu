@@ -746,7 +746,7 @@ router.post('/sync-admin', async (req, res) => {
 
 // POST /api/forgot-password
 router.post('/forgot-password', [
-  body('email').isEmail().withMessage('Email inválido')
+  body('email').trim().notEmpty().withMessage('Email obrigatório').isEmail().withMessage('Email inválido')
 ], async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -755,7 +755,14 @@ router.post('/forgot-password', [
 
   try {
     const { email } = req.body;
-    const normalizedEmail = email.trim().toLowerCase();
+    if (!email) {
+      return res.status(400).json({ error: 'Email é obrigatório' });
+    }
+
+    const normalizedEmail = String(email).trim().toLowerCase();
+    if (!normalizedEmail) {
+      return res.status(400).json({ error: 'Email inválido' });
+    }
 
     const user = await User.findOne({ email: normalizedEmail });
     if (!user) {
@@ -771,7 +778,7 @@ router.post('/forgot-password', [
       to: user.email,
       fullName: user.fullName,
       resetCode
-    });
+    }).catch(() => false);
 
     res.json({ 
       message: emailSent
@@ -780,7 +787,8 @@ router.post('/forgot-password', [
       resetCode: process.env.NODE_ENV !== 'production' ? resetCode : undefined
     });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    console.error('Erro em /api/forgot-password:', error);
+    res.status(500).json({ error: 'Erro ao processar solicitação. Tente novamente.' });
   }
 });
 
