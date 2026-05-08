@@ -62,9 +62,22 @@ MaxOnu 2026 is a web application that simulates UN debates. It includes features
 - `PORT`: The port on which the server will run.
 - `MONGODB_URI`: The connection string for your MongoDB database.
 - `JWT_SECRET`: The secret key used for signing JWT tokens.
+- `RESEND_API_KEY`: API key for Resend email service (recommended).
+- `EMAIL_FROM`: Email address to send from (e.g., onboarding@resend.dev).
+- `RESEND_VERIFIED_DOMAIN`: Set to `true` after verifying a domain in Resend to send to multiple recipients.
+- `EMAIL_USER`, `EMAIL_PASSWORD`: SMTP credentials (fallback if Resend not configured).
 - `NEWSLETTER_ENABLED`: Set to `true` to enable newsletter feature, `false` to disable (default: `false`).
-- `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`: Email configuration for newsletter functionality.
 - `APP_URL`: The base URL of your application (used in newsletter emails).
+
+### Email Configuration
+
+For detailed email setup instructions, including:
+- Resend API configuration
+- Domain verification
+- Gmail forwarding setup
+- Multiple recipients configuration
+
+See [EMAIL_SETUP.md](EMAIL_SETUP.md).
 
 ### Newsletter Feature Toggle
 

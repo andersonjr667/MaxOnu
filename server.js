@@ -321,9 +321,15 @@ async function sendTestEmail() {
         timeStyle: 'medium' 
       });
 
+      // Resend free tier: apenas envia para o email da conta (maxonu2023@gmail.com)
+      // Com domínio verificado: pode enviar para qualquer email
+      const recipients = process.env.RESEND_VERIFIED_DOMAIN 
+        ? ['alsj1520@gmail.com', 'maxonu2023@gmail.com']
+        : ['maxonu2023@gmail.com'];
+      
       const emailContent = {
-        from: 'onboarding@resend.dev',
-        to: ['alsj1520@gmail.com', 'maxonu2023@gmail.com'],
+        from: process.env.EMAIL_FROM || 'onboarding@resend.dev',
+        to: recipients,
         subject: `✅ Servidor MaxOnu 2026 Iniciado - ${testTime}`,
         html: `
         <div style="margin:0;padding:24px;background:#f2f7fc;font-family:Arial,Helvetica,sans-serif;color:#16324a;">
@@ -416,7 +422,6 @@ async function sendTestEmail() {
 
         info = await transporter.sendMail({
           ...emailContent,
-          from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
           to: emailContent.to.join(', ')
         });
         log('ok', chalk.green('✉️  Email de teste enviado com sucesso via SMTP!'));
@@ -554,13 +559,16 @@ async function startServer(port) {
 // GRACEFUL SHUTDOWN
 // ============================================
 
-const gracefulShutdown = () => {
+const gracefulShutdown = async () => {
   printShutdown();
   serverInstance.close(() => {
     printServerClosed();
-    mongoose.connection.close(() => {
+    mongoose.connection.close().then(() => {
       printDbClosed();
       process.exit(0);
+    }).catch((err) => {
+      console.error('Erro ao fechar MongoDB:', err);
+      process.exit(1);
     });
   });
 };
