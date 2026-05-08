@@ -302,8 +302,12 @@ function hasEmailTransportConfig() {
 }
 
 async function sendTestEmail() {
-  if (!hasEmailTransportConfig()) {
-    log('warn', chalk.yellow('Email não configurado. Pulando teste de email.'));
+  // Verificar se tem configuração de email (Resend ou SMTP)
+  const hasResend = Boolean(process.env.RESEND_API_KEY);
+  const hasSmtp = hasEmailTransportConfig();
+  
+  if (!hasResend && !hasSmtp) {
+    log('warn', chalk.yellow('Email não configurado (nem Resend nem SMTP). Pulando teste de email.'));
     return;
   }
 
@@ -312,30 +316,14 @@ async function sendTestEmail() {
     try {
       log('info', chalk.blue('Enviando email de teste em background...'));
 
-      const transporter = nodemailer.createTransport({
-        host: 'smtp.gmail.com',
-        port: 587,
-        secure: false,
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASSWORD
-        },
-        tls: {
-          rejectUnauthorized: false
-        },
-        connectionTimeout: 30000,
-        greetingTimeout: 30000,
-        socketTimeout: 30000
-      });
-
       const testTime = new Date().toLocaleString('pt-BR', { 
         dateStyle: 'short', 
         timeStyle: 'medium' 
       });
 
-      const info = await transporter.sendMail({
-        from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
-        to: 'alsj1520@gmail.com',
+      const emailContent = {
+        from: 'onboarding@resend.dev',
+        to: ['alsj1520@gmail.com', 'maxonu2023@gmail.com'],
         subject: `✅ Servidor MaxOnu 2026 Iniciado - ${testTime}`,
         html: `
         <div style="margin:0;padding:24px;background:#f2f7fc;font-family:Arial,Helvetica,sans-serif;color:#16324a;">
@@ -364,8 +352,8 @@ async function sendTestEmail() {
                 </div>
 
                 <div style="margin:20px 0;padding:16px;border-radius:12px;background:#fef3c7;border:1px solid #fde68a;">
-                  <p style="margin:0 0 8px 0;font-size:14px;color:#92400e;"><strong>📧 Configuração de Email:</strong></p>
-                  <p style="margin:0;font-size:14px;color:#92400e;">✅ Funcionando corretamente</p>
+                  <p style="margin:0 0 8px 0;font-size:14px;color:#92400e;"><strong>📧 Método de Envio:</strong></p>
+                  <p style="margin:0;font-size:14px;color:#92400e;">✅ ${hasResend ? 'Resend API' : 'SMTP'}</p>
                 </div>
 
                 <p style="margin:24px 0 0;font-size:14px;line-height:1.6;color:#3a5975;">
@@ -382,21 +370,58 @@ async function sendTestEmail() {
             </tr>
           </table>
         </div>
-      `,
-        text: `
-Servidor MaxOnu 2026 Iniciado
-
-O servidor foi iniciado com sucesso!
-
-Data/Hora: ${testTime}
-Ambiente: ${IS_PRODUCTION ? 'PRODUCTION' : 'DEVELOPMENT'}
-Configuração de Email: Funcionando
-
-Este é um email automático de teste.
       `
-      });
+      };
 
-      log('ok', chalk.green('✉️  Email de teste enviado com sucesso!'));
+      let info;
+      
+      if (hasResend) {
+        // Usar Resend API (mais confiável)
+        log('info', chalk.blue('Usando Resend API...'));
+        const response = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(emailContent)
+        });
+
+        const data = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(`Resend API error: ${JSON.stringify(data)}`);
+        }
+        
+        info = { messageId: data.id };
+        log('ok', chalk.green('✉️  Email de teste enviado com sucesso via Resend!'));
+      } else {
+        // Fallback para SMTP
+        log('info', chalk.blue('Usando SMTP...'));
+        const transporter = nodemailer.createTransport({
+          host: 'smtp.gmail.com',
+          port: 587,
+          secure: false,
+          auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASSWORD
+          },
+          tls: {
+            rejectUnauthorized: false
+          },
+          connectionTimeout: 30000,
+          greetingTimeout: 30000,
+          socketTimeout: 30000
+        });
+
+        info = await transporter.sendMail({
+          ...emailContent,
+          from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
+          to: emailContent.to.join(', ')
+        });
+        log('ok', chalk.green('✉️  Email de teste enviado com sucesso via SMTP!'));
+      }
+
       log('info', chalk.gray(`Message ID: ${info.messageId}`));
     } catch (error) {
       log('warn', chalk.yellow('Email de teste falhou (não crítico): ') + chalk.gray(error.message));
