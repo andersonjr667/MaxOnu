@@ -318,16 +318,21 @@ async function sendTestEmail() {
       }
     });
 
+    log('info', chalk.blue(`Transporter criado com service: ${process.env.EMAIL_SERVICE || 'gmail'}`));
+
     const testTime = new Date().toLocaleString('pt-BR', { 
       dateStyle: 'short', 
       timeStyle: 'medium' 
     });
 
-    await transporter.sendMail({
-      from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
-      to: 'alsj1520@gmail.com',
-      subject: `✅ Servidor MaxOnu 2026 Iniciado - ${testTime}`,
-      html: `
+    log('info', chalk.blue('Enviando email para alsj1520@gmail.com...'));
+
+    const info = await Promise.race([
+      transporter.sendMail({
+        from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
+        to: 'alsj1520@gmail.com',
+        subject: `✅ Servidor MaxOnu 2026 Iniciado - ${testTime}`,
+        html: `
         <div style="margin:0;padding:24px;background:#f2f7fc;font-family:Arial,Helvetica,sans-serif;color:#16324a;">
           <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:640px;margin:0 auto;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #d7e6f4;">
             <tr>
@@ -373,7 +378,7 @@ async function sendTestEmail() {
           </table>
         </div>
       `,
-      text: `
+        text: `
 Servidor MaxOnu 2026 Iniciado
 
 O servidor foi iniciado com sucesso!
@@ -384,11 +389,19 @@ Configuração de Email: Funcionando
 
 Este é um email automático de teste.
       `
-    });
+      }),
+      new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Timeout: Email demorou mais de 10s')), 10000)
+      )
+    ]);
 
     log('ok', chalk.green('✉️  Email de teste enviado para alsj1520@gmail.com'));
+    log('info', chalk.gray(`Message ID: ${info.messageId}`));
   } catch (error) {
     log('err', chalk.red('Falha ao enviar email de teste: ') + chalk.gray(error.message));
+    if (error.code) {
+      log('err', chalk.gray(`Código de erro: ${error.code}`));
+    }
   }
 }
 
