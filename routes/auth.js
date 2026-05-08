@@ -96,7 +96,10 @@ function getMaskedEmail(email) {
 }
 
 async function sendPasswordResetEmail({ to, fullName, resetCode }) {
-  if (!hasEmailTransportConfig()) {
+  const hasResend = Boolean(process.env.RESEND_API_KEY);
+  const hasSmtp = hasEmailTransportConfig();
+  
+  if (!hasResend && !hasSmtp) {
     return false;
   }
 
@@ -113,38 +116,16 @@ async function sendPasswordResetEmail({ to, fullName, resetCode }) {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
 
-  const transporter = createMailTransporter();
-
-  await transporter.sendMail({
-    from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
-    to,
+  const emailContent = {
+    from: process.env.EMAIL_FROM || 'onboarding@resend.dev',
+    to: [to],
     subject: 'Recuperacao de senha - MaxOnu 2026',
-    attachments: hasLocalBanner
-      ? [
-          {
-            filename: 'banner.jpeg',
-            path: bannerImagePath,
-            cid: bannerCid
-          }
-        ]
-      : [],
-    text: [
-      `Ola, ${fullName || 'participante'}!`,
-      '',
-      'Recebemos uma solicitacao para redefinir sua senha na plataforma MaxOnu 2026.',
-      `Codigo de verificacao: ${resetCode}`,
-      '',
-      'Digite esse codigo na tela de recuperacao para continuar.',
-      'O codigo expira em 1 hora.',
-      '',
-      'Se voce nao solicitou essa alteracao, ignore esta mensagem com seguranca.'
-    ].join('\n'),
     html: `
       <div style="margin:0;padding:24px;background:#f2f7fc;font-family:Arial,Helvetica,sans-serif;color:#16324a;">
         <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:640px;margin:0 auto;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #d7e6f4;">
           <tr>
             <td style="background:linear-gradient(135deg,#0a5ea3,#1b7ac9);text-align:center;padding:20px;">
-              <img src="${bannerSrc}" alt="MaxOnu 2026" style="max-width:520px;width:100%;height:auto;display:inline-block;border-radius:10px;">
+              <img src="${bannerUrl}" alt="MaxOnu 2026" style="max-width:520px;width:100%;height:auto;display:inline-block;border-radius:10px;">
             </td>
           </tr>
           <tr>
@@ -178,17 +159,70 @@ async function sendPasswordResetEmail({ to, fullName, resetCode }) {
         </table>
       </div>
     `
-  });
+  };
 
-  return true;
+  try {
+    if (hasResend) {
+      // Usar Resend API
+      const response = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(emailContent)
+      });
+
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(`Resend API error: ${JSON.stringify(data)}`);
+      }
+      
+      return true;
+    } else {
+      // Fallback para SMTP
+      const transporter = createMailTransporter();
+      await transporter.sendMail({
+        ...emailContent,
+        to: to,
+        attachments: hasLocalBanner
+          ? [
+              {
+                filename: 'banner.jpeg',
+                path: bannerImagePath,
+                cid: bannerCid
+              }
+            ]
+          : [],
+        text: [
+          `Ola, ${fullName || 'participante'}!`,
+          '',
+          'Recebemos uma solicitacao para redefinir sua senha na plataforma MaxOnu 2026.',
+          `Codigo de verificacao: ${resetCode}`,
+          '',
+          'Digite esse codigo na tela de recuperacao para continuar.',
+          'O codigo expira em 1 hora.',
+          '',
+          'Se voce nao solicitou essa alteracao, ignore esta mensagem com seguranca.'
+        ].join('\n')
+      });
+      return true;
+    }
+  } catch (error) {
+    console.error('Erro ao enviar email de recuperação:', error);
+    return false;
+  }
 }
 
 async function sendTwoFactorEmailCode({ to, fullName, code }) {
-  if (!hasEmailTransportConfig()) {
+  const hasResend = Boolean(process.env.RESEND_API_KEY);
+  const hasSmtp = hasEmailTransportConfig();
+  
+  if (!hasResend && !hasSmtp) {
     return false;
   }
 
-  const transporter = createMailTransporter();
   const frontendBaseUrl = String(process.env.FRONTEND_URL || 'http://localhost:3000').replace(/\/+$/, '');
   const bannerImagePath = path.join(__dirname, '..', 'public', 'images', 'banner.jpeg');
   const hasLocalBanner = fs.existsSync(bannerImagePath);
@@ -202,28 +236,16 @@ async function sendTwoFactorEmailCode({ to, fullName, code }) {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
 
-  await transporter.sendMail({
-    from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
-    to,
+  const emailContent = {
+    from: process.env.EMAIL_FROM || 'onboarding@resend.dev',
+    to: [to],
     subject: 'Seu código de verificação - MaxOnu 2026',
-    attachments: hasLocalBanner
-      ? [{ filename: 'banner.jpeg', path: bannerImagePath, cid: bannerCid }]
-      : [],
-    text: [
-      `Olá, ${fullName || 'participante'}!`,
-      '',
-      'Seu código de verificação para entrar na MaxOnu 2026 é:',
-      code,
-      '',
-      'Esse código expira em 10 minutos.',
-      'Se você não tentou entrar agora, altere sua senha imediatamente.'
-    ].join('\n'),
     html: `
       <div style="margin:0;padding:24px;background:#f2f7fc;font-family:Arial,Helvetica,sans-serif;color:#16324a;">
         <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:640px;margin:0 auto;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #d7e6f4;">
           <tr>
             <td style="background:linear-gradient(135deg,#0a5ea3,#1b7ac9);text-align:center;padding:20px;">
-              <img src="${bannerSrc}" alt="MaxOnu 2026" style="max-width:520px;width:100%;height:auto;display:inline-block;border-radius:10px;">
+              <img src="${bannerUrl}" alt="MaxOnu 2026" style="max-width:520px;width:100%;height:auto;display:inline-block;border-radius:10px;">
             </td>
           </tr>
           <tr>
@@ -248,9 +270,52 @@ async function sendTwoFactorEmailCode({ to, fullName, code }) {
         </table>
       </div>
     `
-  });
+  };
 
-  return true;
+  try {
+    if (hasResend) {
+      // Usar Resend API
+      const response = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(emailContent)
+      });
+
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(`Resend API error: ${JSON.stringify(data)}`);
+      }
+      
+      return true;
+    } else {
+      // Fallback para SMTP
+      const transporter = createMailTransporter();
+      await transporter.sendMail({
+        ...emailContent,
+        to: to,
+        attachments: hasLocalBanner
+          ? [{ filename: 'banner.jpeg', path: bannerImagePath, cid: bannerCid }]
+          : [],
+        text: [
+          `Olá, ${fullName || 'participante'}!`,
+          '',
+          'Seu código de verificação para entrar na MaxOnu 2026 é:',
+          code,
+          '',
+          'Esse código expira em 10 minutos.',
+          'Se você não tentou entrar agora, altere sua senha imediatamente.'
+        ].join('\n')
+      });
+      return true;
+    }
+  } catch (error) {
+    console.error('Erro ao enviar código 2FA:', error);
+    return false;
+  }
 }
 
 async function syncPartnerLabelsByUserIds(userIds) {
@@ -784,8 +849,9 @@ router.post('/forgot-password', [
     });
 
     // Responder imediatamente sem esperar o email
+    const hasEmailConfig = Boolean(process.env.RESEND_API_KEY) || hasEmailTransportConfig();
     res.json({ 
-      message: hasEmailTransportConfig()
+      message: hasEmailConfig
         ? 'Enviamos um código de verificação para seu email.'
         : 'Pedido recebido. Como o email ainda não está configurado, use o código de teste exibido abaixo.',
       resetCode: process.env.NODE_ENV !== 'production' ? resetCode : undefined
