@@ -242,8 +242,9 @@ function initAuth() {
             }
 
             localStorage.setItem('token', data.token);
-            localStorage.setItem('isAdmin', data.isAdmin);
+            localStorage.setItem('isAdmin', data.isAdmin ? 'true' : 'false');
             localStorage.setItem('role', data.role || 'candidate');
+            localStorage.setItem('userId', data.userId || '');
             if (window.MaxOnuSession?.refreshAuthContext) {
                 window.MaxOnuSession.refreshAuthContext().catch(() => {});
             }

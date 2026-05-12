@@ -1,128 +1,49 @@
-<!-- header.html -->
-<link rel="stylesheet" href="/css/notification-cards.css" />
-<link rel="stylesheet" href="/css/notification-center.css" />
-<script src="/js/notification-system.js"></script>
-<script>
-  !(function () {
-    var t = localStorage.getItem("maxonu_theme");
-    if (t) document.documentElement.setAttribute("data-theme", t);
-    else if (window.matchMedia("(prefers-color-scheme: dark)").matches)
-      document.documentElement.setAttribute("data-theme", "dark");
-  })();
-</script>
-<header class="main-header" role="banner" data-header>
-  <div class="header-content" data-header-content>
-    <!-- Logo -->
-    <a href="/" class="logo" aria-label="MaxOnu 2026 — Página inicial">
-      <img
-        src="/images/logo-maxonu.png"
-        alt=""
-        class="logo-img"
-        aria-hidden="true"
-      />
-      <div class="logo-copy">
-        <span class="logo-kicker">Colégio Maximus</span>
-        <strong>MaxOnu 2026</strong>
-      </div>
+<!-- Header Component -->
+<link rel="stylesheet" href="/css/layout/header.css" />
+<script src="/js/header.js" defer></script>
+
+<header class="mx-header" data-mx-header>
+  <div class="mx-header__inner">
+    <a class="mx-header__brand" href="/" aria-label="MaxOnu 2026 - Início">
+      <img class="mx-header__brand-logo" src="/images/logo-maxonu.png" alt="" aria-hidden="true" />
+      <span class="mx-header__brand-copy">
+        <small class="mx-header__brand-kicker">Colegio Maximus</small>
+        <strong class="mx-header__brand-title">MaxOnu 2026</strong>
+      </span>
     </a>
 
-    <!-- Nav desktop -->
-    <nav class="nav-links" aria-label="Navegação principal" data-header-nav>
-      <ul id="navLinks" data-header-nav-list>
-        <li><a href="/blog" class="nav-link">Blog</a></li>
-        <li><a href="/guias" class="nav-link">Guias</a></li>
-        <li><a href="/delegacoes" class="nav-link">Delegações</a></li>
-        <li><a href="/dpos" class="nav-link">DPOs</a></li>
-        <li><a href="/regras" class="nav-link">Regras</a></li>
-        <li><a href="/faq" class="nav-link">Perguntas Comuns</a></li>
-        <li class="newsletter-link" hidden>
-          <a href="/newsletter" class="nav-link">Newsletter</a>
+    <nav class="mx-header__nav" aria-label="Navegação principal" data-mx-nav>
+      <ul class="mx-header__nav-list" data-mx-nav-list>
+        <li><a class="mx-header__nav-link" href="/blog">Blog</a></li>
+        <li><a class="mx-header__nav-link" href="/guias">Guias</a></li>
+        <li><a class="mx-header__nav-link" href="/delegacoes">Delegações</a></li>
+        <li><a class="mx-header__nav-link" href="/dpos">DPOs</a></li>
+        <li><a class="mx-header__nav-link" href="/regras">Regras</a></li>
+        <li><a class="mx-header__nav-link" href="/faq">FAQ</a></li>
+        <li class="mx-header__nav-item mx-header__nav-item--newsletter" hidden>
+          <a class="mx-header__nav-link" href="/newsletter">Newsletter</a>
         </li>
-        <li class="admin-only-link" hidden>
-          <a href="/analytics" class="nav-link">Analytics</a>
-        </li>
-        <!-- slots mobile auth injetados pelo JS -->
-        <li class="mobile-auth-link" data-mobile-auth-slot="primary">
-          <a href="/login" class="nav-link mobile-auth-enter">Entrar</a>
-        </li>
-        <li class="mobile-auth-link" data-mobile-auth-slot="secondary">
-          <a href="/login#register" class="nav-link mobile-auth-register"
-            >Cadastrar</a
-          >
+        <li class="mx-header__nav-item mx-header__nav-item--admin" hidden>
+          <a class="mx-header__nav-link" href="/analytics">Analytics</a>
         </li>
       </ul>
     </nav>
 
-    <!-- Ações do lado direito -->
-    <div class="header-actions" aria-label="Ações do cabeçalho">
-      <div class="header-tools" aria-label="Ferramentas">
-        <!-- Notificações (sempre visível, injetado pelo JS) -->
-        <div class="header-notifications" data-header-notifications></div>
-        <!-- Utilitários extras (injetado pelo JS) -->
-        <div class="header-utilities" data-header-utilities></div>
-      </div>
-      <div class="header-actions-right" aria-label="Ações rápidas">
-        <!-- Toggle dark/light -->
-        <button
-          class="theme-toggle"
-          id="themeToggle"
-          type="button"
-          aria-label="Alternar tema"
-        >
-          <svg
-            class="theme-icon theme-icon-moon"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-          </svg>
-          <svg
-            class="theme-icon theme-icon-sun"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <circle cx="12" cy="12" r="5" />
-            <line x1="12" y1="1" x2="12" y2="3" />
-            <line x1="12" y1="21" x2="12" y2="23" />
-            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-            <line x1="1" y1="12" x2="3" y2="12" />
-            <line x1="21" y1="12" x2="23" y2="12" />
-            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-          </svg>
-        </button>
-      </div>
-      <div class="header-account" aria-label="Conta">
-        <!-- Auth (Entrar / Cadastrar / Avatar) -->
-        <div class="auth-buttons" data-auth-buttons>
-          <a href="/login" class="auth-btn auth-btn-secondary">Entrar</a>
-          <a href="/login#register" class="auth-btn auth-btn-primary"
-            >Cadastrar</a
-          >
-        </div>
-      </div>
-      <!-- Hamburger (mobile) -->
+  <div class="mx-header__actions">
+      <button class="mx-header__theme-btn" id="themeToggle" type="button" aria-label="Alternar tema">◐</button>
+      <div class="mx-header__auth" data-mx-auth></div>
       <button
-        class="hamburger-menu"
-        id="hamburgerMenu"
+        class="mx-header__menu-btn"
         type="button"
-        aria-label="Abrir menu"
-        aria-expanded="false"
+        data-mx-menu-toggle
         aria-controls="navLinks"
+        aria-expanded="false"
+        aria-label="Abrir menu"
       >
-        <span></span>
-        <span></span>
-        <span></span>
+        <span class="mx-header__menu-icon" aria-hidden="true"></span>
       </button>
     </div>
   </div>
+
+  <nav id="navLinks" aria-label="Menu móvel"></nav>
 </header>

@@ -959,10 +959,15 @@ svg {
    Mobile menu  <=860px
    ================================================================ */
 @media (max-width: 860px) {
-  /* Show hamburger */
+  /* Hide legacy hamburger (header moderno usa .mx-header__menu-btn) */
   .hamburger-menu {
-    display: flex;
+    display: none;
   }
+
+  .mx-header__menu-btn {
+    display: inline-flex;
+  }
+
 
   /* <nav> wrapper out of flow so <ul> can be positioned freely */
   .nav-links {
@@ -10472,6 +10477,7 @@ body {
   padding-top: 0.7rem;
 }
 
+S
 .question-reactions-slot {
   padding: 0 1.4rem 1rem;
 }

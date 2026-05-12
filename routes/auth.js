@@ -444,6 +444,10 @@ router.post('/login', [
       const twoFactorMethod = user.twoFactorMethod || (user.twoFactorSecret ? 'totp' : 'email');
 
       if (twoFactorMethod === 'email') {
+        if (!user.email) {
+          return res.status(400).json({ error: '2FA por email não pode ser usado: conta sem email válido.' });
+        }
+
         const code = generateTwoFactorEmailCode();
         user.twoFactorEmailCode = code;
         user.twoFactorEmailCodeExpires = new Date(Date.now() + 10 * 60 * 1000);
@@ -462,8 +466,8 @@ router.post('/login', [
         }
       }
 
-      return res.json({ 
-        userId: user._id,
+      return res.json({
+        userId: user._id.toString(),
         twoFactorRequired: true,
         twoFactorMethod,
         maskedEmail: twoFactorMethod === 'email' ? getMaskedEmail(user.email) : '',
@@ -472,7 +476,14 @@ router.post('/login', [
     }
 
     const token = user.generateToken();
-    res.json({ token, isAdmin: user.role === 'admin', role: user.role, twoFactorRequired: false });
+    return res.json({ 
+      token, 
+      isAdmin: user.role === 'admin', 
+      role: user.role, 
+      userId: user._id.toString(),
+      twoFactorRequired: false 
+    });
+
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -481,7 +492,12 @@ router.post('/login', [
 // GET /api/me
 router.get('/me', authMiddleware, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select('-password');
+    // Retorna explicitamente role e id para garantir contrato com o front (role-portals.js)
+    const user = await User.findById(req.user.id).select(
+      'role username fullName committee country classGroup registration accountStatus ' +
+      'twoFactorEnabled twoFactorMethod twoFactorVerified profileImageUrl createdAt'
+    );
+
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
@@ -495,11 +511,27 @@ router.get('/me', authMiddleware, async (req, res) => {
       }
     }
 
-    res.json(user);
+    res.json({
+      id: user._id.toString(),
+      role: user.role,
+      username: user.username,
+      fullName: user.fullName,
+      committee: user.committee,
+      country: user.country,
+      classGroup: user.classGroup,
+      registration: user.registration,
+      twoFactorEnabled: user.twoFactorEnabled,
+      twoFactorMethod: user.twoFactorMethod,
+      twoFactorVerified: user.twoFactorVerified,
+      profileImageUrl: user.profileImageUrl,
+      accountStatus: user.accountStatus,
+      createdAt: user.createdAt
+    });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 });
+
 
 // GET /api/check-admin
 router.get('/check-admin', authMiddleware, async (req, res) => {
@@ -1173,8 +1205,10 @@ router.post('/verify-2fa-login', [
         token: jwtToken,
         isAdmin: user.role === 'admin',
         role: user.role,
+        twoFactorRequired: false,
         message: 'Verificação por email concluída com sucesso'
       });
+
     }
 
     if (!user.twoFactorSecret) {
@@ -1195,8 +1229,10 @@ router.post('/verify-2fa-login', [
         token: jwtToken,
         isAdmin: user.role === 'admin',
         role: user.role,
+        twoFactorRequired: false,
         message: '2FA verificado com sucesso'
       });
+
     }
 
     // Tentar backup code
@@ -1213,8 +1249,10 @@ router.post('/verify-2fa-login', [
         token: jwtToken,
         isAdmin: user.role === 'admin',
         role: user.role,
+        twoFactorRequired: false,
         message: 'Backup code usado com sucesso'
       });
+
     }
 
     res.status(401).json({ error: 'Código 2FA inválido' });

@@ -138,7 +138,9 @@ function initVerifyTwoFactorPage() {
             }
 
             localStorage.setItem('token', data.token);
+            localStorage.setItem('isAdmin', data.isAdmin ? 'true' : 'false');
             localStorage.setItem('role', data.role || 'candidate');
+            localStorage.setItem('userId', data.userId || '');
             localStorage.setItem('isAdmin', data.isAdmin ? 'true' : 'false');
             sessionStorage.removeItem('2fa_user_id');
             sessionStorage.removeItem('2fa_method');

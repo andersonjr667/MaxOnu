@@ -737,10 +737,73 @@ app.use((req, res, next) => {
 // Clean URLs middleware - remove extensão .html e oferece rotas amigáveis
 app.use(cleanUrlsMiddleware(publicDir));
 
+// ============================================
+// PAGE AUTH (ROBUSTO)
+// ============================================
+// Garante que HTML estático respeite as regras por role.
+// A regra usa data-portal-role no <body> quando existir.
+const pageRoleGuard = (req, res, next) => {
+  try {
+    // Não proteger assets e rotas que já são /api
+    if (!req.path || req.path.startsWith('/api')) return next();
+    if (req.path.startsWith('/css') || req.path.startsWith('/js') || req.path.startsWith('/images')) return next();
+
+    // Somente páginas HTML (no projeto elas são servidas sem extensão via cleanUrls)
+    const isCandidatePage = !req.path.includes('.') && req.path !== '/' && req.path !== '/login' && req.path !== '/verify-2fa-login';
+    if (!isCandidatePage) return next();
+
+    // Mapeia path -> file/portal role
+    const htmlPath = path.join(publicDir, `${req.path}.html`);
+
+    // Se arquivo não existir, deixa passar (ex: páginas que não são HTML)
+    if (!fs.existsSync(htmlPath)) return next();
+
+    const file = fs.readFileSync(htmlPath, 'utf8');
+    const match = file.match(/<body[^>]*data-portal-role=["']([^"']+)["']/i);
+    if (!match) return next();
+
+    const requiredRole = match[1];
+
+    // Login é via token no header Authorization
+    const authHeader = req.headers.authorization;
+    const tokenMatch = authHeader && typeof authHeader === 'string' ? authHeader.match(/^\s*Bearer\s+(.+?)\s*$/i) : null;
+    const token = tokenMatch?.[1];
+
+    if (!token) return res.redirect('/login');
+
+    let decoded;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+    } catch (e) {
+      return res.redirect('/login');
+    }
+
+    const userId = decoded?.id;
+    if (!userId) return res.redirect('/login');
+
+    // Busca role atual no banco para evitar token antigo
+    User.findById(userId).select('role username fullName accountStatus')
+      .then((user) => {
+        if (!user) return res.redirect('/login');
+        if (String(user.role) !== String(requiredRole) && String(requiredRole) !== 'candidate') {
+          // candidate é “fallback” no front, aqui exigimos role exata.
+          return res.redirect('/');
+        }
+        return next();
+      })
+      .catch(() => res.redirect('/login'));
+  } catch {
+    return next();
+  }
+};
+
+app.use(pageRoleGuard);
+
 app.use((req, res, next) => {
   if (COMMITTEE_PAGES.has(req.path)) return res.redirect('/delegacoes');
   next();
 });
+
 
 // Static
 app.use(express.static(publicDir, {
