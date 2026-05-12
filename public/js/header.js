@@ -255,11 +255,24 @@
         this.close();
       }, { capture: true, passive: true, signal: abort.signal });
 
+      // Fechar painel de notificações ao clicar no overlay
+      if (this.notif) {
+        const overlay = this.view.root.querySelector('[data-mx-notif-overlay]');
+        if (overlay) {
+          overlay.addEventListener('click', () => {
+            this.notif?.closePanel();
+          }, { signal: abort.signal });
+        }
+      }
+
       // ESC fecha menu e painel de notificações
       document.addEventListener('keydown', (e) => {
         if (e.key !== 'Escape') return;
-        this.notif?.closePanel();
-        this.close();
+        if (this.notif?.open) {
+          this.notif?.closePanel();
+        } else {
+          this.close();
+        }
       }, { signal: abort.signal });
 
       // Scroll inteligente
@@ -512,9 +525,24 @@
       
       // Gerenciar overlay
       if (this.overlay) {
-        this.overlay.hidden = !open;
-        this.overlay.setAttribute('aria-hidden', String(!open));
-        this.overlay.classList.toggle('is-open', open);
+        if (open) {
+          this.overlay.removeAttribute('hidden');
+          this.overlay.setAttribute('aria-hidden', 'false');
+          this.overlay.classList.add('is-open');
+        } else {
+          this.overlay.setAttribute('hidden', '');
+          this.overlay.setAttribute('aria-hidden', 'true');
+          this.overlay.classList.remove('is-open');
+        }
+      }
+      
+      // Bloquear scroll do body quando painel está aberto
+      if (open) {
+        document.body.style.overflow = 'hidden';
+        document.body.classList.add('mx-header-lock');
+      } else {
+        document.body.style.overflow = '';
+        document.body.classList.remove('mx-header-lock');
       }
     }
 
@@ -526,6 +554,8 @@
     closePanel() {
       if (!this.open) return;
       this.setPanelOpen(false);
+      document.body.style.overflow = '';
+      document.body.classList.remove('mx-header-lock');
     }
 
     async refresh() {
@@ -638,8 +668,12 @@
         if (this.es) this.es.close();
         this.es = new EventSource(`/api/notifications/stream?token=${encodeURIComponent(token)}`);
         const bump = () => {
-          if (this.open) this.refresh();
-          else this.refreshBadgeOnly();
+          if (this.open) {
+            this.refresh();
+          } else {
+            // Quando o painel está fechado, apenas atualiza o badge
+            this.refreshBadgeOnly();
+          }
         };
         this.es.addEventListener('notification', bump);
         this.es.addEventListener('new-notification', bump);
@@ -652,25 +686,34 @@
             /* ignore */
           }
           this.es = null;
+          // Reconectar após 15 segundos se ainda houver token
           window.setTimeout(() => {
             if (HeaderService.token()) this.connectStream();
           }, 15000);
         });
-      } catch {
-        /* SSE não disponível */
+      } catch (err) {
+        console.warn('SSE não disponível:', err);
       }
     }
 
     async refreshBadgeOnly() {
       const headers = this.authHeaders();
-      if (!headers) return;
+      if (!headers) {
+        this.setBadge(0);
+        return;
+      }
       try {
         const res = await fetch('/api/notifications', { headers });
-        if (!res.ok) return;
+        if (!res.ok) {
+          this.setBadge(0);
+          return;
+        }
         const data = await res.json();
-        this.setBadge(data.unreadCount ?? 0);
-      } catch {
-        /* ignore */
+        const count = data.unreadCount ?? 0;
+        this.setBadge(count);
+      } catch (err) {
+        console.warn('Erro ao atualizar badge:', err);
+        this.setBadge(0);
       }
     }
   }
