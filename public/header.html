@@ -7,7 +7,7 @@
     <a class="mx-header__brand" href="/" aria-label="MaxOnu 2026 - Início">
       <img class="mx-header__brand-logo" src="/images/logo-maxonu.png" alt="" aria-hidden="true" />
       <span class="mx-header__brand-copy">
-        <small class="mx-header__brand-kicker">Colegio Maximus</small>
+        <small class="mx-header__brand-kicker">Colégio Maximus</small>
         <strong class="mx-header__brand-title">MaxOnu 2026</strong>
       </span>
     </a>
@@ -29,8 +29,18 @@
       </ul>
     </nav>
 
-  <div class="mx-header__actions">
-      <button class="mx-header__theme-btn" id="themeToggle" type="button" aria-label="Alternar tema">◐</button>
+    <div class="mx-header__actions">
+      <button class="mx-header__theme-btn" id="themeToggle" type="button" aria-label="Alternar tema claro e escuro">
+        <span class="mx-header__theme-visual" aria-hidden="true">
+          <svg class="mx-header__theme-icon mx-header__theme-icon--moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+          </svg>
+          <svg class="mx-header__theme-icon mx-header__theme-icon--sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+          </svg>
+        </span>
+      </button>
       <div class="mx-header__auth" data-mx-auth></div>
       <button
         class="mx-header__menu-btn"

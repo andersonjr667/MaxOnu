@@ -21,7 +21,8 @@
 
   const MX = {
     mxReadyKey: 'mxHeaderBound_v1',
-    MOBILE_MAX_WIDTH: 860,
+    /** Deve coincidir com o breakpoint em `header.css` (nav desktop vs menu móvel). */
+    MOBILE_MAX_WIDTH: 1024,
   };
 
   const isMobile = () => window.innerWidth <= MX.MOBILE_MAX_WIDTH;
@@ -60,6 +61,7 @@
     setOpen(open) {
       this.root.dataset.menuOpen = open ? 'true' : 'false';
       this.menuToggle.setAttribute('aria-expanded', String(open));
+      this.menuToggle.setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu');
 
       this.mobileLinks.classList.toggle('active', open);
 
@@ -68,8 +70,8 @@
     }
 
     setScrollState({ compact, hidden }) {
-      this.root.dataset.compact = compact ? 'true' : 'false';
-      this.root.dataset.hidden = hidden ? 'true' : 'false';
+      this.root.classList.toggle('is-compact', compact);
+      this.root.classList.toggle('is-hidden', hidden);
     }
 
     syncHeight() {
