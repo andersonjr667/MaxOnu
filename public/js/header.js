@@ -12,11 +12,20 @@
     navList: '[data-mx-nav-list]',
     authSlot: '[data-mx-auth]',
     menuToggle: '[data-mx-menu-toggle]',
+    menuBackdrop: '[data-mx-menu-backdrop]',
     mobileLinks: '#navLinks',
     drawerAuth: '[data-mx-drawer-auth]',
     overlay: '[data-mx-overlay]',
     drawer: '[data-mx-drawer]',
     drawerList: '[data-mx-drawer-list]',
+    notifRoot: '[data-mx-notif-root]',
+    notifToggle: '[data-mx-notif-toggle]',
+    notifPanel: '[data-mx-notif-panel]',
+    notifList: '[data-mx-notif-list]',
+    notifBadge: '[data-mx-notif-badge]',
+    notifMarkAll: '[data-mx-notif-markall]',
+    notifClose: '[data-mx-notif-close]',
+    notifOverlay: '[data-mx-notif-overlay]',
   };
 
   const MX = {
@@ -26,6 +35,36 @@
   };
 
   const isMobile = () => window.innerWidth <= MX.MOBILE_MAX_WIDTH;
+
+  function normalizePathname(pathname) {
+    let p = String(pathname || '/').split('?')[0];
+    if (p.endsWith('.html')) p = p.slice(0, -5) || '/';
+    if (p.length > 1 && p.endsWith('/')) p = p.replace(/\/+$/, '');
+    return p || '/';
+  }
+
+  function isActivePath(currentPath, linkPath) {
+    if (linkPath === '/' || linkPath === '') return currentPath === '/' || currentPath === '';
+    if (currentPath === linkPath) return true;
+    return currentPath.startsWith(`${linkPath}/`);
+  }
+
+  function applyActiveNavAnchors(anchors, currentPath) {
+    anchors.forEach((a) => {
+      const href = a.getAttribute('href');
+      if (!href || href.startsWith('#')) return;
+      try {
+        const u = new URL(href, window.location.origin);
+        const linkPath = normalizePathname(u.pathname);
+        const active = isActivePath(currentPath, linkPath);
+        a.classList.toggle('is-active', active);
+        if (active) a.setAttribute('aria-current', 'page');
+        else a.removeAttribute('aria-current');
+      } catch {
+        /* ignore */
+      }
+    });
+  }
 
   class HeaderState {
     constructor() {
@@ -46,6 +85,7 @@
       this.authSlot = root.querySelector(SEL.authSlot);
       this.menuToggle = root.querySelector(SEL.menuToggle);
       this.mobileLinks = root.querySelector(SEL.mobileLinks);
+      this.menuBackdrop = root.querySelector(SEL.menuBackdrop);
 
       // mantemos referências antigas apenas para compatibilidade (não usamos na lógica B)
       this.overlay = root.querySelector(SEL.overlay);
@@ -64,6 +104,11 @@
       this.menuToggle.setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu');
 
       this.mobileLinks.classList.toggle('active', open);
+
+      if (this.menuBackdrop) {
+        this.menuBackdrop.toggleAttribute('hidden', !open);
+        this.menuBackdrop.setAttribute('aria-hidden', String(!open));
+      }
 
       document.documentElement.dataset.mxHeaderMenu = open ? 'open' : 'closed';
       document.body.style.overflow = open ? 'hidden' : '';
@@ -155,6 +200,7 @@
     constructor(root) {
       this.state = new HeaderState();
       this.view = new HeaderView(root);
+      this.notif = null;
     }
 
     async init() {
@@ -164,9 +210,20 @@
       this.applyAccess();
       await this.applyFeatures();
       this.renderMobileLinks();
+      this.markActiveNav();
 
       this.view.syncHeight();
+      this.notif = new HeaderNotifications(this.view.root, this.state.abort.signal, () => this.close());
+      this.notif.init();
       this.bind();
+    }
+
+    markActiveNav() {
+      const currentPath = normalizePathname(window.location.pathname);
+      const desktop = Array.from(this.view.navList.querySelectorAll('.mx-header__nav-link'));
+      applyActiveNavAnchors(desktop, currentPath);
+      const mobile = Array.from(this.view.mobileLinks.querySelectorAll('a[href]'));
+      applyActiveNavAnchors(mobile, currentPath);
     }
 
     bind() {
@@ -175,8 +232,13 @@
       this.view.menuToggle.addEventListener('click', (e) => {
         e.preventDefault();
         if (!isMobile()) return;
+        if (this.notif) this.notif.closePanel();
         this.toggle();
       }, { signal: abort.signal });
+
+      if (this.view.menuBackdrop) {
+        this.view.menuBackdrop.addEventListener('click', () => this.close(), { signal: abort.signal });
+      }
 
       // Fechar ao clicar em link do dropdown
       this.view.mobileLinks.addEventListener('click', (e) => {
@@ -193,9 +255,11 @@
         this.close();
       }, { capture: true, passive: true, signal: abort.signal });
 
-      // ESC fecha e mantém acessibilidade
+      // ESC fecha menu e painel de notificações
       document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') this.close();
+        if (e.key !== 'Escape') return;
+        this.notif?.closePanel();
+        this.close();
       }, { signal: abort.signal });
 
       // Scroll inteligente
@@ -218,6 +282,7 @@
     openMenu() {
       if (!isMobile()) return;
       if (this.state.open) return;
+      if (this.notif) this.notif.closePanel();
       this.state.open = true;
       this.state.lastFocus = document.activeElement;
 
@@ -352,10 +417,269 @@
     }
   }
 
+  class HeaderNotifications {
+    /**
+     * @param {HTMLElement} root
+     * @param {AbortSignal} signal
+     * @param {() => void} closeMobileMenu
+     */
+    constructor(root, signal, closeMobileMenu) {
+      this.root = root;
+      this.signal = signal;
+      this.closeMobileMenu = closeMobileMenu;
+      this.open = false;
+      this.es = null;
+      this.slot = root.querySelector(SEL.notifRoot);
+      this.toggle = root.querySelector(SEL.notifToggle);
+      this.panel = root.querySelector(SEL.notifPanel);
+      this.list = root.querySelector(SEL.notifList);
+      this.badge = root.querySelector(SEL.notifBadge);
+      this.markAll = root.querySelector(SEL.notifMarkAll);
+      this.closeBtn = root.querySelector(SEL.notifClose);
+      this.overlay = root.querySelector(SEL.notifOverlay);
+    }
+
+    valid() {
+      return !!(this.slot && this.toggle && this.panel && this.list && this.badge);
+    }
+
+    init() {
+      if (!this.valid()) return;
+
+      this.toggle.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        this.closeMobileMenu();
+        this.togglePanel();
+      }, { signal: this.signal });
+
+      this.closeBtn?.addEventListener('click', () => this.closePanel(), { signal: this.signal });
+      this.markAll?.addEventListener('click', () => this.markAllRead(), { signal: this.signal });
+
+      // Fechar ao clicar no overlay
+      if (this.overlay) {
+        this.overlay.addEventListener('click', () => this.closePanel(), { signal: this.signal });
+      }
+
+      document.addEventListener('pointerdown', (e) => {
+        if (!this.open) return;
+        const t = e.target;
+        if (!(t instanceof Element)) return;
+        if (this.slot.contains(t)) return;
+        this.closePanel();
+      }, { capture: true, signal: this.signal });
+
+      this.list.addEventListener('click', (e) => {
+        const card = e.target.closest('[data-mx-notif-id]');
+        if (!card) return;
+        const id = card.getAttribute('data-mx-notif-id');
+        if (id) {
+          // Feedback visual imediato
+          card.style.opacity = '0.5';
+          card.style.transform = 'scale(0.98)';
+          this.markRead(id);
+        }
+      }, { signal: this.signal });
+
+      this.refresh();
+      this.connectStream();
+    }
+
+    authHeaders() {
+      const token = HeaderService.token();
+      if (!token) return null;
+      return { Authorization: `Bearer ${token}` };
+    }
+
+    setBadge(count) {
+      const n = Math.min(99, Math.max(0, Number(count) || 0));
+      if (!this.badge) return;
+      if (n <= 0) {
+        this.badge.hidden = true;
+        this.badge.textContent = '0';
+        return;
+      }
+      this.badge.hidden = false;
+      this.badge.textContent = n > 9 ? String(n) : String(n);
+    }
+
+    setPanelOpen(open) {
+      this.open = open;
+      this.toggle.setAttribute('aria-expanded', String(open));
+      this.panel.hidden = !open;
+      this.panel.classList.toggle('is-open', open);
+      this.slot.classList.toggle('is-open', open);
+      
+      // Gerenciar overlay
+      if (this.overlay) {
+        this.overlay.hidden = !open;
+        this.overlay.setAttribute('aria-hidden', String(!open));
+        this.overlay.classList.toggle('is-open', open);
+      }
+    }
+
+    togglePanel() {
+      this.setPanelOpen(!this.open);
+      if (this.open) this.refresh();
+    }
+
+    closePanel() {
+      if (!this.open) return;
+      this.setPanelOpen(false);
+    }
+
+    async refresh() {
+      const headers = this.authHeaders();
+      if (!headers) {
+        this.setBadge(0);
+        this.list.innerHTML = `
+          <div class="mx-header__notif-empty">
+            <p>Faça login para ver avisos e convites na sua conta.</p>
+            <a class="mx-header__notif-cta" href="/login">Entrar</a>
+          </div>`;
+        this.markAll?.setAttribute('hidden', '');
+        return;
+      }
+      this.markAll?.removeAttribute('hidden');
+
+      try {
+        const res = await fetch('/api/notifications', { headers });
+        if (res.status === 401) {
+          this.setBadge(0);
+          this.list.innerHTML = `<div class="mx-header__notif-empty"><p>Sessão expirada. <a class="mx-header__notif-cta" href="/login">Entrar de novo</a></p></div>`;
+          return;
+        }
+        if (!res.ok) throw new Error('fetch');
+        const data = await res.json();
+        const items = data.notifications || [];
+        this.setBadge(data.unreadCount ?? 0);
+        this.renderList(items);
+      } catch {
+        this.list.innerHTML = `<div class="mx-header__notif-empty"><p>Não foi possível carregar agora.</p></div>`;
+      }
+    }
+
+    formatTime(iso) {
+      try {
+        const d = new Date(iso);
+        if (Number.isNaN(d.getTime())) return '';
+        return d.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
+      } catch {
+        return '';
+      }
+    }
+
+    escapeHtml(s) {
+      return String(s || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    renderList(items) {
+      if (!items.length) {
+        this.list.innerHTML = `<div class="mx-header__notif-empty"><p>Nenhuma notificação por aqui.</p><p style="font-size: 2rem; margin: 0.5rem 0;">🔔</p></div>`;
+        return;
+      }
+      this.list.innerHTML = items
+        .map((n) => {
+          const unread = !n.readAt;
+          const title = this.escapeHtml(n.title);
+          const message = this.escapeHtml(n.message);
+          const time = this.escapeHtml(this.formatTime(n.createdAt));
+          return `
+            <article class="mx-header__notif-card${unread ? ' is-unread' : ''}" data-mx-notif-id="${this.escapeHtml(n.id)}" role="button" tabindex="0" aria-label="${unread ? 'Notificação não lida' : 'Notificação lida'}: ${title}">
+              <div class="mx-header__notif-card-head">
+                ${unread ? '<span class="mx-header__notif-dot" aria-hidden="true" title="Novo"></span>' : '<span style="width: 8px; height: 8px; flex-shrink: 0; opacity: 0;"></span>'}
+                <strong class="mx-header__notif-card-title">${title}${unread ? '<span style="font-size: 0.7em; vertical-align: super; margin-left: 0.25em; color: #ef4444; font-weight: 600;">NEW</span>' : ''}</strong>
+              </div>
+              <p class="mx-header__notif-msg">${message}</p>
+              <time class="mx-header__notif-time">${time}</time>
+            </article>`;
+        })
+        .join('');
+    }
+
+    async markRead(id) {
+      const headers = this.authHeaders();
+      if (!headers) return;
+      try {
+        const res = await fetch(`/api/notifications/${encodeURIComponent(id)}/read`, {
+          method: 'PATCH',
+          headers: { ...headers, 'Content-Type': 'application/json' },
+        });
+        if (!res.ok) return;
+        await this.refresh();
+      } catch {
+        /* ignore */
+      }
+    }
+
+    async markAllRead() {
+      const headers = this.authHeaders();
+      if (!headers) return;
+      try {
+        const res = await fetch('/api/notifications/read-all', {
+          method: 'PATCH',
+          headers: { ...headers, 'Content-Type': 'application/json' },
+        });
+        if (!res.ok) return;
+        await this.refresh();
+      } catch {
+        /* ignore */
+      }
+    }
+
+    connectStream() {
+      const token = HeaderService.token();
+      if (!token) return;
+      try {
+        if (this.es) this.es.close();
+        this.es = new EventSource(`/api/notifications/stream?token=${encodeURIComponent(token)}`);
+        const bump = () => {
+          if (this.open) this.refresh();
+          else this.refreshBadgeOnly();
+        };
+        this.es.addEventListener('notification', bump);
+        this.es.addEventListener('new-notification', bump);
+        this.es.addEventListener('notification-read', bump);
+        this.es.addEventListener('notification-read-all', bump);
+        this.es.addEventListener('error', () => {
+          try {
+            this.es?.close();
+          } catch {
+            /* ignore */
+          }
+          this.es = null;
+          window.setTimeout(() => {
+            if (HeaderService.token()) this.connectStream();
+          }, 15000);
+        });
+      } catch {
+        /* SSE não disponível */
+      }
+    }
+
+    async refreshBadgeOnly() {
+      const headers = this.authHeaders();
+      if (!headers) return;
+      try {
+        const res = await fetch('/api/notifications', { headers });
+        if (!res.ok) return;
+        const data = await res.json();
+        this.setBadge(data.unreadCount ?? 0);
+      } catch {
+        /* ignore */
+      }
+    }
+  }
+
   const boot = () => {
     const root = document.querySelector(SEL.root);
     if (!root) return;
 
+    // idempotente por root (evita bind duplo)
     if (root.dataset.mxHeaderBound === 'true') return;
     root.dataset.mxHeaderBound = 'true';
 

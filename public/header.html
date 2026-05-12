@@ -1,6 +1,6 @@
 <!-- Header Component -->
 <link rel="stylesheet" href="/css/layout/header.css" />
-<script src="/js/header.js" defer></script>
+
 
 <header class="mx-header" data-mx-header>
   <div class="mx-header__inner">
@@ -30,6 +30,42 @@
     </nav>
 
     <div class="mx-header__actions">
+      <div class="mx-header__notif" data-mx-notif-root>
+        <button
+          class="mx-header__notif-toggle"
+          type="button"
+          data-mx-notif-toggle
+          aria-expanded="false"
+          aria-controls="mxHeaderNotifPanel"
+          aria-label="Notificações"
+        >
+          <span class="mx-header__notif-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+              <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+            </svg>
+          </span>
+          <span class="mx-header__notif-badge" data-mx-notif-badge hidden aria-hidden="true">0</span>
+        </button>
+        <div class="mx-header__notif-overlay" data-mx-notif-overlay aria-hidden="true" hidden></div>
+        <div
+          class="mx-header__notif-panel"
+          id="mxHeaderNotifPanel"
+          data-mx-notif-panel
+          role="region"
+          aria-label="Lista de notificações"
+          hidden
+        >
+          <div class="mx-header__notif-head">
+            <h2 class="mx-header__notif-title">Notificações</h2>
+            <div class="mx-header__notif-tools">
+              <button type="button" class="mx-header__notif-tool" data-mx-notif-markall title="Marcar todas como lidas" aria-label="Marcar todas como lidas">✓</button>
+              <button type="button" class="mx-header__notif-tool" data-mx-notif-close title="Fechar" aria-label="Fechar painel">×</button>
+            </div>
+          </div>
+          <div class="mx-header__notif-body" data-mx-notif-list></div>
+        </div>
+      </div>
       <button class="mx-header__theme-btn" id="themeToggle" type="button" aria-label="Alternar tema claro e escuro">
         <span class="mx-header__theme-visual" aria-hidden="true">
           <svg class="mx-header__theme-icon mx-header__theme-icon--moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -55,5 +91,9 @@
     </div>
   </div>
 
-  <nav id="navLinks" aria-label="Menu móvel"></nav>
+  <div class="mx-header__menu-backdrop" data-mx-menu-backdrop aria-hidden="true" hidden></div>
+  <nav class="mx-header__mobile-shell" aria-label="Menu móvel">
+    <ul id="navLinks" class="mx-header__mobile-list"></ul>
+  </nav>
 </header>
+<script src="/js/header.js" defer></script>

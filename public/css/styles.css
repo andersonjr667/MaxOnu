@@ -939,7 +939,16 @@ svg {
     gap: 0.8rem;
   }
 
-  #navLinks {
+  /* Garante que a nav desktop fica oculta no mobile */
+  .mx-header__nav {
+    display: none !important;
+  }
+
+  .mx-header__auth {
+    display: none !important;
+  }
+
+  .main-header #navLinks {
     gap: 0.15rem;
     padding: 0.2rem;
   }
@@ -975,7 +984,7 @@ svg {
   }
 
   /* ---- Dropdown panel ---------------------------------------- */
-  #navLinks {
+  .main-header #navLinks {
     display: flex;
     flex-direction: column;
     list-style: none;
@@ -999,14 +1008,14 @@ svg {
     transition: all 0.25s ease;
   }
 
-  #navLinks.active {
+  .main-header #navLinks.active {
     opacity: 1;
     transform: translateY(0);
     pointer-events: auto;
   }
 
   /* ---- Section label (nav links group) ----------------------- */
-  #navLinks::before {
+  .main-header #navLinks::before {
     content: "NAVEGAR";
     display: block;
     padding: 0.55rem 0.85rem 0.3rem;
@@ -1017,11 +1026,11 @@ svg {
   }
 
   /* ---- Individual nav items ---------------------------------- */
-  #navLinks li {
+  .main-header #navLinks li {
     width: 100%;
   }
 
-  #navLinks .nav-link {
+  .main-header #navLinks .nav-link {
     display: flex;
     align-items: center;
     width: 100%;
@@ -1034,12 +1043,12 @@ svg {
     transition: all 0.2s ease;
   }
 
-  #navLinks .nav-link:hover {
+  .main-header #navLinks .nav-link:hover {
     background: rgba(255, 255, 255, 0.08);
     color: #fff;
   }
 
-  #navLinks .nav-link.is-active {
+  .main-header #navLinks .nav-link.is-active {
     background: rgba(255, 209, 102, 0.15);
     color: var(--amarelo);
     border: 1px solid rgba(255, 209, 102, 0.25);
@@ -1047,12 +1056,12 @@ svg {
   }
 
   /* ---- Auth section ------------------------------------------ */
-  #navLinks .mobile-auth-link:first-of-type {
+  .main-header #navLinks .mobile-auth-link:first-of-type {
     margin-top: 0.5rem;
   }
 
   /* Label above auth buttons */
-  #navLinks .mobile-auth-link:first-of-type::before {
+  .main-header #navLinks .mobile-auth-link:first-of-type::before {
     content: "CONTA";
     display: block;
     padding: 0.55rem 0.85rem 0.3rem;
@@ -1068,26 +1077,26 @@ svg {
     display: flex !important;
   }
 
-  #navLinks .mobile-auth-link .nav-link {
+  .main-header #navLinks .mobile-auth-link .nav-link {
     min-height: 52px;
     font-weight: 700;
     font-size: 0.95rem;
   }
 
   /* Enter */
-  #navLinks .mobile-auth-enter {
+  .main-header #navLinks .mobile-auth-enter {
     color: rgba(180, 215, 255, 0.9);
     background: rgba(31, 111, 168, 0.2);
     border: 1px solid rgba(91, 179, 232, 0.22);
   }
 
-  #navLinks .mobile-auth-enter:hover {
+  .main-header #navLinks .mobile-auth-enter:hover {
     background: rgba(31, 111, 168, 0.32);
     color: #fff;
   }
 
   /* Register */
-  #navLinks .mobile-auth-register {
+  .main-header #navLinks .mobile-auth-register {
     color: #081f38;
     background: linear-gradient(135deg, #ffd166, #ff8c42);
     border: 1px solid rgba(255, 209, 102, 0.35);
@@ -1095,32 +1104,32 @@ svg {
     box-shadow: 0 4px 16px rgba(255, 140, 66, 0.25);
   }
 
-  #navLinks .mobile-auth-register:hover {
+  .main-header #navLinks .mobile-auth-register:hover {
     filter: brightness(1.06);
     color: #081f38;
   }
 
   /* Profile */
-  #navLinks .mobile-auth-profile {
+  .main-header #navLinks .mobile-auth-profile {
     gap: 0.65rem;
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(255, 255, 255, 0.1);
     color: rgba(255, 255, 255, 0.9);
   }
 
-  #navLinks .mobile-auth-profile:hover {
+  .main-header #navLinks .mobile-auth-profile:hover {
     background: rgba(255, 255, 255, 0.1);
     color: #fff;
   }
 
   /* Logout */
-  #navLinks .mobile-auth-logout {
+  .main-header #navLinks .mobile-auth-logout {
     color: rgba(255, 110, 110, 0.85);
     background: rgba(220, 50, 50, 0.08);
     border: 1px solid rgba(220, 50, 50, 0.16);
   }
 
-  #navLinks .mobile-auth-logout:hover {
+  .main-header #navLinks .mobile-auth-logout:hover {
     background: rgba(220, 50, 50, 0.15);
     color: #ff8080;
   }
@@ -1162,7 +1171,7 @@ svg {
     height: 32px;
   }
 
-  #navLinks {
+  .main-header #navLinks {
     left: 0.6rem;
     right: 0.6rem;
     top: calc(100% + 8px);
@@ -1171,8 +1180,8 @@ svg {
     gap: 0.18rem;
   }
 
-  #navLinks .nav-link,
-  #navLinks .mobile-auth-link .nav-link {
+  .main-header #navLinks .nav-link,
+  .main-header #navLinks .mobile-auth-link .nav-link {
     min-height: 48px;
     font-size: 0.92rem;
     border-radius: 12px;
@@ -9743,6 +9752,27 @@ body.profile-image-card-open {
     ),
     linear-gradient(180deg, rgba(30, 18, 8, 0.98), rgba(22, 14, 6, 0.97));
   border-color: rgba(255, 140, 66, 0.15);
+}
+
+/* ================================================================
+   Desktop: Hide mobile nav menu
+   ================================================================ */
+@media (min-width: 1025px) {
+  .mx-header__mobile-shell {
+    display: none !important;
+  }
+
+  #navLinks {
+    display: none !important;
+  }
+
+  .mx-header__menu-btn {
+    display: none !important;
+  }
+
+  .mx-header__menu-backdrop {
+    display: none !important;
+  }
 }
 
 [data-theme="dark"] .terms-toc {

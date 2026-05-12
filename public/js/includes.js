@@ -68,5 +68,25 @@ document.addEventListener('DOMContentLoaded', () => {
     return false;
   };
 
-  Promise.all([loadInclude('header.html'), loadInclude('footer.html')]);
+  // Prevent duplicated header/footer when a page also contains them inline.
+  // If the include tags were already removed/replaced, this is a no-op.
+  const alreadyIncluded = (src) => document.querySelector(`script[data-mx-include-marker="${src}"]`);
+  const markIncluded = (src) => {
+    // marker node so we can detect subsequent runs
+    const marker = document.createElement('script');
+    marker.type = 'application/json';
+    marker.dataset.mxIncludeMarker = src;
+    marker.textContent = '{}';
+    document.documentElement.appendChild(marker);
+  };
+
+  const loadIncludeOnce = async (src) => {
+    if (alreadyIncluded(src)) return true;
+    const ok = await loadInclude(src);
+    if (ok) markIncluded(src);
+    return ok;
+  };
+
+  Promise.all([loadIncludeOnce('header.html'), loadIncludeOnce('footer.html')]);
 });
+
