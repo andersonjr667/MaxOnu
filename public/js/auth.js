@@ -113,7 +113,25 @@ function initAuth() {
             }
         }
 
-        if (['/dashboard', '/dashboard.html', '/dashboard-inscricoes', '/dashboard-inscricoes.html', '/admin', '/admin.html', '/coordenacao', '/coordenacao.html', '/orientadores', '/orientadores.html', '/imprensa-dashboard', '/imprensa-dashboard.html', '/inscricao', '/inscricao.html', '/profile', '/profile.html'].includes(currentPath) && !isTokenValido) {
+        const protectedPaths = [
+            '/dashboard', '/dashboard.html',
+            '/dashboard-inscricoes', '/dashboard-inscricoes.html',
+            '/admin', '/admin.html',
+            '/admin-delegations', '/admin-delegations.html',
+            '/admin-sync', '/admin-sync.html',
+            '/coordenacao', '/coordenacao.html',
+            '/orientadores', '/orientadores.html',
+            '/imprensa-dashboard', '/imprensa-dashboard.html',
+            '/inscricao', '/inscricao.html',
+            '/profile', '/profile.html', '/perfil', '/perfil.html',
+            '/analytics', '/analytics.html',
+            '/verificacao-usuarios', '/verificacao-usuarios.html',
+            '/notificacoes-admin', '/notificacoes-admin.html',
+            '/create-post', '/create-post.html', '/blog-post', '/blog-post.html',
+            '/newsletter', '/newsletter.html',
+            '/two-factor-auth', '/two-factor-auth.html',
+        ];
+        if (protectedPaths.includes(currentPath) && !isTokenValido) {
             window.location.href = '/login';
         }
     }

@@ -192,6 +192,10 @@ function getToken() {
 }
 
 function clearSession() {
+    if (window.MaxOnuSession?.clearAuth) {
+        window.MaxOnuSession.clearAuth();
+        return;
+    }
     localStorage.removeItem('token');
     localStorage.removeItem('role');
     localStorage.removeItem('userId');
@@ -525,6 +529,7 @@ async function initRolePortal() {
             console.error(
                 '[AUTH] Usuário não encontrado. Abortando inicialização.'
             );
+            redirectToLogin();
             return;
         }
 

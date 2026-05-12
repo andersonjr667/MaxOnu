@@ -233,7 +233,8 @@ async function initGuideCommitteePage(committeeId) {
 }
 
 function getCurrentCandidate(context) {
-    return context?.user?.role === 'candidate' ? context.user : null;
+    const user = context?.user || context;
+    return user && user.role === 'candidate' ? user : null;
 }
 
 async function initDpoCommitteePage(committeeId) {

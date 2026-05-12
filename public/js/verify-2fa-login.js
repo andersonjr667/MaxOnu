@@ -1,9 +1,14 @@
 const API_URL = '/api';
 
 function clearAuthAndRedirectToLogin() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('role');
-    localStorage.removeItem('isAdmin');
+    if (window.MaxOnuSession?.clearAuth) {
+        window.MaxOnuSession.clearAuth();
+    } else {
+        localStorage.removeItem('token');
+        localStorage.removeItem('role');
+        localStorage.removeItem('isAdmin');
+        localStorage.removeItem('userId');
+    }
     sessionStorage.removeItem('2fa_user_id');
     sessionStorage.removeItem('2fa_method');
     sessionStorage.removeItem('2fa_masked_email');
@@ -141,10 +146,11 @@ function initVerifyTwoFactorPage() {
             localStorage.setItem('isAdmin', data.isAdmin ? 'true' : 'false');
             localStorage.setItem('role', data.role || 'candidate');
             localStorage.setItem('userId', data.userId || '');
-            localStorage.setItem('isAdmin', data.isAdmin ? 'true' : 'false');
             sessionStorage.removeItem('2fa_user_id');
             sessionStorage.removeItem('2fa_method');
             sessionStorage.removeItem('2fa_masked_email');
+
+            window.MaxOnuSession?.refreshAuthContext?.().catch(() => {});
 
             displayMessage(successMessage);
             setTimeout(() => {

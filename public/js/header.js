@@ -139,9 +139,14 @@
     }
 
     static logout() {
-      localStorage.removeItem('token');
-      localStorage.removeItem('role');
-      localStorage.removeItem('isAdmin');
+      if (window.MaxOnuSession?.clearAuth) {
+        window.MaxOnuSession.clearAuth();
+      } else {
+        localStorage.removeItem('token');
+        localStorage.removeItem('role');
+        localStorage.removeItem('userId');
+        localStorage.removeItem('isAdmin');
+      }
       window.location.href = '/login';
     }
   }
