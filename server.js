@@ -640,6 +640,12 @@ app.get('/favicon.ico', (req, res) => {
   res.sendFile(path.join(publicDir, 'images', 'logo-maxonu.png'));
 });
 
+// Handle Kaspersky extension tracking requests to eliminate 404 errors
+app.get('/hybridaction/zybTrackerStatisticsAction', (req, res) => {
+  // Return empty response for Kaspersky tracking requests
+  res.status(200).send('');
+});
+
 // Health
 app.get('/health', (req, res) => res.json({
   status: 'OK',
@@ -812,7 +818,6 @@ app.use(express.static(publicDir, {
   setHeaders: setStaticCacheHeaders
 }));
 
-app.get('/header', (req, res) => res.sendFile(path.join(publicDir, 'header.html')));
 app.get('/footer', (req, res) => res.sendFile(path.join(publicDir, 'footer.html')));
 
 // MongoDB
