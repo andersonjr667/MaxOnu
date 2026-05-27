@@ -266,6 +266,8 @@ function initAuth() {
             if (window.MaxOnuSession?.refreshAuthContext) {
                 window.MaxOnuSession.refreshAuthContext().catch(() => {});
             }
+            console.log('auth.js: disparando evento maxonu:auth-changed');
+            document.dispatchEvent(new CustomEvent('maxonu:auth-changed'));
             displayMessage('Login realizado com sucesso!');
 
             if (data.token) {

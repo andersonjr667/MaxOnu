@@ -151,6 +151,7 @@ function initVerifyTwoFactorPage() {
             sessionStorage.removeItem('2fa_masked_email');
 
             window.MaxOnuSession?.refreshAuthContext?.().catch(() => {});
+            document.dispatchEvent(new CustomEvent('maxonu:auth-changed'));
 
             displayMessage(successMessage);
             setTimeout(() => {

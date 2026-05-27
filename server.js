@@ -16,6 +16,7 @@ const Joi = require('joi');
 const chalk = require('chalk').default;
 const figlet = require('figlet');
 const fs = require('fs');
+const os = require('os');
 const nodemailer = require('nodemailer');
 const User = require('./models/User');
 const authRoutes = require('./routes/auth');
@@ -469,23 +470,41 @@ function row(icon, label, value, valueColor = chalk.white) {
   return `  ${icon}  ${labelStr} ${valueColor(value)}`;
 }
 
+function getNetworkUrls(port) {
+  const urls = [];
+  const interfaces = os.networkInterfaces();
+
+  for (const entries of Object.values(interfaces)) {
+    for (const entry of entries || []) {
+      if (!entry || entry.family !== 'IPv4' || entry.internal) continue;
+      urls.push(`http://${entry.address}:${port}`);
+    }
+  }
+
+  return [...new Set(urls)];
+}
+
 function log(level, msg) {
   const icons = { info: chalk.blue('◆'), ok: chalk.green('✔'), warn: chalk.yellow('⚠'), err: chalk.red('✖'), db: chalk.magenta('◈') };
   process.stdout.write(`${ts()}  ${icons[level] || icons.info}  ${msg}\n`);
 }
 
-function printBanner(port) {
+function printBanner(port, urls = []) {
   const banner = figlet.textSync('MaxOnu 2026', { font: 'Standard', horizontalLayout: 'full' });
   const mode = IS_PRODUCTION ? chalk.red.bold('PRODUCTION') : chalk.yellow.bold('DEVELOPMENT');
   const started = new Date().toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'medium' });
+  const localUrl = `http://localhost:${port}`;
 
   console.log('\n' + dline);
   console.log(chalk.cyan.bold(banner));
   console.log(dline);
   console.log(box('INICIALIZANDO SERVIDOR'));
   console.log(line);
-  console.log(row('🌐', 'URL local',   `http://localhost:${port}`, chalk.cyan.underline));
-  console.log(row('💚', 'Health',      `http://localhost:${port}/health`, chalk.cyan.underline));
+  console.log(row('🌐', 'URL local',   localUrl, chalk.cyan.underline));
+  if (urls.length) {
+    console.log(row('📱', 'URL na rede', urls.join(chalk.gray(' | ')), chalk.cyan.underline));
+  }
+  console.log(row('💚', 'Health',      `${localUrl}/health`, chalk.cyan.underline));
   console.log(row('⚙️', 'Modo',        mode));
   console.log(row('🕐', 'Iniciado em', started, chalk.gray));
   console.log(row('🔢', 'Node.js',     process.version, chalk.gray));
@@ -493,11 +512,15 @@ function printBanner(port) {
   console.log(line + '\n');
 }
 
-function printServerReady(port) {
+function printServerReady(port, urls = []) {
+  const localUrl = `http://localhost:${port}`;
   console.log(line);
   console.log(box('  SERVIDOR ONLINE  ', chalk.green));
   console.log(line);
-  console.log(`  ${chalk.green('✔')}  ${chalk.white.bold('Pronto em')}  ${chalk.cyan.underline('http://localhost:' + port)}`);
+  console.log(`  ${chalk.green('✔')}  ${chalk.white.bold('Pronto em')}  ${chalk.cyan.underline(localUrl)}`);
+  if (urls.length) {
+    console.log(`  ${chalk.green('✔')}  ${chalk.white.bold('Na rede')}    ${chalk.cyan.underline(urls[0])}`);
+  }
   console.log(chalk.gray(`\n  Pressione ${chalk.white('Ctrl+C')} para encerrar.\n`));
   console.log(line + '\n');
 }
@@ -534,10 +557,11 @@ function printDbClosed() {
 // ============================================
 
 async function startServer(port) {
-  printBanner(port);
+  const networkUrls = getNetworkUrls(port);
+  printBanner(port, networkUrls);
   
-  serverInstance = app.listen(port, () => {
-    printServerReady(port);
+  serverInstance = app.listen(port, '0.0.0.0', () => {
+    printServerReady(port, networkUrls);
     
     // Enviar email de teste em background (não bloqueia o startup)
     sendTestEmail();
@@ -596,6 +620,7 @@ app.use(helmet({
   contentSecurityPolicy: {
     useDefaults: true,
     directives: {
+      "upgrade-insecure-requests": null,
       "img-src": ["'self'", "data:", "blob:", "https://res.cloudinary.com"]
     }
   }
@@ -638,12 +663,6 @@ app.use(
 // Favicon - serve from images folder to avoid 404 (using logo-maxonu.png since favicon.ico is empty)
 app.get('/favicon.ico', (req, res) => {
   res.sendFile(path.join(publicDir, 'images', 'logo-maxonu.png'));
-});
-
-// Handle Kaspersky extension tracking requests to eliminate 404 errors
-app.get('/hybridaction/zybTrackerStatisticsAction', (req, res) => {
-  // Return empty response for Kaspersky tracking requests
-  res.status(200).send('');
 });
 
 // Health
@@ -818,6 +837,7 @@ app.use(express.static(publicDir, {
   setHeaders: setStaticCacheHeaders
 }));
 
+app.get('/header', (req, res) => res.sendFile(path.join(publicDir, 'header.html')));
 app.get('/footer', (req, res) => res.sendFile(path.join(publicDir, 'footer.html')));
 
 // MongoDB

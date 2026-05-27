@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ranking de Comitês - MaxOnu 2026</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            padding: 20px 0;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-box .number {
+            font-size: 2em;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .stat-box .label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .ranking-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .ranking-table thead {
+            background-color: #f0f0f0;
+        }
+
+        .ranking-table th {
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #667eea;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .ranking-table td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .ranking-table tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .rank-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .rank-badge.gold {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            color: #333;
+        }
+
+        .rank-badge.silver {
+            background: linear-gradient(135deg, #c0c0c0 0%, #e8e8e8 100%);
+            color: #333;
+        }
+
+        .rank-badge.bronze {
+            background: linear-gradient(135deg, #cd7f32 0%, #daa520 100%);
+            color: white;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-top: 20px;
+        }
+
+        .choice-breakdown {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+
+        .choice-item {
+            background: #f5f5f5;
+            padding: 8px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .choice-item strong {
+            color: #667eea;
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .segment-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .segment-btn {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .segment-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .segment-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .class-group-ranking {
+            margin-bottom: 30px;
+        }
+
+        .class-group-ranking h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .class-group-ranking .small-table {
+            width: 100%;
+            font-size: 0.9em;
+        }
+
+        .class-group-ranking .small-table td {
+            padding: 8px;
+        }
+
+        @media (max-width: 1000px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal.show {
+            display: block;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 10px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .close-modal {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-modal:hover {
+            color: black;
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 40px;
+            padding: 20px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Ranking de Comitês - MaxOnu 2026</h1>
+            <p>Análise geral de comitês escolhidos por opção de todas as turmas</p>
+        </div>
+
+        <div class="segment-selector">
+            <button class="segment-btn active" onclick="switchSegment('em')">
+                🏫 Ensino Médio
+            </button>
+            <button class="segment-btn" onclick="switchSegment('fundamental')">
+                📚 Fundamental (8º/9º)
+            </button>
+        </div>
+
+        <div class="content">
+            <!-- Cards de Estatísticas -->
+            <div class="card">
+                <h2>📈 Estatísticas Gerais</h2>
+                <div id="stats" class="stats-grid"></div>
+                <div id="chartContainer" class="chart-container">
+                    <canvas id="rankingChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Tabela de Ranking -->
+            <div class="card">
+                <h2>🏆 Ranking de Comitês</h2>
+                <table class="ranking-table" id="rankingTable">
+                    <thead>
+                        <tr>
+                            <th>Posição</th>
+                            <th>Comitê</th>
+                            <th>Votos</th>
+                            <th>%</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rankingBody"></tbody>
+                </table>
+            </div>
+
+            <!-- Detalhamento por Turma -->
+            <div class="card full-width">
+                <h2>🏫 Detalhamento por Turma</h2>
+                <div id="classGroupDetails"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Sistema MaxOnu 2026 - Gerado em <span id="dateTime"></span></p>
+    </div>
+
+    <script>
+        const COMMITTEES = {
+            1: 'AGNU (Assembleia Geral)',
+            2: 'CSNU (Conselho de Segurança)',
+            3: 'OEA (Organização dos Estados Americanos)',
+            4: 'Comitê 1',
+            5: 'Comitê 2',
+            6: 'Comitê 3',
+            7: 'Comitê 4'
+        };
+
+        let chart = null;
+        let currentSegment = 'em';
+
+        // Dados será carregado via fetch
+        let rankingData = null;
+
+        async function loadData() {
+            try {
+                const response = await fetch('/api/analytics/committee-ranking');
+                rankingData = await response.json();
+                renderData();
+            } catch (error) {
+                console.error('Erro ao carregar dados:', error);
+                renderSampleData();
+            }
+        }
+
+        function renderSampleData() {
+            // Dados de exemplo para demonstração
+            rankingData = {
+                em: {
+                    total: 126,
+                    totalChoices: 378,
+                    committees: {
+                        4: { name: COMMITTEES[4], firstChoice: 28, secondChoice: 27, thirdChoice: 26, totalVotes: 81 },
+                        3: { name: COMMITTEES[3], firstChoice: 25, secondChoice: 25, thirdChoice: 25, totalVotes: 75 },
+                        2: { name: COMMITTEES[2], firstChoice: 18, secondChoice: 18, thirdChoice: 19, totalVotes: 55 },
+                        1: { name: COMMITTEES[1], firstChoice: 17, secondChoice: 16, thirdChoice: 17, totalVotes: 50 },
+                        5: { name: COMMITTEES[5], firstChoice: 14, secondChoice: 14, thirdChoice: 15, totalVotes: 43 },
+                        6: { name: COMMITTEES[6], firstChoice: 14, secondChoice: 14, thirdChoice: 15, totalVotes: 43 },
+                        7: { name: COMMITTEES[7], firstChoice: 10, secondChoice: 10, thirdChoice: 11, totalVotes: 31 }
+                    },
+                    classGroups: {
+                        'Palmares - 1ª Série A': { total: 26, committees: { 4: 8, 3: 7, 1: 5, 2: 6 } },
+                        'Palmares - 1ª Série B': { total: 26, committees: { 3: 8, 4: 7, 2: 6, 1: 5 } },
+                        'Palmares - 2ª Série': { total: 35, committees: { 4: 12, 3: 10, 2: 8, 1: 5 } },
+                        'Palmares - 3ª Série': { total: 39, committees: { 1: 15, 4: 12, 3: 8, 2: 4 } }
+                    }
+                },
+                fundamental: {
+                    total: 189,
+                    totalChoices: 567,
+                    committees: {
+                        2: { name: COMMITTEES[2], firstChoice: 35, secondChoice: 35, thirdChoice: 36, totalVotes: 106 },
+                        3: { name: COMMITTEES[3], firstChoice: 33, secondChoice: 33, thirdChoice: 33, totalVotes: 99 },
+                        4: { name: COMMITTEES[4], firstChoice: 33, secondChoice: 32, thirdChoice: 33, totalVotes: 98 },
+                        5: { name: COMMITTEES[5], firstChoice: 26, secondChoice: 26, thirdChoice: 27, totalVotes: 79 },
+                        1: { name: COMMITTEES[1], firstChoice: 22, secondChoice: 22, thirdChoice: 23, totalVotes: 67 },
+                        6: { name: COMMITTEES[6], firstChoice: 21, secondChoice: 21, thirdChoice: 22, totalVotes: 64 },
+                        7: { name: COMMITTEES[7], firstChoice: 18, secondChoice: 18, thirdChoice: 18, totalVotes: 54 }
+                    },
+                    classGroups: {
+                        'Colégio XYZ - 8º A': { total: 45, committees: { 2: 15, 3: 14, 4: 16 } },
+                        'Colégio XYZ - 8º B': { total: 48, committees: { 3: 16, 4: 16, 2: 16 } },
+                        'Colégio XYZ - 9º A': { total: 50, committees: { 4: 18, 2: 17, 3: 15 } },
+                        'Colégio XYZ - 9º B': { total: 46, committees: { 2: 27, 3: 9, 4: 10 } }
+                    }
+                }
+            };
+            renderData();
+        }
+
+        function switchSegment(segment) {
+            currentSegment = segment;
+            document.querySelectorAll('.segment-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            renderData();
+        }
+
+        function renderData() {
+            const data = rankingData[currentSegment];
+
+            // Render stats
+            const statsHtml = `
+                <div class="stat-box">
+                    <span class="number">${data.total}</span>
+                    <span class="label">Usuários Registrados</span>
+                </div>
+                <div class="stat-box">
+                    <span class="number">${data.totalChoices}</span>
+                    <span class="label">Total de Escolhas</span>
+                </div>
+            `;
+            document.getElementById('stats').innerHTML = statsHtml;
+
+            // Render ranking table
+            const sortedCommittees = Object.keys(data.committees)
+                .sort((a, b) => data.committees[b].totalVotes - data.committees[a].totalVotes);
+
+            let tableHtml = '';
+            sortedCommittees.forEach((committeId, index) => {
+                const committee = data.committees[committeId];
+                const percentage = ((committee.totalVotes / data.totalChoices) * 100).toFixed(1);
+                let badgeClass = '';
+
+                if (index === 0) badgeClass = 'gold';
+                else if (index === 1) badgeClass = 'silver';
+                else if (index === 2) badgeClass = 'bronze';
+
+                tableHtml += `
+                    <tr>
+                        <td><span class="rank-badge ${badgeClass}">${index + 1}</span></td>
+                        <td><strong>${committee.name}</strong></td>
+                        <td>${committee.totalVotes}</td>
+                        <td>${percentage}%</td>
+                    </tr>
+                `;
+            });
+            document.getElementById('rankingBody').innerHTML = tableHtml;
+
+            // Render chart
+            updateChart(sortedCommittees, data);
+
+            // Render class group details
+            renderClassGroupDetails(data);
+        }
+
+        function updateChart(sortedCommittees, data) {
+            const labels = sortedCommittees.map(id => data.committees[id].name);
+            const votes = sortedCommittees.map(id => data.committees[id].totalVotes);
+
+            const ctx = document.getElementById('rankingChart').getContext('2d');
+
+            if (chart) {
+                chart.destroy();
+            }
+
+            chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Total de Votos',
+                        data: votes,
+                        backgroundColor: 'rgba(102, 126, 234, 0.7)',
+                        borderColor: 'rgba(102, 126, 234, 1)',
+                        borderWidth: 2,
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderClassGroupDetails(data) {
+            let html = '';
+            Object.keys(data.classGroups).forEach(className => {
+                const classData = data.classGroups[className];
+                html += `
+                    <div class="class-group-ranking">
+                        <h3>${className}</h3>
+                        <small>Total de usuários: ${classData.total}</small>
+                        <table class="small-table ranking-table">
+                            <tr style="background: #f0f0f0;">
+                                <th>Comitê</th>
+                                <th>Votos</th>
+                            </tr>
+                `;
+
+                const sortedByVotes = Object.keys(classData.committees)
+                    .sort((a, b) => classData.committees[b] - classData.committees[a]);
+
+                sortedByVotes.forEach(committeId => {
+                    const votes = classData.committees[committeId];
+                    html += `
+                        <tr>
+                            <td>${COMMITTEES[committeId]}</td>
+                            <td>${votes}</td>
+                        </tr>
+                    `;
+                });
+
+                html += '</table></div>';
+            });
+
+            document.getElementById('classGroupDetails').innerHTML = html;
+        }
+
+        // Initialize
+        document.getElementById('dateTime').textContent = new Date().toLocaleDateString('pt-BR', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+        loadData();
+    </script>
+</body>
+</html>

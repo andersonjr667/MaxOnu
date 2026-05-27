@@ -1,6 +1,4 @@
-let currentUser = null;
-let registrationsCache = [];
-
+// Utility Functions
 const COMMITTEE_LABELS = {
     1: 'CDH 2026 — O Paradoxo da Hiperconectividade: Regulamentação da Vigilância Massiva, Ética da Inteligência Artificial e Proteção da Democracia na Era do Big Data',
     2: 'AGNU — Guerra, Multipolaridade e Disputas Territoriais: Desafios à Soberania, Segurança Global e Justiça Internacional no Século XXI',
@@ -13,6 +11,26 @@ const COMMITTEE_LABELS = {
 
 const ALLOWED_ROLES = new Set(['admin', 'coordinator', 'teacher']);
 
+let currentUser = null;
+let registrationsCache = [];
+let exportModalReturnFocus = null;
+
+const QUICK_EXPORT_ENDPOINTS = {
+    all: { url: '/api/export/results', filename: 'todos-inscritos.xlsx' },
+    delegations: { url: '/api/export/results/delegations', filename: 'delegacoes-comites.xlsx' },
+    'segment-em': { url: '/api/export/results/segment?segment=em', filename: 'inscritos-ensino-medio.xlsx' },
+    'segment-89': { url: '/api/export/results/segment?segment=fundamental', filename: 'inscritos-89.xlsx' },
+    'by-unit': { url: '/api/export/results/by-unit', filename: 'delegacoes-por-unidade.xlsx' },
+    'committee-1': { url: '/api/export/results/by-committee/1', filename: 'comite-1.xlsx' },
+    'committee-2': { url: '/api/export/results/by-committee/2', filename: 'comite-2.xlsx' },
+    'committee-3': { url: '/api/export/results/by-committee/3', filename: 'comite-3.xlsx' },
+    'committee-4': { url: '/api/export/results/by-committee/4', filename: 'comite-4.xlsx' },
+    'committee-5': { url: '/api/export/results/by-committee/5', filename: 'comite-5.xlsx' },
+    'committee-6': { url: '/api/export/results/by-committee/6', filename: 'comite-6.xlsx' },
+    'committee-7': { url: '/api/export/results/by-committee/7', filename: 'comite-7.xlsx' }
+};
+
+// ===== TOKEN & AUTH =====
 function getToken() {
     return window.MaxOnuSession?.getToken?.() || localStorage.getItem('token');
 }
@@ -24,6 +42,7 @@ function getAuthHeaders() {
     };
 }
 
+// ===== PARSING & NORMALIZATION =====
 function parseClassGroup(classGroup = '') {
     const normalized = String(classGroup || '').trim();
     if (!normalized) {
@@ -41,40 +60,51 @@ function parseClassGroup(classGroup = '') {
     };
 }
 
-function getEducationSegmentFromText(value = '') {
-    const normalized = String(value || '')
+function normalizeTextForSegmentDetection(value = '') {
+    return String(value || '')
         .toLowerCase()
         .normalize('NFD')
         .replace(/[\u0300-\u036f]/g, '')
-        .replace(/[ºª]/g, (match) => (match === 'º' ? 'o' : 'a'));
+        .replace(/[ºª]/g, (match) => (match === 'º' ? 'o' : 'a'))
+        .replace(/\s+/g, ' ')
+        .trim();
+}
 
-    if (!normalized) {
-        return '';
-    }
+function getEducationSegmentFromText(value = '') {
+    const original = String(value || '').toLowerCase();
+    const normalized = normalizeTextForSegmentDetection(value);
+    const noSpaces = normalized.replace(/\s/g, '');
 
+    // Detectar Ensino Médio
     if (
         normalized.includes('ensino medio') ||
+        noSpaces.includes('ensinomedio') ||
         normalized.includes('medio') ||
-        normalized.includes('serie') ||
         /\bem\b/.test(normalized) ||
-        /[123]\s*a?\s*serie/i.test(normalized) ||
-        /[123]\s*serie/.test(normalized) ||
-        (/\b[123]\s*ano\b/i.test(normalized) && !normalized.includes('8o') && !normalized.includes('9o'))
+        original.includes('1º') ||
+        original.includes('2º') ||
+        original.includes('3º') ||
+        original.includes('1ª') ||
+        original.includes('2ª') ||
+        original.includes('3ª')
     ) {
         return 'em';
     }
 
+    // Detectar Fundamental (8º-9º)
     if (
         normalized.includes('8o') ||
         normalized.includes('8 ano') ||
-        normalized.includes('8ano') ||
+        noSpaces.includes('8ano') ||
         normalized.includes('9o') ||
         normalized.includes('9 ano') ||
-        normalized.includes('9ano') ||
+        noSpaces.includes('9ano') ||
         normalized.includes('8 e 9') ||
         normalized.includes('8/9') ||
-        /\b8\s*ano\b/i.test(normalized) ||
-        /\b9\s*ano\b/i.test(normalized)
+        original.includes('8º') ||
+        original.includes('8ª') ||
+        original.includes('9º') ||
+        original.includes('9ª')
     ) {
         return 'fundamental';
     }
@@ -98,62 +128,9 @@ function getDelegationEducationSegment(delegation) {
     return '';
 }
 
-function roleLabel(role) {
-    const roleLabels = {
-        teacher: 'Professor orientador',
-        coordinator: 'Coordenador',
-        admin: 'Administrador'
-    };
-    return roleLabels[role] || 'Usuário';
-}
-
 function getCommitteeLabel(value) {
     const number = Number(value);
     return COMMITTEE_LABELS[number] || 'Não definido';
-}
-
-function parseJsonResponse(response) {
-    return response.json()
-        .catch(() => ({}))
-        .then((data) => ({ ok: response.ok, data }));
-}
-
-function setButtonLoading(button, isLoading, loadingText) {
-    if (!button) {
-        return;
-    }
-
-    if (isLoading) {
-        button.dataset.originalText = button.textContent;
-        button.textContent = loadingText;
-        button.disabled = true;
-        return;
-    }
-
-    button.textContent = button.dataset.originalText || button.textContent;
-    button.disabled = false;
-}
-
-function updateTimestamp() {
-    const node = document.getElementById('advancedUpdatedAt');
-    if (!node) {
-        return;
-    }
-
-    const now = new Date();
-    node.textContent = `Última atualização: ${now.toLocaleDateString('pt-BR')} às ${now.toLocaleTimeString('pt-BR')}.`;
-}
-
-function buildCommitteeSelectOptions(selectedCommittee) {
-    return ['<option value="">Não definido</option>']
-        .concat(
-            Array.from({ length: 7 }, (_, index) => {
-                const value = index + 1;
-                const selected = Number(selectedCommittee) === value ? ' selected' : '';
-                return `<option value="${value}"${selected}>${getCommitteeLabel(value)}</option>`;
-            })
-        )
-        .join('');
 }
 
 function getDelegationMembers(delegation) {
@@ -172,9 +149,361 @@ function getDelegationName(delegation) {
     return names.join(' e ') || 'Delegação';
 }
 
+function roleLabel(role) {
+    const labels = {
+        teacher: 'Professor orientador',
+        coordinator: 'Coordenador',
+        admin: 'Administrador'
+    };
+    return labels[role] || 'Usuário';
+}
+
+// ===== HTTP UTILITIES =====
+async function parseJsonResponse(response) {
+    try {
+        const data = await response.json();
+        return { ok: response.ok, data };
+    } catch {
+        return { ok: response.ok, data: {} };
+    }
+}
+
+async function fetchWithAuth(url, options = {}) {
+    const response = await fetch(url, {
+        ...options,
+        headers: getAuthHeaders()
+    });
+
+    return parseJsonResponse(response);
+}
+
+function setButtonLoading(button, isLoading, loadingText) {
+    if (!button) return;
+
+    if (isLoading) {
+        button.dataset.originalText = button.textContent;
+        button.textContent = loadingText;
+        button.disabled = true;
+    } else {
+        button.textContent = button.dataset.originalText || button.textContent;
+        button.disabled = false;
+    }
+}
+
+// ===== DOWNLOAD HELPER =====
+function triggerDownload(blob, filename) {
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+}
+
+function sanitizeFilename(filename) {
+    return filename
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-zA-Z0-9\-._]/g, '-')
+        .replace(/\-+/g, '-')
+        .replace(/^-+|-+$/g, '')
+        .toLowerCase();
+}
+
+function normalizeGradePart(value = '') {
+    return String(value || '')
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[ºª]/g, (match) => (match === 'º' ? 'o' : 'a'))
+        .replace(/[^\w]/g, '');
+}
+
+function normalizeClassGroupForComparison(classGroup = '') {
+    const normalized = String(classGroup || '').trim();
+    if (!normalized) return '';
+
+    const parts = normalized.split(' - ');
+    const gradePart = (parts[1] || parts[0] || '').trim();
+
+    return normalizeGradePart(gradePart);
+}
+
+function getDelegationClassGroups(delegation) {
+    const values = new Set();
+
+    if (delegation?.registration?.classGroup) {
+        values.add(String(delegation.registration.classGroup));
+    }
+
+    if (delegation?.classGroup) {
+        values.add(String(delegation.classGroup));
+    }
+
+    getDelegationMembers(delegation).forEach((member) => {
+        if (member?.classGroup) {
+            values.add(String(member.classGroup));
+        }
+    });
+
+    return Array.from(values);
+}
+
+function getDelegationUnits(delegation) {
+    return getDelegationClassGroups(delegation)
+        .map((classGroup) => String(classGroup || '').split(' - ')[0]?.trim() || '')
+        .filter(Boolean);
+}
+
+function getCustomExportColumnValues() {
+    return Array.from(document.querySelectorAll('input[name="customExportColumn"]:checked')).map((cb) => cb.value);
+}
+
+function getCustomExportTurmaValues() {
+    const allTurmas = document.getElementById('customExportTurmaAll')?.checked;
+
+    if (allTurmas) {
+        return ['all'];
+    }
+
+    return Array.from(document.querySelectorAll('input[name="customExportTurma"]:checked:not(#customExportTurmaAll)')).map((cb) => cb.value);
+}
+
+function getCustomExportFilters() {
+    return {
+        committee: document.getElementById('customExportCommittee')?.value || 'all',
+        unit: document.getElementById('customExportUnit')?.value || 'all',
+        preference: document.getElementById('customExportPreference')?.value || 'final',
+        status: document.getElementById('customExportStatus')?.value || 'all',
+        turmas: getCustomExportTurmaValues(),
+        columns: getCustomExportColumnValues()
+    };
+}
+
+function getDelegationCommitteeForPreference(delegation, preference) {
+    if (preference === 'first') return Number(delegation?.registration?.firstChoice);
+    if (preference === 'second') return Number(delegation?.registration?.secondChoice);
+    if (preference === 'third') return Number(delegation?.registration?.thirdChoice);
+    return Number(delegation?.committee);
+}
+
+function matchesCustomExportCommittee(delegation, committee, preference) {
+    const assignedCommittee = Number(delegation?.committee);
+    const preferredCommittee = getDelegationCommitteeForPreference(delegation, preference);
+
+    if (committee === 'unassigned') {
+        return !(assignedCommittee >= 1 && assignedCommittee <= 7);
+    }
+
+    if (committee !== 'all') {
+        if (preference === 'final') {
+            return assignedCommittee === Number(committee);
+        }
+
+        return preferredCommittee === Number(committee);
+    }
+
+    return true;
+}
+
+function matchesCustomExportUnit(delegation, unit) {
+    if (unit === 'all') return true;
+    return getDelegationUnits(delegation).includes(unit);
+}
+
+function matchesCustomExportStatus(delegation, status) {
+    const assignedCommittee = Number(delegation?.committee);
+    const isAssigned = assignedCommittee >= 1 && assignedCommittee <= 7;
+
+    if (status === 'assigned') return isAssigned;
+    if (status === 'unassigned') return !isAssigned;
+    return true;
+}
+
+function matchesCustomExportTurmas(delegation, turmas) {
+    if (!Array.isArray(turmas) || !turmas.length || (turmas.length === 1 && turmas[0] === 'all')) {
+        return true;
+    }
+
+    const dataTurmas = getDelegationClassGroups(delegation)
+        .map((classGroup) => normalizeClassGroupForComparison(classGroup))
+        .filter(Boolean);
+
+    const selectedTurmas = turmas
+        .map((turma) => normalizeGradePart(turma))
+        .filter(Boolean);
+
+    return selectedTurmas.some((selectedTurma) =>
+        dataTurmas.some((classGroup) =>
+            classGroup === selectedTurma ||
+            classGroup.includes(selectedTurma) ||
+            selectedTurma.includes(classGroup)
+        )
+    );
+}
+
+function getCustomExportPreviewRows(filters = getCustomExportFilters()) {
+    return registrationsCache.filter((delegation) => {
+        if (!matchesCustomExportCommittee(delegation, filters.committee, filters.preference)) return false;
+        if (!matchesCustomExportUnit(delegation, filters.unit)) return false;
+        if (!matchesCustomExportStatus(delegation, filters.status)) return false;
+        if (!matchesCustomExportTurmas(delegation, filters.turmas)) return false;
+        return true;
+    });
+}
+
+function getCustomExportTurmaLabel() {
+    const allTurmas = document.getElementById('customExportTurmaAll')?.checked;
+    if (allTurmas) return 'Todas as turmas';
+
+    const labels = Array.from(document.querySelectorAll('input[name="customExportTurma"]:checked:not(#customExportTurmaAll)'))
+        .map((cb) => cb.nextElementSibling?.textContent?.trim() || cb.value)
+        .filter(Boolean);
+
+    return labels.length ? labels.join(', ') : 'Nenhuma turma';
+}
+
+function buildCustomExportFilename(filters = getCustomExportFilters(), rowCount = 0) {
+    const dateStamp = new Date().toISOString().slice(0, 10);
+    const parts = ['export-personalizado'];
+
+    if (filters.committee && filters.committee !== 'all') {
+        parts.push(`comite-${filters.committee === 'unassigned' ? 'sem' : filters.committee}`);
+    }
+
+    if (filters.unit && filters.unit !== 'all') {
+        parts.push(filters.unit);
+    }
+
+    if (filters.status && filters.status !== 'all') {
+        parts.push(filters.status === 'assigned' ? 'alocados' : 'sem-comite');
+    }
+
+    if (filters.preference && filters.preference !== 'final') {
+        parts.push(`pref-${filters.preference}`);
+    }
+
+    if (Array.isArray(filters.turmas) && !(filters.turmas.length === 1 && filters.turmas[0] === 'all')) {
+        parts.push(`turmas-${filters.turmas.length}`);
+    }
+
+    if (Number.isFinite(rowCount) && rowCount >= 0) {
+        parts.push(`${rowCount}-registros`);
+    }
+
+    parts.push(dateStamp);
+
+    return `${sanitizeFilename(parts.join('-'))}.xlsx`;
+}
+
+function updateCustomExportPreview() {
+    const previewRows = getCustomExportPreviewRows();
+    const filters = getCustomExportFilters();
+
+    const previewCount = document.getElementById('customExportPreviewCount');
+    const previewCols = document.getElementById('customExportPreviewCols');
+    const previewTurmas = document.getElementById('customExportPreviewTurmas');
+    const previewPreference = document.getElementById('customExportPreviewPreference');
+    const previewFilename = document.getElementById('customExportPreviewFilename');
+
+    if (previewCount) {
+        previewCount.textContent = String(previewRows.length);
+    }
+
+    if (previewCols) {
+        previewCols.textContent = String(filters.columns.length);
+    }
+
+    if (previewTurmas) {
+        previewTurmas.textContent = getCustomExportTurmaLabel();
+    }
+
+    if (previewPreference) {
+        const labels = {
+            final: 'Comitê final',
+            first: '1ª opção',
+            second: '2ª opção',
+            third: '3ª opção'
+        };
+        previewPreference.textContent = labels[filters.preference] || 'Comitê final';
+    }
+
+    if (previewFilename) {
+        previewFilename.textContent = buildCustomExportFilename(filters, previewRows.length);
+    }
+}
+
+// ===== VERIFICATION & ACCESS =====
+async function verifyAccess() {
+    const token = getToken();
+    if (!token) {
+        window.location.href = '/login';
+        return false;
+    }
+
+    try {
+        const context = await window.MaxOnuSession?.getAuthContext?.();
+        currentUser = context?.user || null;
+
+        if (!currentUser) {
+            window.location.href = '/login';
+            return false;
+        }
+
+        if (!ALLOWED_ROLES.has(currentUser.role)) {
+            window.location.href = '/profile';
+            return false;
+        }
+
+        return true;
+    } catch (error) {
+        console.error('Erro ao verificar acesso:', error);
+        window.location.href = '/login';
+        return false;
+    }
+}
+
+// ===== RENDERING DATA =====
+function updateTimestamp() {
+    const node = document.getElementById('advancedUpdatedAt');
+    if (!node) return;
+
+    const now = new Date();
+    node.textContent = `Última atualização: ${now.toLocaleDateString('pt-BR')} às ${now.toLocaleTimeString('pt-BR')}.`;
+}
+
+function setupPageHeader(user) {
+    const lead = document.getElementById('advancedLead');
+    const roleBadge = document.getElementById('advancedRoleBadge');
+
+    if (lead) {
+        lead.textContent = `${roleLabel(user.role)} autenticado. Controle aprofundado de inscrições, alocações por delegação e exportações customizadas.`;
+    }
+
+    if (roleBadge) {
+        roleBadge.textContent = roleLabel(user.role);
+        roleBadge.dataset.role = user.role || 'user';
+    }
+}
+
+function buildCommitteeSelectOptions(selectedCommittee) {
+    return ['<option value="">Não definido</option>']
+        .concat(
+            Array.from({ length: 7 }, (_, i) => {
+                const value = i + 1;
+                const selected = Number(selectedCommittee) === value ? ' selected' : '';
+                return `<option value="${value}"${selected}>${getCommitteeLabel(value)}</option>`;
+            })
+        )
+        .join('');
+}
+
 function getChoiceMatchLabel(delegation) {
     const currentCommittee = Number(delegation?.committee);
     const registration = delegation?.registration || {};
+
     if (!currentCommittee) {
         return 'Sem comitê final';
     }
@@ -196,34 +525,17 @@ function getChoiceMatchLabel(delegation) {
 
 function getChoiceMatchTone(delegation) {
     const label = getChoiceMatchLabel(delegation);
-    if (label.includes('1ª')) {
-        return 'is-good';
-    }
-    if (label.includes('2ª') || label.includes('3ª')) {
-        return 'is-warn';
-    }
+    if (label.includes('1ª')) return 'is-good';
+    if (label.includes('2ª') || label.includes('3ª')) return 'is-warn';
     return 'is-neutral';
-}
-
-function setupPageHeader(user) {
-    const lead = document.getElementById('advancedLead');
-    const roleBadge = document.getElementById('advancedRoleBadge');
-    if (lead) {
-        lead.textContent = `${roleLabel(user.role)} autenticado. Esta visão avançada aprofunda o controle de inscrições e a alocação final por delegação.`;
-    }
-    if (roleBadge) {
-        roleBadge.textContent = roleLabel(user.role);
-        roleBadge.dataset.role = user.role || 'user';
-    }
 }
 
 function renderRegistrationControl(status) {
     const toggleButton = document.getElementById('advancedToggleRegistrationBtn');
     const statusNode = document.getElementById('advancedRegistrationStatus');
     const detailsGrid = document.getElementById('registrationStatusMeta');
-    if (!toggleButton || !statusNode || !detailsGrid) {
-        return;
-    }
+
+    if (!toggleButton || !statusNode || !detailsGrid) return;
 
     toggleButton.dataset.closed = String(Boolean(status.registrationManuallyClosed));
     toggleButton.textContent = status.registrationManuallyClosed ? 'Reabrir inscrições' : 'Fechar inscrições';
@@ -244,18 +556,19 @@ function renderRegistrationControl(status) {
         { title: 'Ação recomendada', value: status.registrationOpen ? 'Manter monitoramento' : 'Validar janela e reabrir se necessário' }
     ];
 
-    detailsGrid.innerHTML = details.map((item) => `
-        <article class="feature-card registration-status-item">
-            <h3>${item.title}</h3>
-            <p>${item.value}</p>
-        </article>
-    `).join('');
+    detailsGrid.innerHTML = details
+        .map((item) => `<article class="feature-card registration-status-item"><h3>${item.title}</h3><p>${item.value}</p></article>`)
+        .join('');
 }
 
 function calculateGlobalMetrics(registrations) {
     const total = registrations.length;
-    const assigned = registrations.filter((item) => Number(item.committee) >= 1 && Number(item.committee) <= 7).length;
+    const assigned = registrations.filter((item) => {
+        const committee = Number(item.committee);
+        return committee >= 1 && committee <= 7;
+    }).length;
     const unassigned = total - assigned;
+
     const first = registrations.filter((item) => getChoiceMatchLabel(item).includes('1ª')).length;
     const secondOrThird = registrations.filter((item) => {
         const label = getChoiceMatchLabel(item);
@@ -267,9 +580,7 @@ function calculateGlobalMetrics(registrations) {
 
 function renderGlobalSummary(registrations) {
     const summary = document.getElementById('advancedSummary');
-    if (!summary) {
-        return;
-    }
+    if (!summary) return;
 
     const metrics = calculateGlobalMetrics(registrations);
     const cards = [
@@ -280,19 +591,14 @@ function renderGlobalSummary(registrations) {
         { title: 'Aderência à 2ª/3ª', text: String(metrics.secondOrThird), accent: '' }
     ];
 
-    summary.innerHTML = cards.map((card) => `
-        <article class="feature-card ${card.accent}">
-            <h3>${card.title}</h3>
-            <p>${card.text}</p>
-        </article>
-    `).join('');
+    summary.innerHTML = cards
+        .map((card) => `<article class="feature-card ${card.accent}"><h3>${card.title}</h3><p>${card.text}</p></article>`)
+        .join('');
 }
 
 function renderFilteredSummary(filtered) {
     const summary = document.getElementById('advancedFilteredSummary');
-    if (!summary) {
-        return;
-    }
+    if (!summary) return;
 
     const metrics = calculateGlobalMetrics(filtered);
     const cards = [
@@ -302,22 +608,17 @@ function renderFilteredSummary(filtered) {
         { title: 'Aderência à 1ª no filtro', text: String(metrics.first) }
     ];
 
-    summary.innerHTML = cards.map((card) => `
-        <article class="feature-card">
-            <h3>${card.title}</h3>
-            <p>${card.text}</p>
-        </article>
-    `).join('');
+    summary.innerHTML = cards
+        .map((card) => `<article class="feature-card"><h3>${card.title}</h3><p>${card.text}</p></article>`)
+        .join('');
 }
 
 function renderCommitteeDemand(registrations) {
     const container = document.getElementById('advancedCommitteeDemand');
-    if (!container) {
-        return;
-    }
+    if (!container) return;
 
-    const counters = Array.from({ length: 7 }, (_, index) => ({
-        committee: index + 1,
+    const counters = Array.from({ length: 7 }, (_, i) => ({
+        committee: i + 1,
         first: 0,
         second: 0,
         third: 0,
@@ -327,6 +628,7 @@ function renderCommitteeDemand(registrations) {
     registrations.forEach((delegation) => {
         const registration = delegation.registration || {};
         const assigned = Number(delegation.committee);
+
         counters.forEach((row) => {
             if (Number(registration.firstChoice) === row.committee) row.first += 1;
             if (Number(registration.secondChoice) === row.committee) row.second += 1;
@@ -335,15 +637,17 @@ function renderCommitteeDemand(registrations) {
         });
     });
 
-    container.innerHTML = counters.map((row) => `
-        <article class="feature-card advanced-demand-card">
-            <h3>${getCommitteeLabel(row.committee)}</h3>
-            <p><strong>1ª opção:</strong> ${row.first}</p>
-            <p><strong>2ª opção:</strong> ${row.second}</p>
-            <p><strong>3ª opção:</strong> ${row.third}</p>
-            <p><strong>Alocados:</strong> ${row.assigned}</p>
-        </article>
-    `).join('');
+    container.innerHTML = counters
+        .map((row) => `
+            <article class="feature-card advanced-demand-card">
+                <h3>${getCommitteeLabel(row.committee)}</h3>
+                <p><strong>1ª opção:</strong> ${row.first}</p>
+                <p><strong>2ª opção:</strong> ${row.second}</p>
+                <p><strong>3ª opção:</strong> ${row.third}</p>
+                <p><strong>Alocados:</strong> ${row.assigned}</p>
+            </article>
+        `)
+        .join('');
 }
 
 function computeFirstChoiceRankingBySegment(registrations) {
@@ -354,24 +658,21 @@ function computeFirstChoiceRankingBySegment(registrations) {
 
     registrations.forEach((delegation) => {
         const segment = getDelegationEducationSegment(delegation);
-        if (!segment || !groups[segment]) {
-            return;
-        }
+        if (!segment || !groups[segment]) return;
 
         const firstChoice = Number(delegation?.registration?.firstChoice);
-        if (!Number.isInteger(firstChoice) || firstChoice < 1 || firstChoice > 7) {
-            return;
-        }
+        if (!Number.isInteger(firstChoice) || firstChoice < 1 || firstChoice > 7) return;
 
         groups[segment].set(firstChoice, (groups[segment].get(firstChoice) || 0) + 1);
     });
 
-    const toRanking = (map) => Array.from({ length: 7 }, (_, index) => ({
-        committee: index + 1,
-        count: map.get(index + 1) || 0
-    }))
-        .sort((a, b) => b.count - a.count || a.committee - b.committee)
-        .slice(0, 7);
+    const toRanking = (map) => 
+        Array.from({ length: 7 }, (_, i) => ({
+            committee: i + 1,
+            count: map.get(i + 1) || 0
+        }))
+            .sort((a, b) => b.count - a.count || a.committee - b.committee)
+            .slice(0, 7);
 
     return {
         em: toRanking(groups.em),
@@ -379,7 +680,7 @@ function computeFirstChoiceRankingBySegment(registrations) {
     };
 }
 
-function renderSegmentRankingCard(title, ranking, emptyMessage) {
+function renderSegmentRankingCard(title, ranking) {
     const countFrequency = ranking.reduce((acc, item) => {
         const key = String(item.count);
         acc[key] = (acc[key] || 0) + 1;
@@ -390,28 +691,30 @@ function renderSegmentRankingCard(title, ranking, emptyMessage) {
         <article class="feature-card advanced-segment-card">
             <h3>${title}</h3>
             <ol class="advanced-segment-list">
-                ${ranking.map((item, index) => {
-                    const position = index + 1;
-                    const medalClass = position === 1
-                        ? 'is-gold'
-                        : position === 2
-                            ? 'is-silver'
-                            : position === 3
-                                ? 'is-bronze'
-                                : 'is-default';
-                    const tied = item.count > 0 && (countFrequency[String(item.count)] || 0) > 1;
+                ${ranking
+                    .map((item, index) => {
+                        const position = index + 1;
+                        const medalClass = position === 1
+                            ? 'is-gold'
+                            : position === 2
+                                ? 'is-silver'
+                                : position === 3
+                                    ? 'is-bronze'
+                                    : 'is-default';
+                        const tied = item.count > 0 && (countFrequency[String(item.count)] || 0) > 1;
 
-                    return `
-                    <li class="${tied ? 'is-tied' : ''}">
-                        <span class="ranking-position ${medalClass}">${position}º</span>
-                        <div class="ranking-meta">
-                        <strong>${getCommitteeLabel(item.committee)}</strong>
-                        <span>${item.count} escolha(s) como 1ª opção</span>
-                        </div>
-                        ${tied ? '<span class="ranking-tie-badge">Empate</span>' : ''}
-                    </li>
-                `;
-                }).join('')}
+                        return `
+                            <li class="${tied ? 'is-tied' : ''}">
+                                <span class="ranking-position ${medalClass}">${position}º</span>
+                                <div class="ranking-meta">
+                                    <strong>${getCommitteeLabel(item.committee)}</strong>
+                                    <span>${item.count} escolha(s) como 1ª opção</span>
+                                </div>
+                                ${tied ? '<span class="ranking-tie-badge">Empate</span>' : ''}
+                            </li>
+                        `;
+                    })
+                    .join('')}
             </ol>
         </article>
     `;
@@ -419,22 +722,12 @@ function renderSegmentRankingCard(title, ranking, emptyMessage) {
 
 function renderSegmentRanking(registrations) {
     const container = document.getElementById('advancedSegmentRanking');
-    if (!container) {
-        return;
-    }
+    if (!container) return;
 
     const ranking = computeFirstChoiceRankingBySegment(registrations);
     container.innerHTML = [
-        renderSegmentRankingCard(
-            'Ranking EM (mais escolhidos)',
-            ranking.em,
-            'Sem dados de 1ª opção para delegações do Ensino Médio no filtro atual.'
-        ),
-        renderSegmentRankingCard(
-            'Ranking 8º/9º ano (mais escolhidos)',
-            ranking.fundamental,
-            'Sem dados de 1ª opção para delegações de 8º e 9º ano no filtro atual.'
-        )
+        renderSegmentRankingCard('Ranking EM (mais escolhidos)', ranking.em),
+        renderSegmentRankingCard('Ranking 8º/9º ano (mais escolhidos)', ranking.fundamental)
     ].join('');
 }
 
@@ -451,45 +744,31 @@ function applyFilters(registrations) {
         const assigned = assignedCommittee >= 1 && assignedCommittee <= 7;
         const teamSize = Number(registration.teamSize || delegation.teamSize || getDelegationMembers(delegation).length || 0);
 
-        if (assignmentStatus === 'assigned' && !assigned) {
-            return false;
-        }
-        if (assignmentStatus === 'unassigned' && assigned) {
-            return false;
-        }
-        if (teamSizeFilter !== 'all' && teamSize !== Number(teamSizeFilter)) {
-            return false;
-        }
+        if (assignmentStatus === 'assigned' && !assigned) return false;
+        if (assignmentStatus === 'unassigned' && assigned) return false;
+        if (teamSizeFilter !== 'all' && teamSize !== Number(teamSizeFilter)) return false;
 
-        if (preference === 'unassigned' && assigned) {
-            return false;
-        }
+        if (preference === 'unassigned' && assigned) return false;
 
         if (preference !== 'all' && preference !== 'unassigned') {
             const choiceValue = Number(registration[`${preference}Choice`]);
-            if (!Number.isInteger(choiceValue) || choiceValue < 1 || choiceValue > 7) {
-                return false;
-            }
+            if (!Number.isInteger(choiceValue) || choiceValue < 1 || choiceValue > 7) return false;
 
-            if (committeeTarget !== 'all' && choiceValue !== Number(committeeTarget)) {
-                return false;
-            }
+            if (committeeTarget !== 'all' && choiceValue !== Number(committeeTarget)) return false;
         }
 
-        if (!search) {
-            return true;
-        }
+        if (!search) return true;
 
         const haystack = [
             getDelegationName(delegation),
             delegation?.key,
             registration?.classGroup,
-            ...getDelegationMembers(delegation).map((member) => [
-                member.fullName,
-                member.username,
-                member.classGroup
-            ].join(' '))
-        ].join(' ').toLowerCase();
+            ...getDelegationMembers(delegation).map((member) =>
+                [member.fullName, member.username, member.classGroup].join(' ')
+            )
+        ]
+            .join(' ')
+            .toLowerCase();
 
         return haystack.includes(search);
     });
@@ -497,62 +776,68 @@ function applyFilters(registrations) {
 
 function renderDelegationList(registrations) {
     const list = document.getElementById('advancedAssignmentList');
-    if (!list) {
-        return;
-    }
+    if (!list) return;
 
     if (!registrations.length) {
         list.innerHTML = '<p class="dashboard-empty">Nenhuma delegação encontrada para o conjunto de filtros atual.</p>';
         return;
     }
 
-    list.innerHTML = registrations.map((delegation) => {
-        const registration = delegation.registration || {};
-        const members = getDelegationMembers(delegation);
-        const matchLabel = getChoiceMatchLabel(delegation);
-        const matchTone = getChoiceMatchTone(delegation);
+    list.innerHTML = registrations
+        .map((delegation) => {
+            const registration = delegation.registration || {};
+            const members = getDelegationMembers(delegation);
+            const matchLabel = getChoiceMatchLabel(delegation);
+            const matchTone = getChoiceMatchTone(delegation);
 
-        return `
-            <article class="committee-user-card advanced-assignment-card" data-delegation-key="${delegation.key}">
-                <div class="dashboard-user-card-top">
-                    <h3>${getDelegationName(delegation)}</h3>
-                    <span class="dashboard-chip">${members.length} / ${registration.teamSize || delegation.teamSize || members.length || 2}</span>
-                </div>
+            return `
+                <article class="committee-user-card advanced-assignment-card" data-delegation-key="${delegation.key}">
+                    <div class="dashboard-user-card-top">
+                        <h3>${getDelegationName(delegation)}</h3>
+                        <span class="dashboard-chip">${members.length} / ${registration.teamSize || delegation.teamSize || members.length || 2}</span>
+                    </div>
 
-                <div class="assignment-meta-grid">
-                    <p><strong>Delegação:</strong> ${delegation.key || 'não informada'}</p>
-                    <p><strong>Comitê final:</strong> ${getCommitteeLabel(delegation.committee)}</p>
-                    <p><strong>1ª opção:</strong> ${getCommitteeLabel(registration.firstChoice)}</p>
-                    <p><strong>2ª opção:</strong> ${getCommitteeLabel(registration.secondChoice)}</p>
-                    <p><strong>3ª opção:</strong> ${getCommitteeLabel(registration.thirdChoice)}</p>
-                    <p><strong>Status:</strong> <span class="assignment-badge ${matchTone}">${matchLabel}</span></p>
-                </div>
+                    <div class="assignment-meta-grid">
+                        <p><strong>Delegação:</strong> ${delegation.key || 'não informada'}</p>
+                        <p><strong>Comitê final:</strong> ${getCommitteeLabel(delegation.committee)}</p>
+                        <p><strong>1ª opção:</strong> ${getCommitteeLabel(registration.firstChoice)}</p>
+                        <p><strong>2ª opção:</strong> ${getCommitteeLabel(registration.secondChoice)}</p>
+                        <p><strong>3ª opção:</strong> ${getCommitteeLabel(registration.thirdChoice)}</p>
+                        <p><strong>Status:</strong> <span class="assignment-badge ${matchTone}">${matchLabel}</span></p>
+                    </div>
 
-                <div class="teammate-list delegation-member-list">
-                    ${members.map((member) => {
-                        const classInfo = parseClassGroup(member.classGroup);
-                        return `
-                            <div class="teammate-card">
-                                <strong>${member.fullName || member.username || 'Participante'}</strong>
-                                <span class="registration-muted">@${member.username || 'sem-usuario'}</span>
-                                <span class="registration-muted">Unidade: ${classInfo.unit} | Série: ${classInfo.grade}</span>
-                            </div>
-                        `;
-                    }).join('') || '<p class="dashboard-empty">Sem integrantes carregados nesta delegação.</p>'}
-                </div>
+                    <div class="teammate-list delegation-member-list">
+                        ${
+                            members.length
+                                ? members
+                                      .map((member) => {
+                                          const classInfo = parseClassGroup(member.classGroup);
+                                          return `
+                                            <div class="teammate-card">
+                                                <strong>${member.fullName || member.username || 'Participante'}</strong>
+                                                <span class="registration-muted">@${member.username || 'sem-usuario'}</span>
+                                                <span class="registration-muted">Unidade: ${classInfo.unit} | Série: ${classInfo.grade}</span>
+                                            </div>
+                                        `;
+                                      })
+                                      .join('')
+                                : '<p class="dashboard-empty">Sem integrantes carregados nesta delegação.</p>'
+                        }
+                    </div>
 
-                <div class="dashboard-inline-form advanced-assign-form">
-                    <label>Comitê final da delegação</label>
-                    <select class="manual-committee-select">
-                        ${buildCommitteeSelectOptions(delegation.committee)}
-                    </select>
-                    <button type="button" class="view-button assign-committee-btn" data-delegation-key="${delegation.key}">
-                        Salvar comitê
-                    </button>
-                </div>
-            </article>
-        `;
-    }).join('');
+                    <div class="dashboard-inline-form advanced-assign-form">
+                        <label>Comitê final da delegação</label>
+                        <select class="manual-committee-select">
+                            ${buildCommitteeSelectOptions(delegation.committee)}
+                        </select>
+                        <button type="button" class="view-button assign-committee-btn" data-delegation-key="${delegation.key}">
+                            Salvar comitê
+                        </button>
+                    </div>
+                </article>
+            `;
+        })
+        .join('');
 }
 
 function renderAllAdvancedData() {
@@ -563,8 +848,10 @@ function renderAllAdvancedData() {
     renderSegmentRanking(filtered);
     renderDelegationList(filtered);
     updateTimestamp();
+    updateCustomExportPreview();
 }
 
+// ===== LOAD DATA =====
 async function loadRegistrations(options = {}) {
     const { forceFetch = false } = options;
     const loadBtn = document.getElementById('advancedLoadBtn');
@@ -572,17 +859,17 @@ async function loadRegistrations(options = {}) {
 
     try {
         if (forceFetch || !registrationsCache.length) {
-            const response = await fetch('/api/users/registrations', {
-                headers: { 'Authorization': `Bearer ${getToken()}` }
-            });
-            const { ok, data } = await parseJsonResponse(response);
+            const { ok, data } = await fetchWithAuth('/api/users/registrations');
+
             if (!ok) {
                 throw new Error(data.error || 'Erro ao carregar delegações de inscrição.');
             }
+
             registrationsCache = Array.isArray(data) ? data : [];
         }
 
         renderAllAdvancedData();
+        updateCustomExportPreview();
     } catch (error) {
         const list = document.getElementById('advancedAssignmentList');
         if (list) {
@@ -600,13 +887,12 @@ async function loadRegistrationControl() {
     }
 
     try {
-        const response = await fetch('/api/settings/registration-status', {
-            headers: { 'Authorization': `Bearer ${getToken()}` }
-        });
-        const { ok, data } = await parseJsonResponse(response);
+        const { ok, data } = await fetchWithAuth('/api/settings/registration-status');
+
         if (!ok) {
             throw new Error(data.error || 'Erro ao consultar o status das inscrições.');
         }
+
         renderRegistrationControl(data);
     } catch (error) {
         if (statusNode) {
@@ -615,41 +901,48 @@ async function loadRegistrationControl() {
     }
 }
 
+// ===== ACTIONS =====
 async function toggleRegistrationStatus() {
     const button = document.getElementById('advancedToggleRegistrationBtn');
     const currentlyClosed = button?.dataset.closed === 'true';
+
     setButtonLoading(button, true, currentlyClosed ? 'Reabrindo...' : 'Fechando...');
 
     try {
-        const response = await fetch('/api/settings/registration-status', {
+        const { ok, data } = await fetchWithAuth('/api/settings/registration-status', {
             method: 'PUT',
             headers: getAuthHeaders(),
             body: JSON.stringify({ registrationManuallyClosed: !currentlyClosed })
         });
-        const { ok, data } = await parseJsonResponse(response);
+
         if (!ok) {
             throw new Error(data.error || 'Erro ao atualizar o status das inscrições.');
         }
+
         renderRegistrationControl(data);
     } catch (error) {
-        MaxOnuNotify.error(error.message || 'Erro ao atualizar o status das inscrições.');
+        if (window.MaxOnuNotify) {
+            MaxOnuNotify.error(error.message || 'Erro ao atualizar o status das inscrições.');
+        }
     } finally {
         setButtonLoading(button, false, '');
     }
 }
 
-async function assignCommittee(assignButton) {
-    const delegationKey = assignButton.dataset.delegationKey;
-    const card = assignButton.closest('.advanced-assignment-card');
+async function assignCommittee(button) {
+    const delegationKey = button.dataset.delegationKey;
+    const card = button.closest('.advanced-assignment-card');
     const select = card?.querySelector('.manual-committee-select');
     const committeeValue = Number(select?.value);
 
     if (!delegationKey || !committeeValue) {
-        MaxOnuNotify.warning('Selecione um comitê final antes de salvar.');
+        if (window.MaxOnuNotify) {
+            MaxOnuNotify.warning('Selecione um comitê final antes de salvar.');
+        }
         return;
     }
 
-    setButtonLoading(assignButton, true, 'Salvando...');
+    setButtonLoading(button, true, 'Salvando...');
 
     try {
         const response = await fetch(`/api/users/delegations/${delegationKey}/committee`, {
@@ -657,281 +950,18 @@ async function assignCommittee(assignButton) {
             headers: getAuthHeaders(),
             body: JSON.stringify({ committee: committeeValue })
         });
+
         const { ok, data } = await parseJsonResponse(response);
+
         if (!ok) {
             throw new Error(data.error || 'Erro ao definir comitê da delegação.');
         }
 
         await loadRegistrations({ forceFetch: true });
     } catch (error) {
-        MaxOnuNotify.error(error.message || 'Erro ao definir comitê da delegação.');
-    } finally {
-        setButtonLoading(assignButton, false, '');
-    }
-}
-
-function openExportModal() {
-    const overlay = document.getElementById('exportModalOverlay');
-    if (overlay) {
-        overlay.hidden = false;
-        document.body.style.overflow = 'hidden';
-    }
-}
-
-function closeExportModal() {
-    const overlay = document.getElementById('exportModalOverlay');
-    if (overlay) {
-        overlay.hidden = true;
-        document.body.style.overflow = '';
-    }
-}
-
-async function exportCustom() {
-    const button = document.getElementById('advancedExportCustomBtn');
-    const unit      = document.getElementById('customExportUnit')?.value      || 'all';
-    const committee = document.getElementById('customExportCommittee')?.value || 'all';
-    const status    = document.getElementById('customExportStatus')?.value    || 'all';
-    const cols = Array.from(document.querySelectorAll('input[name="exportCol"]:checked')).map((cb) => cb.value);
-
-    if (!cols.length) {
-        MaxOnuNotify.warning('Selecione ao menos uma coluna.');
-        return;
-    }
-
-    const allChecked = document.getElementById('customExportTurmaAll')?.checked;
-    const selectedTurmas = allChecked
-        ? ['all']
-        : Array.from(document.querySelectorAll('input[name="customExportTurma"]:checked:not(#customExportTurmaAll)')).map((cb) => cb.value);
-
-    if (!selectedTurmas.length) {
-        MaxOnuNotify.warning('Selecione ao menos uma turma.');
-        return;
-    }
-
-    setButtonLoading(button, true, 'Gerando...');
-    try {
-        const params = new URLSearchParams({ turmas: selectedTurmas.join(','), unit, committee, status, cols: cols.join(',') });
-        const response = await fetch(`/api/export/results/custom?${params}`, {
-            headers: { 'Authorization': `Bearer ${getToken()}` }
-        });
-        if (!response.ok) {
-            const data = await response.json().catch(() => ({}));
-            throw new Error(data.error || 'Erro ao gerar export personalizado.');
+        if (window.MaxOnuNotify) {
+            MaxOnuNotify.error(error.message || 'Erro ao definir comitê da delegação.');
         }
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = 'export-personalizado.xlsx';
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-        URL.revokeObjectURL(url);
-    } catch (error) {
-        MaxOnuNotify.error(error.message || 'Erro ao gerar export personalizado.');
-    } finally {
-        setButtonLoading(button, false, '');
-    }
-}
-
-function updateExportColsCounter() {
-    const counter = document.getElementById('exportColsSelected');
-    if (!counter) return;
-    const selected = document.querySelectorAll('input[name="exportCol"]:checked').length;
-    counter.textContent = `${selected} selecionadas`;
-    counter.dataset.count = String(selected);
-}
-
-function initExportColsActions() {
-    const selectAllBtn = document.getElementById('exportColsSelectAllBtn');
-    const clearBtn = document.getElementById('exportColsClearBtn');
-
-    const colCbs = Array.from(document.querySelectorAll('input[name="exportCol"]'));
-    if (!colCbs.length) return;
-
-    colCbs.forEach((cb) => {
-        cb.addEventListener('change', () => {
-            updateExportColsCounter();
-        });
-    });
-
-    selectAllBtn?.addEventListener('click', () => {
-        colCbs.forEach((cb) => {
-            if (!cb.disabled) cb.checked = true;
-        });
-        updateExportColsCounter();
-    });
-
-    clearBtn?.addEventListener('click', () => {
-        colCbs.forEach((cb) => {
-            if (!cb.disabled) cb.checked = false;
-        });
-        updateExportColsCounter();
-    });
-
-    updateExportColsCounter();
-}
-
-async function exportResults(format) {
-    const button = format === 'csv'
-        ? document.getElementById('advancedExportCsvBtn')
-        : document.getElementById('advancedExportXlsxBtn');
-
-    setButtonLoading(button, true, format === 'csv' ? 'Baixando CSV...' : 'Baixando XLSX...');
-
-    try {
-        const response = await fetch(`/api/export/results?format=${format}`, {
-            headers: { 'Authorization': `Bearer ${getToken()}` }
-        });
-
-        if (!response.ok) {
-            throw new Error('Não foi possível exportar os resultados.');
-        }
-
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `resultados-inscricoes-aprofundado.${format}`;
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-        URL.revokeObjectURL(url);
-    } catch (error) {
-        MaxOnuNotify.error(error.message || 'Erro ao exportar resultados.');
-    } finally {
-        setButtonLoading(button, false, '');
-    }
-}
-
-async function exportSegmentResults(segment) {
-    const isEm = segment === 'em';
-    const button = isEm
-        ? document.getElementById('advancedExportEmXlsxBtn')
-        : document.getElementById('advancedExport89XlsxBtn');
-
-    setButtonLoading(button, true, isEm ? 'Baixando EM...' : 'Baixando 8º/9º...');
-
-    try {
-        const response = await fetch(`/api/export/results/segment?segment=${encodeURIComponent(segment)}&format=xlsx`, {
-            headers: { 'Authorization': `Bearer ${getToken()}` }
-        });
-
-        if (!response.ok) {
-            const data = await response.json().catch(() => ({}));
-            throw new Error(data.error || 'Não foi possível exportar os resultados por segmento.');
-        }
-
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = isEm ? 'resultados-inscricoes-em.xlsx' : 'resultados-inscricoes-8e9.xlsx';
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-        URL.revokeObjectURL(url);
-    } catch (error) {
-        MaxOnuNotify.error(error.message || 'Erro ao exportar resultados por segmento.');
-    } finally {
-        setButtonLoading(button, false, '');
-    }
-}
-
-async function exportByCommittee(committeeNum) {
-    const button = document.getElementById(`advancedExportComite${committeeNum}Btn`);
-    setButtonLoading(button, true, 'Baixando...');
-    try {
-        const response = await fetch(`/api/export/results/by-committee/${committeeNum}`, {
-            headers: { 'Authorization': `Bearer ${getToken()}` }
-        });
-        if (!response.ok) {
-            const data = await response.json().catch(() => ({}));
-            throw new Error(data.error || 'Erro ao exportar por comitê.');
-        }
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `delegacoes-comite-${committeeNum}.xlsx`;
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-        URL.revokeObjectURL(url);
-    } catch (error) {
-        MaxOnuNotify.error(error.message || 'Erro ao exportar por comitê.');
-    } finally {
-        setButtonLoading(button, false, '');
-    }
-}
-
-async function exportByUnit() {
-    const button = document.getElementById('advancedExportByUnitBtn');
-    setButtonLoading(button, true, 'Baixando...');
-    try {
-        const response = await fetch('/api/export/results/by-unit', {
-            headers: { 'Authorization': `Bearer ${getToken()}` }
-        });
-        if (!response.ok) throw new Error('Erro ao exportar por unidade.');
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = 'delegacoes-por-unidade.xlsx';
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-        URL.revokeObjectURL(url);
-    } catch (error) {
-        MaxOnuNotify.error(error.message || 'Erro ao exportar por unidade.');
-    } finally {
-        setButtonLoading(button, false, '');
-    }
-}
-
-async function exportUnassigned() {
-    const button = document.getElementById('advancedExportUnassignedBtn');
-    setButtonLoading(button, true, 'Baixando...');
-    try {
-        const response = await fetch('/api/export/results/unassigned', {
-            headers: { 'Authorization': `Bearer ${getToken()}` }
-        });
-        if (!response.ok) throw new Error('Erro ao exportar pendentes.');
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = 'delegacoes-sem-comite.xlsx';
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-        URL.revokeObjectURL(url);
-    } catch (error) {
-        MaxOnuNotify.error(error.message || 'Erro ao exportar pendentes.');
-    } finally {
-        setButtonLoading(button, false, '');
-    }
-}
-
-async function exportAllDelegations() {
-    const button = document.getElementById('advancedExportAllDelegationsBtn');
-    setButtonLoading(button, true, 'Baixando...');
-    try {
-        const response = await fetch('/api/export/results/all-delegations', {
-            headers: { 'Authorization': `Bearer ${getToken()}` }
-        });
-        if (!response.ok) throw new Error('Erro ao exportar todas as delegações.');
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = 'todas-delegacoes.xlsx';
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-        URL.revokeObjectURL(url);
-    } catch (error) {
-        MaxOnuNotify.error(error.message || 'Erro ao exportar todas as delegações.');
     } finally {
         setButtonLoading(button, false, '');
     }
@@ -947,279 +977,262 @@ function resetFilters() {
 
     defaults.forEach(([id, value]) => {
         const node = document.getElementById(id);
-        if (node) {
-            node.value = value;
-        }
+        if (node) node.value = value;
     });
 
     const search = document.getElementById('advancedSearchFilter');
-    if (search) {
-        search.value = '';
-    }
+    if (search) search.value = '';
 
     renderAllAdvancedData();
 }
 
-async function verifyAccess() {
-    const token = getToken();
-    if (!token) {
-        window.location.href = '/login';
-        return false;
-    }
+// ===== MODAL MANAGEMENT =====
+function openExportModal() {
+    const overlay = document.getElementById('exportModalOverlay');
+    const closeBtn = document.getElementById('exportModalCloseBtn');
 
-    try {
-        const context = await window.MaxOnuSession?.getAuthContext?.();
-        currentUser = context?.user || null;
-        if (!currentUser) {
-            window.location.href = '/login';
-            return false;
-        }
+    if (!overlay) return;
 
-        if (!ALLOWED_ROLES.has(currentUser.role)) {
-            window.location.href = '/profile';
-            return false;
-        }
+    exportModalReturnFocus = /** @type {HTMLElement | null} */ (document.activeElement instanceof HTMLElement ? document.activeElement : null);
+    overlay.hidden = false;
+    document.body.style.overflow = 'hidden';
+    updateCustomExportPreview();
 
-        setupPageHeader(currentUser);
-        return true;
-    } catch (error) {
-        window.location.href = '/login';
-        return false;
-    }
+    requestAnimationFrame(() => {
+        closeBtn?.focus({ preventScroll: true });
+    });
 }
 
-function normalizeClassGroupForTurmaValue(classGroup = '') {
-    // Esperado no cadastro: "Unidade - Série" ou "Série"
-    // Ex.: "Sta Inês - 8º ano A" | "Sta Inês - 1ª série B"...
-    const normalized = String(classGroup || '').trim();
-    if (!normalized) return '';
+function closeExportModal() {
+    const overlay = document.getElementById('exportModalOverlay');
 
-    const parts = normalized.split(' - ');
-    const gradePart = (parts[1] || parts[0] || '').trim();
+    if (!overlay) return;
 
-    const gradeLower = gradePart
-        .toLowerCase()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .replace(/[ºª]/g, (match) => (match === 'º' ? 'o' : 'a'));
+    overlay.hidden = true;
+    document.body.style.overflow = '';
 
-    // Melhoradas regex para detectar A/B com mais precisão
-    const hasA = /\ba\b/.test(gradeLower) || (/ano\s*a/.test(gradeLower) && !gradeLower.includes('anob')) || /serie\s*a/.test(gradeLower);
-    const hasB = /\bb\b/.test(gradeLower) || /ano\s*b/.test(gradeLower) || /serie\s*b/.test(gradeLower);
+    const returnFocus = exportModalReturnFocus;
+    exportModalReturnFocus = null;
 
-    // Melhores verificações para 8o ano, 9o ano, e 1a serie
-    const is8 = /\b8\s*(o\s*)?ano\b/.test(gradeLower) || gradeLower.includes('8ano') || (gradeLower.includes('8') && gradeLower.includes('ano'));
-    const is9 = /\b9\s*(o\s*)?ano\b/.test(gradeLower) || gradeLower.includes('9ano') || (gradeLower.includes('9') && gradeLower.includes('ano'));
-    const is1Serie = /\b1\s*(a\s*)?serie\b/.test(gradeLower) || gradeLower.includes('1serie') || (gradeLower.includes('1') && gradeLower.includes('serie') && !gradeLower.includes('ensino'));
-
-    // mapeia para os valores que o backend já entende no filtro customExport/results/custom
-    if (is8 && hasA) return '8anoA';
-    if (is8 && hasB) return '8anoB';
-    if (is9 && hasA) return '9anoA';
-    if (is9 && hasB) return '9anoB';
-    if (is1Serie && hasA) return '1serieA';
-    if (is1Serie && hasB) return '1serieB';
-
-    return '';
-}
-
-function getTurmaLabelFromValue(turmaValue = '') {
-    const map = {
-        '8anoA': '8º ano A',
-        '8anoB': '8º ano B',
-        '9anoA': '9º ano A',
-        '9anoB': '9º ano B',
-        '1serieA': '1ª série A',
-        '1serieB': '1ª série B'
-    };
-    return map[turmaValue] || turmaValue;
-}
-
-async function loadCustomExportTurmas() {
-    const container = document.getElementById('customExportTurmasContainer');
-    if (!container) return;
-
-    container.innerHTML = '<div class="export-custom-hint">Carregando turmas disponíveis...</div>';
-
-    try {
-        // Fonte de verdade: a lista de inscrições carregada no dashboard (registrationsCache)
-        // Onde cada participante tem classGroup e unidade/série.
-        if (!registrationsCache || !registrationsCache.length) {
-            container.innerHTML = '<p class="dashboard-empty">Nenhum dado de inscrições carregado.</p>';
-            return;
-        }
-
-        const turmaValues = new Set();
-        registrationsCache.forEach((delegation) => {
-            const regMembers = Array.isArray(delegation?.members)
-                ? delegation.members
-                : [];
-
-            // Em registrosCache, delegações também podem vir com members em alguns cenários.
-            regMembers.forEach((m) => {
-                const v = normalizeClassGroupForTurmaValue(m?.classGroup);
-                if (v) turmaValues.add(v);
-            });
-
-            // Caso members não exista na delegação, tenta usar classGroup da registration.
-            const regClass = delegation?.registration?.classGroup || delegation?.classGroup || '';
-            const v2 = normalizeClassGroupForTurmaValue(regClass);
-            if (v2) turmaValues.add(v2);
-        });
-
-        // fallback: se por algum motivo não achou, mostra ao menos as opções A/B atuais
-        if (!turmaValues.size) {
-            turmaValues.add('8anoA');
-            turmaValues.add('8anoB');
-            turmaValues.add('9anoA');
-            turmaValues.add('9anoB');
-            turmaValues.add('1serieA');
-            turmaValues.add('1serieB');
-        }
-
-        const ordered = ['8anoA', '8anoB', '9anoA', '9anoB', '1serieA', '1serieB']
-            .filter((v) => turmaValues.has(v));
-
-        const groups = {
-            A: ordered.filter((v) => v.endsWith('A')),
-            B: ordered.filter((v) => v.endsWith('B'))
-        };
-
-        container.innerHTML = '';
-
-        ['A', 'B'].forEach((g) => {
-            const items = groups[g];
-            if (!items.length) return;
-
-            const title = g === 'A' ? 'Turmas A' : 'Turmas B';
-
-            const groupEl = document.createElement('div');
-            groupEl.className = 'turma-group';
-            groupEl.dataset.turmaGroup = g;
-
-            groupEl.innerHTML = `
-                <div class="turma-group-title">${title}</div>
-                <div class="turma-group-items">
-                    ${items.map((v) => `
-                        <label class="turma-option">
-                            <input type="checkbox" name="customExportTurma" value="${v}" checked>
-                            ${getTurmaLabelFromValue(v)}
-                        </label>
-                    `).join('')}
-                </div>
-            `;
-
-            container.appendChild(groupEl);
-        });
-
-        // Mantém regra: se “Todas” estiver marcada, desmarca específicas e vice-versa.
-        // O listener será configurado em initPageEvents depois.
-    } catch (error) {
-        container.innerHTML = '<p class="dashboard-empty">Falha ao carregar turmas disponíveis.</p>';
+    if (returnFocus && typeof returnFocus.focus === 'function' && document.contains(returnFocus)) {
+        requestAnimationFrame(() => returnFocus.focus({ preventScroll: true }));
     }
 }
 
-function initPageEvents() {
-    // Checkbox "Todas as turmas" controla os demais
-    const allTurmasCb = document.getElementById('customExportTurmaAll');
-    const specificCbs = () => document.querySelectorAll('input[name="customExportTurma"]:not(#customExportTurmaAll)');
+// ===== QUICK EXPORTS =====
+async function downloadQuickExport(exportType, button) {
+    const endpoint = QUICK_EXPORT_ENDPOINTS[exportType];
 
-    allTurmasCb?.addEventListener('change', () => {
-        specificCbs().forEach((cb) => { cb.checked = false; cb.disabled = allTurmasCb.checked; });
-    });
-
-    specificCbs().forEach((cb) => {
-        cb.addEventListener('change', () => {
-            if (cb.checked && allTurmasCb) allTurmasCb.checked = false;
-            const anyChecked = Array.from(specificCbs()).some((c) => c.checked);
-            if (!anyChecked && allTurmasCb) {
-                allTurmasCb.checked = true;
-                specificCbs().forEach((c) => { c.disabled = true; });
-            }
-        });
-    });
-
-    // Estado inicial: todas marcadas e específicas desabilitadas
-    // (em seguida, o usuário pode escolher explicitamente por turma)
-    specificCbs().forEach((cb) => { cb.disabled = true; });
-
-    // Microinteração visual: manter um estado consistente mesmo com layout de “pill/card”
-    const syncTurmaVisual = () => {
-        specificCbs().forEach((cb) => {
-            const label = cb.closest('label');
-            if (!label) return;
-            // Visual auxiliar (mantém compatibilidade com UI anterior)
-            if (cb.checked) label.classList.add('is-active');
-            else label.classList.remove('is-active');
-
-        });
-    };
-
-    allTurmasCb?.addEventListener('change', syncTurmaVisual);
-    specificCbs().forEach((cb) => cb.addEventListener('change', syncTurmaVisual));
-
-    syncTurmaVisual();
-
-
-    document.getElementById('advancedToggleRegistrationBtn')?.addEventListener('click', toggleRegistrationStatus);
-    document.getElementById('advancedLoadBtn')?.addEventListener('click', () => {
-        loadRegistrations({ forceFetch: false });
-    });
-    document.getElementById('advancedResetBtn')?.addEventListener('click', resetFilters);
-    document.getElementById('advancedOpenExportModalBtn')?.addEventListener('click', openExportModal);
-    document.getElementById('exportModalCloseBtn')?.addEventListener('click', closeExportModal);
-    document.getElementById('exportModalOverlay')?.addEventListener('click', (e) => {
-        if (e.target === e.currentTarget) closeExportModal();
-    });
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeExportModal();
-    });
-
-    document.getElementById('advancedExportCustomBtn')?.addEventListener('click', exportCustom);
-    document.getElementById('advancedExportCsvBtn')?.addEventListener('click', () => exportResults('csv'));
-    document.getElementById('advancedExportXlsxBtn')?.addEventListener('click', () => exportResults('xlsx'));
-    document.getElementById('advancedExportEmXlsxBtn')?.addEventListener('click', () => exportSegmentResults('em'));
-    document.getElementById('advancedExport89XlsxBtn')?.addEventListener('click', () => exportSegmentResults('fundamental'));
-    document.getElementById('advancedExportByUnitBtn')?.addEventListener('click', exportByUnit);
-    document.getElementById('advancedExportUnassignedBtn')?.addEventListener('click', exportUnassigned);
-    document.getElementById('advancedExportAllDelegationsBtn')?.addEventListener('click', exportAllDelegations);
-
-    Array.from({ length: 7 }, (_, i) => i + 1).forEach((num) => {
-        document.getElementById(`advancedExportComite${num}Btn`)?.addEventListener('click', () => exportByCommittee(num));
-    });
-
-    initExportColsActions();
-
-    document.getElementById('advancedSearchFilter')?.addEventListener('input', () => {
-        renderAllAdvancedData();
-    });
-
-    ['advancedPreferenceFilter', 'advancedCommitteeTarget', 'advancedAssignmentStatus', 'advancedTeamSizeFilter']
-        .forEach((id) => {
-            document.getElementById(id)?.addEventListener('change', () => renderAllAdvancedData());
-        });
-
-    document.getElementById('advancedAssignmentList')?.addEventListener('click', (event) => {
-        const button = event.target.closest('.assign-committee-btn');
-        if (!button) {
-            return;
-        }
-        assignCommittee(button);
-    });
-}
-
-async function initAdvancedDashboard() {
-    const allowed = await verifyAccess();
-    if (!allowed) {
+    if (!endpoint) {
+        if (window.MaxOnuNotify) MaxOnuNotify.error('Tipo de export desconhecido.');
         return;
     }
 
-    initPageEvents();
-    await Promise.all([
-        loadRegistrationControl(),
-        loadRegistrations({ forceFetch: true })
-    ]);
+    setButtonLoading(button, true, 'Baixando...');
+
+    try {
+        const response = await fetch(endpoint.url, { headers: getAuthHeaders() });
+
+        if (!response.ok) {
+            const data = await response.json().catch(() => ({}));
+            throw new Error(data.error || 'Erro ao exportar.');
+        }
+
+        const blob = await response.blob();
+        triggerDownload(blob, endpoint.filename);
+    } catch (error) {
+        if (window.MaxOnuNotify) {
+            MaxOnuNotify.error(error.message || 'Erro ao exportar.');
+        }
+    } finally {
+        setButtonLoading(button, false, '');
+    }
 }
 
+// ===== CUSTOM EXPORT =====
+async function exportCustom() {
+    const button = document.getElementById('advancedExportCustomBtn');
+    const filters = getCustomExportFilters();
+    const previewRows = getCustomExportPreviewRows(filters);
 
-document.addEventListener('DOMContentLoaded', initAdvancedDashboard);
+    if (!filters.columns.length) {
+        if (window.MaxOnuNotify) MaxOnuNotify.warning('Selecione ao menos uma coluna.');
+        return;
+    }
+
+    if (!filters.turmas.length) {
+        if (window.MaxOnuNotify) MaxOnuNotify.warning('Selecione ao menos uma turma.');
+        return;
+    }
+
+    setButtonLoading(button, true, 'Gerando...');
+
+    try {
+        const params = new URLSearchParams({
+            turmas: filters.turmas.join(','),
+            unit: filters.unit,
+            committee: filters.committee,
+            preference: filters.preference,
+            status: filters.status,
+            cols: filters.columns.join(',')
+        });
+
+        const response = await fetch(`/api/export/results/custom?${params.toString()}`, {
+            headers: getAuthHeaders()
+        });
+
+        if (!response.ok) {
+            const data = await response.json().catch(() => ({}));
+            throw new Error(data.error || 'Erro ao gerar export personalizado.');
+        }
+
+        const blob = await response.blob();
+        const filename = buildCustomExportFilename(filters, previewRows.length);
+        triggerDownload(blob, filename);
+    } catch (error) {
+        if (window.MaxOnuNotify) {
+            MaxOnuNotify.error(error.message || 'Erro ao gerar export personalizado.');
+        }
+    } finally {
+        setButtonLoading(button, false, '');
+    }
+}
+
+// ===== MODAL TURMAS LOGIC =====
+function initTurmasToggle() {
+    const allCheckbox = document.getElementById('customExportTurmaAll');
+    const specificCheckboxes = () =>
+        Array.from(document.querySelectorAll('input[name="customExportTurma"]:not(#customExportTurmaAll)'));
+
+    if (!allCheckbox) return;
+
+    allCheckbox.addEventListener('change', () => {
+        const locked = allCheckbox.checked;
+
+        specificCheckboxes().forEach((cb) => {
+            cb.checked = false;
+            cb.disabled = locked;
+        });
+
+        updateCustomExportPreview();
+    });
+
+    specificCheckboxes().forEach((cb) => {
+        cb.addEventListener('change', () => {
+            if (cb.checked) {
+                allCheckbox.checked = false;
+                specificCheckboxes().forEach((item) => {
+                    item.disabled = false;
+                });
+            }
+
+            const anyChecked = specificCheckboxes().some((item) => item.checked);
+            if (!anyChecked) {
+                allCheckbox.checked = true;
+                specificCheckboxes().forEach((item) => {
+                    item.checked = false;
+                    item.disabled = true;
+                });
+            }
+
+            updateCustomExportPreview();
+        });
+    });
+
+    specificCheckboxes().forEach((cb) => {
+        cb.disabled = allCheckbox.checked;
+    });
+}
+
+function initCustomExportFilterListeners() {
+    const fields = ['customExportCommittee', 'customExportUnit', 'customExportStatus'];
+    fields.push('customExportPreference');
+
+    fields.forEach((fieldId) => {
+        const field = document.getElementById(fieldId);
+        if (field) {
+            field.addEventListener('change', updateCustomExportPreview);
+        }
+    });
+
+    document.querySelectorAll('input[name="customExportColumn"]').forEach((cb) => {
+        cb.addEventListener('change', updateCustomExportPreview);
+    });
+}
+
+// ===== EVENT LISTENERS =====
+function initEventListeners() {
+    // Header buttons
+    document.getElementById('advancedToggleRegistrationBtn')?.addEventListener('click', toggleRegistrationStatus);
+    document.getElementById('advancedLoadBtn')?.addEventListener('click', () => loadRegistrations({ forceFetch: false }));
+    document.getElementById('advancedRefreshBtn')?.addEventListener('click', () => loadRegistrations({ forceFetch: true }));
+    document.getElementById('advancedResetBtn')?.addEventListener('click', resetFilters);
+
+    // Modal
+    document.getElementById('advancedOpenExportModalBtn')?.addEventListener('click', openExportModal);
+    document.getElementById('exportModalCloseBtn')?.addEventListener('click', closeExportModal);
+
+    document.getElementById('exportModalOverlay')?.addEventListener('click', (e) => {
+        if (e.target.id === 'exportModalOverlay') {
+            closeExportModal();
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeExportModal();
+        }
+    });
+
+    // Quick exports
+    document.querySelectorAll('[data-export-type]').forEach((button) => {
+        button.addEventListener('click', () => downloadQuickExport(button.dataset.exportType, button));
+    });
+
+    // Custom export
+    document.getElementById('advancedExportCustomBtn')?.addEventListener('click', exportCustom);
+
+    // Filters
+    document.getElementById('advancedSearchFilter')?.addEventListener('input', () => renderAllAdvancedData());
+
+    ['advancedPreferenceFilter', 'advancedCommitteeTarget', 'advancedAssignmentStatus', 'advancedTeamSizeFilter'].forEach(
+        (id) => {
+            document.getElementById(id)?.addEventListener('change', () => renderAllAdvancedData());
+        }
+    );
+
+    // Delegation assignment
+    document.getElementById('advancedAssignmentList')?.addEventListener('click', (event) => {
+        const button = event.target.closest('.assign-committee-btn');
+        if (button) assignCommittee(button);
+    });
+
+    document.getElementById('mxHeadLogoutBtnDrawer')?.addEventListener('click', () => {
+        window.MaxOnuSession?.clearAuth?.();
+        window.location.href = '/';
+    });
+
+    // Turmas & custom export modal
+    initTurmasToggle();
+    initCustomExportFilterListeners();
+}
+
+// ===== INITIALIZATION =====
+async function initialize() {
+    const allowed = await verifyAccess();
+    if (!allowed) return;
+
+    setupPageHeader(currentUser);
+    initEventListeners();
+
+    try {
+        await Promise.all([loadRegistrationControl(), loadRegistrations({ forceFetch: true })]);
+    } catch (error) {
+        console.error('Erro ao inicializar dashboard:', error);
+        if (window.MaxOnuNotify) {
+            MaxOnuNotify.error('Erro ao carregar dados do dashboard.');
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', initialize);

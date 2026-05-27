@@ -14,8 +14,6 @@
     <script src="/js/session.js"></script><script src="/js/includes.js?v=20260420-headerfix" defer></script>
 </head>
 <body>
-    <include src="header.html"></include>
-
     <section id="countdown-section">
         <div class="countdown-container">
             <div class="hero-badge">
@@ -28,13 +26,7 @@
                 <a href="/login" class="auth-btn auth-btn-secondary hero-auth-btn">Entrar</a>
                 <a href="/login#register" class="auth-btn auth-btn-primary hero-auth-btn">Cadastrar</a>
             </div>
-            <script>
-                (function() {
-                    var t = localStorage.getItem('token');
-                    var logado = t && t !== 'null' && t !== 'undefined' && t.trim() !== '';
-                    if (!logado) document.getElementById('heroCtaGroup').hidden = false;
-                })();
-            </script>
+            <script src="/js/hero-cta.js" defer></script>
             <div class="countdown-message">Contagem regressiva para o início da MaxOnu 2026</div>
             <div class="countdown-grid" id="countdown"></div>
             <div class="event-date" id="eventStartDate">Data de Início: carregando...</div>

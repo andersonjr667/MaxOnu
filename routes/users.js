@@ -184,8 +184,9 @@ router.get('/registrations', authMiddleware, requireRole(['admin', 'coordinator'
       .sort({ 'registration.submittedAt': 1, fullName: 1 });
 
     const groups = buildDelegationGroups(candidates);
+    const candidateById = new Map(candidates.map((candidate) => [String(candidate._id), candidate]));
     const rows = groups.map((group) => {
-      const sourceUser = candidates.find((candidate) => group.memberIds.includes(String(candidate._id)));
+      const sourceUser = group.memberIds.map((id) => candidateById.get(String(id))).find(Boolean);
       const registration = sourceUser?.registration || {};
       const committeeValues = Array.from(new Set((group.members || [])
         .map((member) => Number(member.committee))

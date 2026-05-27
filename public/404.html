@@ -1,25 +1,55 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Página não encontrada - 404</title>
-    <link rel="stylesheet" href="/css/styles.css">
-    <link rel="icon" href="/images/logo-maxonu.png" type="image/png">
-    <script src="/js/session.js"></script><script src="/js/includes.js?v=20260420-headerfix" defer></script>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Página não encontrada | MaxOnu 2026</title>
+  <meta name="description" content="A página solicitada não foi encontrada. Volte para a MaxOnu 2026 e acesse os caminhos principais do portal.">
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="icon" href="/images/logo-maxonu.png" type="image/png">
+  <script src="/js/session.js"></script>
+  <script src="/js/includes.js?v=20260526-header-redesign" defer></script>
 </head>
 <body>
-    <include src="header.html"></include>
+  <main class="main-content error-page">
+    <section class="content-section error-page__section">
+      <div class="container-404 error-page__shell">
+        <div class="error-page__hero">
+          <div class="error-page__brand">
+            <span class="error-page__badge">404</span>
+            <img src="/images/logo-maxonu.png" alt="Logo MaxOnu" class="error-logo">
+          </div>
 
-    <div class="container-404">
-        <img src="/images/logo-maxonu.png" alt="Logo MaxOnu" class="error-logo">
-        <h1>404</h1>
-        <p>Página não encontrada.</p>
-        <a class="btn-voltar" href="/">Voltar para a página inicial</a>
-    </div>
+          <div class="error-page__copy">
+            <p class="dashboard-kicker">Erro 404</p>
+            <h1>Página não encontrada</h1>
+            <p class="error-page__lead">
+              O endereço que você abriu não existe, foi movido ou está indisponível no momento.
+              Use os atalhos abaixo para voltar para uma página útil.
+            </p>
+          </div>
+        </div>
 
-    <include src="footer.html"></include>
+        <div class="button-group error-page__actions">
+          <a class="btn btn-primary" href="/">Página inicial</a>
+          <a class="btn btn-secondary" href="/delegacoes">Delegações</a>
+          <a class="btn btn-secondary" href="/blog">Blog</a>
+        </div>
+
+        <div class="error-page__links-wrap">
+          <p class="error-page__links-title">Links rápidos</p>
+          <div class="error-page__links">
+            <a class="view-button" href="/guias">Guias</a>
+            <a class="view-button secondary" href="/perguntas-comuns">Perguntas comuns</a>
+            <a class="view-button secondary" href="/regras">Regras</a>
+            <a class="view-button secondary" href="/profile">Meu perfil</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <include src="footer.html"></include>
 </body>
 </html>
-

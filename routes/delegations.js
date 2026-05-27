@@ -24,7 +24,9 @@ function normalizeText(value = '') {
 
 function getEducationSegment(classGroup = '') {
     const normalized = normalizeText(classGroup);
+    const original = String(classGroup || '').toLowerCase();
 
+    // Detectar 8º/9º - com ou sem º/ª
     if (
         normalized.includes('8o') ||
         normalized.includes('8 ano') ||
@@ -34,19 +36,32 @@ function getEducationSegment(classGroup = '') {
         normalized.includes('9ano') ||
         normalized.includes('8 e 9') ||
         normalized.includes('8/9') ||
+        original.includes('8º') ||
+        original.includes('8ª') ||
+        original.includes('9º') ||
+        original.includes('9ª') ||
         /\b8\s*ano\b/i.test(normalized) ||
-        /\b9\s*ano\b/i.test(normalized)
+        /\b9\s*ano\b/i.test(normalized) ||
+        /\b8\s*ano\b/i.test(original) ||
+        /\b9\s*ano\b/i.test(original)
     ) {
         return 'fundamental';
     }
 
+    // Detectar Ensino Médio - com ou sem º/ª
     if (
         normalized.includes('ensino medio') ||
         normalized.includes('medio') ||
         /\bem\b/.test(normalized) ||
         /[123]\s*a?\s*serie/i.test(normalized) ||
         (/[123]\s*serie/i.test(normalized)) ||
-        (/\b[123]\s*ano\b/i.test(normalized) && !normalized.includes('8o') && !normalized.includes('9o')) // Frequentemente usado para Ensino Médio
+        (/\b[123]\s*ano\b/i.test(normalized) && !normalized.includes('8o') && !normalized.includes('9o')) ||
+        /\b1º\s*série\b/i.test(original) ||
+        /\b2º\s*série\b/i.test(original) ||
+        /\b3º\s*série\b/i.test(original) ||
+        /\b1ª\s*série\b/i.test(original) ||
+        /\b2ª\s*série\b/i.test(original) ||
+        /\b3ª\s*série\b/i.test(original)
     ) {
         return 'em';
     }

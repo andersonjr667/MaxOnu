@@ -13,6 +13,11 @@ function buildDelegationKeyFromUser(user) {
 }
 
 function buildDelegationGroups(users) {
+    const userById = new Map();
+    for (const user of users) {
+        userById.set(String(user._id || user.id), user);
+    }
+
     const groups = new Map();
 
     for (const user of users) {
@@ -23,8 +28,9 @@ function buildDelegationGroups(users) {
             continue;
         }
 
-        const relatedUsers = users
-            .filter((candidate) => memberIds.includes(String(candidate._id || candidate.id)))
+        const relatedUsers = memberIds
+            .map((memberId) => userById.get(memberId))
+            .filter(Boolean)
             .sort((a, b) => String(a.fullName || a.username).localeCompare(String(b.fullName || b.username), 'pt-BR'));
 
         groups.set(key, {

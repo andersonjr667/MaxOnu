@@ -16,6 +16,22 @@
   let cachedContext = null;
   let inflight = null;
 
+  function syncAuthState(authenticated) {
+    try {
+      document.documentElement.dataset.authState = authenticated ? 'authenticated' : 'guest';
+    } catch (_) {
+      /* ignore */
+    }
+  }
+
+  function dispatchAuthContextUpdated(detail) {
+    try {
+      document.dispatchEvent(new CustomEvent('auth-context-updated', { detail }));
+    } catch (_) {
+      /* ignore */
+    }
+  }
+
   function readToken() {
     const t = localStorage.getItem(LS.token);
     if (!t || t === 'null' || t === 'undefined' || String(t).trim() === '') return '';
@@ -33,28 +49,45 @@
     localStorage.removeItem(LS.isAdmin);
     cachedContext = null;
     inflight = null;
+    syncAuthState(false);
+    dispatchAuthContextUpdated({ authenticated: false });
   }
 
   async function fetchMe() {
     const token = readToken();
-    if (!token) return null;
+    if (!token) {
+      syncAuthState(false);
+      return null;
+    }
 
-    const res = await fetch('/api/me', {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    let res;
+    try {
+      res = await fetch('/api/me', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+    } catch (_) {
+      syncAuthState(false);
+      return null;
+    }
 
     if (res.status === 401) {
       clearAuth();
       return null;
     }
 
-    if (!res.ok) return null;
+    if (!res.ok) {
+      syncAuthState(false);
+      return null;
+    }
 
     const data = await res.json().catch(() => null);
     if (!data || typeof data !== 'object') return null;
 
     const user = data.user && typeof data.user === 'object' ? data.user : data;
-    if (!user || typeof user !== 'object' || !user.role) return null;
+    if (!user || typeof user !== 'object' || !user.role) {
+      syncAuthState(false);
+      return null;
+    }
 
     try {
       localStorage.setItem(LS.role, user.role);
@@ -64,6 +97,7 @@
       /* ignore quota / private mode */
     }
 
+    syncAuthState(true);
     return { user };
   }
 
@@ -92,8 +126,13 @@
   async function refreshAuthContext() {
     cachedContext = null;
     inflight = null;
-    return getAuthContext({ forceRefresh: true });
+    const ctx = await getAuthContext({ forceRefresh: true });
+    syncAuthState(Boolean(ctx?.user));
+    dispatchAuthContextUpdated({ authenticated: Boolean(ctx?.user), user: ctx?.user || null });
+    return ctx;
   }
+
+  syncAuthState(false);
 
   window.MaxOnuSession = {
     getToken,

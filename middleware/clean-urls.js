@@ -35,7 +35,10 @@ function cleanUrlsMiddleware(publicDir) {
     '/regras': 'regras.html',
     '/blog-post': 'create-post.html',
     '/create-post': 'create-post.html',
-    '/termos-de-uso': 'termos-de-uso.html'
+    '/termos-de-uso': 'termos-de-uso.html',
+    '/404': '404.html',
+    '/erro': '404.html',
+    '/nao-encontrado': '404.html'
   };
 
   return (req, res, next) => {
@@ -47,7 +50,8 @@ function cleanUrlsMiddleware(publicDir) {
     // Se a rota está no mapa, serve o arquivo correspondente
     if (routeMap.hasOwnProperty(req.path)) {
       const filePath = path.join(publicDir, routeMap[req.path]);
-      return res.sendFile(filePath, (err) => {
+      const statusCode = routeMap[req.path] === '404.html' ? 404 : 200;
+      return res.status(statusCode).sendFile(filePath, (err) => {
         if (err) {
           next();
         }

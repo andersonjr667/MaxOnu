@@ -23,14 +23,44 @@ const portalConfigs = {
 
         actions: [
             {
-                title: 'Painel Administrativo',
-                text: 'Gerenciar sistema e usuários.',
-                href: '/admin'
+                title: 'Painel Operacional',
+                text: 'Abrir painel operacional.',
+                href: '/dashboard'
             },
             {
-                title: 'Dashboard',
-                text: 'Visualizar estatísticas do sistema.',
-                href: '/dashboard'
+                title: 'Gerência de Delegações',
+                text: 'Gerencia comitês, respostas pendentes e distribuição de países.',
+                href: '/admin-delegations'
+            },
+            {
+                title: 'Verificar Usuários',
+                text: 'Consulta lista de alunos e dados cadastrados.',
+                href: '/verificacao-usuarios'
+            },
+            {
+                title: 'Enviar Notificações',
+                text: 'Enviar notificações para usuários.',
+                href: '/notificacoes-admin'
+            },
+            {
+                title: 'Gerenciar Blog',
+                text: 'Gerenciar artigos do blog.',
+                href: '/blog'
+            },
+            {
+                title: 'Criar Comunicado',
+                text: 'Criar novo comunicado.',
+                href: '/create-post'
+            },
+            {
+                title: 'Gerenciar FAQ',
+                text: 'Gerenciar perguntas frequentes.',
+                href: '/imprensa-faq'
+            },
+            {
+                title: 'Meu Perfil',
+                text: 'Ver meu perfil.',
+                href: '/profile'
             }
         ]
     },

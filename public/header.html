@@ -1,99 +1,257 @@
-<!-- Header Component -->
-<link rel="stylesheet" href="/css/layout/header.css" />
+<link rel="stylesheet" href="/css/header.css?v=20260526-header-authfix2">
+<header class="mx-premium-header" id="mxPremiumHeader" data-mx-header role="banner">
+  <a class="mx-premium-header__skip-link" href="#main-content">Pular para o conteúdo principal</a>
 
+  <div class="mx-premium-header__bar">
+    <div class="mx-premium-header__bar-inner">
+      <a class="mx-premium-header__brand" href="/" data-mx-nav-link aria-label="Ir para a página inicial">
+        <span class="mx-premium-header__logo-wrap" aria-hidden="true">
+          <img
+            class="mx-premium-header__logo"
+            src="/images/logo-maxonu.png"
+            width="32"
+            height="32"
+            alt=""
+            decoding="async"
+            loading="eager"
+          >
+        </span>
+        <span class="mx-premium-header__brand-text">
+          <span class="mx-premium-header__brand-name">MaxOnu</span>
+          <span class="mx-premium-header__brand-year">2026</span>
+        </span>
+      </a>
 
-<header class="mx-header" data-mx-header>
-  <div class="mx-header__inner">
-    <a class="mx-header__brand" href="/" aria-label="MaxOnu 2026 - Início">
-      <img class="mx-header__brand-logo" src="/images/logo-maxonu.png" alt="" aria-hidden="true" />
-      <span class="mx-header__brand-copy">
-        <small class="mx-header__brand-kicker">Colégio Maximus</small>
-        <strong class="mx-header__brand-title">MaxOnu 2026</strong>
-      </span>
-    </a>
+      <nav class="mx-premium-header__nav" aria-label="Navegação principal">
+        <ul class="mx-premium-header__nav-list">
+          <li><a class="mx-premium-header__link" href="/" data-mx-nav-link>Página Inicial</a></li>
+          <li><a class="mx-premium-header__link" href="/blog" data-mx-nav-link>Blog</a></li>
+          <li><a class="mx-premium-header__link" href="/guias" data-mx-nav-link>Guias</a></li>
+          <li><a class="mx-premium-header__link" href="/delegacoes" data-mx-nav-link>Delegações</a></li>
+          <li><a class="mx-premium-header__link" href="/dpos" data-mx-nav-link>DPOs</a></li>
+          <li><a class="mx-premium-header__link" href="/regras" data-mx-nav-link>Regras</a></li>
+          <li><a class="mx-premium-header__link" href="/perguntas-comuns" data-mx-nav-link>Perguntas comuns</a></li>
+        </ul>
+      </nav>
 
-    <nav class="mx-header__nav" aria-label="Navegação principal" data-mx-nav>
-      <ul class="mx-header__nav-list" data-mx-nav-list>
-        <li><a class="mx-header__nav-link" href="/blog">Blog</a></li>
-        <li><a class="mx-header__nav-link" href="/guias">Guias</a></li>
-        <li><a class="mx-header__nav-link" href="/delegacoes">Delegações</a></li>
-        <li><a class="mx-header__nav-link" href="/dpos">DPOs</a></li>
-        <li><a class="mx-header__nav-link" href="/regras">Regras</a></li>
-        <li><a class="mx-header__nav-link" href="/faq">FAQ</a></li>
-        <li class="mx-header__nav-item mx-header__nav-item--newsletter" hidden>
-          <a class="mx-header__nav-link" href="/newsletter">Newsletter</a>
-        </li>
-        <li class="mx-header__nav-item mx-header__nav-item--admin" hidden>
-          <a class="mx-header__nav-link" href="/analytics">Analytics</a>
-        </li>
-      </ul>
-    </nav>
-
-    <div class="mx-header__actions">
-      <div class="mx-header__notif" data-mx-notif-root>
-        <button
-          class="mx-header__notif-toggle"
-          type="button"
-          data-mx-notif-toggle
-          aria-expanded="false"
-          aria-controls="mxHeaderNotifPanel"
-          aria-label="Notificações"
-        >
-          <span class="mx-header__notif-icon" aria-hidden="true">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-              <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+      <div class="mx-premium-header__tools">
+        <div class="mx-head-notif" data-mx-head-notif>
+          <button
+            type="button"
+            class="mx-head-icon-btn"
+            id="mxHeadNotifBtn"
+            aria-label="Abrir notificações"
+            aria-expanded="false"
+            aria-haspopup="true"
+            aria-controls="mxHeadNotifPanel"
+            title="Notificações"
+          >
+            <svg class="mx-head-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
             </svg>
-          </span>
-          <span class="mx-header__notif-badge" data-mx-notif-badge hidden aria-hidden="true">0</span>
-        </button>
-        <div class="mx-header__notif-overlay" data-mx-notif-overlay aria-hidden="true" hidden></div>
-        <div
-          class="mx-header__notif-panel"
-          id="mxHeaderNotifPanel"
-          data-mx-notif-panel
-          role="region"
-          aria-label="Lista de notificações"
-          hidden
-        >
-          <div class="mx-header__notif-head">
-            <h2 class="mx-header__notif-title">Notificações</h2>
-            <div class="mx-header__notif-tools">
-              <button type="button" class="mx-header__notif-tool" data-mx-notif-markall title="Marcar todas como lidas" aria-label="Marcar todas como lidas">✓</button>
-              <button type="button" class="mx-header__notif-tool" data-mx-notif-close title="Fechar" aria-label="Fechar painel">×</button>
+            <span class="mx-head-notif__badge" id="mxHeadNotifBadge" data-count="0" hidden>0</span>
+          </button>
+
+          <div
+            class="mx-head-panel mx-head-notif__panel"
+            id="mxHeadNotifPanel"
+            role="region"
+            aria-label="Painel de notificações"
+            aria-hidden="true"
+          >
+            <div class="mx-head-panel__head">
+              <h2 class="mx-head-panel__title">Notificações</h2>
+              <button
+                type="button"
+                class="mx-head-panel__ghost"
+                id="mxHeadNotifMarkAll"
+                hidden
+              >
+                Marcar todas
+              </button>
+            </div>
+
+            <div class="mx-head-notif__body">
+              <p class="mx-head-empty" id="mxHeadNotifEmpty">Carregando notificações…</p>
+              <ul class="mx-head-notif__list" id="mxHeadNotifList" role="list"></ul>
+            </div>
+
+            <div class="mx-head-panel__foot">
+              <span class="mx-head-panel__muted">As atualizações do painel aparecem aqui em tempo real.</span>
             </div>
           </div>
-          <div class="mx-header__notif-body" data-mx-notif-list></div>
         </div>
+
+        <button
+          type="button"
+          class="mx-head-icon-btn"
+          id="mxHeadThemeBtn"
+          aria-label="Alternar tema"
+          aria-pressed="false"
+          title="Tema"
+        >
+          <svg class="mx-head-icon mx-head-theme__sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <circle cx="12" cy="12" r="5"></circle>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
+          </svg>
+          <svg class="mx-head-icon mx-head-theme__moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+
+        <div class="mx-head-guest" id="mxHeadGuest" hidden>
+          <a class="mx-head-btn mx-head-btn--ghost" href="/login" data-mx-nav-link>Entrar</a>
+          <a class="mx-head-btn mx-head-btn--primary" href="/login#register" data-mx-nav-link>Cadastrar</a>
+        </div>
+
+        <div class="mx-head-profile" id="mxHeadProfile" data-mx-head-profile hidden>
+          <button
+            type="button"
+            class="mx-head-profile__trigger"
+            id="mxHeadProfileBtn"
+            aria-expanded="false"
+            aria-haspopup="true"
+            aria-controls="mxHeadProfilePanel"
+          >
+            <span class="mx-head-profile__avatar-wrap">
+              <img
+                class="mx-head-profile__avatar"
+                id="mxHeadAvatar"
+                src="/images/profile_male.png"
+                width="38"
+                height="38"
+                alt="Avatar do usuário"
+                decoding="async"
+              >
+            </span>
+            <span class="mx-head-profile__meta">
+              <span class="mx-head-profile__name" id="mxHeadUserName">Conta</span>
+              <span class="mx-head-profile__hint">Menu</span>
+            </span>
+            <svg class="mx-head-profile__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M6 9l6 6 6-6"></path>
+            </svg>
+          </button>
+
+          <div
+            class="mx-head-panel mx-head-profile__panel"
+            id="mxHeadProfilePanel"
+            role="menu"
+            aria-label="Menu da conta"
+            aria-hidden="true"
+          >
+            <a class="mx-head-menu__item" href="/profile" role="menuitem" data-mx-nav-link>
+              <span>Meu perfil</span>
+            </a>
+            <div class="mx-head-useful" id="mxHeadUsefulMenu" hidden>
+              <div class="mx-head-panel__head mx-head-useful__head">
+                <h3 class="mx-head-panel__title">Páginas úteis</h3>
+              </div>
+              <div class="mx-head-useful__links" id="mxHeadUsefulLinks"></div>
+            </div>
+            <button type="button" class="mx-head-menu__item mx-head-menu__item--danger" role="menuitem" id="mxHeadLogoutBtn">
+              <span>Sair</span>
+            </button>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          class="mx-premium-header__hamburger"
+          id="mxHeadMenuBtn"
+          aria-label="Abrir menu de navegação"
+          aria-expanded="false"
+          aria-controls="mxHeadDrawer"
+          title="Menu"
+        >
+          <span class="mx-premium-header__hamburger-line" aria-hidden="true"></span>
+          <span class="mx-premium-header__hamburger-line" aria-hidden="true"></span>
+          <span class="mx-premium-header__hamburger-line" aria-hidden="true"></span>
+        </button>
       </div>
-      <button class="mx-header__theme-btn" id="themeToggle" type="button" aria-label="Alternar tema claro e escuro">
-        <span class="mx-header__theme-visual" aria-hidden="true">
-          <svg class="mx-header__theme-icon mx-header__theme-icon--moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-          </svg>
-          <svg class="mx-header__theme-icon mx-header__theme-icon--sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="4" />
-            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
-          </svg>
-        </span>
-      </button>
-      <div class="mx-header__auth" data-mx-auth></div>
-      <button
-        class="mx-header__menu-btn"
-        type="button"
-        data-mx-menu-toggle
-        aria-controls="navLinks"
-        aria-expanded="false"
-        aria-label="Abrir menu"
-      >
-        <span class="mx-header__menu-icon" aria-hidden="true"></span>
-      </button>
     </div>
   </div>
 
-  <div class="mx-header__menu-backdrop" data-mx-menu-backdrop aria-hidden="true" hidden></div>
-  <nav class="mx-header__mobile-shell" aria-label="Menu móvel">
-    <ul id="navLinks" class="mx-header__mobile-list"></ul>
-  </nav>
+  <div class="mx-premium-header__scrim" id="mxHeadScrim" hidden data-mx-head-scrim></div>
+
+  <aside
+    class="mx-premium-header__drawer"
+    id="mxHeadDrawer"
+    aria-label="Menu de navegação"
+    aria-modal="true"
+    role="navigation"
+    hidden
+    data-mx-drawer
+  >
+    <div class="mx-premium-header__drawer-head">
+      <h2 class="mx-premium-header__drawer-title">Menu</h2>
+      <button
+        type="button"
+        class="mx-head-icon-btn"
+        id="mxHeadDrawerClose"
+        aria-label="Fechar menu de navegação"
+        title="Fechar"
+      >
+        <svg class="mx-head-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M18 6L6 18M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+
+    <nav class="mx-premium-header__drawer-nav" aria-label="Navegação principal mobile">
+      <a class="mx-premium-header__drawer-link" href="/" data-mx-nav-link>Página Inicial</a>
+      <a class="mx-premium-header__drawer-link" href="/blog" data-mx-nav-link>Blog</a>
+      <a class="mx-premium-header__drawer-link" href="/guias" data-mx-nav-link>Guias</a>
+      <a class="mx-premium-header__drawer-link" href="/delegacoes" data-mx-nav-link>Delegações</a>
+      <a class="mx-premium-header__drawer-link" href="/dpos" data-mx-nav-link>DPOs</a>
+      <a class="mx-premium-header__drawer-link" href="/regras" data-mx-nav-link>Regras</a>
+      <a class="mx-premium-header__drawer-link" href="/perguntas-comuns" data-mx-nav-link>Perguntas comuns</a>
+
+      <div class="mx-head-panel__head mx-head-account__head">
+        <div class="mx-head-account__copy">
+          <h3 class="mx-head-panel__title" id="mxHeadDrawerAccountTitle">Conta</h3>
+          <p class="mx-head-account__subtitle">Atalho para perfil, links úteis e saída segura.</p>
+          <span class="mx-head-account__badge" aria-hidden="true">Área</span>
+        </div>
+      </div>
+
+      <div class="mx-head-guest" id="mxHeadGuestDrawer" hidden>
+        <a class="mx-head-btn mx-head-btn--ghost" href="/login" data-mx-nav-link>Entrar</a>
+        <a class="mx-head-btn mx-head-btn--primary" href="/login#register" data-mx-nav-link>Cadastrar</a>
+      </div>
+
+      <div class="mx-head-profile" id="mxHeadProfileDrawer" hidden>
+        <div class="mx-head-profile__trigger">
+          <span class="mx-head-profile__avatar-wrap">
+            <img
+              class="mx-head-profile__avatar"
+              id="mxHeadPanelAvatar"
+              src="/images/profile_male.png"
+              width="38"
+              height="38"
+              alt="Avatar do usuário"
+              decoding="async"
+            >
+          </span>
+          <span class="mx-head-profile__meta">
+            <span class="mx-head-profile__name" id="mxHeadPanelUserName">Seu nome</span>
+            <span class="mx-head-profile__hint" id="mxHeadPanelUserRole" data-user-role="candidate">Candidato</span>
+          </span>
+        </div>
+
+        <div class="mx-head-account__divider" aria-hidden="true"></div>
+
+        <a class="mx-head-menu__item" href="/profile" data-mx-nav-link>Meu perfil</a>
+        <div class="mx-head-useful mx-head-useful--drawer" id="mxHeadUsefulMenuDrawer" hidden>
+          <div class="mx-head-panel__head mx-head-useful__head">
+            <h3 class="mx-head-panel__title">Páginas úteis</h3>
+          </div>
+          <div class="mx-head-useful__links" id="mxHeadUsefulLinksDrawer"></div>
+        </div>
+        <button type="button" class="mx-head-menu__item mx-head-menu__item--danger" id="mxHeadLogoutBtnDrawer">Sair</button>
+      </div>
+    </nav>
+  </aside>
 </header>
-<script src="/js/header.js" defer></script>
+<script src="/js/header.js?v=20260526-header-authfix2"></script>

@@ -10,6 +10,14 @@
         '#ff8c42', '#1f6fa8', '#ffd166', '#d1495b', '#06d6a0', '#118ab2', '#073b4c'
     ];
 
+    const chartPeriods = {
+        users: 7,
+        registrations: 7,
+        newsletter: 7,
+        engagement: 7,
+        comparison: 30
+    };
+
     function getToken() {
         return window.MaxOnuSession?.getToken?.() || localStorage.getItem('token');
     }
@@ -202,6 +210,18 @@
 
     function destroyChart(key) {
         if (charts[key]) { charts[key].destroy(); delete charts[key]; }
+    }
+
+    function rerenderChartsForTheme() {
+        if (!document.getElementById('kpiGrid')) return;
+
+        loadUsersChart(chartPeriods.users);
+        loadRegistrationsChart(chartPeriods.registrations);
+        loadCommitteeChart();
+        loadNewsletterChart(chartPeriods.newsletter);
+        loadClassChart();
+        loadEngagementChart(chartPeriods.engagement);
+        loadComparisonChart(chartPeriods.comparison);
     }
 
     async function loadKPIs() {
@@ -654,11 +674,22 @@
                 group?.querySelectorAll('.analytics-period-btn').forEach(b => b.classList.remove('is-active'));
                 btn.classList.add('is-active');
 
-                if (chartType === 'reg') loadRegistrationsChart(days);
-                else if (chartType === 'nl') loadNewsletterChart(days);
-                else if (chartType === 'eng') loadEngagementChart(days);
-                else if (chartType === 'comp') loadComparisonChart(days);
-                else loadUsersChart(days);
+                if (chartType === 'reg') {
+                    chartPeriods.registrations = days;
+                    loadRegistrationsChart(days);
+                } else if (chartType === 'nl') {
+                    chartPeriods.newsletter = days;
+                    loadNewsletterChart(days);
+                } else if (chartType === 'eng') {
+                    chartPeriods.engagement = days;
+                    loadEngagementChart(days);
+                } else if (chartType === 'comp') {
+                    chartPeriods.comparison = days;
+                    loadComparisonChart(days);
+                } else {
+                    chartPeriods.users = days;
+                    loadUsersChart(days);
+                }
             });
         });
     }
@@ -742,6 +773,10 @@
 
         setupPeriodButtons();
         setupExportButton();
+
+        document.addEventListener('maxonu:theme-changed', () => {
+            rerenderChartsForTheme();
+        });
 
         // Load all data in parallel
         await Promise.all([
