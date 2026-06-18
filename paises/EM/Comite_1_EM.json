@@ -1,0 +1,104 @@
+{
+  "meta": [
+    "Comitê 1: Conselho de Direitos Humanos (CDH - 2026)",
+    "O Paradoxo da Hiperconectividade: Regulamentação da Vigilância Massiva, Ética da Inteligência Artificial e Proteção da Democracia na Era do Big Data"
+  ],
+  "headers": [
+    "Nº de duplas",
+    "Delegação",
+    "Turma",
+    "Membro 1",
+    "Membro 2",
+    "1ª Opção"
+  ],
+  "rows": [
+    {
+      "Nº de duplas": 1,
+      "Delegação": "Rússia",
+      "Turma": "Palmares - 1 Serie A",
+      "Membro 1": "Katarina Galvão Tavares",
+      "Membro 2": "Maria Eduarda Elpidio de Moura",
+      "1ª Opção": "Conselho de Direitos Humanos (CDH - 2026)"
+    },
+    {
+      "Nº de duplas": 2,
+      "Delegação": "França",
+      "Turma": "Palmares - 1 Serie A",
+      "Membro 1": "Mateus Camilo Rodrigues de Oliveira",
+      "Membro 2": "Miguel Martins",
+      "1ª Opção": "Conselho de Direitos Humanos (CDH - 2026)"
+    },
+    {
+      "Nº de duplas": 3,
+      "Delegação": "China",
+      "Turma": "Palmares - 2 serie",
+      "Membro 1": "Daniel Axer Rezende Cunha",
+      "Membro 2": "Luís Fernando Nunes de Paiva",
+      "1ª Opção": "Conselho de Direitos Humanos (CDH - 2026)"
+    },
+    {
+      "Nº de duplas": 4,
+      "Delegação": "EUA",
+      "Turma": "Palmares - 2 serie",
+      "Membro 1": "Daniel Gomides Figueiredo",
+      "Membro 2": "Matheus Pereira Campos",
+      "1ª Opção": "Conselho de Direitos Humanos (CDH - 2026)"
+    },
+    {
+      "Nº de duplas": 5,
+      "Delegação": "Alemanha",
+      "Turma": "Sta Ines - 2 serie",
+      "Membro 1": "Gabriel Silveira Wenchenck",
+      "Membro 2": "Arthur Cruz Correa",
+      "1ª Opção": "Conselho de Direitos Humanos (CDH - 2026)"
+    },
+    {
+      "Nº de duplas": 6,
+      "Delegação": "Google",
+      "Turma": "Sta Ines - 2ª série",
+      "Membro 1": "Laura Rocha de Freitas",
+      "Membro 2": "Maria Eduarda Rocha Ribeiro",
+      "1ª Opção": "Conselho de Direitos Humanos (CDH - 2026)"
+    },
+    {
+      "Nº de duplas": 7,
+      "Delegação": "Meta",
+      "Turma": "Palmares - 1 Serie A",
+      "Membro 1": "Victor Ermelindo Reis e Pedro Modesto",
+      "Membro 2": "Henrique Mesquita Borçato",
+      "1ª Opção": "Alto Comissariado das Nações Unidas para Refugiados (ACNUR)"
+    },
+    {
+      "Nº de duplas": 8,
+      "Delegação": "Índia",
+      "Turma": "Palmares - 1 Serie B",
+      "Membro 1": "Davi Lages Gundim",
+      "Membro 2": "Guilherme Prosdocimi Pimentel",
+      "1ª Opção": "Alto Comissariado das Nações Unidas para Refugiados (ACNUR)"
+    },
+    {
+      "Nº de duplas": 9,
+      "Delegação": "Japão",
+      "Turma": "Palmares - 2 serie",
+      "Membro 1": "Maria Luíza Diniz de Souza",
+      "Membro 2": "Vivian Catta Preta Braga",
+      "1ª Opção": "Alto Comissariado das Nações Unidas para Refugiados (ACNUR)"
+    },
+    {
+      "Nº de duplas": 10,
+      "Delegação": "Reino Unido",
+      "Turma": "Sta Ines - 1 Serie A",
+      "Membro 1": "Cauã Gabriel Sampaio dos Santos",
+      "Membro 2": "DAVI ROCHA LOPES",
+      "1ª Opção": "Bioética e Genética Humana"
+    },
+    {
+      "Nº de duplas": 11,
+      "Delegação": "Israel",
+      "Turma": "Sta Ines - 1 Serie A",
+      "Membro 1": "Rafaela Belizário Araújo",
+      "Membro 2": "Ana Julia Mendes",
+      "1ª Opção": "Bioética e Genética Humana"
+    }
+  ]
+}

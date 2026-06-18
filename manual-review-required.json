@@ -1,0 +1,269 @@
+{
+  "ambiguousMatches": [
+    {
+      "type": "ambiguous_unresolvable",
+      "fullName": "Gabriela Bambirra",
+      "classGroup": "Palmares - 9 ano A",
+      "candidates": [
+        {
+          "userId": "69fa2592c459c67b28508cf6",
+          "fullName": "Gabriela Bambirra",
+          "classGroup": "Palmares - 8 ano B"
+        },
+        {
+          "userId": "69fa26ccc459c67b28508d07",
+          "fullName": "Gabriela Bambirra",
+          "classGroup": "Palmares - 8 ano B"
+        },
+        {
+          "userId": "69fa2901c459c67b28508f09",
+          "fullName": "GABRIELA BAMBIRRA",
+          "classGroup": "Palmares - 8 ano B"
+        }
+      ],
+      "strategy": "unit_segment_fallback"
+    },
+    {
+      "type": "ambiguous_unresolvable",
+      "fullName": "Gabriela Vivas Braga",
+      "classGroup": "Palmares - 1 Serie B",
+      "candidates": [
+        {
+          "userId": "69f9f713d2dc8d7ed0cd30f9",
+          "fullName": "Gabriela Vivas Braga",
+          "classGroup": "Palmares - 1 Serie A"
+        },
+        {
+          "userId": "69fb9b5ad14860ef4f8b788b",
+          "fullName": "Gabriela Vivas Braga",
+          "classGroup": "Palmares - 1 Serie A"
+        }
+      ],
+      "strategy": "unit_segment_fallback"
+    }
+  ],
+  "emptyDelegations": {
+    "type": "empty_delegations_analysis",
+    "summary": {
+      "totalEmpty": 25,
+      "filesAffected": 7
+    },
+    "byFile": {
+      "paises/8e9/Comite_1_8e9.json": [
+        {
+          "type": "empty_delegation",
+          "file": "paises/8e9/Comite_1_8e9.json",
+          "rowIndex": 15,
+          "classGroup": "",
+          "country": "Unesco",
+          "committee": "Conselho de Direitos Humanos (CDH - 2026)"
+        },
+        {
+          "type": "empty_delegation",
+          "file": "paises/8e9/Comite_1_8e9.json",
+          "rowIndex": 16,
+          "classGroup": "",
+          "country": "União Internacional de Telecomunicações (UIT)",
+          "committee": "Conselho de Direitos Humanos (CDH - 2026)"
+        },
+        {
+          "type": "empty_delegation",
+          "file": "paises/8e9/Comite_1_8e9.json",
+          "rowIndex": 17,
+          "classGroup": "",
+          "country": "Canadá",
+          "committee": "Conselho de Direitos Humanos (CDH - 2026)"
+        },
+        {
+          "type": "empty_delegation",
+          "file": "paises/8e9/Comite_1_8e9.json",
+          "rowIndex": 18,
+          "classGroup": "",
+          "country": "Singapura",
+          "committee": "Conselho de Direitos Humanos (CDH - 2026)"
+        }
+      ],
+      "paises/8e9/Comite_2_8e9.json": [
+        {
+          "type": "empty_delegation",
+          "file": "paises/8e9/Comite_2_8e9.json",
+          "rowIndex": 14,
+          "classGroup": "",
+          "country": "Venezuela",
+          "committee": "Assembleia Geral das Nações Unidas (AGNU)"
+        },
+        {
+          "type": "empty_delegation",
+          "file": "paises/8e9/Comite_2_8e9.json",
+          "rowIndex": 15,
+          "classGroup": "",
+          "country": "Argélia",
+          "committee": "Assembleia Geral das Nações Unidas (AGNU)"
+        }
+      ],
+      "paises/8e9/Comite_3_8e9.json": [
+        {
+          "type": "empty_delegation",
+          "file": "paises/8e9/Comite_3_8e9.json",
+          "rowIndex": 15,
+          "classGroup": "",
+          "country": "Arabia Saudita",
+          "committee": "Alto Comissariado das Nações Unidas para Refugiados (ACNUR)"
+        },
+        {
+          "type": "empty_delegation",
+          "file": "paises/8e9/Comite_3_8e9.json",
+          "rowIndex": 16,
+          "classGroup": "",
+          "country": "Colombia",
+          "committee": "Alto Comissariado das Nações Unidas para Refugiados (ACNUR)"
+        }
+      ],
+      "paises/8e9/Comite_4_8e9.json": [
+        {
+          "type": "empty_delegation",
+          "file": "paises/8e9/Comite_4_8e9.json",
+          "rowIndex": 15,
+          "classGroup": "",
+          "country": "Unesco",
+          "committee": "Bioética e Genética Humana"
+        },
+        {
+          "type": "empty_delegation",
+          "file": "paises/8e9/Comite_4_8e9.json",
+          "rowIndex": 16,
+          "classGroup": "",
+          "country": "Israel",
+          "committee": "Bioética e Genética Humana"
+        },
+        {
+          "type": "empty_delegation",
+          "file": "paises/8e9/Comite_4_8e9.json",
+          "rowIndex": 17,
+          "classGroup": "",
+          "country": "Singapura",
+          "committee": "Bioética e Genética Humana"
+        },
+        {
+          "type": "empty_delegation",
+          "file": "paises/8e9/Comite_4_8e9.json",
+          "rowIndex": 18,
+          "classGroup": "",
+          "country": "Rússia",
+          "committee": "Bioética e Genética Humana"
+        }
+      ],
+      "paises/8e9/Comite_5_8e9.json": [
+        {
+          "type": "empty_delegation",
+          "file": "paises/8e9/Comite_5_8e9.json",
+          "rowIndex": 14,
+          "classGroup": "",
+          "country": "OMC",
+          "committee": "Nova Ordem Global"
+        },
+        {
+          "type": "empty_delegation",
+          "file": "paises/8e9/Comite_5_8e9.json",
+          "rowIndex": 15,
+          "classGroup": "",
+          "country": "Coréia do Sul",
+          "committee": "Nova Ordem Global"
+        },
+        {
+          "type": "empty_delegation",
+          "file": "paises/8e9/Comite_5_8e9.json",
+          "rowIndex": 16,
+          "classGroup": "",
+          "country": "Singapura",
+          "committee": "Nova Ordem Global"
+        },
+        {
+          "type": "empty_delegation",
+          "file": "paises/8e9/Comite_5_8e9.json",
+          "rowIndex": 17,
+          "classGroup": "",
+          "country": "México",
+          "committee": "Nova Ordem Global"
+        },
+        {
+          "type": "empty_delegation",
+          "file": "paises/8e9/Comite_5_8e9.json",
+          "rowIndex": 18,
+          "classGroup": "",
+          "country": "Arábia Saudita",
+          "committee": "Nova Ordem Global"
+        },
+        {
+          "type": "empty_delegation",
+          "file": "paises/8e9/Comite_5_8e9.json",
+          "rowIndex": 19,
+          "classGroup": "",
+          "country": "Turquia",
+          "committee": "Nova Ordem Global"
+        }
+      ],
+      "paises/8e9/Comite_6_8e9.json": [
+        {
+          "type": "empty_delegation",
+          "file": "paises/8e9/Comite_6_8e9.json",
+          "rowIndex": 14,
+          "classGroup": "",
+          "country": "Canadá",
+          "committee": "Conselho de Direitos Humanos das Nações Unidas (UNHRC)"
+        },
+        {
+          "type": "empty_delegation",
+          "file": "paises/8e9/Comite_6_8e9.json",
+          "rowIndex": 15,
+          "classGroup": "",
+          "country": "CDH",
+          "committee": "Conselho de Direitos Humanos das Nações Unidas (UNHRC)"
+        },
+        {
+          "type": "empty_delegation",
+          "file": "paises/8e9/Comite_6_8e9.json",
+          "rowIndex": 16,
+          "classGroup": "",
+          "country": "Tribunal Penal (TPI)",
+          "committee": "Conselho de Direitos Humanos das Nações Unidas (UNHRC)"
+        }
+      ],
+      "paises/8e9/Comite_7_8e9.json": [
+        {
+          "type": "empty_delegation",
+          "file": "paises/8e9/Comite_7_8e9.json",
+          "rowIndex": 15,
+          "classGroup": "",
+          "country": "Unicef",
+          "committee": "Organização das Nações Unidas para as Mulheres (ONU Mulheres)"
+        },
+        {
+          "type": "empty_delegation",
+          "file": "paises/8e9/Comite_7_8e9.json",
+          "rowIndex": 16,
+          "classGroup": "",
+          "country": "Turquia",
+          "committee": "Organização das Nações Unidas para as Mulheres (ONU Mulheres)"
+        },
+        {
+          "type": "empty_delegation",
+          "file": "paises/8e9/Comite_7_8e9.json",
+          "rowIndex": 17,
+          "classGroup": "",
+          "country": "Suécia",
+          "committee": "Organização das Nações Unidas para as Mulheres (ONU Mulheres)"
+        },
+        {
+          "type": "empty_delegation",
+          "file": "paises/8e9/Comite_7_8e9.json",
+          "rowIndex": 18,
+          "classGroup": "",
+          "country": "Egito",
+          "committee": "Organização das Nações Unidas para as Mulheres (ONU Mulheres)"
+        }
+      ]
+    },
+    "recommendation": "Revisar manualmente os arquivos listados e verificar se há dados faltantes"
+  }
+}

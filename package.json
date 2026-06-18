@@ -13,7 +13,11 @@
     "populate:heavy": "node populate-db.js --heavy",
     "cleanup": "node cleanup-db.js",
     "migrate:profile-images": "node migrate-profile-images.js",
-    "update-version": "node update-version.js"
+    "update-version": "node update-version.js",
+    "paises:prepare": "node scripts/prepare-country-assignments.js",
+    "paises:resolve": "node scripts/resolve-country-assignments.js",
+    "paises:apply-links": "node scripts/apply-delegation-links.js",
+    "paises": "node scripts/apply-country-assignments.js"
   },
   "keywords": [],
   "author": "",

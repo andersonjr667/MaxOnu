@@ -1,0 +1,198 @@
+{
+  "meta": [
+    "Comitê 1: Conselho de Direitos Humanos (CDH - 2026)",
+    "O Paradoxo da Hiperconectividade: Regulamentação da Vigilância Massiva, Ética da Inteligência Artificial e Proteção da Democracia na Era do Big Data"
+  ],
+  "headers": [
+    "Nº de duplas",
+    "Delegações",
+    "Turma",
+    "Membro 1",
+    "Membro 2",
+    "1ª Opção",
+    "2ª Opção",
+    "3ª Opção"
+  ],
+  "rows": [
+    {
+      "Nº de duplas": 1,
+      "Delegações": "Brasil",
+      "Turma": "Palmares - 9 ano A",
+      "Membro 1": "Matheus Tostes Martins Soares",
+      "Membro 2": "Gabriela Bambirra",
+      "1ª Opção": "Comitê 1: CDH",
+      "2ª Opção": "Comitê 5: Nova Ordem Global",
+      "3ª Opção": "Conselho de Direitos Humanos das Nações Unidas (UNHRC)"
+    },
+    {
+      "Nº de duplas": 2,
+      "Delegações": "Meta",
+      "Turma": "Sta Ines - 8 ano A",
+      "Membro 1": "ARTHUR MUZZI DOS SANTOS",
+      "Membro 2": "Bernardo Henrique",
+      "1ª Opção": "Comitê 1: CDH",
+      "2ª Opção": "Comitê 3: ACNUR - Refugiados",
+      "3ª Opção": "Organização das Nações Unidas para as Mulheres (ONU Mulheres)"
+    },
+    {
+      "Nº de duplas": 3,
+      "Delegações": "Alemanha",
+      "Turma": "Sta Ines - 8 ano A",
+      "Membro 1": "samuel eduardo penna de oliveira",
+      "Membro 2": "Rafael Sena Romanelli De Assis",
+      "1ª Opção": "Comitê 1: CDH",
+      "2ª Opção": "Comitê 2: (AGNU) - Guerras",
+      "3ª Opção": "Alto Comissariado das Nações Unidas para Refugiados (ACNUR)"
+    },
+    {
+      "Nº de duplas": 4,
+      "Delegações": "EUA",
+      "Turma": "Palmares - 9 ano B",
+      "Membro 1": "Lucca Maia Campos",
+      "Membro 2": "Álvaro Lima Furtado",
+      "1ª Opção": "Comitê 2: (AGNU) - Guerras",
+      "2ª Opção": "Comitê 1: CDH",
+      "3ª Opção": "Nova Ordem Global"
+    },
+    {
+      "Nº de duplas": 5,
+      "Delegações": "França",
+      "Turma": "Sta Ines - 8 ano B",
+      "Membro 1": "Gustavo Goes O. Pinto",
+      "Membro 2": "Silvio Junior Cruz de Almeida",
+      "1ª Opção": "Comitê 2: (AGNU) - Guerras",
+      "2ª Opção": "Comitê 1: CDH",
+      "3ª Opção": "Bioética e Genética Humana"
+    },
+    {
+      "Nº de duplas": 6,
+      "Delegações": "Índia",
+      "Turma": "Palmares - 8 ano A",
+      "Membro 1": "Ana Beatriz Sanna",
+      "Membro 2": "Gabriela Morais Cláudio Ferreira",
+      "1ª Opção": "Comitê 7: ONU Mulheres",
+      "2ª Opção": "Comitê 1: CDH",
+      "3ª Opção": "Conselho de Direitos Humanos das Nações Unidas (UNHRC)"
+    },
+    {
+      "Nº de duplas": 7,
+      "Delegações": "China",
+      "Turma": "Sta Ines - 8 ano A",
+      "Membro 1": "Helena Santos De Oliveira",
+      "Membro 2": "Leticia flores vial",
+      "1ª Opção": "Comitê 7: ONU Mulheres",
+      "2ª Opção": "Comitê 1: CDH",
+      "3ª Opção": "Bioética e Genética Humana"
+    },
+    {
+      "Nº de duplas": 8,
+      "Delegações": "Japão",
+      "Turma": "Sta Ines - 9 ano A",
+      "Membro 1": "Enzo dos santos oliveir",
+      "Membro 2": "Anna Vitória De Oliveira Souza",
+      "1ª Opção": "Comitê 7: ONU Mulheres",
+      "2ª Opção": "Comitê 1: CDH",
+      "3ª Opção": "Bioética e Genética Humana"
+    },
+    {
+      "Nº de duplas": 9,
+      "Delegações": "Russia",
+      "Turma": "Sta Ines - 9 ano A",
+      "Membro 1": "Manuel Sodré",
+      "Membro 2": "Marina Luiza Castro Leite",
+      "1ª Opção": "Comitê 7: ONU Mulheres",
+      "2ª Opção": "Comitê 1: CDH",
+      "3ª Opção": "Assembleia Geral das Nações Unidas (AGNU)"
+    },
+    {
+      "Nº de duplas": 10,
+      "Delegações": "Israel",
+      "Turma": "Palmares - 8 ano B",
+      "Membro 1": "Brenda caldeira ortis",
+      "Membro 2": "Maria Cecília Ribeiro Vieira",
+      "1ª Opção": "Comitê 7: ONU Mulheres",
+      "2ª Opção": "Comitê 3: ACNUR - Refugiados",
+      "3ª Opção": "Conselho de Direitos Humanos (CDH - 2026)"
+    },
+    {
+      "Nº de duplas": 11,
+      "Delegações": "Google",
+      "Turma": "Palmares - 8 ano B",
+      "Membro 1": "Sophia Leonel De Andrade",
+      "Membro 2": "Manuela Lima Ribas",
+      "1ª Opção": "Comitê 7: ONU Mulheres",
+      "2ª Opção": "Comitê 3: ACNUR - Refugiados",
+      "3ª Opção": "Conselho de Direitos Humanos (CDH - 2026)"
+    },
+    {
+      "Nº de duplas": 12,
+      "Delegações": "Reino Unido",
+      "Turma": "Palmares - 9 ano A",
+      "Membro 1": "Lavinea Gureschi amorim",
+      "Membro 2": "Carolina Ribeiro",
+      "1ª Opção": "Comitê 6: (UNHRC)",
+      "2ª Opção": "Comitê 1: CDH",
+      "3ª Opção": "Nova Ordem Global"
+    },
+    {
+      "Nº de duplas": 13,
+      "Delegações": "Austrália",
+      "Turma": "Sta Ines - 8 ano",
+      "Membro 1": "Manuela Mascarenhas Paixão de Meira",
+      "Membro 2": "Sofia Perché Ferreira Batista",
+      "1ª Opção": null,
+      "2ª Opção": null,
+      "3ª Opção": null
+    },
+    {
+      "Nº de duplas": 14,
+      "Delegações": "Coreia do Sul",
+      "Turma": "Sta Ines - 9º ano",
+      "Membro 1": "Davi Rodrigues",
+      "Membro 2": "João Pedro Luciano Gonçalves",
+      "1ª Opção": "Comitê 2: (AGNU) - Guerras",
+      "2ª Opção": "Comitê 4: Bioética e Genética Humana",
+      "3ª Opção": "Comitê 1: CDH"
+    },
+    {
+      "Nº de duplas": 15,
+      "Delegações": "Unesco",
+      "Turma": null,
+      "Membro 1": null,
+      "Membro 2": null,
+      "1ª Opção": null,
+      "2ª Opção": null,
+      "3ª Opção": null
+    },
+    {
+      "Nº de duplas": 16,
+      "Delegações": "União Internacional de Telecomunicações (UIT)",
+      "Turma": null,
+      "Membro 1": null,
+      "Membro 2": null,
+      "1ª Opção": null,
+      "2ª Opção": null,
+      "3ª Opção": null
+    },
+    {
+      "Nº de duplas": 17,
+      "Delegações": "Canadá",
+      "Turma": null,
+      "Membro 1": null,
+      "Membro 2": null,
+      "1ª Opção": null,
+      "2ª Opção": null,
+      "3ª Opção": null
+    },
+    {
+      "Nº de duplas": 18,
+      "Delegações": "Singapura",
+      "Turma": null,
+      "Membro 1": null,
+      "Membro 2": null,
+      "1ª Opção": null,
+      "2ª Opção": null,
+      "3ª Opção": null
+    }
+  ]
+}

@@ -12,6 +12,7 @@ const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const multer = require('multer');
 const { hasCloudinaryConfig, uploadImageBuffer, destroyAsset } = require('../utils/cloudinary');
+const { areAssignmentsReleased, canViewAssignments, sanitizeAssignmentVisibility } = require('../utils/assignment-visibility');
 
 const router = express.Router();
 const profileImageUpload = multer({
@@ -494,7 +495,7 @@ router.get('/me', authMiddleware, async (req, res) => {
   try {
     // Retorna explicitamente role e id para garantir contrato com o front (role-portals.js)
     const user = await User.findById(req.user.id).select(
-      'role username fullName committee country classGroup registration accountStatus ' +
+      'role username fullName committee committeeName country classGroup registration accountStatus ' +
       'twoFactorEnabled twoFactorMethod twoFactorVerified profileImageUrl createdAt'
     );
 
@@ -502,13 +503,12 @@ router.get('/me', authMiddleware, async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    if (!hasCommitteeRevealPassed()) {
+    const assignmentsReleased = await areAssignmentsReleased();
+    const canSeeAssignments = canViewAssignments(req.user) || assignmentsReleased;
+    if (!hasCommitteeRevealPassed() || !canSeeAssignments) {
       user.committee = null;
-      if (user.registration) {
-        user.registration.firstChoice = null;
-        user.registration.secondChoice = null;
-        user.registration.thirdChoice = null;
-      }
+      user.committeeName = '';
+      user.country = '';
     }
 
     res.json({
@@ -517,6 +517,7 @@ router.get('/me', authMiddleware, async (req, res) => {
       username: user.username,
       fullName: user.fullName,
       committee: user.committee,
+      committeeName: user.committeeName,
       country: user.country,
       classGroup: user.classGroup,
       registration: user.registration,
@@ -575,12 +576,12 @@ router.put('/me', authMiddleware, [
       updates.email = normalizedEmail;
     }
 
-    if (country !== undefined) {
+    if (country !== undefined && canViewAssignments(req.user)) {
       updates.country = country.trim();
     }
 
     const updatedUser = await User.findByIdAndUpdate(req.user.id, updates, { new: true }).select('-password');
-    res.json(updatedUser);
+    res.json(await sanitizeAssignmentVisibility(updatedUser, req.user));
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

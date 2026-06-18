@@ -7,6 +7,7 @@ const SiteSettings = require('../models/SiteSettings');
 const { getRegistrationState, isRegistrationOpen, hasCommitteeRevealPassed, COMMITTEE_REVEAL_DATE } = require('../utils/event-config');
 const { buildDelegationGroups } = require('../utils/delegation-groups');
 const { addUserNotification } = require('../utils/notification-center');
+const { areAssignmentsReleased, canViewAssignments } = require('../utils/assignment-visibility');
 
 const router = express.Router();
 
@@ -815,7 +816,18 @@ router.get('/admin/list', authMiddleware, roleAuth(['admin', 'press', 'coordinat
             }
         }
 
-        const delegations = Array.from(delegationMap.values());
+        const shouldHideAssignments = !canViewAssignments(req.user) && !await areAssignmentsReleased();
+        const delegations = Array.from(delegationMap.values()).map((delegation) => {
+            if (!shouldHideAssignments) {
+                return delegation;
+            }
+
+            return {
+                ...delegation,
+                committee: null,
+                country: ''
+            };
+        });
 
         res.json({
             total: delegations.length,

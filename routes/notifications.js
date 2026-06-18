@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const authMiddleware = require('../middleware/auth');
 const User = require('../models/User');
 const { addSseClient, removeSseClient, emitToUser } = require('../utils/notification-center');
+const { areAssignmentsReleased, canViewAssignments } = require('../utils/assignment-visibility');
 
 const router = express.Router();
 
@@ -115,6 +116,10 @@ router.post('/send', authMiddleware, async (req, res) => {
         const filter = { role: 'candidate' };
 
         if (target === 'committee') {
+            if (!canViewAssignments(req.user) && !await areAssignmentsReleased()) {
+                return res.status(403).json({ error: 'As atribuicoes permanecem em sigilo ate a liberacao oficial.' });
+            }
+
             const committeeVal = String(committee || '');
             if (committeeVal === 'unassigned') {
                 filter.$or = [{ committee: null }, { committee: { $exists: false } }];
@@ -134,6 +139,10 @@ router.post('/send', authMiddleware, async (req, res) => {
                 filter.classGroup = { $regex: new RegExp(classGroup.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i') };
             }
         } else if (target === 'noCommittee') {
+            if (!canViewAssignments(req.user) && !await areAssignmentsReleased()) {
+                return res.status(403).json({ error: 'As atribuicoes permanecem em sigilo ate a liberacao oficial.' });
+            }
+
             filter.$or = [{ committee: null }, { committee: { $exists: false } }];
         } else if (target === 'segment') {
             const seg = String(req.body.segment || '').toLowerCase();

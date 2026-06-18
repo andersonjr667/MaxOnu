@@ -6,12 +6,13 @@ const User = require('../models/User');
 const SiteSettings = require('../models/SiteSettings');
 const { buildDelegationGroups } = require('../utils/delegation-groups');
 const { hasCommitteeRevealPassed } = require('../utils/event-config');
+const { areAssignmentsReleased, canViewAssignments, sanitizeAssignmentVisibility } = require('../utils/assignment-visibility');
 
 const router = express.Router();
 const PROTECTED_USERNAMES = new Set(['andersonjr0667']);
 
 function canBypassRevealLock(user) {
-  return user?.role === 'admin' || user?.role === 'coordinator' || user?.role === 'teacher';
+  return canViewAssignments(user);
 }
 
 function isProtectedUser(user) {
@@ -111,15 +112,15 @@ router.get('/', authMiddleware, requireRole(['admin', 'coordinator', 'teacher', 
 
   try {
     const { role, committee } = req.query;
-    if (committee && !hasCommitteeRevealPassed() && !canBypassRevealLock(req.user)) {
-      return res.status(403).json({ error: 'As informações de comitê permanecem em sigilo até o fim da contagem regressiva.' });
+    if (committee && (!hasCommitteeRevealPassed() || !await areAssignmentsReleased()) && !canBypassRevealLock(req.user)) {
+      return res.status(403).json({ error: 'As informações de comitê permanecem em sigilo até a liberação oficial.' });
     }
 
     const filter = {};
     if (role) filter.role = role;
     if (committee) filter.committee = Number(committee);
     const users = await User.find(filter).select('-password');
-    res.json(users);
+    res.json(await sanitizeAssignmentVisibility(users, req.user));
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -128,8 +129,8 @@ router.get('/', authMiddleware, requireRole(['admin', 'coordinator', 'teacher', 
 // GET /api/users/committee/:num
 router.get('/committee/:num', authMiddleware, requireRole(['admin', 'coordinator', 'teacher', 'press']), async (req, res) => {
   try {
-    if (!hasCommitteeRevealPassed() && !canBypassRevealLock(req.user)) {
-      return res.status(403).json({ error: 'As informações de comitê permanecem em sigilo até o fim da contagem regressiva.' });
+    if ((!hasCommitteeRevealPassed() || !await areAssignmentsReleased()) && !canBypassRevealLock(req.user)) {
+      return res.status(403).json({ error: 'As informações de comitê permanecem em sigilo até a liberação oficial.' });
     }
 
     const committee = Number(req.params.num);
@@ -148,8 +149,8 @@ router.get('/committee/:num', authMiddleware, requireRole(['admin', 'coordinator
 
 router.get('/committee/:num/delegations', authMiddleware, requireRole(['admin', 'coordinator', 'teacher', 'press']), async (req, res) => {
   try {
-    if (!hasCommitteeRevealPassed() && !canBypassRevealLock(req.user)) {
-      return res.status(403).json({ error: 'As informações de comitê permanecem em sigilo até o fim da contagem regressiva.' });
+    if ((!hasCommitteeRevealPassed() || !await areAssignmentsReleased()) && !canBypassRevealLock(req.user)) {
+      return res.status(403).json({ error: 'As informações de comitê permanecem em sigilo até a liberação oficial.' });
     }
 
     const committee = Number(req.params.num);
@@ -185,6 +186,7 @@ router.get('/registrations', authMiddleware, requireRole(['admin', 'coordinator'
 
     const groups = buildDelegationGroups(candidates);
     const candidateById = new Map(candidates.map((candidate) => [String(candidate._id), candidate]));
+    const shouldHideAssignments = !canViewAssignments(req.user) && !await areAssignmentsReleased();
     const rows = groups.map((group) => {
       const sourceUser = group.memberIds.map((id) => candidateById.get(String(id))).find(Boolean);
       const registration = sourceUser?.registration || {};
@@ -192,12 +194,12 @@ router.get('/registrations', authMiddleware, requireRole(['admin', 'coordinator'
         .map((member) => Number(member.committee))
         .filter((value) => Number.isInteger(value) && value >= 1 && value <= 7)));
 
-      return {
-        key: group.key,
-        memberIds: group.memberIds,
-        members: group.members,
-        memberNames: group.members.map((member) => member.fullName).join(' e '),
-        committee: committeeValues.length === 1 ? committeeValues[0] : null,
+        const row = {
+          key: group.key,
+          memberIds: group.memberIds,
+          members: group.members,
+          memberNames: group.members.map((member) => member.fullName).join(' e '),
+          committee: committeeValues.length === 1 ? committeeValues[0] : null,
         country: group.country || '',
         teamSize: group.teamSize || registration.teamSize || group.members.length || 2,
         registration: {
@@ -205,9 +207,22 @@ router.get('/registrations', authMiddleware, requireRole(['admin', 'coordinator'
           secondChoice: registration.secondChoice ?? null,
           thirdChoice: registration.thirdChoice ?? null,
           teamSize: registration.teamSize || group.teamSize || 2,
-          submittedAt: registration.submittedAt || null
+            submittedAt: registration.submittedAt || null
+          }
+        };
+
+        if (shouldHideAssignments) {
+          row.committee = null;
+          row.country = '';
+          row.members = row.members.map((member) => ({
+            ...member,
+            committee: null,
+            committeeName: '',
+            country: ''
+          }));
         }
-      };
+
+        return row;
     });
 
     res.json(rows);
@@ -220,7 +235,7 @@ router.get('/registrations', authMiddleware, requireRole(['admin', 'coordinator'
 router.get('/:id', authMiddleware, requireRole(['admin', 'coordinator', 'teacher', 'press']), async (req, res) => {
   try {
     const user = await User.findById(req.params.id).select('-password');
-    res.json(user || {});
+    res.json(await sanitizeAssignmentVisibility(user || {}, req.user));
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

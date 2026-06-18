@@ -163,6 +163,10 @@ userSchema.add({
         type: Number,
         default: null
     },
+    committeeName: {
+        type: String,
+        default: ''
+    },
     country: {
         type: String,
         default: ''

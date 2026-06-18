@@ -5,8 +5,13 @@ const User = require('../models/User');
 const Post = require('../models/Post');
 const Newsletter = require('../models/Newsletter');
 const Comment = require('../models/Comment');
+const { areAssignmentsReleased, canViewAssignments } = require('../utils/assignment-visibility');
 
 const router = express.Router();
+
+async function canViewAssignmentAnalytics(req) {
+    return canViewAssignments(req.user) || await areAssignmentsReleased();
+}
 
 // GET /api/analytics/overview — admin/coordinator only
 router.get('/overview', authMiddleware, roleAuth(['admin', 'coordinator']), async (req, res) => {
@@ -34,13 +39,15 @@ router.get('/overview', authMiddleware, roleAuth(['admin', 'coordinator']), asyn
         const conversionRate = totalUsers > 0 ? ((registeredUsers / totalUsers) * 100).toFixed(1) : 0;
         const avgCommentsPerPost = totalPosts > 0 ? (totalComments / totalPosts).toFixed(1) : 0;
 
+        const canViewAssignmentsData = await canViewAssignmentAnalytics(req);
+
         res.json({
             totalUsers,
             totalPosts,
             totalNewsletter,
             totalComments,
             registeredUsers,
-            assignedUsers,
+            assignedUsers: canViewAssignmentsData ? assignedUsers : null,
             conversionRate,
             avgCommentsPerPost,
             lastWeekUsers,
@@ -109,6 +116,10 @@ router.get('/users-over-time', authMiddleware, roleAuth(['admin', 'coordinator']
 // GET /api/analytics/committee-distribution — distribuição por comitê
 router.get('/committee-distribution', authMiddleware, roleAuth(['admin', 'coordinator']), async (req, res) => {
     try {
+        if (!await canViewAssignmentAnalytics(req)) {
+            return res.status(403).json({ error: 'As atribuicoes permanecem em sigilo ate a liberacao oficial.' });
+        }
+
         const data = await User.aggregate([
             { $match: { role: 'candidate', committee: { $gte: 1, $lte: 7 } } },
             { $group: { _id: '$committee', count: { $sum: 1 } } },

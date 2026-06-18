@@ -43,7 +43,7 @@ router.get('/registration-status', async (req, res) => {
     }
 });
 
-router.put('/public-release', authMiddleware, requireRole(['admin', 'coordinator', 'teacher']), async (req, res) => {
+router.put('/public-release', authMiddleware, requireRole(['admin']), async (req, res) => {
     try {
         const settings = await getSettings();
         settings.publicDelegationsReleased = Boolean(req.body.publicDelegationsReleased);

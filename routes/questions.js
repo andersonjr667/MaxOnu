@@ -3,6 +3,7 @@ const { body, validationResult } = require('express-validator');
 const authMiddleware = require('../middleware/auth');
 const Question = require('../models/Question');
 const { addUserNotification } = require('../utils/notification-center');
+const { areAssignmentsReleased, canViewAssignments } = require('../utils/assignment-visibility');
 
 const router = express.Router();
 const MANAGER_ROLES = new Set(['admin', 'teacher', 'coordinator', 'press']);
@@ -15,12 +16,25 @@ function ensureQuestionManager(req, res, next) {
   next();
 }
 
+function hideQuestionAssignmentFields(question) {
+  const item = typeof question.toObject === 'function' ? question.toObject() : { ...question };
+  if (item.askerId && typeof item.askerId === 'object') {
+    item.askerId.committee = null;
+    item.askerId.committeeName = '';
+    item.askerId.country = '';
+  }
+  return item;
+}
+
 // GET /api/questions - Public answered questions
 router.get('/', async (req, res) => {
   try {
     const questions = await Question.find({ answered: true }).sort({ createdAt: -1 })
-      .populate('askerId', 'profileImageUrl username fullName classGroup committee')
+      .populate('askerId', 'profileImageUrl username fullName classGroup committee committeeName country')
       .populate('answererId', 'profileImageUrl username fullName role');
+    if (!await areAssignmentsReleased()) {
+      return res.json(questions.map(hideQuestionAssignmentFields));
+    }
     res.json(questions);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -31,7 +45,10 @@ router.get('/', async (req, res) => {
 router.get('/pending', authMiddleware, ensureQuestionManager, async (req, res) => {
   try {
     const questions = await Question.find({ answered: false }).sort({ createdAt: -1 })
-      .populate('askerId', 'profileImageUrl username fullName classGroup committee');
+      .populate('askerId', 'profileImageUrl username fullName classGroup committee committeeName country');
+    if (!canViewAssignments(req.user) && !await areAssignmentsReleased()) {
+      return res.json(questions.map(hideQuestionAssignmentFields));
+    }
     res.json(questions);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -160,4 +177,3 @@ router.delete('/:id', authMiddleware, ensureQuestionManager, async (req, res) =>
 });
 
 module.exports = router;
-

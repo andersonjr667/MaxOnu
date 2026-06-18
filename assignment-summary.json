@@ -1,0 +1,14 @@
+{
+  "processedFiles": 14,
+  "processedRows": 178,
+  "usersMatched": 273,
+  "usersNotFound": 39,
+  "emptyDelegations": 25,
+  "pairRows": 153,
+  "pairsVerified": 121,
+  "pairMismatches": 0,
+  "pairIncomplete": 26,
+  "pairInvalidMemberCount": 6,
+  "pairsToCreate": 0,
+  "errors": 96
+}

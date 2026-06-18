@@ -1,0 +1,1720 @@
+[
+  {
+    "type": "ambiguous_user_match",
+    "fullName": "Gabriela Bambirra",
+    "classGroup": "Palmares - 9 ano A",
+    "file": "paises/8e9/Comite_1_8e9.json",
+    "rowIndex": 1,
+    "candidates": [
+      {
+        "userId": "69fa2592c459c67b28508cf6",
+        "fullName": "Gabriela Bambirra",
+        "classGroup": "Palmares - 8 ano B"
+      },
+      {
+        "userId": "69fa26ccc459c67b28508d07",
+        "fullName": "Gabriela Bambirra",
+        "classGroup": "Palmares - 8 ano B"
+      },
+      {
+        "userId": "69fa2901c459c67b28508f09",
+        "fullName": "GABRIELA BAMBIRRA",
+        "classGroup": "Palmares - 8 ano B"
+      }
+    ],
+    "matchStrategy": "unit_segment_fallback"
+  },
+  {
+    "type": "pair_incomplete",
+    "file": "paises/8e9/Comite_1_8e9.json",
+    "rowIndex": 1,
+    "classGroup": "Palmares - 9 ano A",
+    "country": "Brasil",
+    "committee": "Conselho de Direitos Humanos (CDH - 2026)",
+    "expectedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "fullName": "Matheus Tostes Martins Soares"
+      },
+      {
+        "field": "Membro 2",
+        "nameIndex": 1,
+        "fullName": "Gabriela Bambirra"
+      }
+    ],
+    "matchedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "userId": "69f9fab9fc77ed0f8fbe6895",
+        "fullName": "Matheus Tostes Martins Soares",
+        "classGroup": "Palmares - 9 ano A"
+      }
+    ]
+  },
+  {
+    "type": "ambiguous_user_match",
+    "fullName": "Silvio Junior Cruz de Almeida",
+    "classGroup": "Sta Ines - 8 ano B",
+    "file": "paises/8e9/Comite_1_8e9.json",
+    "rowIndex": 5,
+    "candidates": [
+      {
+        "userId": "69fb5cc9d14860ef4f8b62fa",
+        "fullName": "Silvio Junior cruz de Almeida",
+        "classGroup": "Sta Ines - 8 ano B"
+      },
+      {
+        "userId": "69fb5d81d14860ef4f8b6307",
+        "fullName": "Silvio Junior Cruz de Almeida",
+        "classGroup": "Sta Ines - 8 ano B"
+      }
+    ],
+    "matchStrategy": "class_group"
+  },
+  {
+    "type": "pair_incomplete",
+    "file": "paises/8e9/Comite_1_8e9.json",
+    "rowIndex": 5,
+    "classGroup": "Sta Ines - 8 ano B",
+    "country": "França",
+    "committee": "Conselho de Direitos Humanos (CDH - 2026)",
+    "expectedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "fullName": "Gustavo Goes O. Pinto"
+      },
+      {
+        "field": "Membro 2",
+        "nameIndex": 1,
+        "fullName": "Silvio Junior Cruz de Almeida"
+      }
+    ],
+    "matchedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "userId": "69fb53bbd14860ef4f8b6157",
+        "fullName": "Gustavo Goes O. Pinto",
+        "classGroup": "Sta Ines - 8 ano B"
+      }
+    ]
+  },
+  {
+    "type": "ambiguous_user_match",
+    "fullName": "Davi Rodrigues",
+    "classGroup": "Sta Ines - 9º ano",
+    "file": "paises/8e9/Comite_1_8e9.json",
+    "rowIndex": 14,
+    "candidates": [
+      {
+        "userId": "69fb7925d14860ef4f8b70b4",
+        "fullName": "Davi Rodrigues",
+        "classGroup": "Sta Ines - 9 ano B"
+      },
+      {
+        "userId": "69fb7d08d14860ef4f8b70e5",
+        "fullName": "Davi Rodrigues",
+        "classGroup": "Sta Ines - 9 ano B"
+      },
+      {
+        "userId": "69fc83de67dc0e4f7284b7db",
+        "fullName": "Davi Rodrigues",
+        "classGroup": "Sta Ines - 9º ano B"
+      }
+    ],
+    "matchStrategy": "class_group"
+  },
+  {
+    "type": "pair_incomplete",
+    "file": "paises/8e9/Comite_1_8e9.json",
+    "rowIndex": 14,
+    "classGroup": "Sta Ines - 9º ano",
+    "country": "Coreia do Sul",
+    "committee": "Conselho de Direitos Humanos (CDH - 2026)",
+    "expectedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "fullName": "Davi Rodrigues"
+      },
+      {
+        "field": "Membro 2",
+        "nameIndex": 1,
+        "fullName": "João Pedro Luciano Gonçalves"
+      }
+    ],
+    "matchedMembers": [
+      {
+        "field": "Membro 2",
+        "nameIndex": 1,
+        "userId": "69fb7697d14860ef4f8b702c",
+        "fullName": "João Pedro Luciano Gonçalves",
+        "classGroup": "Sta Ines - 9 ano B"
+      }
+    ]
+  },
+  {
+    "type": "empty_delegation",
+    "file": "paises/8e9/Comite_1_8e9.json",
+    "rowIndex": 15,
+    "classGroup": "",
+    "country": "Unesco",
+    "committee": "Conselho de Direitos Humanos (CDH - 2026)"
+  },
+  {
+    "type": "empty_delegation",
+    "file": "paises/8e9/Comite_1_8e9.json",
+    "rowIndex": 16,
+    "classGroup": "",
+    "country": "União Internacional de Telecomunicações (UIT)",
+    "committee": "Conselho de Direitos Humanos (CDH - 2026)"
+  },
+  {
+    "type": "empty_delegation",
+    "file": "paises/8e9/Comite_1_8e9.json",
+    "rowIndex": 17,
+    "classGroup": "",
+    "country": "Canadá",
+    "committee": "Conselho de Direitos Humanos (CDH - 2026)"
+  },
+  {
+    "type": "empty_delegation",
+    "file": "paises/8e9/Comite_1_8e9.json",
+    "rowIndex": 18,
+    "classGroup": "",
+    "country": "Singapura",
+    "committee": "Conselho de Direitos Humanos (CDH - 2026)"
+  },
+  {
+    "type": "ambiguous_user_match",
+    "fullName": "liz souza lauar",
+    "classGroup": "Palmares - 9 ano A",
+    "file": "paises/8e9/Comite_2_8e9.json",
+    "rowIndex": 5,
+    "candidates": [
+      {
+        "userId": "69f9fb51fc77ed0f8fbe6a90",
+        "fullName": "liz souza lauar",
+        "classGroup": "Palmares - 9 ano A"
+      },
+      {
+        "userId": "69f9fc03715f6039e788d61e",
+        "fullName": "liz souza lauar",
+        "classGroup": "Palmares - 9 ano A"
+      }
+    ],
+    "matchStrategy": "class_group"
+  },
+  {
+    "type": "pair_incomplete",
+    "file": "paises/8e9/Comite_2_8e9.json",
+    "rowIndex": 5,
+    "classGroup": "Palmares - 9 ano A",
+    "country": "Palestina",
+    "committee": "Assembleia Geral das Nações Unidas (AGNU)",
+    "expectedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "fullName": "Caetano Augusto"
+      },
+      {
+        "field": "Membro 2",
+        "nameIndex": 1,
+        "fullName": "liz souza lauar"
+      }
+    ],
+    "matchedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "userId": "69f9fb09fc77ed0f8fbe69e0",
+        "fullName": "Caetano Augusto",
+        "classGroup": "Palmares - 9 ano A"
+      }
+    ]
+  },
+  {
+    "type": "empty_delegation",
+    "file": "paises/8e9/Comite_2_8e9.json",
+    "rowIndex": 14,
+    "classGroup": "",
+    "country": "Venezuela",
+    "committee": "Assembleia Geral das Nações Unidas (AGNU)"
+  },
+  {
+    "type": "empty_delegation",
+    "file": "paises/8e9/Comite_2_8e9.json",
+    "rowIndex": 15,
+    "classGroup": "",
+    "country": "Argélia",
+    "committee": "Assembleia Geral das Nações Unidas (AGNU)"
+  },
+  {
+    "type": "ambiguous_user_match",
+    "fullName": "Sofia dos Reis Corrêa Simão",
+    "classGroup": "Palmares - 8º ano A",
+    "file": "paises/8e9/Comite_3_8e9.json",
+    "rowIndex": 1,
+    "candidates": [
+      {
+        "userId": "69efa1a00d91fa9f1c895e55",
+        "fullName": "Sofia dos Reis Corrêa Simão",
+        "classGroup": "Palmares - 8 ano A"
+      },
+      {
+        "userId": "69fd38166eec1d500bcc3af1",
+        "fullName": "Sofia dos Reis Corrêa Simão",
+        "classGroup": "Palmares - 8º ano A"
+      }
+    ],
+    "matchStrategy": "class_group"
+  },
+  {
+    "type": "pair_incomplete",
+    "file": "paises/8e9/Comite_3_8e9.json",
+    "rowIndex": 1,
+    "classGroup": "Palmares - 8º ano A",
+    "country": "Russia",
+    "committee": "Alto Comissariado das Nações Unidas para Refugiados (ACNUR)",
+    "expectedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "fullName": "Camila Tavares Miranda"
+      },
+      {
+        "field": "Membro 2",
+        "nameIndex": 1,
+        "fullName": "Sofia dos Reis Corrêa Simão"
+      }
+    ],
+    "matchedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "userId": "69fcf30e6eec1d500bcc1a39",
+        "fullName": "Camila Tavares Miranda",
+        "classGroup": "Palmares - 8º ano A"
+      }
+    ]
+  },
+  {
+    "type": "ambiguous_user_match",
+    "fullName": "Maria Luiza Guedes Santiago Santana",
+    "classGroup": "Palmares - 9 ano B",
+    "file": "paises/8e9/Comite_3_8e9.json",
+    "rowIndex": 4,
+    "candidates": [
+      {
+        "userId": "69f9ff73715f6039e788dbdc",
+        "fullName": "Maria Luiza Guedes Santiago Santana",
+        "classGroup": "Palmares - 9 ano B"
+      },
+      {
+        "userId": "69f9ffb5715f6039e788dc1a",
+        "fullName": "Maria Luiza Guedes Santiago Santana",
+        "classGroup": "Palmares - 9 ano B"
+      }
+    ],
+    "matchStrategy": "class_group"
+  },
+  {
+    "type": "pair_incomplete",
+    "file": "paises/8e9/Comite_3_8e9.json",
+    "rowIndex": 4,
+    "classGroup": "Palmares - 9 ano B",
+    "country": "ACNUR",
+    "committee": "Alto Comissariado das Nações Unidas para Refugiados (ACNUR)",
+    "expectedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "fullName": "Ana sophia sarmento fonseca ananias"
+      },
+      {
+        "field": "Membro 2",
+        "nameIndex": 1,
+        "fullName": "Maria Luiza Guedes Santiago Santana"
+      }
+    ],
+    "matchedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "userId": "69f9fe2e715f6039e788d9d3",
+        "fullName": "Ana sophia sarmento fonseca ananias",
+        "classGroup": "Palmares - 9 ano B"
+      }
+    ]
+  },
+  {
+    "type": "ambiguous_user_match",
+    "fullName": "Marcelo Campos Rodrigues",
+    "classGroup": "Palmares - 9 ano B",
+    "file": "paises/8e9/Comite_3_8e9.json",
+    "rowIndex": 5,
+    "candidates": [
+      {
+        "userId": "69fa00cc715f6039e788dfa7",
+        "fullName": "Marcelo Campos Rodrigues",
+        "classGroup": "Palmares - 9 ano B"
+      },
+      {
+        "userId": "69fdeb436eec1d500bcc8037",
+        "fullName": "Marcelo Campos Rodrigues",
+        "classGroup": "Palmares - 9º ano B"
+      }
+    ],
+    "matchStrategy": "class_group"
+  },
+  {
+    "type": "pair_incomplete",
+    "file": "paises/8e9/Comite_3_8e9.json",
+    "rowIndex": 5,
+    "classGroup": "Palmares - 9 ano B",
+    "country": "Ucrânia",
+    "committee": "Alto Comissariado das Nações Unidas para Refugiados (ACNUR)",
+    "expectedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "fullName": "Antônio Costa"
+      },
+      {
+        "field": "Membro 2",
+        "nameIndex": 1,
+        "fullName": "Marcelo Campos Rodrigues"
+      }
+    ],
+    "matchedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "userId": "69f9fe24715f6039e788d9ca",
+        "fullName": "Antônio Costa",
+        "classGroup": "Palmares - 9 ano B"
+      }
+    ]
+  },
+  {
+    "type": "user_not_found",
+    "fullName": "Ana Clara Alves",
+    "classGroup": "Sta Ines - 8 ano",
+    "file": "paises/8e9/Comite_3_8e9.json",
+    "rowIndex": 13,
+    "candidates": [],
+    "matchStrategy": ""
+  },
+  {
+    "type": "user_not_found",
+    "fullName": "Ester Oliveira Morais",
+    "classGroup": "Sta Ines - 8 ano",
+    "file": "paises/8e9/Comite_3_8e9.json",
+    "rowIndex": 13,
+    "candidates": [],
+    "matchStrategy": ""
+  },
+  {
+    "type": "user_not_found",
+    "fullName": "Anna Clara Martins Felisale",
+    "classGroup": "Sta Ines - 8 ano",
+    "file": "paises/8e9/Comite_3_8e9.json",
+    "rowIndex": 13,
+    "candidates": [],
+    "matchStrategy": ""
+  },
+  {
+    "type": "pair_member_count_invalid",
+    "file": "paises/8e9/Comite_3_8e9.json",
+    "rowIndex": 13,
+    "classGroup": "Sta Ines - 8 ano",
+    "country": "Cuba",
+    "committee": "Alto Comissariado das Nações Unidas para Refugiados (ACNUR)",
+    "expectedCount": 2,
+    "foundCount": 3,
+    "expectedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "fullName": "Ana Clara Alves"
+      },
+      {
+        "field": "Membro 1",
+        "nameIndex": 2,
+        "fullName": "Ester Oliveira Morais"
+      },
+      {
+        "field": "Membro 2",
+        "nameIndex": 1,
+        "fullName": "Anna Clara Martins Felisale"
+      }
+    ],
+    "matchedMembers": []
+  },
+  {
+    "type": "empty_delegation",
+    "file": "paises/8e9/Comite_3_8e9.json",
+    "rowIndex": 15,
+    "classGroup": "",
+    "country": "Arabia Saudita",
+    "committee": "Alto Comissariado das Nações Unidas para Refugiados (ACNUR)"
+  },
+  {
+    "type": "empty_delegation",
+    "file": "paises/8e9/Comite_3_8e9.json",
+    "rowIndex": 16,
+    "classGroup": "",
+    "country": "Colombia",
+    "committee": "Alto Comissariado das Nações Unidas para Refugiados (ACNUR)"
+  },
+  {
+    "type": "ambiguous_user_match",
+    "fullName": "Isabella Malagoli Peixoto de Oliveira",
+    "classGroup": "Sta Ines - 9º ano B",
+    "file": "paises/8e9/Comite_4_8e9.json",
+    "rowIndex": 6,
+    "candidates": [
+      {
+        "userId": "69f93b6ad2dc8d7ed0cd247c",
+        "fullName": "Isabella Malagoli Peixoto de Oliveira",
+        "classGroup": "Sta Ines - 9 ano B"
+      },
+      {
+        "userId": "69fd0ac96eec1d500bcc263d",
+        "fullName": "Isabella Malagoli Peixoto de Oliveira",
+        "classGroup": "Sta Ines - 9º ano B"
+      },
+      {
+        "userId": "69fd0c0e6eec1d500bcc2762",
+        "fullName": "Isabella Malagoli Peixoto de Oliveira",
+        "classGroup": "Sta Ines - 9º ano B"
+      }
+    ],
+    "matchStrategy": "class_group"
+  },
+  {
+    "type": "pair_incomplete",
+    "file": "paises/8e9/Comite_4_8e9.json",
+    "rowIndex": 6,
+    "classGroup": "Sta Ines - 9º ano B",
+    "country": "Índia",
+    "committee": "Bioética e Genética Humana",
+    "expectedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "fullName": "Thaissa Passos"
+      },
+      {
+        "field": "Membro 2",
+        "nameIndex": 1,
+        "fullName": "Isabella Malagoli Peixoto de Oliveira"
+      }
+    ],
+    "matchedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "userId": "69fd0a7d6eec1d500bcc25d6",
+        "fullName": "Thaissa Passos",
+        "classGroup": "Sta Ines - 9º ano B"
+      }
+    ]
+  },
+  {
+    "type": "user_not_found",
+    "fullName": "Giovanna Mendes Leite",
+    "classGroup": "Sta Ines - 8º ano",
+    "file": "paises/8e9/Comite_4_8e9.json",
+    "rowIndex": 13,
+    "candidates": [],
+    "matchStrategy": ""
+  },
+  {
+    "type": "user_not_found",
+    "fullName": "Maria Clara Evangelista",
+    "classGroup": "Sta Ines - 8º ano",
+    "file": "paises/8e9/Comite_4_8e9.json",
+    "rowIndex": 13,
+    "candidates": [],
+    "matchStrategy": ""
+  },
+  {
+    "type": "pair_incomplete",
+    "file": "paises/8e9/Comite_4_8e9.json",
+    "rowIndex": 13,
+    "classGroup": "Sta Ines - 8º ano",
+    "country": "Canadá",
+    "committee": "Bioética e Genética Humana",
+    "expectedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "fullName": "Giovanna Mendes Leite"
+      },
+      {
+        "field": "Membro 2",
+        "nameIndex": 1,
+        "fullName": "Maria Clara Evangelista"
+      }
+    ],
+    "matchedMembers": []
+  },
+  {
+    "type": "empty_delegation",
+    "file": "paises/8e9/Comite_4_8e9.json",
+    "rowIndex": 15,
+    "classGroup": "",
+    "country": "Unesco",
+    "committee": "Bioética e Genética Humana"
+  },
+  {
+    "type": "empty_delegation",
+    "file": "paises/8e9/Comite_4_8e9.json",
+    "rowIndex": 16,
+    "classGroup": "",
+    "country": "Israel",
+    "committee": "Bioética e Genética Humana"
+  },
+  {
+    "type": "empty_delegation",
+    "file": "paises/8e9/Comite_4_8e9.json",
+    "rowIndex": 17,
+    "classGroup": "",
+    "country": "Singapura",
+    "committee": "Bioética e Genética Humana"
+  },
+  {
+    "type": "empty_delegation",
+    "file": "paises/8e9/Comite_4_8e9.json",
+    "rowIndex": 18,
+    "classGroup": "",
+    "country": "Rússia",
+    "committee": "Bioética e Genética Humana"
+  },
+  {
+    "type": "ambiguous_user_match",
+    "fullName": "Samuel Rocha Machado",
+    "classGroup": "Sta Ines - 9º ano B",
+    "file": "paises/8e9/Comite_5_8e9.json",
+    "rowIndex": 4,
+    "candidates": [
+      {
+        "userId": "69fd1f866eec1d500bcc2c8e",
+        "fullName": "Samuel Rocha Machado",
+        "classGroup": "Sta Ines - 9º ano B"
+      },
+      {
+        "userId": "69fd206e6eec1d500bcc2ce4",
+        "fullName": "Samuel Rocha Machado",
+        "classGroup": "Sta Ines - 9º ano B"
+      }
+    ],
+    "matchStrategy": "class_group"
+  },
+  {
+    "type": "ambiguous_user_match",
+    "fullName": "Lia Moises  Do Vale Barroso",
+    "classGroup": "Sta Ines - 9º ano B",
+    "file": "paises/8e9/Comite_5_8e9.json",
+    "rowIndex": 4,
+    "candidates": [
+      {
+        "userId": "69fd23006eec1d500bcc2e9d",
+        "fullName": "Lia Moises  Do Vale Barroso",
+        "classGroup": "Sta Ines - 9º ano B"
+      },
+      {
+        "userId": "69fd24b36eec1d500bcc2f59",
+        "fullName": "Lia Moises  Do Vale Barroso",
+        "classGroup": "Sta Ines - 9º ano B"
+      }
+    ],
+    "matchStrategy": "class_group"
+  },
+  {
+    "type": "pair_incomplete",
+    "file": "paises/8e9/Comite_5_8e9.json",
+    "rowIndex": 4,
+    "classGroup": "Sta Ines - 9º ano B",
+    "country": "Índia",
+    "committee": "Nova Ordem Global",
+    "expectedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "fullName": "Samuel Rocha Machado"
+      },
+      {
+        "field": "Membro 2",
+        "nameIndex": 1,
+        "fullName": "Lia Moises  Do Vale Barroso"
+      }
+    ],
+    "matchedMembers": []
+  },
+  {
+    "type": "empty_delegation",
+    "file": "paises/8e9/Comite_5_8e9.json",
+    "rowIndex": 14,
+    "classGroup": "",
+    "country": "OMC",
+    "committee": "Nova Ordem Global"
+  },
+  {
+    "type": "empty_delegation",
+    "file": "paises/8e9/Comite_5_8e9.json",
+    "rowIndex": 15,
+    "classGroup": "",
+    "country": "Coréia do Sul",
+    "committee": "Nova Ordem Global"
+  },
+  {
+    "type": "empty_delegation",
+    "file": "paises/8e9/Comite_5_8e9.json",
+    "rowIndex": 16,
+    "classGroup": "",
+    "country": "Singapura",
+    "committee": "Nova Ordem Global"
+  },
+  {
+    "type": "empty_delegation",
+    "file": "paises/8e9/Comite_5_8e9.json",
+    "rowIndex": 17,
+    "classGroup": "",
+    "country": "México",
+    "committee": "Nova Ordem Global"
+  },
+  {
+    "type": "empty_delegation",
+    "file": "paises/8e9/Comite_5_8e9.json",
+    "rowIndex": 18,
+    "classGroup": "",
+    "country": "Arábia Saudita",
+    "committee": "Nova Ordem Global"
+  },
+  {
+    "type": "empty_delegation",
+    "file": "paises/8e9/Comite_5_8e9.json",
+    "rowIndex": 19,
+    "classGroup": "",
+    "country": "Turquia",
+    "committee": "Nova Ordem Global"
+  },
+  {
+    "type": "pair_member_count_invalid",
+    "file": "paises/8e9/Comite_6_8e9.json",
+    "rowIndex": 4,
+    "classGroup": "Palmares - 9 ano B",
+    "country": "Russia",
+    "committee": "Conselho de Direitos Humanos das Nações Unidas (UNHRC)",
+    "expectedCount": 2,
+    "foundCount": 3,
+    "expectedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "fullName": "Laura Vieira Nominato"
+      },
+      {
+        "field": "Membro 1",
+        "nameIndex": 2,
+        "fullName": "Livia Miller Magalhães"
+      },
+      {
+        "field": "Membro 2",
+        "nameIndex": 1,
+        "fullName": "Laura Roman Pinal"
+      }
+    ],
+    "matchedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "userId": "69f9fe10715f6039e788d9b1",
+        "fullName": "Laura Vieira Nominato",
+        "classGroup": "Palmares - 9 ano B"
+      },
+      {
+        "field": "Membro 1",
+        "nameIndex": 2,
+        "userId": "69f9fff0715f6039e788dc58",
+        "fullName": "Livia Miller Magalhães",
+        "classGroup": "Palmares - 9 ano B"
+      },
+      {
+        "field": "Membro 2",
+        "nameIndex": 1,
+        "userId": "69fdeb3b6eec1d500bcc8033",
+        "fullName": "Laura Roman Pinal",
+        "classGroup": "Palmares - 9º ano B"
+      }
+    ]
+  },
+  {
+    "type": "ambiguous_user_match",
+    "fullName": "Livia Silva Sousa Milan",
+    "classGroup": "Palmares - 8 ano A",
+    "file": "paises/8e9/Comite_6_8e9.json",
+    "rowIndex": 7,
+    "candidates": [
+      {
+        "userId": "69f9edffd2dc8d7ed0cd2536",
+        "fullName": "Livia Silva Sousa Milan",
+        "classGroup": "Palmares - 8 ano A"
+      },
+      {
+        "userId": "69f9f136d2dc8d7ed0cd2a15",
+        "fullName": "Livia Silva Sousa Milan",
+        "classGroup": "Palmares - 8 ano A"
+      },
+      {
+        "userId": "69fb5dc2d14860ef4f8b6333",
+        "fullName": "Livia Silva Sousa Milan",
+        "classGroup": "Palmares - 8 ano A"
+      }
+    ],
+    "matchStrategy": "class_group"
+  },
+  {
+    "type": "pair_incomplete",
+    "file": "paises/8e9/Comite_6_8e9.json",
+    "rowIndex": 7,
+    "classGroup": "Palmares - 8 ano A",
+    "country": "Austrália",
+    "committee": "Conselho de Direitos Humanos das Nações Unidas (UNHRC)",
+    "expectedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "fullName": "Carmen Rocha Saldanha"
+      },
+      {
+        "field": "Membro 2",
+        "nameIndex": 1,
+        "fullName": "Livia Silva Sousa Milan"
+      }
+    ],
+    "matchedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "userId": "69f9eeb8d2dc8d7ed0cd264e",
+        "fullName": "Carmen Rocha Saldanha",
+        "classGroup": "Palmares - 8 ano A"
+      }
+    ]
+  },
+  {
+    "type": "user_not_found",
+    "fullName": "Benício Albuquerque Paiva",
+    "classGroup": "Sta Ines - 9º ano",
+    "file": "paises/8e9/Comite_6_8e9.json",
+    "rowIndex": 13,
+    "candidates": [],
+    "matchStrategy": ""
+  },
+  {
+    "type": "pair_incomplete",
+    "file": "paises/8e9/Comite_6_8e9.json",
+    "rowIndex": 13,
+    "classGroup": "Sta Ines - 9º ano",
+    "country": "Índia",
+    "committee": "Conselho de Direitos Humanos das Nações Unidas (UNHRC)",
+    "expectedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "fullName": "Henrique Zagnoli"
+      },
+      {
+        "field": "Membro 2",
+        "nameIndex": 1,
+        "fullName": "Benício Albuquerque Paiva"
+      }
+    ],
+    "matchedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "userId": "69fb699dd14860ef4f8b6977",
+        "fullName": "Henrique Zagnoli",
+        "classGroup": "Sta Ines - 9 ano B"
+      }
+    ]
+  },
+  {
+    "type": "empty_delegation",
+    "file": "paises/8e9/Comite_6_8e9.json",
+    "rowIndex": 14,
+    "classGroup": "",
+    "country": "Canadá",
+    "committee": "Conselho de Direitos Humanos das Nações Unidas (UNHRC)"
+  },
+  {
+    "type": "empty_delegation",
+    "file": "paises/8e9/Comite_6_8e9.json",
+    "rowIndex": 15,
+    "classGroup": "",
+    "country": "CDH",
+    "committee": "Conselho de Direitos Humanos das Nações Unidas (UNHRC)"
+  },
+  {
+    "type": "empty_delegation",
+    "file": "paises/8e9/Comite_6_8e9.json",
+    "rowIndex": 16,
+    "classGroup": "",
+    "country": "Tribunal Penal (TPI)",
+    "committee": "Conselho de Direitos Humanos das Nações Unidas (UNHRC)"
+  },
+  {
+    "type": "ambiguous_user_match",
+    "fullName": "Cecília Andrade Jorge",
+    "classGroup": "Palmares - 9 ano A",
+    "file": "paises/8e9/Comite_7_8e9.json",
+    "rowIndex": 3,
+    "candidates": [
+      {
+        "userId": "69f8beced2dc8d7ed0cd1c3a",
+        "fullName": "Cecília Andrade Jorge",
+        "classGroup": "Palmares - 9 ano A"
+      },
+      {
+        "userId": "69f8c090d2dc8d7ed0cd1c6e",
+        "fullName": "Cecília Andrade Jorge",
+        "classGroup": "Palmares - 9 ano A"
+      }
+    ],
+    "matchStrategy": "class_group"
+  },
+  {
+    "type": "pair_incomplete",
+    "file": "paises/8e9/Comite_7_8e9.json",
+    "rowIndex": 3,
+    "classGroup": "Palmares - 9 ano A",
+    "country": "Afeganistão",
+    "committee": "Organização das Nações Unidas para as Mulheres (ONU Mulheres)",
+    "expectedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "fullName": "Cecília Andrade Jorge"
+      },
+      {
+        "field": "Membro 2",
+        "nameIndex": 1,
+        "fullName": "Maria Eduarda Passos Alvim"
+      }
+    ],
+    "matchedMembers": [
+      {
+        "field": "Membro 2",
+        "nameIndex": 1,
+        "userId": "69f9fe52715f6039e788da13",
+        "fullName": "Maria Eduarda Passos Alvim",
+        "classGroup": "Palmares - 9 ano B"
+      }
+    ]
+  },
+  {
+    "type": "user_not_found",
+    "fullName": "Bianca Eduarda Coelho",
+    "classGroup": "Sta Ines - 9 ano A",
+    "file": "paises/8e9/Comite_7_8e9.json",
+    "rowIndex": 6,
+    "candidates": [],
+    "matchStrategy": ""
+  },
+  {
+    "type": "pair_incomplete",
+    "file": "paises/8e9/Comite_7_8e9.json",
+    "rowIndex": 6,
+    "classGroup": "Sta Ines - 9 ano A",
+    "country": "Brasil",
+    "committee": "Organização das Nações Unidas para as Mulheres (ONU Mulheres)",
+    "expectedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "fullName": "Bianca Eduarda Coelho"
+      },
+      {
+        "field": "Membro 2",
+        "nameIndex": 1,
+        "fullName": "catarina malta machado"
+      }
+    ],
+    "matchedMembers": [
+      {
+        "field": "Membro 2",
+        "nameIndex": 1,
+        "userId": "69fbc351d14860ef4f8b8cd5",
+        "fullName": "catarina malta machado",
+        "classGroup": "Sta Ines - 9 ano A"
+      }
+    ]
+  },
+  {
+    "type": "user_not_found",
+    "fullName": "Frederico Ferreira Cunha",
+    "classGroup": "Sta Ines - 8 ano",
+    "file": "paises/8e9/Comite_7_8e9.json",
+    "rowIndex": 14,
+    "candidates": [],
+    "matchStrategy": ""
+  },
+  {
+    "type": "user_not_found",
+    "fullName": "Heitor Franscisco Gonçalves",
+    "classGroup": "Sta Ines - 8 ano",
+    "file": "paises/8e9/Comite_7_8e9.json",
+    "rowIndex": 14,
+    "candidates": [],
+    "matchStrategy": ""
+  },
+  {
+    "type": "user_not_found",
+    "fullName": "João Marcos B. Oliveira",
+    "classGroup": "Sta Ines - 8 ano",
+    "file": "paises/8e9/Comite_7_8e9.json",
+    "rowIndex": 14,
+    "candidates": [],
+    "matchStrategy": ""
+  },
+  {
+    "type": "pair_member_count_invalid",
+    "file": "paises/8e9/Comite_7_8e9.json",
+    "rowIndex": 14,
+    "classGroup": "Sta Ines - 8 ano",
+    "country": "Ruanda",
+    "committee": "Organização das Nações Unidas para as Mulheres (ONU Mulheres)",
+    "expectedCount": 2,
+    "foundCount": 3,
+    "expectedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "fullName": "Frederico Ferreira Cunha"
+      },
+      {
+        "field": "Membro 1",
+        "nameIndex": 2,
+        "fullName": "Heitor Franscisco Gonçalves"
+      },
+      {
+        "field": "Membro 2",
+        "nameIndex": 1,
+        "fullName": "João Marcos B. Oliveira"
+      }
+    ],
+    "matchedMembers": []
+  },
+  {
+    "type": "empty_delegation",
+    "file": "paises/8e9/Comite_7_8e9.json",
+    "rowIndex": 15,
+    "classGroup": "",
+    "country": "Unicef",
+    "committee": "Organização das Nações Unidas para as Mulheres (ONU Mulheres)"
+  },
+  {
+    "type": "empty_delegation",
+    "file": "paises/8e9/Comite_7_8e9.json",
+    "rowIndex": 16,
+    "classGroup": "",
+    "country": "Turquia",
+    "committee": "Organização das Nações Unidas para as Mulheres (ONU Mulheres)"
+  },
+  {
+    "type": "empty_delegation",
+    "file": "paises/8e9/Comite_7_8e9.json",
+    "rowIndex": 17,
+    "classGroup": "",
+    "country": "Suécia",
+    "committee": "Organização das Nações Unidas para as Mulheres (ONU Mulheres)"
+  },
+  {
+    "type": "empty_delegation",
+    "file": "paises/8e9/Comite_7_8e9.json",
+    "rowIndex": 18,
+    "classGroup": "",
+    "country": "Egito",
+    "committee": "Organização das Nações Unidas para as Mulheres (ONU Mulheres)"
+  },
+  {
+    "type": "ambiguous_user_match",
+    "fullName": "Maria Eduarda Rocha Ribeiro",
+    "classGroup": "Sta Ines - 2ª série",
+    "file": "paises/EM/Comite_1_EM.json",
+    "rowIndex": 6,
+    "candidates": [
+      {
+        "userId": "69fb602fd14860ef4f8b65ea",
+        "fullName": "Maria Eduarda Rocha Ribeiro",
+        "classGroup": "Sta Ines - 2 serie"
+      },
+      {
+        "userId": "69fc7ab4d81bd3c7ed7b863d",
+        "fullName": "Maria Eduarda Rocha Ribeiro",
+        "classGroup": "Sta Ines - 2ª série"
+      },
+      {
+        "userId": "69fe55cda1c1513f8029cda1",
+        "fullName": "Maria Eduarda Rocha Ribeiro",
+        "classGroup": "Sta Ines - 2ª série"
+      }
+    ],
+    "matchStrategy": "class_group"
+  },
+  {
+    "type": "pair_incomplete",
+    "file": "paises/EM/Comite_1_EM.json",
+    "rowIndex": 6,
+    "classGroup": "Sta Ines - 2ª série",
+    "country": "",
+    "committee": "Conselho de Direitos Humanos (CDH - 2026)",
+    "expectedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "fullName": "Laura Rocha de Freitas"
+      },
+      {
+        "field": "Membro 2",
+        "nameIndex": 1,
+        "fullName": "Maria Eduarda Rocha Ribeiro"
+      }
+    ],
+    "matchedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "userId": "69fe4d259ebc3e6c74d040e3",
+        "fullName": "Laura Rocha de Freitas",
+        "classGroup": "Sta Ines - 2ª série"
+      }
+    ]
+  },
+  {
+    "type": "pair_member_count_invalid",
+    "file": "paises/EM/Comite_1_EM.json",
+    "rowIndex": 7,
+    "classGroup": "Palmares - 1 Serie A",
+    "country": "",
+    "committee": "Conselho de Direitos Humanos (CDH - 2026)",
+    "expectedCount": 2,
+    "foundCount": 3,
+    "expectedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "fullName": "Victor Ermelindo Reis"
+      },
+      {
+        "field": "Membro 1",
+        "nameIndex": 2,
+        "fullName": "Pedro Modesto"
+      },
+      {
+        "field": "Membro 2",
+        "nameIndex": 1,
+        "fullName": "Henrique Mesquita Borçato"
+      }
+    ],
+    "matchedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "userId": "69f9f71fd2dc8d7ed0cd311e",
+        "fullName": "Victor Ermelindo Reis",
+        "classGroup": "Palmares - 1 Serie A"
+      },
+      {
+        "field": "Membro 1",
+        "nameIndex": 2,
+        "userId": "69f9f850fc77ed0f8fbe65fe",
+        "fullName": "Pedro Modesto",
+        "classGroup": "Palmares - 1 Serie A"
+      },
+      {
+        "field": "Membro 2",
+        "nameIndex": 1,
+        "userId": "69fbabe9d14860ef4f8b7d07",
+        "fullName": "Henrique Mesquita Borçato",
+        "classGroup": "Palmares - 1 Serie A"
+      }
+    ]
+  },
+  {
+    "type": "user_not_found",
+    "fullName": "Dom Venuto",
+    "classGroup": "Sta Ines - 1 Serie A",
+    "file": "paises/EM/Comite_2_EM.json",
+    "rowIndex": 5,
+    "candidates": [],
+    "matchStrategy": ""
+  },
+  {
+    "type": "pair_incomplete",
+    "file": "paises/EM/Comite_2_EM.json",
+    "rowIndex": 5,
+    "classGroup": "Sta Ines - 1 Serie A",
+    "country": "",
+    "committee": "Assembleia Geral das Nações Unidas (AGNU)",
+    "expectedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "fullName": "Dom Venuto"
+      },
+      {
+        "field": "Membro 2",
+        "nameIndex": 1,
+        "fullName": "Guilherme Rocha De Lacerda"
+      }
+    ],
+    "matchedMembers": [
+      {
+        "field": "Membro 2",
+        "nameIndex": 1,
+        "userId": "69fbcb60d14860ef4f8b8f96",
+        "fullName": "Guilherme Rocha De Lacerda",
+        "classGroup": "Sta Ines - 1 Serie A"
+      }
+    ]
+  },
+  {
+    "type": "ambiguous_user_match",
+    "fullName": "Rafaela Gomes Domingues",
+    "classGroup": "Sta Ines - 1 Serie A",
+    "file": "paises/EM/Comite_3_EM.json",
+    "rowIndex": 4,
+    "candidates": [
+      {
+        "userId": "69fbbabdd14860ef4f8b8798",
+        "fullName": "Rafaela Gomes Domingues",
+        "classGroup": "Sta Ines - 1 Serie A"
+      },
+      {
+        "userId": "69fbbd3ed14860ef4f8b885f",
+        "fullName": "Rafaela Gomes Domingues",
+        "classGroup": "Sta Ines - 1 Serie A"
+      }
+    ],
+    "matchStrategy": "class_group"
+  },
+  {
+    "type": "pair_incomplete",
+    "file": "paises/EM/Comite_3_EM.json",
+    "rowIndex": 4,
+    "classGroup": "Sta Ines - 1 Serie A",
+    "country": "",
+    "committee": "Alto Comissariado das Nações Unidas para Refugiados (ACNUR)",
+    "expectedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "fullName": "Maria Beatriz Dias Ferreira"
+      },
+      {
+        "field": "Membro 2",
+        "nameIndex": 1,
+        "fullName": "Rafaela Gomes Domingues"
+      }
+    ],
+    "matchedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "userId": "69fbb877d14860ef4f8b8654",
+        "fullName": "Maria Beatriz Dias Ferreira",
+        "classGroup": "Sta Ines - 1 Serie A"
+      }
+    ]
+  },
+  {
+    "type": "user_not_found",
+    "fullName": "Ana Clara Alves Moreira",
+    "classGroup": "Sta Ines - 1ª série A",
+    "file": "paises/EM/Comite_3_EM.json",
+    "rowIndex": 12,
+    "candidates": [],
+    "matchStrategy": ""
+  },
+  {
+    "type": "pair_incomplete",
+    "file": "paises/EM/Comite_3_EM.json",
+    "rowIndex": 12,
+    "classGroup": "Sta Ines - 1ª série A",
+    "country": "",
+    "committee": "Alto Comissariado das Nações Unidas para Refugiados (ACNUR)",
+    "expectedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "fullName": "Vitória Oliveira de Assis"
+      },
+      {
+        "field": "Membro 2",
+        "nameIndex": 1,
+        "fullName": "Ana Clara Alves Moreira"
+      }
+    ],
+    "matchedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "userId": "69fc988b6eec1d500bcc05fe",
+        "fullName": "Vitória Oliveira de Assis",
+        "classGroup": "Sta Ines - 1ª série A"
+      }
+    ]
+  },
+  {
+    "type": "ambiguous_user_match",
+    "fullName": "Gabriela Vivas Braga",
+    "classGroup": "Palmares - 1 Serie B",
+    "file": "paises/EM/Comite_4_EM.json",
+    "rowIndex": 1,
+    "candidates": [
+      {
+        "userId": "69f9f713d2dc8d7ed0cd30f9",
+        "fullName": "Gabriela Vivas Braga",
+        "classGroup": "Palmares - 1 Serie A"
+      },
+      {
+        "userId": "69fb9b5ad14860ef4f8b788b",
+        "fullName": "Gabriela Vivas Braga",
+        "classGroup": "Palmares - 1 Serie A"
+      }
+    ],
+    "matchStrategy": "unit_segment_fallback"
+  },
+  {
+    "type": "pair_incomplete",
+    "file": "paises/EM/Comite_4_EM.json",
+    "rowIndex": 1,
+    "classGroup": "Palmares - 1 Serie B",
+    "country": "",
+    "committee": "Bioética e Genética Humana",
+    "expectedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "fullName": "Cecília Farinelli Braga"
+      },
+      {
+        "field": "Membro 2",
+        "nameIndex": 1,
+        "fullName": "Gabriela Vivas Braga"
+      }
+    ],
+    "matchedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "userId": "69fb269a0b3fec1643dcaf06",
+        "fullName": "Cecília Farinelli Braga",
+        "classGroup": "Palmares - 1 Serie B"
+      }
+    ]
+  },
+  {
+    "type": "pair_member_count_invalid",
+    "file": "paises/EM/Comite_4_EM.json",
+    "rowIndex": 7,
+    "classGroup": "Palmares - 3 serie",
+    "country": "",
+    "committee": "Bioética e Genética Humana",
+    "expectedCount": 2,
+    "foundCount": 3,
+    "expectedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "fullName": "João Victor Gomes de Oliveira"
+      },
+      {
+        "field": "Membro 1",
+        "nameIndex": 2,
+        "fullName": "Pedro de Souza Gonçalves Gontijo"
+      },
+      {
+        "field": "Membro 2",
+        "nameIndex": 1,
+        "fullName": "Gustavo Campara"
+      }
+    ],
+    "matchedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "userId": "69fa745ff85359c8d9c33047",
+        "fullName": "João Victor Gomes de Oliveira",
+        "classGroup": "Palmares - 3 serie"
+      },
+      {
+        "field": "Membro 1",
+        "nameIndex": 2,
+        "userId": "69effef3b6877fa52aadcf2d",
+        "fullName": "Pedro de Souza Gonçalves Gontijo",
+        "classGroup": "Palmares - 3 serie"
+      },
+      {
+        "field": "Membro 2",
+        "nameIndex": 1,
+        "userId": "69fe243a6eec1d500bcc96af",
+        "fullName": "Gustavo Campara",
+        "classGroup": "Palmares - 3ª série"
+      }
+    ]
+  },
+  {
+    "type": "user_not_found",
+    "fullName": "Rúbia Gomes",
+    "classGroup": "Sta Ines - 1ª série A",
+    "file": "paises/EM/Comite_4_EM.json",
+    "rowIndex": 10,
+    "candidates": [],
+    "matchStrategy": ""
+  },
+  {
+    "type": "user_not_found",
+    "fullName": "Manuella Valadares",
+    "classGroup": "Sta Ines - 1ª série A",
+    "file": "paises/EM/Comite_4_EM.json",
+    "rowIndex": 10,
+    "candidates": [],
+    "matchStrategy": ""
+  },
+  {
+    "type": "pair_incomplete",
+    "file": "paises/EM/Comite_4_EM.json",
+    "rowIndex": 10,
+    "classGroup": "Sta Ines - 1ª série A",
+    "country": "",
+    "committee": "Bioética e Genética Humana",
+    "expectedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "fullName": "Rúbia Gomes"
+      },
+      {
+        "field": "Membro 2",
+        "nameIndex": 1,
+        "fullName": "Manuella Valadares"
+      }
+    ],
+    "matchedMembers": []
+  },
+  {
+    "type": "user_not_found",
+    "fullName": "Anne Said de Almeida",
+    "classGroup": "Sta Ines - 2ª série A",
+    "file": "paises/EM/Comite_4_EM.json",
+    "rowIndex": 11,
+    "candidates": [],
+    "matchStrategy": ""
+  },
+  {
+    "type": "user_not_found",
+    "fullName": "Maria Fernanda Mendes de Oliveira",
+    "classGroup": "Sta Ines - 2ª série A",
+    "file": "paises/EM/Comite_4_EM.json",
+    "rowIndex": 11,
+    "candidates": [],
+    "matchStrategy": ""
+  },
+  {
+    "type": "pair_incomplete",
+    "file": "paises/EM/Comite_4_EM.json",
+    "rowIndex": 11,
+    "classGroup": "Sta Ines - 2ª série A",
+    "country": "",
+    "committee": "Bioética e Genética Humana",
+    "expectedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "fullName": "Anne Said de Almeida"
+      },
+      {
+        "field": "Membro 2",
+        "nameIndex": 1,
+        "fullName": "Maria Fernanda Mendes de Oliveira"
+      }
+    ],
+    "matchedMembers": []
+  },
+  {
+    "type": "ambiguous_user_match",
+    "fullName": "Vitor Lima Vasconcelos",
+    "classGroup": "Sta Ines - 1 Serie A",
+    "file": "paises/EM/Comite_7_EM.json",
+    "rowIndex": 4,
+    "candidates": [
+      {
+        "userId": "69fbbc45d14860ef4f8b8842",
+        "fullName": "Vitor Lima Vasconcelos",
+        "classGroup": "Sta Ines - 1 Serie A"
+      },
+      {
+        "userId": "69fbc3a3d14860ef4f8b8d15",
+        "fullName": "Vitor Lima Vasconcelos",
+        "classGroup": "Sta Ines - 1 Serie A"
+      }
+    ],
+    "matchStrategy": "class_group"
+  },
+  {
+    "type": "pair_incomplete",
+    "file": "paises/EM/Comite_7_EM.json",
+    "rowIndex": 4,
+    "classGroup": "Sta Ines - 1 Serie A",
+    "country": "",
+    "committee": "Organização das Nações Unidas para as Mulheres (ONU Mulheres)",
+    "expectedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "fullName": "Myllena Jardim de Araújo"
+      },
+      {
+        "field": "Membro 2",
+        "nameIndex": 1,
+        "fullName": "Vitor Lima Vasconcelos"
+      }
+    ],
+    "matchedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "userId": "69fbbb58d14860ef4f8b880b",
+        "fullName": "Myllena Jardim de Araújo",
+        "classGroup": "Sta Ines - 1 Serie A"
+      }
+    ]
+  },
+  {
+    "type": "ambiguous_user_match",
+    "fullName": "Maria Eduarda Santos Martins",
+    "classGroup": "Sta Ines - 2ª série",
+    "file": "paises/EM/Comite_7_EM.json",
+    "rowIndex": 5,
+    "candidates": [
+      {
+        "userId": "69fc72269593988d4bb2554d",
+        "fullName": "Maria Eduarda Santos Martins",
+        "classGroup": "Sta Ines - 2ª série"
+      },
+      {
+        "userId": "69fdc3916eec1d500bcc5021",
+        "fullName": "Maria Eduarda Santos Martins",
+        "classGroup": "Sta Ines - 2ª série"
+      }
+    ],
+    "matchStrategy": "class_group"
+  },
+  {
+    "type": "pair_incomplete",
+    "file": "paises/EM/Comite_7_EM.json",
+    "rowIndex": 5,
+    "classGroup": "Sta Ines - 2ª série",
+    "country": "",
+    "committee": "Organização das Nações Unidas para as Mulheres (ONU Mulheres)",
+    "expectedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "fullName": "Manuella de Castro Ferreira"
+      },
+      {
+        "field": "Membro 2",
+        "nameIndex": 1,
+        "fullName": "Maria Eduarda Santos Martins"
+      }
+    ],
+    "matchedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "userId": "69fc64b29593988d4bb24ed6",
+        "fullName": "Manuella de Castro Ferreira",
+        "classGroup": "Sta Ines - 2ª série"
+      }
+    ]
+  },
+  {
+    "type": "user_not_found",
+    "fullName": "Luana Jácome",
+    "classGroup": "Sta Ines - 1ª série A",
+    "file": "paises/EM/Comite_7_EM.json",
+    "rowIndex": 9,
+    "candidates": [],
+    "matchStrategy": ""
+  },
+  {
+    "type": "user_not_found",
+    "fullName": "Laura Eliza",
+    "classGroup": "Sta Ines - 1ª série A",
+    "file": "paises/EM/Comite_7_EM.json",
+    "rowIndex": 9,
+    "candidates": [],
+    "matchStrategy": ""
+  },
+  {
+    "type": "pair_incomplete",
+    "file": "paises/EM/Comite_7_EM.json",
+    "rowIndex": 9,
+    "classGroup": "Sta Ines - 1ª série A",
+    "country": "",
+    "committee": "Organização das Nações Unidas para as Mulheres (ONU Mulheres)",
+    "expectedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "fullName": "Luana Jácome"
+      },
+      {
+        "field": "Membro 2",
+        "nameIndex": 1,
+        "fullName": "Laura Eliza"
+      }
+    ],
+    "matchedMembers": []
+  },
+  {
+    "type": "user_not_found",
+    "fullName": "Isabella Nunes",
+    "classGroup": "Sta Ines - 2ª série A",
+    "file": "paises/EM/Comite_7_EM.json",
+    "rowIndex": 10,
+    "candidates": [],
+    "matchStrategy": ""
+  },
+  {
+    "type": "pair_member_count_invalid",
+    "file": "paises/EM/Comite_7_EM.json",
+    "rowIndex": 10,
+    "classGroup": "Sta Ines - 2ª série A",
+    "country": "",
+    "committee": "Organização das Nações Unidas para as Mulheres (ONU Mulheres)",
+    "expectedCount": 2,
+    "foundCount": 3,
+    "expectedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "fullName": "Gabriel Silveira Marques"
+      },
+      {
+        "field": "Membro 2",
+        "nameIndex": 1,
+        "fullName": "Gabriela Ferreira Coimbra"
+      },
+      {
+        "field": "Membro 2",
+        "nameIndex": 2,
+        "fullName": "Isabella Nunes"
+      }
+    ],
+    "matchedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "userId": "69fc8c3e67dc0e4f7284b803",
+        "fullName": "Gabriel Silveira Marques",
+        "classGroup": "Sta Ines - 2ª série"
+      },
+      {
+        "field": "Membro 2",
+        "nameIndex": 1,
+        "userId": "69fc8c5867dc0e4f7284b809",
+        "fullName": "Gabriela Ferreira Coimbra",
+        "classGroup": "Sta Ines - 2ª série"
+      }
+    ]
+  },
+  {
+    "type": "user_not_found",
+    "fullName": "Carlos Henrique de Carvalho",
+    "classGroup": "Sta Ines - 2ª série A",
+    "file": "paises/EM/Comite_7_EM.json",
+    "rowIndex": 11,
+    "candidates": [],
+    "matchStrategy": ""
+  },
+  {
+    "type": "pair_incomplete",
+    "file": "paises/EM/Comite_7_EM.json",
+    "rowIndex": 11,
+    "classGroup": "Sta Ines - 2ª série A",
+    "country": "",
+    "committee": "Organização das Nações Unidas para as Mulheres (ONU Mulheres)",
+    "expectedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "fullName": "Arthur Monteiro Fernandes"
+      },
+      {
+        "field": "Membro 2",
+        "nameIndex": 1,
+        "fullName": "Carlos Henrique de Carvalho"
+      }
+    ],
+    "matchedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "userId": "69fca6b56eec1d500bcc0d76",
+        "fullName": "Arthur Monteiro Fernandes",
+        "classGroup": "Sta Ines - 2ª série"
+      }
+    ]
+  },
+  {
+    "type": "user_not_found",
+    "fullName": "Alana Queiroz",
+    "classGroup": "Sta Ines - 2ª série A",
+    "file": "paises/EM/Comite_7_EM.json",
+    "rowIndex": 12,
+    "candidates": [],
+    "matchStrategy": ""
+  },
+  {
+    "type": "user_not_found",
+    "fullName": "Vitor Jones Lobo",
+    "classGroup": "Sta Ines - 2ª série A",
+    "file": "paises/EM/Comite_7_EM.json",
+    "rowIndex": 12,
+    "candidates": [],
+    "matchStrategy": ""
+  },
+  {
+    "type": "pair_incomplete",
+    "file": "paises/EM/Comite_7_EM.json",
+    "rowIndex": 12,
+    "classGroup": "Sta Ines - 2ª série A",
+    "country": "",
+    "committee": "Organização das Nações Unidas para as Mulheres (ONU Mulheres)",
+    "expectedMembers": [
+      {
+        "field": "Membro 1",
+        "nameIndex": 1,
+        "fullName": "Alana Queiroz"
+      },
+      {
+        "field": "Membro 2",
+        "nameIndex": 1,
+        "fullName": "Vitor Jones Lobo"
+      }
+    ],
+    "matchedMembers": []
+  }
+]

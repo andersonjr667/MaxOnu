@@ -1,0 +1,104 @@
+{
+  "timestamp": "2026-06-18T14:30:35.369Z",
+  "operationsTotal": 10,
+  "operationsSuccess": 10,
+  "operationsError": 0,
+  "assignmentsToPush": 273,
+  "details": {
+    "pairOperations": [
+      {
+        "status": "success",
+        "operation": "addToSet_delegationMembers",
+        "userId": "69fbc007d14860ef4f8b8a2e",
+        "matched": 1,
+        "modified": 1,
+        "committee": "Conselho de Direitos Humanos (CDH - 2026)",
+        "country": "Austrália"
+      },
+      {
+        "status": "success",
+        "operation": "addToSet_delegationMembers",
+        "userId": "69fba252d14860ef4f8b7a71",
+        "matched": 1,
+        "modified": 1,
+        "committee": "Conselho de Direitos Humanos (CDH - 2026)",
+        "country": "Austrália"
+      },
+      {
+        "status": "success",
+        "operation": "addToSet_delegationMembers",
+        "userId": "69fbce7cd14860ef4f8b90c9",
+        "matched": 1,
+        "modified": 1,
+        "committee": "Alto Comissariado das Nações Unidas para Refugiados (ACNUR)",
+        "country": "Alemanha"
+      },
+      {
+        "status": "success",
+        "operation": "addToSet_delegationMembers",
+        "userId": "69fbb9a9d14860ef4f8b86c5",
+        "matched": 1,
+        "modified": 1,
+        "committee": "Alto Comissariado das Nações Unidas para Refugiados (ACNUR)",
+        "country": "Alemanha"
+      },
+      {
+        "status": "success",
+        "operation": "addToSet_delegationMembers",
+        "userId": "69fcf01e6eec1d500bcc19cc",
+        "matched": 1,
+        "modified": 1,
+        "committee": "Bioética e Genética Humana",
+        "country": "Coreia do Sul"
+      },
+      {
+        "status": "success",
+        "operation": "addToSet_delegationMembers",
+        "userId": "69fcfd826eec1d500bcc1e44",
+        "matched": 1,
+        "modified": 1,
+        "committee": "Bioética e Genética Humana",
+        "country": "Coreia do Sul"
+      },
+      {
+        "status": "success",
+        "operation": "addToSet_delegationMembers",
+        "userId": "69fc638e9593988d4bb24e7d",
+        "matched": 1,
+        "modified": 1,
+        "committee": "Nova Ordem Global",
+        "country": "Irã"
+      },
+      {
+        "status": "success",
+        "operation": "addToSet_delegationMembers",
+        "userId": "69fbc335d14860ef4f8b8cb5",
+        "matched": 1,
+        "modified": 1,
+        "committee": "Nova Ordem Global",
+        "country": "Irã"
+      },
+      {
+        "status": "success",
+        "operation": "addToSet_delegationMembers",
+        "userId": "69fba2cad14860ef4f8b7a9a",
+        "matched": 1,
+        "modified": 1,
+        "committee": "Conselho de Direitos Humanos das Nações Unidas (UNHRC)",
+        "country": "Israel"
+      },
+      {
+        "status": "success",
+        "operation": "addToSet_delegationMembers",
+        "userId": "6a039252b4c6ac6d6868b2f6",
+        "matched": 1,
+        "modified": 1,
+        "committee": "Conselho de Direitos Humanos das Nações Unidas (UNHRC)",
+        "country": "Israel"
+      }
+    ]
+  },
+  "summary": {
+    "successRate": "100.00%"
+  }
+}

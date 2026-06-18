@@ -6,11 +6,24 @@ const requireRole = require('../middleware/roleAuth');
 const User = require('../models/User');
 const { buildDelegationGroups } = require('../utils/delegation-groups');
 const { hasCommitteeRevealPassed } = require('../utils/event-config');
+const { areAssignmentsReleased, canViewAssignments } = require('../utils/assignment-visibility');
 
 const router = express.Router();
 
 function canBypassRevealLock(user) {
-  return user?.role === 'admin' || user?.role === 'coordinator' || user?.role === 'teacher';
+  return canViewAssignments(user);
+}
+
+async function ensureAssignmentExportAccess(req, res, next) {
+  try {
+    if (canViewAssignments(req.user) || await areAssignmentsReleased()) {
+      return next();
+    }
+
+    return res.status(403).json({ error: 'As atribuicoes permanecem em sigilo ate a liberacao oficial.' });
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
 }
 
 function normalizeCommitteeNumber(value) {
@@ -185,7 +198,7 @@ function buildDelegationSegmentRows(candidates, segment) {
     .filter(Boolean);
 }
 
-router.get('/committee/:num', authMiddleware, requireRole(['admin', 'coordinator', 'teacher', 'press']), async (req, res) => {
+router.get('/committee/:num', authMiddleware, requireRole(['admin', 'coordinator', 'teacher', 'press']), ensureAssignmentExportAccess, async (req, res) => {
   const committee = normalizeCommitteeNumber(req.params.num);
   const format = String(req.query.format || 'csv').toLowerCase();
 
@@ -244,7 +257,7 @@ router.get('/committee/:num', authMiddleware, requireRole(['admin', 'coordinator
   }
 });
 
-router.get('/results', authMiddleware, requireRole(['admin', 'coordinator', 'teacher']), async (req, res) => {
+router.get('/results', authMiddleware, requireRole(['admin', 'coordinator', 'teacher']), ensureAssignmentExportAccess, async (req, res) => {
   const format = String(req.query.format || 'csv').toLowerCase();
 
   if (!['csv', 'xlsx'].includes(format)) {
@@ -302,7 +315,7 @@ router.get('/results', authMiddleware, requireRole(['admin', 'coordinator', 'tea
 });
 
 // GET /api/export/results/custom
-router.get('/results/custom', authMiddleware, requireRole(['admin', 'coordinator', 'teacher']), async (req, res) => {
+router.get('/results/custom', authMiddleware, requireRole(['admin', 'coordinator', 'teacher']), ensureAssignmentExportAccess, async (req, res) => {
   const COMMITTEE_NAMES = {
     1: 'CDH 2026', 2: 'AGNU', 3: 'ACNUR', 4: 'Bioética e Genética Humana',
     5: 'Nova Ordem Global', 6: 'UNHRC', 7: 'ONU Mulheres (CSW/2026)'
@@ -552,7 +565,7 @@ router.get('/results/custom', authMiddleware, requireRole(['admin', 'coordinator
 });
 
 // GET /api/export/results/by-committee/:num
-router.get('/results/by-committee/:num', authMiddleware, requireRole(['admin', 'coordinator', 'teacher']), async (req, res) => {
+router.get('/results/by-committee/:num', authMiddleware, requireRole(['admin', 'coordinator', 'teacher']), ensureAssignmentExportAccess, async (req, res) => {
   const committee = normalizeCommitteeNumber(req.params.num);
   if (!Number.isInteger(committee) || committee < 1 || committee > 7) {
     return res.status(400).json({ error: 'Comitê inválido.' });
@@ -619,7 +632,7 @@ router.get('/results/by-committee/:num', authMiddleware, requireRole(['admin', '
 });
 
 // GET /api/export/results/by-unit
-router.get('/results/by-unit', authMiddleware, requireRole(['admin', 'coordinator', 'teacher']), async (req, res) => {
+router.get('/results/by-unit', authMiddleware, requireRole(['admin', 'coordinator', 'teacher']), ensureAssignmentExportAccess, async (req, res) => {
   try {
     const candidates = await User.find({
       role: 'candidate',
@@ -716,7 +729,7 @@ router.get('/results/by-unit', authMiddleware, requireRole(['admin', 'coordinato
 });
 
 // GET /api/export/results/unassigned
-router.get('/results/unassigned', authMiddleware, requireRole(['admin', 'coordinator', 'teacher']), async (req, res) => {
+router.get('/results/unassigned', authMiddleware, requireRole(['admin', 'coordinator', 'teacher']), ensureAssignmentExportAccess, async (req, res) => {
   const turmasRaw = String(req.query.turmas || 'all');
   const turmas = turmasRaw
     ? turmasRaw.split(',').map((t) => String(t).trim()).filter(Boolean)
@@ -807,7 +820,7 @@ router.get('/results/unassigned', authMiddleware, requireRole(['admin', 'coordin
 });
 
 // GET /api/export/results/all-delegations
-router.get('/results/all-delegations', authMiddleware, requireRole(['admin', 'coordinator', 'teacher']), async (req, res) => {
+router.get('/results/all-delegations', authMiddleware, requireRole(['admin', 'coordinator', 'teacher']), ensureAssignmentExportAccess, async (req, res) => {
   const COMMITTEE_NAMES = {
     1: 'CDH 2026', 2: 'AGNU', 3: 'ACNUR', 4: 'Bioética e Genética Humana',
     5: 'Nova Ordem Global', 6: 'UNHRC', 7: 'ONU Mulheres (CSW/2026)'
@@ -872,7 +885,7 @@ router.get('/results/all-delegations', authMiddleware, requireRole(['admin', 'co
   }
 });
 
-router.get('/results/segment', authMiddleware, requireRole(['admin', 'coordinator', 'teacher']), async (req, res) => {
+router.get('/results/segment', authMiddleware, requireRole(['admin', 'coordinator', 'teacher']), ensureAssignmentExportAccess, async (req, res) => {
   const format = String(req.query.format || 'xlsx').toLowerCase();
   const segment = String(req.query.segment || '').toLowerCase();
 
@@ -932,7 +945,7 @@ router.get('/results/segment', authMiddleware, requireRole(['admin', 'coordinato
 
 // GET /api/export/results/fundamental-committees-summary
 // Exporta todos os inscritos do ensino fundamental agrupados por comitê com resumo de preferências
-router.get('/results/fundamental-committees-summary', authMiddleware, requireRole(['admin', 'coordinator', 'teacher']), async (req, res) => {
+router.get('/results/fundamental-committees-summary', authMiddleware, requireRole(['admin', 'coordinator', 'teacher']), ensureAssignmentExportAccess, async (req, res) => {
   const COMMITTEE_NAMES = {
     1: 'CDH 2026',
     2: 'AGNU',
@@ -1096,7 +1109,7 @@ router.get('/results/fundamental-committees-summary', authMiddleware, requireRol
 
 // GET /api/export/results/by-committee-flexible
 // Permite escolher comitê (1-7, all, ou unassigned) com filtros de unidade e turma
-router.get('/results/by-committee-flexible', authMiddleware, requireRole(['admin', 'coordinator', 'teacher']), async (req, res) => {
+router.get('/results/by-committee-flexible', authMiddleware, requireRole(['admin', 'coordinator', 'teacher']), ensureAssignmentExportAccess, async (req, res) => {
   const COMMITTEE_NAMES = {
     1: 'CDH 2026', 2: 'AGNU', 3: 'ACNUR', 4: 'Bioética e Genética Humana',
     5: 'Nova Ordem Global', 6: 'UNHRC', 7: 'ONU Mulheres (CSW/2026)'
@@ -1214,7 +1227,7 @@ router.get('/results/by-committee-flexible', authMiddleware, requireRole(['admin
 
 // GET /api/export/results/by-committee-preference
 // Exporta delegações que têm um comitê específico como preferência (1ª, 2ª, 3ª opção ou final)
-router.get('/results/by-committee-preference', authMiddleware, requireRole(['admin', 'coordinator', 'teacher']), async (req, res) => {
+router.get('/results/by-committee-preference', authMiddleware, requireRole(['admin', 'coordinator', 'teacher']), ensureAssignmentExportAccess, async (req, res) => {
   const COMMITTEE_NAMES = {
     1: 'CDH 2026', 2: 'AGNU', 3: 'ACNUR', 4: 'Bioética e Genética Humana',
     5: 'Nova Ordem Global', 6: 'UNHRC', 7: 'ONU Mulheres (CSW/2026)'
