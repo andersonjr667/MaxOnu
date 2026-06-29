@@ -32,9 +32,12 @@ const reactionRoutes = require('./routes/reactions');
 const newsletterRoutes = require('./routes/newsletter');
 const commentRoutes = require('./routes/comments');
 const analyticsRoutes = require('./routes/analytics');
+const maintenanceRoutes = require('./routes/maintenance');
 const { shareMetaMiddleware } = require('./middleware/share-meta');
 const cleanUrlsMiddleware = require('./middleware/clean-urls');
 const { injectVersionMiddleware } = require('./middleware/version-inject');
+const jwt = require('jsonwebtoken');
+const { maintenanceMiddleware } = require('./middleware/maintenance');
 const { COMMITTEE_REVEAL_DATE } = require('./utils/event-config');
 
 // Load version for cache busting
@@ -727,6 +730,7 @@ app.use('/newsletter', (req, res, next) => {
 
 app.use('/api/comments', commentRoutes);
 app.use('/api/analytics', analyticsRoutes);
+app.use('/api/admin/maintenance', maintenanceRoutes);
 
 // Share meta tags middleware para melhorar compartilhamento em redes sociais
 app.use(shareMetaMiddleware(publicDir));
@@ -759,7 +763,48 @@ app.use((req, res, next) => {
   next();
 });
 
+// Expose flag assets stored outside /public
+app.use('/paises', express.static(path.join(__dirname, 'paises'), {
+  etag: true,
+  maxAge: '7d',
+  setHeaders: setStaticCacheHeaders
+}));
+
+app.get('/api/flags-catalog', (req, res) => {
+  try {
+    const flagsDir = path.join(__dirname, 'paises', 'flags');
+    const files = fs.readdirSync(flagsDir, { withFileTypes: true })
+      .filter((entry) => entry.isFile())
+      .map((entry) => entry.name)
+      .filter((name) => /\.(png|jpe?g|webp|gif|svg)$/i.test(name))
+      .sort((a, b) => a.localeCompare(b, 'pt-BR'));
+
+    const flags = files.map((fileName) => {
+      const stem = fileName.replace(/\.[^.]+$/, '');
+      const label = stem
+        .replace(/_/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .toLowerCase()
+        .split(' ')
+        .map((word) => word ? `${word.charAt(0).toUpperCase()}${word.slice(1)}` : word)
+        .join(' ');
+
+      return {
+        fileName,
+        label,
+        url: `/paises/flags/${encodeURIComponent(fileName)}`
+      };
+    });
+
+    res.json({ total: flags.length, flags });
+  } catch (error) {
+    res.status(500).json({ error: 'Nao foi possivel carregar o catalogo de bandeiras.' });
+  }
+});
+
 // Clean URLs middleware - remove extensão .html e oferece rotas amigáveis
+app.use(maintenanceMiddleware);
 app.use(cleanUrlsMiddleware(publicDir));
 
 // ============================================
@@ -787,7 +832,8 @@ const pageRoleGuard = (req, res, next) => {
     const match = file.match(/<body[^>]*data-portal-role=["']([^"']+)["']/i);
     if (!match) return next();
 
-    const requiredRole = match[1];
+    const requiredRole = match[1] || (req.path === '/admin' ? 'admin' : null);
+    if (!requiredRole) return next();
 
     // Login é via token no header Authorization
     const authHeader = req.headers.authorization;
@@ -839,6 +885,7 @@ app.use(express.static(publicDir, {
 
 app.get('/header', (req, res) => res.sendFile(path.join(publicDir, 'header.html')));
 app.get('/footer', (req, res) => res.sendFile(path.join(publicDir, 'footer.html')));
+app.get('/gerenciar-paises', (req, res) => res.sendFile(path.join(publicDir, 'gerenciar-paises.html')));
 
 // MongoDB
 const connectDB = async () => {

@@ -2,7 +2,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_1_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_1_8e9.json",
     "sourceRow": 2,
     "classGroup": "Sta Ines - 8 ano A",
     "committee": "Conselho de Direitos Humanos (CDH - 2026)",
@@ -28,7 +28,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_1_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_1_8e9.json",
     "sourceRow": 3,
     "classGroup": "Sta Ines - 8 ano A",
     "committee": "Conselho de Direitos Humanos (CDH - 2026)",
@@ -54,7 +54,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_1_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_1_8e9.json",
     "sourceRow": 4,
     "classGroup": "Palmares - 9 ano B",
     "committee": "Conselho de Direitos Humanos (CDH - 2026)",
@@ -80,7 +80,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_1_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_1_8e9.json",
     "sourceRow": 6,
     "classGroup": "Palmares - 8 ano A",
     "committee": "Conselho de Direitos Humanos (CDH - 2026)",
@@ -106,7 +106,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_1_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_1_8e9.json",
     "sourceRow": 7,
     "classGroup": "Sta Ines - 8 ano A",
     "committee": "Conselho de Direitos Humanos (CDH - 2026)",
@@ -132,7 +132,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_1_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_1_8e9.json",
     "sourceRow": 8,
     "classGroup": "Sta Ines - 9 ano A",
     "committee": "Conselho de Direitos Humanos (CDH - 2026)",
@@ -158,7 +158,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_1_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_1_8e9.json",
     "sourceRow": 9,
     "classGroup": "Sta Ines - 9 ano A",
     "committee": "Conselho de Direitos Humanos (CDH - 2026)",
@@ -184,7 +184,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_1_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_1_8e9.json",
     "sourceRow": 10,
     "classGroup": "Palmares - 8 ano B",
     "committee": "Conselho de Direitos Humanos (CDH - 2026)",
@@ -210,7 +210,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_1_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_1_8e9.json",
     "sourceRow": 11,
     "classGroup": "Palmares - 8 ano B",
     "committee": "Conselho de Direitos Humanos (CDH - 2026)",
@@ -236,7 +236,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_1_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_1_8e9.json",
     "sourceRow": 12,
     "classGroup": "Palmares - 9 ano A",
     "committee": "Conselho de Direitos Humanos (CDH - 2026)",
@@ -262,7 +262,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_1_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_1_8e9.json",
     "sourceRow": 13,
     "classGroup": "Sta Ines - 8 ano",
     "committee": "Conselho de Direitos Humanos (CDH - 2026)",
@@ -288,7 +288,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_2_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_2_8e9.json",
     "sourceRow": 1,
     "classGroup": "Palmares - 8 ano A",
     "committee": "Assembleia Geral das Nações Unidas (AGNU)",
@@ -314,7 +314,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_2_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_2_8e9.json",
     "sourceRow": 2,
     "classGroup": "Palmares - 8 ano A",
     "committee": "Assembleia Geral das Nações Unidas (AGNU)",
@@ -340,7 +340,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_2_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_2_8e9.json",
     "sourceRow": 3,
     "classGroup": "Palmares - 8 ano B",
     "committee": "Assembleia Geral das Nações Unidas (AGNU)",
@@ -366,7 +366,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_2_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_2_8e9.json",
     "sourceRow": 4,
     "classGroup": "Palmares - 8 ano B",
     "committee": "Assembleia Geral das Nações Unidas (AGNU)",
@@ -392,7 +392,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_2_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_2_8e9.json",
     "sourceRow": 6,
     "classGroup": "Palmares - 9 ano A",
     "committee": "Assembleia Geral das Nações Unidas (AGNU)",
@@ -418,7 +418,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_2_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_2_8e9.json",
     "sourceRow": 7,
     "classGroup": "Palmares - 9 ano A",
     "committee": "Assembleia Geral das Nações Unidas (AGNU)",
@@ -444,7 +444,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_2_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_2_8e9.json",
     "sourceRow": 8,
     "classGroup": "Palmares - 9 ano B",
     "committee": "Assembleia Geral das Nações Unidas (AGNU)",
@@ -470,7 +470,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_2_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_2_8e9.json",
     "sourceRow": 9,
     "classGroup": "Sta Ines - 8 ano B",
     "committee": "Assembleia Geral das Nações Unidas (AGNU)",
@@ -496,7 +496,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_2_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_2_8e9.json",
     "sourceRow": 10,
     "classGroup": "Sta Ines - 9 ano A",
     "committee": "Assembleia Geral das Nações Unidas (AGNU)",
@@ -522,7 +522,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_2_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_2_8e9.json",
     "sourceRow": 11,
     "classGroup": "Sta Ines - 9 ano B",
     "committee": "Assembleia Geral das Nações Unidas (AGNU)",
@@ -548,7 +548,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_2_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_2_8e9.json",
     "sourceRow": 12,
     "classGroup": "Sta Ines - 8 ano B",
     "committee": "Assembleia Geral das Nações Unidas (AGNU)",
@@ -574,7 +574,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_2_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_2_8e9.json",
     "sourceRow": 13,
     "classGroup": "Sta Ines - 9 ano B",
     "committee": "Assembleia Geral das Nações Unidas (AGNU)",
@@ -600,7 +600,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_3_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_3_8e9.json",
     "sourceRow": 2,
     "classGroup": "Palmares - 9 ano A",
     "committee": "Alto Comissariado das Nações Unidas para Refugiados (ACNUR)",
@@ -626,7 +626,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_3_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_3_8e9.json",
     "sourceRow": 3,
     "classGroup": "Palmares - 9 ano A",
     "committee": "Alto Comissariado das Nações Unidas para Refugiados (ACNUR)",
@@ -652,7 +652,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_3_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_3_8e9.json",
     "sourceRow": 6,
     "classGroup": "Palmares - 9 ano B",
     "committee": "Alto Comissariado das Nações Unidas para Refugiados (ACNUR)",
@@ -678,7 +678,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_3_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_3_8e9.json",
     "sourceRow": 7,
     "classGroup": "Sta Ines - 8 ano A",
     "committee": "Alto Comissariado das Nações Unidas para Refugiados (ACNUR)",
@@ -704,7 +704,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_3_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_3_8e9.json",
     "sourceRow": 8,
     "classGroup": "Sta Ines - 8 ano B",
     "committee": "Alto Comissariado das Nações Unidas para Refugiados (ACNUR)",
@@ -730,7 +730,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_3_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_3_8e9.json",
     "sourceRow": 9,
     "classGroup": "Sta Ines - 8º ano B",
     "committee": "Alto Comissariado das Nações Unidas para Refugiados (ACNUR)",
@@ -756,7 +756,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_3_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_3_8e9.json",
     "sourceRow": 10,
     "classGroup": "Sta Ines - 9 ano B",
     "committee": "Alto Comissariado das Nações Unidas para Refugiados (ACNUR)",
@@ -782,7 +782,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_3_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_3_8e9.json",
     "sourceRow": 11,
     "classGroup": "Palmares - 8 ano A",
     "committee": "Alto Comissariado das Nações Unidas para Refugiados (ACNUR)",
@@ -808,7 +808,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_3_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_3_8e9.json",
     "sourceRow": 12,
     "classGroup": "Palmares - 8 ano A",
     "committee": "Alto Comissariado das Nações Unidas para Refugiados (ACNUR)",
@@ -834,7 +834,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_3_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_3_8e9.json",
     "sourceRow": 14,
     "classGroup": "Sta Ines - 9º ano",
     "committee": "Alto Comissariado das Nações Unidas para Refugiados (ACNUR)",
@@ -860,7 +860,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_4_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_4_8e9.json",
     "sourceRow": 1,
     "classGroup": "Palmares - 8 ano B",
     "committee": "Bioética e Genética Humana",
@@ -886,7 +886,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_4_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_4_8e9.json",
     "sourceRow": 2,
     "classGroup": "Palmares - 9 ano B",
     "committee": "Bioética e Genética Humana",
@@ -912,7 +912,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_4_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_4_8e9.json",
     "sourceRow": 3,
     "classGroup": "Sta Ines - 9 ano A",
     "committee": "Bioética e Genética Humana",
@@ -938,7 +938,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_4_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_4_8e9.json",
     "sourceRow": 4,
     "classGroup": "Sta Ines - 9 ano B",
     "committee": "Bioética e Genética Humana",
@@ -964,7 +964,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_4_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_4_8e9.json",
     "sourceRow": 5,
     "classGroup": "Sta Ines - 9 ano B",
     "committee": "Bioética e Genética Humana",
@@ -990,7 +990,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_4_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_4_8e9.json",
     "sourceRow": 7,
     "classGroup": "Sta Ines - 8 ano A",
     "committee": "Bioética e Genética Humana",
@@ -1016,7 +1016,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_4_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_4_8e9.json",
     "sourceRow": 8,
     "classGroup": "Sta Ines - 9º ano B",
     "committee": "Bioética e Genética Humana",
@@ -1042,7 +1042,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_4_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_4_8e9.json",
     "sourceRow": 9,
     "classGroup": "Palmares - 8 ano B",
     "committee": "Bioética e Genética Humana",
@@ -1068,7 +1068,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_4_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_4_8e9.json",
     "sourceRow": 10,
     "classGroup": "Palmares - 9 ano A",
     "committee": "Bioética e Genética Humana",
@@ -1094,7 +1094,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_4_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_4_8e9.json",
     "sourceRow": 11,
     "classGroup": "Palmares - 8 ano B",
     "committee": "Bioética e Genética Humana",
@@ -1120,7 +1120,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_4_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_4_8e9.json",
     "sourceRow": 12,
     "classGroup": "Palmares - 8 ano B",
     "committee": "Bioética e Genética Humana",
@@ -1146,7 +1146,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_4_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_4_8e9.json",
     "sourceRow": 14,
     "classGroup": "Sta Ines - 9º ano",
     "committee": "Bioética e Genética Humana",
@@ -1172,7 +1172,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_5_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_5_8e9.json",
     "sourceRow": 1,
     "classGroup": "Palmares - 8 ano A",
     "committee": "Nova Ordem Global",
@@ -1198,7 +1198,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_5_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_5_8e9.json",
     "sourceRow": 2,
     "classGroup": "Palmares - 8 ano B",
     "committee": "Nova Ordem Global",
@@ -1224,7 +1224,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_5_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_5_8e9.json",
     "sourceRow": 3,
     "classGroup": "Palmares - 8 ano B",
     "committee": "Nova Ordem Global",
@@ -1250,7 +1250,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_5_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_5_8e9.json",
     "sourceRow": 5,
     "classGroup": "Palmares - 9 ano B",
     "committee": "Nova Ordem Global",
@@ -1276,7 +1276,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_5_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_5_8e9.json",
     "sourceRow": 6,
     "classGroup": "Sta Ines - 8 ano A",
     "committee": "Nova Ordem Global",
@@ -1302,7 +1302,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_5_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_5_8e9.json",
     "sourceRow": 7,
     "classGroup": "Palmares - 9 ano B",
     "committee": "Nova Ordem Global",
@@ -1328,7 +1328,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_5_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_5_8e9.json",
     "sourceRow": 8,
     "classGroup": "Sta Ines - 8 ano A",
     "committee": "Nova Ordem Global",
@@ -1354,7 +1354,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_5_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_5_8e9.json",
     "sourceRow": 9,
     "classGroup": "Sta Ines - 8 ano B",
     "committee": "Nova Ordem Global",
@@ -1380,7 +1380,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_5_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_5_8e9.json",
     "sourceRow": 10,
     "classGroup": "Palmares - 8 ano A",
     "committee": "Nova Ordem Global",
@@ -1406,7 +1406,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_5_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_5_8e9.json",
     "sourceRow": 11,
     "classGroup": "Sta Ines - 9º ano B",
     "committee": "Nova Ordem Global",
@@ -1432,7 +1432,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_5_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_5_8e9.json",
     "sourceRow": 12,
     "classGroup": "Sta Ines - 9 ano B",
     "committee": "Nova Ordem Global",
@@ -1458,7 +1458,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_5_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_5_8e9.json",
     "sourceRow": 13,
     "classGroup": "Sta Ines - 8 ano",
     "committee": "Nova Ordem Global",
@@ -1484,7 +1484,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_6_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_6_8e9.json",
     "sourceRow": 1,
     "classGroup": "Palmares - 8 ano B",
     "committee": "Conselho de Direitos Humanos das Nações Unidas (UNHRC)",
@@ -1510,7 +1510,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_6_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_6_8e9.json",
     "sourceRow": 2,
     "classGroup": "Palmares - 9 ano A",
     "committee": "Conselho de Direitos Humanos das Nações Unidas (UNHRC)",
@@ -1536,7 +1536,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_6_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_6_8e9.json",
     "sourceRow": 3,
     "classGroup": "Palmares - 9 ano A",
     "committee": "Conselho de Direitos Humanos das Nações Unidas (UNHRC)",
@@ -1562,7 +1562,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_6_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_6_8e9.json",
     "sourceRow": 5,
     "classGroup": "Sta Ines - 9 ano A",
     "committee": "Conselho de Direitos Humanos das Nações Unidas (UNHRC)",
@@ -1588,7 +1588,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_6_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_6_8e9.json",
     "sourceRow": 6,
     "classGroup": "Palmares - 8 ano A",
     "committee": "Conselho de Direitos Humanos das Nações Unidas (UNHRC)",
@@ -1614,7 +1614,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_6_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_6_8e9.json",
     "sourceRow": 8,
     "classGroup": "Palmares - 8 ano A",
     "committee": "Conselho de Direitos Humanos das Nações Unidas (UNHRC)",
@@ -1640,7 +1640,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_6_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_6_8e9.json",
     "sourceRow": 9,
     "classGroup": "Palmares - 9 ano A",
     "committee": "Conselho de Direitos Humanos das Nações Unidas (UNHRC)",
@@ -1666,7 +1666,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_6_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_6_8e9.json",
     "sourceRow": 10,
     "classGroup": "Sta Ines - 8 ano A",
     "committee": "Conselho de Direitos Humanos das Nações Unidas (UNHRC)",
@@ -1692,7 +1692,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_6_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_6_8e9.json",
     "sourceRow": 11,
     "classGroup": "Palmares - 8 ano A",
     "committee": "Conselho de Direitos Humanos das Nações Unidas (UNHRC)",
@@ -1718,7 +1718,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_6_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_6_8e9.json",
     "sourceRow": 12,
     "classGroup": "Sta Ines - 8 ano",
     "committee": "Conselho de Direitos Humanos das Nações Unidas (UNHRC)",
@@ -1744,7 +1744,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_7_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_7_8e9.json",
     "sourceRow": 1,
     "classGroup": "Palmares - 8 ano A",
     "committee": "Organização das Nações Unidas para as Mulheres (ONU Mulheres)",
@@ -1770,7 +1770,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_7_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_7_8e9.json",
     "sourceRow": 2,
     "classGroup": "Palmares - 8 ano A",
     "committee": "Organização das Nações Unidas para as Mulheres (ONU Mulheres)",
@@ -1796,7 +1796,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_7_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_7_8e9.json",
     "sourceRow": 4,
     "classGroup": "Sta Ines - 8 ano B",
     "committee": "Organização das Nações Unidas para as Mulheres (ONU Mulheres)",
@@ -1822,7 +1822,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_7_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_7_8e9.json",
     "sourceRow": 5,
     "classGroup": "Sta Ines - 8º ano A",
     "committee": "Organização das Nações Unidas para as Mulheres (ONU Mulheres)",
@@ -1848,7 +1848,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_7_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_7_8e9.json",
     "sourceRow": 7,
     "classGroup": "Palmares - 8 ano A",
     "committee": "Organização das Nações Unidas para as Mulheres (ONU Mulheres)",
@@ -1874,7 +1874,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_7_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_7_8e9.json",
     "sourceRow": 8,
     "classGroup": "Sta Ines - 9º ano A",
     "committee": "Organização das Nações Unidas para as Mulheres (ONU Mulheres)",
@@ -1900,7 +1900,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_7_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_7_8e9.json",
     "sourceRow": 9,
     "classGroup": "Sta Ines - 9º ano A",
     "committee": "Organização das Nações Unidas para as Mulheres (ONU Mulheres)",
@@ -1926,7 +1926,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_7_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_7_8e9.json",
     "sourceRow": 10,
     "classGroup": "Sta Ines - 8 ano A",
     "committee": "Organização das Nações Unidas para as Mulheres (ONU Mulheres)",
@@ -1952,7 +1952,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_7_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_7_8e9.json",
     "sourceRow": 11,
     "classGroup": "Sta Ines - 9 ano A",
     "committee": "Organização das Nações Unidas para as Mulheres (ONU Mulheres)",
@@ -1978,7 +1978,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_7_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_7_8e9.json",
     "sourceRow": 12,
     "classGroup": "Palmares - 9 ano A",
     "committee": "Organização das Nações Unidas para as Mulheres (ONU Mulheres)",
@@ -2004,7 +2004,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/8e9/Comite_7_8e9.json",
+    "sourceFile": "paises\\8e9\\Comite_7_8e9.json",
     "sourceRow": 13,
     "classGroup": "Palmares - 8 ano B",
     "committee": "Organização das Nações Unidas para as Mulheres (ONU Mulheres)",
@@ -2030,7 +2030,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/EM/Comite_1_EM.json",
+    "sourceFile": "paises\\EM\\Comite_1_EM.json",
     "sourceRow": 1,
     "classGroup": "Palmares - 1 Serie A",
     "committee": "Conselho de Direitos Humanos (CDH - 2026)",
@@ -2056,7 +2056,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/EM/Comite_1_EM.json",
+    "sourceFile": "paises\\EM\\Comite_1_EM.json",
     "sourceRow": 2,
     "classGroup": "Palmares - 1 Serie A",
     "committee": "Conselho de Direitos Humanos (CDH - 2026)",
@@ -2082,7 +2082,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/EM/Comite_1_EM.json",
+    "sourceFile": "paises\\EM\\Comite_1_EM.json",
     "sourceRow": 3,
     "classGroup": "Palmares - 2 serie",
     "committee": "Conselho de Direitos Humanos (CDH - 2026)",
@@ -2108,7 +2108,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/EM/Comite_1_EM.json",
+    "sourceFile": "paises\\EM\\Comite_1_EM.json",
     "sourceRow": 4,
     "classGroup": "Palmares - 2 serie",
     "committee": "Conselho de Direitos Humanos (CDH - 2026)",
@@ -2134,7 +2134,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/EM/Comite_1_EM.json",
+    "sourceFile": "paises\\EM\\Comite_1_EM.json",
     "sourceRow": 5,
     "classGroup": "Sta Ines - 2 serie",
     "committee": "Conselho de Direitos Humanos (CDH - 2026)",
@@ -2160,7 +2160,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/EM/Comite_1_EM.json",
+    "sourceFile": "paises\\EM\\Comite_1_EM.json",
     "sourceRow": 8,
     "classGroup": "Palmares - 1 Serie B",
     "committee": "Conselho de Direitos Humanos (CDH - 2026)",
@@ -2186,7 +2186,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/EM/Comite_1_EM.json",
+    "sourceFile": "paises\\EM\\Comite_1_EM.json",
     "sourceRow": 9,
     "classGroup": "Palmares - 2 serie",
     "committee": "Conselho de Direitos Humanos (CDH - 2026)",
@@ -2212,7 +2212,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/EM/Comite_1_EM.json",
+    "sourceFile": "paises\\EM\\Comite_1_EM.json",
     "sourceRow": 10,
     "classGroup": "Sta Ines - 1 Serie A",
     "committee": "Conselho de Direitos Humanos (CDH - 2026)",
@@ -2238,7 +2238,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/EM/Comite_1_EM.json",
+    "sourceFile": "paises\\EM\\Comite_1_EM.json",
     "sourceRow": 11,
     "classGroup": "Sta Ines - 1 Serie A",
     "committee": "Conselho de Direitos Humanos (CDH - 2026)",
@@ -2264,7 +2264,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/EM/Comite_2_EM.json",
+    "sourceFile": "paises\\EM\\Comite_2_EM.json",
     "sourceRow": 1,
     "classGroup": "Palmares - 1 Serie A",
     "committee": "Assembleia Geral das Nações Unidas (AGNU)",
@@ -2290,7 +2290,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/EM/Comite_2_EM.json",
+    "sourceFile": "paises\\EM\\Comite_2_EM.json",
     "sourceRow": 2,
     "classGroup": "Palmares - 1 Serie A",
     "committee": "Assembleia Geral das Nações Unidas (AGNU)",
@@ -2316,7 +2316,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/EM/Comite_2_EM.json",
+    "sourceFile": "paises\\EM\\Comite_2_EM.json",
     "sourceRow": 3,
     "classGroup": "Palmares - 1 Serie B",
     "committee": "Assembleia Geral das Nações Unidas (AGNU)",
@@ -2342,7 +2342,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/EM/Comite_2_EM.json",
+    "sourceFile": "paises\\EM\\Comite_2_EM.json",
     "sourceRow": 4,
     "classGroup": "Palmares - 1 Serie B",
     "committee": "Assembleia Geral das Nações Unidas (AGNU)",
@@ -2368,7 +2368,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/EM/Comite_2_EM.json",
+    "sourceFile": "paises\\EM\\Comite_2_EM.json",
     "sourceRow": 6,
     "classGroup": "Sta Ines - 2 serie",
     "committee": "Assembleia Geral das Nações Unidas (AGNU)",
@@ -2394,7 +2394,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/EM/Comite_2_EM.json",
+    "sourceFile": "paises\\EM\\Comite_2_EM.json",
     "sourceRow": 7,
     "classGroup": "Palmares - 2 serie",
     "committee": "Assembleia Geral das Nações Unidas (AGNU)",
@@ -2420,7 +2420,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/EM/Comite_2_EM.json",
+    "sourceFile": "paises\\EM\\Comite_2_EM.json",
     "sourceRow": 8,
     "classGroup": "Palmares - 2ª série",
     "committee": "Assembleia Geral das Nações Unidas (AGNU)",
@@ -2446,7 +2446,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/EM/Comite_2_EM.json",
+    "sourceFile": "paises\\EM\\Comite_2_EM.json",
     "sourceRow": 9,
     "classGroup": "Sta Ines - 1 Serie A",
     "committee": "Assembleia Geral das Nações Unidas (AGNU)",
@@ -2472,7 +2472,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/EM/Comite_2_EM.json",
+    "sourceFile": "paises\\EM\\Comite_2_EM.json",
     "sourceRow": 10,
     "classGroup": "Sta Ines - 1ª série A",
     "committee": "Assembleia Geral das Nações Unidas (AGNU)",
@@ -2498,7 +2498,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/EM/Comite_2_EM.json",
+    "sourceFile": "paises\\EM\\Comite_2_EM.json",
     "sourceRow": 11,
     "classGroup": "Sta Ines - 3 serie",
     "committee": "Assembleia Geral das Nações Unidas (AGNU)",
@@ -2524,7 +2524,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/EM/Comite_2_EM.json",
+    "sourceFile": "paises\\EM\\Comite_2_EM.json",
     "sourceRow": 12,
     "classGroup": "Palmares - 3ª série",
     "committee": "Assembleia Geral das Nações Unidas (AGNU)",
@@ -2550,7 +2550,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/EM/Comite_3_EM.json",
+    "sourceFile": "paises\\EM\\Comite_3_EM.json",
     "sourceRow": 1,
     "classGroup": "Palmares - 2 serie",
     "committee": "Alto Comissariado das Nações Unidas para Refugiados (ACNUR)",
@@ -2576,7 +2576,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/EM/Comite_3_EM.json",
+    "sourceFile": "paises\\EM\\Comite_3_EM.json",
     "sourceRow": 2,
     "classGroup": "Palmares - 2 serie",
     "committee": "Alto Comissariado das Nações Unidas para Refugiados (ACNUR)",
@@ -2602,7 +2602,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/EM/Comite_3_EM.json",
+    "sourceFile": "paises\\EM\\Comite_3_EM.json",
     "sourceRow": 3,
     "classGroup": "Palmares - 2 serie",
     "committee": "Alto Comissariado das Nações Unidas para Refugiados (ACNUR)",
@@ -2628,7 +2628,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/EM/Comite_3_EM.json",
+    "sourceFile": "paises\\EM\\Comite_3_EM.json",
     "sourceRow": 5,
     "classGroup": "Sta Ines - 1ª série A",
     "committee": "Alto Comissariado das Nações Unidas para Refugiados (ACNUR)",
@@ -2654,7 +2654,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/EM/Comite_3_EM.json",
+    "sourceFile": "paises\\EM\\Comite_3_EM.json",
     "sourceRow": 6,
     "classGroup": "Palmares - 1 Serie A",
     "committee": "Alto Comissariado das Nações Unidas para Refugiados (ACNUR)",
@@ -2680,7 +2680,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/EM/Comite_3_EM.json",
+    "sourceFile": "paises\\EM\\Comite_3_EM.json",
     "sourceRow": 7,
     "classGroup": "Palmares - 1 Serie A",
     "committee": "Alto Comissariado das Nações Unidas para Refugiados (ACNUR)",
@@ -2706,7 +2706,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/EM/Comite_3_EM.json",
+    "sourceFile": "paises\\EM\\Comite_3_EM.json",
     "sourceRow": 8,
     "classGroup": "Palmares - 1 Serie B",
     "committee": "Alto Comissariado das Nações Unidas para Refugiados (ACNUR)",
@@ -2732,7 +2732,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/EM/Comite_3_EM.json",
+    "sourceFile": "paises\\EM\\Comite_3_EM.json",
     "sourceRow": 9,
     "classGroup": "Palmares - 1 Serie B",
     "committee": "Alto Comissariado das Nações Unidas para Refugiados (ACNUR)",
@@ -2758,7 +2758,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/EM/Comite_3_EM.json",
+    "sourceFile": "paises\\EM\\Comite_3_EM.json",
     "sourceRow": 10,
     "classGroup": "Palmares - 1 Serie B",
     "committee": "Alto Comissariado das Nações Unidas para Refugiados (ACNUR)",
@@ -2784,7 +2784,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/EM/Comite_3_EM.json",
+    "sourceFile": "paises\\EM\\Comite_3_EM.json",
     "sourceRow": 11,
     "classGroup": "Palmares - 1 Serie B",
     "committee": "Alto Comissariado das Nações Unidas para Refugiados (ACNUR)",
@@ -2810,7 +2810,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/EM/Comite_4_EM.json",
+    "sourceFile": "paises\\EM\\Comite_4_EM.json",
     "sourceRow": 2,
     "classGroup": "Palmares - 1 Serie B",
     "committee": "Bioética e Genética Humana",
@@ -2836,7 +2836,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/EM/Comite_4_EM.json",
+    "sourceFile": "paises\\EM\\Comite_4_EM.json",
     "sourceRow": 3,
     "classGroup": "Palmares - 1 Serie B",
     "committee": "Bioética e Genética Humana",
@@ -2862,7 +2862,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/EM/Comite_4_EM.json",
+    "sourceFile": "paises\\EM\\Comite_4_EM.json",
     "sourceRow": 4,
     "classGroup": "Palmares - 1ª série A",
     "committee": "Bioética e Genética Humana",
@@ -2888,7 +2888,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/EM/Comite_4_EM.json",
+    "sourceFile": "paises\\EM\\Comite_4_EM.json",
     "sourceRow": 5,
     "classGroup": "Palmares - 2 serie",
     "committee": "Bioética e Genética Humana",
@@ -2914,7 +2914,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/EM/Comite_4_EM.json",
+    "sourceFile": "paises\\EM\\Comite_4_EM.json",
     "sourceRow": 6,
     "classGroup": "Palmares - 2 serie",
     "committee": "Bioética e Genética Humana",
@@ -2940,7 +2940,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/EM/Comite_4_EM.json",
+    "sourceFile": "paises\\EM\\Comite_4_EM.json",
     "sourceRow": 8,
     "classGroup": "Palmares - 1 Serie B",
     "committee": "Bioética e Genética Humana",
@@ -2966,7 +2966,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/EM/Comite_4_EM.json",
+    "sourceFile": "paises\\EM\\Comite_4_EM.json",
     "sourceRow": 9,
     "classGroup": "Sta Ines - 2 serie",
     "committee": "Bioética e Genética Humana",
@@ -2992,7 +2992,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/EM/Comite_7_EM.json",
+    "sourceFile": "paises\\EM\\Comite_7_EM.json",
     "sourceRow": 1,
     "classGroup": "Palmares - 1 Serie B",
     "committee": "Organização das Nações Unidas para as Mulheres (ONU Mulheres)",
@@ -3018,7 +3018,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/EM/Comite_7_EM.json",
+    "sourceFile": "paises\\EM\\Comite_7_EM.json",
     "sourceRow": 2,
     "classGroup": "Palmares - 1 Serie B",
     "committee": "Organização das Nações Unidas para as Mulheres (ONU Mulheres)",
@@ -3044,7 +3044,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/EM/Comite_7_EM.json",
+    "sourceFile": "paises\\EM\\Comite_7_EM.json",
     "sourceRow": 3,
     "classGroup": "Palmares - 2 serie",
     "committee": "Organização das Nações Unidas para as Mulheres (ONU Mulheres)",
@@ -3070,7 +3070,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/EM/Comite_7_EM.json",
+    "sourceFile": "paises\\EM\\Comite_7_EM.json",
     "sourceRow": 6,
     "classGroup": "Palmares - 1 Serie A",
     "committee": "Organização das Nações Unidas para as Mulheres (ONU Mulheres)",
@@ -3096,7 +3096,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/EM/Comite_7_EM.json",
+    "sourceFile": "paises\\EM\\Comite_7_EM.json",
     "sourceRow": 7,
     "classGroup": "Palmares - 1 Serie A",
     "committee": "Organização das Nações Unidas para as Mulheres (ONU Mulheres)",
@@ -3122,7 +3122,7 @@
   {
     "status": "linked",
     "releaseStatus": "pending",
-    "sourceFile": "paises/EM/Comite_7_EM.json",
+    "sourceFile": "paises\\EM\\Comite_7_EM.json",
     "sourceRow": 8,
     "classGroup": "Sta Ines - 2ª série",
     "committee": "Organização das Nações Unidas para as Mulheres (ONU Mulheres)",

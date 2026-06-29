@@ -12,9 +12,18 @@ function canViewAssignments(user) {
   return user?.role === 'admin';
 }
 
-async function areAssignmentsReleased() {
+async function areCommitteeAssignmentsReleased() {
+  const settings = await getSiteSettings();
+  return Boolean(settings.publicCommitteeReleased || settings.publicDelegationsReleased);
+}
+
+async function areCountryAssignmentsReleased() {
   const settings = await getSiteSettings();
   return Boolean(settings.publicDelegationsReleased);
+}
+
+async function areAssignmentsReleased() {
+  return areCountryAssignmentsReleased();
 }
 
 function stripAssignmentFields(user) {
@@ -28,7 +37,7 @@ function stripAssignmentFields(user) {
 }
 
 async function sanitizeAssignmentVisibility(payload, viewer) {
-  if (canViewAssignments(viewer) || await areAssignmentsReleased()) {
+  if (canViewAssignments(viewer) || await areCountryAssignmentsReleased()) {
     return payload;
   }
 
@@ -41,6 +50,8 @@ async function sanitizeAssignmentVisibility(payload, viewer) {
 
 module.exports = {
   areAssignmentsReleased,
+  areCommitteeAssignmentsReleased,
+  areCountryAssignmentsReleased,
   canViewAssignments,
   getSiteSettings,
   sanitizeAssignmentVisibility,

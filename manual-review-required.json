@@ -49,10 +49,10 @@
       "filesAffected": 7
     },
     "byFile": {
-      "paises/8e9/Comite_1_8e9.json": [
+      "paises\\8e9\\Comite_1_8e9.json": [
         {
           "type": "empty_delegation",
-          "file": "paises/8e9/Comite_1_8e9.json",
+          "file": "paises\\8e9\\Comite_1_8e9.json",
           "rowIndex": 15,
           "classGroup": "",
           "country": "Unesco",
@@ -60,7 +60,7 @@
         },
         {
           "type": "empty_delegation",
-          "file": "paises/8e9/Comite_1_8e9.json",
+          "file": "paises\\8e9\\Comite_1_8e9.json",
           "rowIndex": 16,
           "classGroup": "",
           "country": "União Internacional de Telecomunicações (UIT)",
@@ -68,7 +68,7 @@
         },
         {
           "type": "empty_delegation",
-          "file": "paises/8e9/Comite_1_8e9.json",
+          "file": "paises\\8e9\\Comite_1_8e9.json",
           "rowIndex": 17,
           "classGroup": "",
           "country": "Canadá",
@@ -76,17 +76,17 @@
         },
         {
           "type": "empty_delegation",
-          "file": "paises/8e9/Comite_1_8e9.json",
+          "file": "paises\\8e9\\Comite_1_8e9.json",
           "rowIndex": 18,
           "classGroup": "",
           "country": "Singapura",
           "committee": "Conselho de Direitos Humanos (CDH - 2026)"
         }
       ],
-      "paises/8e9/Comite_2_8e9.json": [
+      "paises\\8e9\\Comite_2_8e9.json": [
         {
           "type": "empty_delegation",
-          "file": "paises/8e9/Comite_2_8e9.json",
+          "file": "paises\\8e9\\Comite_2_8e9.json",
           "rowIndex": 14,
           "classGroup": "",
           "country": "Venezuela",
@@ -94,17 +94,17 @@
         },
         {
           "type": "empty_delegation",
-          "file": "paises/8e9/Comite_2_8e9.json",
+          "file": "paises\\8e9\\Comite_2_8e9.json",
           "rowIndex": 15,
           "classGroup": "",
           "country": "Argélia",
           "committee": "Assembleia Geral das Nações Unidas (AGNU)"
         }
       ],
-      "paises/8e9/Comite_3_8e9.json": [
+      "paises\\8e9\\Comite_3_8e9.json": [
         {
           "type": "empty_delegation",
-          "file": "paises/8e9/Comite_3_8e9.json",
+          "file": "paises\\8e9\\Comite_3_8e9.json",
           "rowIndex": 15,
           "classGroup": "",
           "country": "Arabia Saudita",
@@ -112,17 +112,17 @@
         },
         {
           "type": "empty_delegation",
-          "file": "paises/8e9/Comite_3_8e9.json",
+          "file": "paises\\8e9\\Comite_3_8e9.json",
           "rowIndex": 16,
           "classGroup": "",
           "country": "Colombia",
           "committee": "Alto Comissariado das Nações Unidas para Refugiados (ACNUR)"
         }
       ],
-      "paises/8e9/Comite_4_8e9.json": [
+      "paises\\8e9\\Comite_4_8e9.json": [
         {
           "type": "empty_delegation",
-          "file": "paises/8e9/Comite_4_8e9.json",
+          "file": "paises\\8e9\\Comite_4_8e9.json",
           "rowIndex": 15,
           "classGroup": "",
           "country": "Unesco",
@@ -130,7 +130,7 @@
         },
         {
           "type": "empty_delegation",
-          "file": "paises/8e9/Comite_4_8e9.json",
+          "file": "paises\\8e9\\Comite_4_8e9.json",
           "rowIndex": 16,
           "classGroup": "",
           "country": "Israel",
@@ -138,7 +138,7 @@
         },
         {
           "type": "empty_delegation",
-          "file": "paises/8e9/Comite_4_8e9.json",
+          "file": "paises\\8e9\\Comite_4_8e9.json",
           "rowIndex": 17,
           "classGroup": "",
           "country": "Singapura",
@@ -146,17 +146,17 @@
         },
         {
           "type": "empty_delegation",
-          "file": "paises/8e9/Comite_4_8e9.json",
+          "file": "paises\\8e9\\Comite_4_8e9.json",
           "rowIndex": 18,
           "classGroup": "",
           "country": "Rússia",
           "committee": "Bioética e Genética Humana"
         }
       ],
-      "paises/8e9/Comite_5_8e9.json": [
+      "paises\\8e9\\Comite_5_8e9.json": [
         {
           "type": "empty_delegation",
-          "file": "paises/8e9/Comite_5_8e9.json",
+          "file": "paises\\8e9\\Comite_5_8e9.json",
           "rowIndex": 14,
           "classGroup": "",
           "country": "OMC",
@@ -164,7 +164,7 @@
         },
         {
           "type": "empty_delegation",
-          "file": "paises/8e9/Comite_5_8e9.json",
+          "file": "paises\\8e9\\Comite_5_8e9.json",
           "rowIndex": 15,
           "classGroup": "",
           "country": "Coréia do Sul",
@@ -172,7 +172,7 @@
         },
         {
           "type": "empty_delegation",
-          "file": "paises/8e9/Comite_5_8e9.json",
+          "file": "paises\\8e9\\Comite_5_8e9.json",
           "rowIndex": 16,
           "classGroup": "",
           "country": "Singapura",
@@ -180,7 +180,7 @@
         },
         {
           "type": "empty_delegation",
-          "file": "paises/8e9/Comite_5_8e9.json",
+          "file": "paises\\8e9\\Comite_5_8e9.json",
           "rowIndex": 17,
           "classGroup": "",
           "country": "México",
@@ -188,7 +188,7 @@
         },
         {
           "type": "empty_delegation",
-          "file": "paises/8e9/Comite_5_8e9.json",
+          "file": "paises\\8e9\\Comite_5_8e9.json",
           "rowIndex": 18,
           "classGroup": "",
           "country": "Arábia Saudita",
@@ -196,17 +196,17 @@
         },
         {
           "type": "empty_delegation",
-          "file": "paises/8e9/Comite_5_8e9.json",
+          "file": "paises\\8e9\\Comite_5_8e9.json",
           "rowIndex": 19,
           "classGroup": "",
           "country": "Turquia",
           "committee": "Nova Ordem Global"
         }
       ],
-      "paises/8e9/Comite_6_8e9.json": [
+      "paises\\8e9\\Comite_6_8e9.json": [
         {
           "type": "empty_delegation",
-          "file": "paises/8e9/Comite_6_8e9.json",
+          "file": "paises\\8e9\\Comite_6_8e9.json",
           "rowIndex": 14,
           "classGroup": "",
           "country": "Canadá",
@@ -214,7 +214,7 @@
         },
         {
           "type": "empty_delegation",
-          "file": "paises/8e9/Comite_6_8e9.json",
+          "file": "paises\\8e9\\Comite_6_8e9.json",
           "rowIndex": 15,
           "classGroup": "",
           "country": "CDH",
@@ -222,17 +222,17 @@
         },
         {
           "type": "empty_delegation",
-          "file": "paises/8e9/Comite_6_8e9.json",
+          "file": "paises\\8e9\\Comite_6_8e9.json",
           "rowIndex": 16,
           "classGroup": "",
           "country": "Tribunal Penal (TPI)",
           "committee": "Conselho de Direitos Humanos das Nações Unidas (UNHRC)"
         }
       ],
-      "paises/8e9/Comite_7_8e9.json": [
+      "paises\\8e9\\Comite_7_8e9.json": [
         {
           "type": "empty_delegation",
-          "file": "paises/8e9/Comite_7_8e9.json",
+          "file": "paises\\8e9\\Comite_7_8e9.json",
           "rowIndex": 15,
           "classGroup": "",
           "country": "Unicef",
@@ -240,7 +240,7 @@
         },
         {
           "type": "empty_delegation",
-          "file": "paises/8e9/Comite_7_8e9.json",
+          "file": "paises\\8e9\\Comite_7_8e9.json",
           "rowIndex": 16,
           "classGroup": "",
           "country": "Turquia",
@@ -248,7 +248,7 @@
         },
         {
           "type": "empty_delegation",
-          "file": "paises/8e9/Comite_7_8e9.json",
+          "file": "paises\\8e9\\Comite_7_8e9.json",
           "rowIndex": 17,
           "classGroup": "",
           "country": "Suécia",
@@ -256,7 +256,7 @@
         },
         {
           "type": "empty_delegation",
-          "file": "paises/8e9/Comite_7_8e9.json",
+          "file": "paises\\8e9\\Comite_7_8e9.json",
           "rowIndex": 18,
           "classGroup": "",
           "country": "Egito",

@@ -33,6 +33,11 @@ const portalConfigs = {
                 href: '/admin-delegations'
             },
             {
+                title: 'País por Comitê',
+                text: 'Escolhe o comitê, o segmento e a bandeira do país da delegação.',
+                href: '/gerenciar-paises'
+            },
+            {
                 title: 'Verificar Usuários',
                 text: 'Consulta lista de alunos e dados cadastrados.',
                 href: '/verificacao-usuarios'
@@ -92,6 +97,11 @@ const portalConfigs = {
                 title: 'Coordenação',
                 text: 'Gerenciar atividades.',
                 href: '/coordenacao'
+            },
+            {
+                title: 'País por Comitê',
+                text: 'Consultar e ajustar a distribuição de países por comitê.',
+                href: '/gerenciar-paises'
             }
         ]
     },
@@ -123,6 +133,11 @@ const portalConfigs = {
                 title: 'Orientadores',
                 text: 'Acompanhar delegados.',
                 href: '/orientadores'
+            },
+            {
+                title: 'País por Comitê',
+                text: 'Ver a distribuição de países por comitê.',
+                href: '/gerenciar-paises'
             }
         ]
     },

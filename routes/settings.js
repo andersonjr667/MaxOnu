@@ -19,6 +19,7 @@ router.get('/public-release', async (req, res) => {
         const settings = await getSettings();
         res.json({
             publicDelegationsReleased: settings.publicDelegationsReleased,
+            publicCommitteeReleased: settings.publicCommitteeReleased,
             dpoSubmissionsReleased: settings.dpoSubmissionsReleased,
             updatedAt: settings.updatedAt
         });
@@ -54,6 +55,37 @@ router.put('/public-release', authMiddleware, requireRole(['admin']), async (req
                 ? 'As delegações foram liberadas para visualização pública.'
                 : 'A visualização pública das delegações foi desativada.',
             publicDelegationsReleased: settings.publicDelegationsReleased,
+            updatedAt: settings.updatedAt
+        });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+router.get('/committee-release', async (req, res) => {
+    try {
+        const settings = await getSettings();
+        res.json({
+            publicCommitteeReleased: settings.publicCommitteeReleased,
+            publicDelegationsReleased: settings.publicDelegationsReleased,
+            updatedAt: settings.updatedAt
+        });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+router.put('/committee-release', authMiddleware, requireRole(['admin']), async (req, res) => {
+    try {
+        const settings = await getSettings();
+        settings.publicCommitteeReleased = Boolean(req.body.publicCommitteeReleased);
+        await settings.save();
+
+        res.json({
+            message: settings.publicCommitteeReleased
+                ? 'Os comitês das delegações foram liberados para visualização pública.'
+                : 'A visualização pública dos comitês foi desativada.',
+            publicCommitteeReleased: settings.publicCommitteeReleased,
             updatedAt: settings.updatedAt
         });
     } catch (error) {

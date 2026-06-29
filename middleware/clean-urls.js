@@ -16,7 +16,10 @@ function cleanUrlsMiddleware(publicDir) {
     '/coordenacao': 'coordenacao.html',
     '/dashboard': 'dashboard.html',
     '/admin': 'admin.html',
+    // tolerate admin noise appended to URL (ex: /admin:%20-NoNewline%20arrume)
+    // (handled by normalization middleware below)
     '/admin-sync': 'admin-sync.html',
+    '/gerenciar-paises': 'gerenciar-paises.html',
     '/faq': 'perguntas-comuns.html',
     '/perguntas': 'perguntas-comuns.html', // alias alternativo
     '/perguntas-comuns': 'perguntas-comuns.html',
@@ -47,16 +50,46 @@ function cleanUrlsMiddleware(publicDir) {
       return next();
     }
 
-    // Se a rota está no mapa, serve o arquivo correspondente
-    if (routeMap.hasOwnProperty(req.path)) {
-      const filePath = path.join(publicDir, routeMap[req.path]);
-      const statusCode = routeMap[req.path] === '404.html' ? 404 : 200;
+    // Normalização para URLs "sujas"/com ruído (ex: /admin:%20-NoNewline%20arrume)
+    // Express/Node tende a manter o req.path como veio (incluindo %xx)
+    // Então, tentamos decodificar e reduzir variações comuns.
+    let reqPath = req.path;
+
+    // Caso especial: /admin:<ruído>... -> /admin
+    // (Faz antes do decode para evitar efeitos colaterais)
+    // Exemplos que queremos absorver:
+    // - /admin:%20-NoNewline%20arrume
+    // - /admin:NoNewline
+    // - /admin;NoNewline
+    // - /admin <ruído> (com espaços/mix)
+    if (typeof reqPath === 'string' && /^\/admin(?:[:;].+)?$/i.test(reqPath)) {
+      reqPath = '/admin';
+    }
+
+    try {
+      // Tenta decodificar %xx (se a URL já estiver decodificada, isso não muda nada)
+      reqPath = decodeURIComponent(reqPath);
+    } catch (_) {
+      // ignora; mantém req.path original
+    }
+
+    if (typeof reqPath === 'string') {
+      const m = reqPath.match(/^\/admin(?:[:;\s].*)?$/i);
+      if (m) reqPath = '/admin';
+    }
+
+
+    // Se a rota normalizada está no mapa, serve o arquivo correspondente
+    if (routeMap.hasOwnProperty(reqPath)) {
+      const filePath = path.join(publicDir, routeMap[reqPath]);
+      const statusCode = routeMap[reqPath] === '404.html' ? 404 : 200;
       return res.status(statusCode).sendFile(filePath, (err) => {
         if (err) {
           next();
         }
       });
     }
+
 
     if (!path.extname(req.path)) {
       const candidateFile = path.join(publicDir, `${req.path.replace(/^\/+/, '')}.html`);

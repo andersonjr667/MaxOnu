@@ -176,6 +176,26 @@
   box-shadow: 0 4px 16px rgba(255, 140, 66, 0.2);
 }
 
+[data-theme="dark"] .admin-delegations-page .size-option {
+  background: var(--gradiente-card);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] .admin-delegations-page .size-option:hover {
+  background: rgba(22, 36, 54, 0.95);
+  border-color: rgba(255, 140, 66, 0.4);
+  box-shadow: 0 6px 20px rgba(255, 140, 66, 0.2);
+}
+
+[data-theme="dark"] .admin-delegations-page .size-option.active {
+  border-color: #ff9f5a;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 140, 66, 0.15) 0%,
+    rgba(255, 140, 66, 0.08) 100%
+  );
+}
+
 .admin-delegations-page .size-option input[type="radio"] {
   display: none;
 }
@@ -553,138 +573,133 @@
   box-shadow: 0 6px 20px rgba(209, 73, 91, 0.3);
 }
 
+[data-theme="dark"] .admin-delegations-page {
+  --dash-ink: #e2edf8;
+  --dash-muted: #9eb6cd;
+  --dash-line: rgba(255, 255, 255, 0.08);
+  --dash-glass: rgba(16, 26, 42, 0.95);
+}
+
 [data-theme="dark"] .notification-card {
-  background: linear-gradient(
-    180deg,
-    rgba(16, 26, 42, 0.98),
-    rgba(12, 20, 34, 0.96)
-  );
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--gradiente-card);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 [data-theme="dark"] .notification-title {
-  color: #e2edf8;
+  color: var(--texto);
 }
 
 [data-theme="dark"] .notification-message {
-  color: #9eb6cd;
+  color: var(--texto-suave);
 }
 
 [data-theme="dark"] .notification-btn-secondary {
-  background: rgba(255, 255, 255, 0.08);
-  color: #c8d8e8;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--texto);
 }
 
 [data-theme="dark"] .notification-btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 /* ====== Dark mode: reaproveita padrão do projeto ====== */
 [data-theme="dark"] .admin-delegations-page .delegation-item,
 [data-theme="dark"] .admin-delegations-page .member-input-group,
 [data-theme="dark"] .admin-delegations-page .stat-card {
-  background: linear-gradient(
-    135deg,
-    rgba(20, 32, 50, 0.98) 0%,
-    rgba(16, 26, 42, 0.95) 100%
-  );
-  border-color: rgba(255, 255, 255, 0.12);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  background: var(--gradiente-card);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
 }
 
 [data-theme="dark"] .admin-delegations-page .delegation-item:hover {
   background: linear-gradient(
     135deg,
-    rgba(24, 36, 56, 0.98) 0%,
-    rgba(20, 32, 50, 0.95) 100%
+    rgba(22, 36, 54, 0.98) 0%,
+    rgba(18, 30, 48, 0.96) 100%
   );
   border-color: rgba(255, 140, 66, 0.5);
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
 }
 
+[data-theme="dark"] .admin-delegations-page .delegation-item::after {
+  background: radial-gradient(
+    circle,
+    rgba(255, 140, 66, 0.12) 0%,
+    transparent 70%
+  );
+}
+
 [data-theme="dark"] .admin-delegations-page .delegation-id,
 [data-theme="dark"] .admin-delegations-page .member-name,
 [data-theme="dark"] .admin-delegations-page .stat-value {
-  color: #e2edf8;
+  color: var(--texto);
 }
 
 [data-theme="dark"] .admin-delegations-page .member-username,
 [data-theme="dark"] .admin-delegations-page .stat-label,
-[data-theme="dark"] .admin-delegations-page .delegation-meta {
-  color: #9eb6cd;
+[data-theme="dark"] .admin-delegations-page .delegation-meta,
+[data-theme="dark"] .admin-delegations-page .size-option-desc,
+[data-theme="dark"] .admin-delegations-page .committee-chart-title {
+  color: var(--texto-suave);
 }
 
 [data-theme="dark"] .admin-delegations-page .member-item {
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.06) 0%,
-    rgba(255, 255, 255, 0.04) 100%
-  );
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(18, 30, 48, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.07);
 }
 
 [data-theme="dark"] .admin-delegations-page .member-item:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.1) 0%,
-    rgba(255, 255, 255, 0.07) 100%
-  );
+  background: rgba(22, 34, 52, 0.7);
   border-color: rgba(255, 140, 66, 0.4);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
 }
 
 [data-theme="dark"] .admin-delegations-page .member-avatar {
   border-color: rgba(255, 255, 255, 0.15);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 [data-theme="dark"] .admin-delegations-page .search-input,
 [data-theme="dark"] .admin-delegations-page .filter-select,
 [data-theme="dark"] .admin-delegations-page .member-input-group input,
 [data-theme="dark"] .admin-delegations-page .member-input-group select {
-  background: rgba(10, 18, 32, 0.9);
-  border-color: rgba(255, 255, 255, 0.12);
-  color: #c8d8e8;
+  background: rgba(10, 18, 32, 0.95);
+  border-color: rgba(255, 255, 255, 0.08);
+  color: var(--texto);
+}
+
+[data-theme="dark"] .admin-delegations-page .search-input::placeholder,
+[data-theme="dark"] .admin-delegations-page .filter-select::placeholder,
+[data-theme="dark"] .admin-delegations-page .member-input-group input::placeholder {
+  color: var(--texto-suave);
 }
 
 [data-theme="dark"] .admin-delegations-page .action-btn {
-  background: linear-gradient(
-    135deg,
-    rgba(20, 32, 50, 0.95) 0%,
-    rgba(16, 26, 42, 0.92) 100%
-  );
-  border-color: rgba(255, 255, 255, 0.18);
-  color: #c8d8e8;
+  background: var(--gradiente-card);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: var(--texto);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 [data-theme="dark"] .admin-delegations-page .action-btn:hover {
   background: linear-gradient(
     135deg,
-    rgba(24, 36, 56, 0.98) 0%,
-    rgba(20, 32, 50, 0.95) 100%
+    rgba(22, 36, 54, 0.98) 0%,
+    rgba(18, 30, 48, 0.96) 100%
   );
   border-color: rgba(255, 140, 66, 0.5);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
 }
 
 [data-theme="dark"] .admin-delegations-page .action-btn-danger {
-  border-color: rgba(239, 68, 68, 0.5);
+  border-color: rgba(239, 68, 68, 0.4);
   color: #fca5a5;
-  background: linear-gradient(
-    135deg,
-    rgba(20, 32, 50, 0.95) 0%,
-    rgba(30, 20, 25, 0.92) 100%
-  );
+  background: rgba(22, 18, 22, 0.95);
 }
 
 [data-theme="dark"] .admin-delegations-page .action-btn-danger:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(60, 20, 30, 0.95) 0%,
-    rgba(40, 20, 25, 0.92) 100%
-  );
-  border-color: rgba(239, 68, 68, 0.7);
+  background: rgba(32, 20, 24, 0.98);
+  border-color: rgba(239, 68, 68, 0.6);
   box-shadow: 0 6px 16px rgba(239, 68, 68, 0.3);
 }
 
@@ -703,6 +718,26 @@
   .admin-delegations-page .delegation-actions {
     width: 100%;
     flex-direction: column;
+  }
+
+  .admin-delegations-page .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .admin-delegations-page .stats-grid-secondary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .admin-delegations-page .stat-icon {
+    font-size: 2rem;
+  }
+
+  .admin-delegations-page .stat-value {
+    font-size: 1.75rem;
+  }
+
+  .admin-delegations-page .stat-small-value {
+    font-size: 1.25rem;
   }
 }
 
@@ -905,67 +940,78 @@
 
 /* Dark Mode for Enhanced Stats */
 [data-theme="dark"] .admin-delegations-page .stat-card-primary {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(59, 130, 246, 0.08) 100%);
-  border-color: rgba(59, 130, 246, 0.3);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.18) 0%, rgba(59, 130, 246, 0.1) 100%);
+  border-color: rgba(59, 130, 246, 0.4);
 }
 
 [data-theme="dark"] .admin-delegations-page .stat-card-success {
-  background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(34, 197, 94, 0.08) 100%);
-  border-color: rgba(34, 197, 94, 0.3);
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.18) 0%, rgba(34, 197, 94, 0.1) 100%);
+  border-color: rgba(34, 197, 94, 0.4);
 }
 
 [data-theme="dark"] .admin-delegations-page .stat-card-info {
-  background: linear-gradient(135deg, rgba(168, 85, 247, 0.15) 0%, rgba(168, 85, 247, 0.08) 100%);
-  border-color: rgba(168, 85, 247, 0.3);
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.18) 0%, rgba(168, 85, 247, 0.1) 100%);
+  border-color: rgba(168, 85, 247, 0.4);
 }
 
 [data-theme="dark"] .admin-delegations-page .stat-card-warning {
-  background: linear-gradient(135deg, rgba(251, 146, 60, 0.15) 0%, rgba(251, 146, 60, 0.08) 100%);
-  border-color: rgba(251, 146, 60, 0.3);
+  background: linear-gradient(135deg, rgba(251, 146, 60, 0.18) 0%, rgba(251, 146, 60, 0.1) 100%);
+  border-color: rgba(251, 146, 60, 0.4);
 }
 
 [data-theme="dark"] .admin-delegations-page .stat-card-small {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.04) 100%);
-  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(18, 30, 48, 0.6);
+  border-color: rgba(255, 255, 255, 0.08);
 }
 
 [data-theme="dark"] .admin-delegations-page .stat-small-value {
-  color: #e2edf8;
+  color: var(--texto);
 }
 
 [data-theme="dark"] .admin-delegations-page .stat-small-label,
 [data-theme="dark"] .admin-delegations-page .committee-bar-name {
-  color: #9eb6cd;
+  color: var(--texto-suave);
 }
 
 [data-theme="dark"] .admin-delegations-page .committee-bar-track {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.06);
 }
 
 [data-theme="dark"] .admin-delegations-page .committee-bar-count {
-  background: rgba(255, 255, 255, 0.1);
-  color: #c8d8e8;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--texto);
 }
 
-/* Responsive */
-@media (max-width: 640px) {
-  .admin-delegations-page .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  .admin-delegations-page .stats-grid-secondary {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  .admin-delegations-page .stat-icon {
-    font-size: 2rem;
-  }
-  
-  .admin-delegations-page .stat-value {
-    font-size: 1.75rem;
-  }
-  
-  .admin-delegations-page .stat-small-value {
-    font-size: 1.25rem;
-  }
+[data-theme="dark"] .admin-delegations-page .empty-state {
+  background: rgba(18, 30, 48, 0.4);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] .admin-delegations-page .loading-spinner {
+  border-color: rgba(255, 140, 66, 0.3);
+}
+
+[data-theme="dark"] .admin-delegations-page .committee-chart-section {
+  border-top-color: rgba(255, 255, 255, 0.07);
+}
+
+[data-theme="dark"] .admin-delegations-page .view-button {
+  background: linear-gradient(
+    135deg,
+    rgba(16, 26, 42, 0.95) 0%,
+    rgba(12, 20, 34, 0.92) 100%
+  );
+  border-color: rgba(255, 255, 255, 0.12);
+  color: var(--texto);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+}
+
+[data-theme="dark"] .admin-delegations-page .view-button:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(22, 36, 54, 0.98) 0%,
+    rgba(18, 30, 48, 0.96) 100%
+  );
+  border-color: rgba(255, 140, 66, 0.5);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
 }

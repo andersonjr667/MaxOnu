@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gerenciar Países - MaxOnu 2026</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="stylesheet" href="/css/dashboard.css" />
+  <link rel="stylesheet" href="/css/admin-delegations.css" />
+  <link rel="icon" href="/images/logo-maxonu.png" type="image/png" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet" />
+
+  <script src="/js/session.js"></script>
+  <script src="/js/includes.js" defer></script>
+  <script src="/js/notification-system.js" defer></script>
+
+<script src="/js/gerenciar-paises-v2.js?v=3" defer></script>
+</head>
+<body class="dashboard-page gerenciar-paises-page" data-portal-role="admin">
+
+<main class="main-content" id="main-content">
+  <section class="content-section">
+    <div class="dashboard-container">
+
+      <section class="dashboard-hero">
+        <div class="dashboard-hero-copy">
+          <span class="dashboard-kicker">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg>
+            Administração
+          </span>
+          <h1>Gerenciar países por comitê</h1>
+          <p>
+            Selecione um comitê e um segmento (8º/9º ou EM) para ver as delegações e atribuir/ajustar os países.
+          </p>
+        </div>
+        <div class="dashboard-hero-badge">Admin</div>
+      </section>
+
+      <article class="dashboard-panel">
+        <div class="dashboard-section-heading">
+          <span class="dashboard-section-kicker">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="7" height="7" />
+              <rect x="14" y="3" width="7" height="7" />
+              <rect x="14" y="14" width="7" height="7" />
+              <rect x="3" y="14" width="7" height="7" />
+            </svg>
+            Filtros
+          </span>
+          <h2>Comitê e segmento</h2>
+          <p>O backend já classifica as delegações em 8e9/EM via turma dos membros.</p>
+        </div>
+
+        <div class="delegation-filter-grid" style="max-width: 980px;">
+          <div class="form-group">
+            <label for="committeeSelect">Comitê</label>
+            <select id="committeeSelect" class="delegation-select">
+              <option value="">Selecione um comitê</option>
+              <option value="1">CDH 2026 - O Paradoxo da Hiperconectividade</option>
+              <option value="2">AGNU - Guerra, Multipolaridade e Disputas Territoriais</option>
+              <option value="3">ACNUR - Mobilidade humana e crises humanitárias</option>
+              <option value="4">Bioética e Genética Humana</option>
+              <option value="5">Nova Ordem Global - Recursos Estratégicos e Capitalismo</option>
+              <option value="6">UNHRC - Identidade, memória e poder</option>
+              <option value="7">ONU Mulheres (CSW/2026) - Violência contra Mulheres</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Segmento</label>
+            <div class="delegation-segment-toggle" id="segmentToggle">
+              <button type="button" class="delegation-segment-btn is-active" data-segment="8e9">8º e 9º</button>
+              <button type="button" class="delegation-segment-btn" data-segment="em">EM</button>
+            </div>
+          </div>
+
+          <div class="form-group" style="align-self: end;">
+            <button type="button" class="view-button" id="loadBtn" style="width: 100%;">
+              Carregar delegações
+            </button>
+          </div>
+        </div>
+
+        <div style="display:flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.25rem;">
+          <div class="stat-card" style="flex: 1 1 220px; min-width: 220px;">
+            <div class="stat-value" id="statsTotal">-</div>
+            <div class="stat-label">Delegações</div>
+          </div>
+          <div class="stat-card" style="flex: 1 1 220px; min-width: 220px;">
+            <div class="stat-value" id="statsWithCountry">-</div>
+            <div class="stat-label">Com país</div>
+          </div>
+        </div>
+      </article>
+
+      <article class="dashboard-panel" style="margin-top: 1rem;">
+        <div class="dashboard-section-heading">
+          <span class="dashboard-section-kicker">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+            Lista
+          </span>
+          <h2>Delegações e países</h2>
+          <p>Edite o país de cada delegação e salve.</p>
+        </div>
+
+        <div class="delegation-public-list">
+          <div id="delegationsContainer" class="dashboard-empty" style="margin-top: 0.5rem;">
+            Selecione um comitê e clique em “Carregar delegações”.
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; margin-top: 1rem; gap: 0.75rem;">
+          <button type="button" class="notification-btn notification-btn-secondary" id="resetBtn" style="padding: 0.75rem 1.25rem;">
+            Descartar alterações
+          </button>
+          <button type="button" class="notification-btn notification-btn-primary" id="saveBtn" style="padding: 0.75rem 1.25rem;">
+            Salvar países
+          </button>
+        </div>
+      </article>
+
+    </div>
+  </section>
+</main>
+
+<include src="footer.html"></include>
+
+</body>
+</html>
+

@@ -155,9 +155,101 @@
                 </section>
             </div>
         </section>
+    
+                <section class="dashboard-panel" id="adminReleasesPanel">
+                    <div class="dashboard-section-heading">
+                        <span class="dashboard-section-kicker">Liberações</span>
+                        <h2>Controle de inscrições, comitês e países</h2>
+                        <p>Gerencie as liberações centrais da edição com um painel visual mais direto e status sempre atualizado.</p>
+                    </div>
+
+                    <div class="admin-release-shell">
+                        <div class="admin-release-intro">
+                            <div>
+                                <span class="admin-release-kicker">Operação ao vivo</span>
+                                <h3>Estados da edição</h3>
+                                <p>As três chaves abaixo controlam o que o público vê e quando a área administrativa fica disponível.</p>
+                            </div>
+                            <div class="admin-release-chip-row">
+                                <span class="admin-release-chip">Inscrições</span>
+                                <span class="admin-release-chip">Comitês</span>
+                                <span class="admin-release-chip">Países</span>
+                            </div>
+                        </div>
+
+                        <div id="releaseErrorBox" class="form-message" hidden>
+                            <p style="margin:0;"><strong>Erro:</strong> <span id="releaseErrorLead"></span></p>
+                        </div>
+
+                        <div class="admin-release-grid">
+                            <article class="admin-release-card" id="releaseInscriptionsCard">
+                                <div class="admin-release-card-top">
+                                    <div>
+                                        <span class="admin-release-tag">Fluxo de inscrição</span>
+                                        <h3>Inscrições</h3>
+                                        <p data-status>Carregando...</p>
+                                    </div>
+                                    <div class="admin-release-icon admin-release-icon-blue">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Z" />
+                                            <path d="M8 12h8" />
+                                            <path d="M12 8v8" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="admin-release-actions">
+                                    <button id="releaseInscriptionsBtn" type="button" class="view-button view-button-primary">Aguarde...</button>
+                                </div>
+                            </article>
+
+                            <article class="admin-release-card" id="releaseCommitteesCard">
+                                <div class="admin-release-card-top">
+                                    <div>
+                                        <span class="admin-release-tag">Visibilidade pública</span>
+                                        <h3>Comitês</h3>
+                                        <p data-status>Carregando...</p>
+                                    </div>
+                                    <div class="admin-release-icon admin-release-icon-teal">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="3" y="3" width="7" height="7" />
+                                            <rect x="14" y="3" width="7" height="7" />
+                                            <rect x="14" y="14" width="7" height="7" />
+                                            <rect x="3" y="14" width="7" height="7" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="admin-release-actions">
+                                    <button id="releaseCommitteesBtn" type="button" class="view-button view-button-primary">Aguarde...</button>
+                                </div>
+                            </article>
+
+                            <article class="admin-release-card" id="releaseCountriesCard">
+                                <div class="admin-release-card-top">
+                                    <div>
+                                        <span class="admin-release-tag">Representações</span>
+                                        <h3>Países</h3>
+                                        <p data-status>Carregando...</p>
+                                    </div>
+                                    <div class="admin-release-icon admin-release-icon-green">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M4 19V5" />
+                                            <path d="M4 5c4 0 4 2 8 2s4-2 8-2v10c-4 0-4 2-8 2s-4-2-8-2Z" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="admin-release-actions">
+                                    <button id="releaseCountriesBtn" type="button" class="view-button view-button-primary">Aguarde...</button>
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+                </section>
+            
     </main>
 
     <include src="footer.html"></include>
+
+    <script src="/js/admin-releases.js?v=1" defer></script>
 </body>
 </html>
 

@@ -19,15 +19,14 @@ const upload = multer({
         const allowedMimeTypes = new Set([
             'application/pdf',
             'image/jpeg',
-            'image/png',
-            'image/webp'
+            'image/png'
         ]);
 
         if (allowedMimeTypes.has(file.mimetype)) {
             return cb(null, true);
         }
 
-        cb(new Error('Envie um PDF, JPG, PNG ou WEBP.'));
+        cb(new Error('Envie um PDF, JPG ou PNG.'));
     }
 });
 

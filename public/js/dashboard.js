@@ -10,14 +10,14 @@ const COMMITTEE_LABELS = {
 };
 
 const COUNTRY_SUGGESTIONS = [
-    'África do Sul', 'Alemanha', 'Angola', 'Arábia Saudita', 'Argentina', 'Austrália', 'Áustria', 'Bélgica',
+    'Afeganistão', 'África do Sul', 'Alemanha', 'Angola', 'Arábia Saudita', 'Argentina', 'Austrália', 'Áustria', 'Bélgica',
     'Bolívia', 'Brasil', 'Canadá', 'Chile', 'China', 'Colômbia', 'Coreia do Sul', 'Costa Rica', 'Cuba',
     'Dinamarca', 'Egito', 'Emirados Árabes Unidos', 'Equador', 'Espanha', 'Estados Unidos', 'Etiópia',
     'Filipinas', 'Finlândia', 'França', 'Gana', 'Grécia', 'Guatemala', 'Holanda', 'Hungria', 'Índia',
     'Indonésia', 'Irã', 'Iraque', 'Irlanda', 'Israel', 'Itália', 'Japão', 'Líbano', 'México', 'Moçambique',
-    'Nigéria', 'Noruega', 'Nova Zelândia', 'Paquistão', 'Panamá', 'Paraguai', 'Peru', 'Polônia', 'Portugal',
+    'Nigéria', 'Noruega', 'Nova Zelândia', 'Paquistão', 'Palestina', 'Panamá', 'Paraguai', 'Peru', 'Polônia', 'Portugal',
     'Qatar', 'Quênia', 'Reino Unido', 'República Dominicana', 'Romênia', 'Rússia', 'Senegal', 'Singapura',
-    'Suécia', 'Suíça', 'Tailândia', 'Turquia', 'Ucrânia', 'Uruguai', 'Venezuela', 'Vietnã'
+    'Sudão do Sul', 'Suécia', 'Suíça', 'Tailândia', 'Turquia', 'Ucrânia', 'Uruguai', 'Venezuela', 'Vietnã'
 ];
 
 function getToken() {

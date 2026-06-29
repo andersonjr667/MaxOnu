@@ -6,33 +6,88 @@
     <title>Delegações - MaxOnu 2026</title>
     <!-- SHARE_META_TAGS -->
     <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/delegacoes-operational.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <link rel="icon" href="/images/logo-maxonu.png" type="image/png">
-    <script src="/js/session.js"></script><script src="/js/includes.js?v=20260420-headerfix" defer></script>
-    <script src="/js/committee-pages.js" defer></script>
+    <script src="/js/session.js"></script>
+    <script src="/js/includes.js?v=20260420-headerfix" defer></script>
+    <script src="/js/delegacoes-public-v2.js?v=1" defer></script>
 </head>
-<body data-committee-hub="delegations">
-    
-
+<body data-delegations-page="public">
     <main class="main-content" id="main-content">
         <section class="content-section">
             <div class="dashboard-container">
                 <section class="dashboard-hero">
                     <div class="dashboard-hero-copy">
                         <span class="dashboard-kicker">Delegações</span>
-                        <h1>Páginas por comitê</h1>
-                        <p>Acompanhe a organização das delegações da MaxOnu 2026 por comitê, respeitando o calendário oficial de divulgação pública.</p>
+                        <h1>Consultar delegações por comitê</h1>
+                        <p>Escolha o comitê, selecione o segmento 8º/9º ou EM e veja a lista pública das delegações com seus países correspondentes.</p>
                     </div>
-                    <div class="dashboard-hero-badge">Público</div>
+                    <div class="dashboard-hero-badge">Consulta pública</div>
                 </section>
+
+                <section class="dashboard-panel delegation-public-panel">
+                    <div class="dashboard-section-heading">
+                        <span class="dashboard-section-kicker">Filtros</span>
+                        <h2>Defina o comitê e o segmento</h2>
+                        <p>O resultado carrega a composição pública liberada pela organização.</p>
+                    </div>
+
+                    <div class="delegation-filter-grid">
+                        <div class="form-group">
+                            <label for="committeeSelect">Comitê</label>
+                            <select id="committeeSelect" class="delegation-select">
+                                <option value="">Selecione um comitê</option>
+                                <option value="1">CDH 2026 - O Paradoxo da Hiperconectividade</option>
+                                <option value="2">AGNU - Guerra, Multipolaridade e Disputas Territoriais</option>
+                                <option value="3">ACNUR - Mobilidade humana e crises humanitarias</option>
+                                <option value="4">Bioetica e Genetica Humana</option>
+                                <option value="5">Nova Ordem Global - Recursos Estrategicos e Capitalismo</option>
+                                <option value="6">UNHRC - Identidade, memoria e poder</option>
+                                <option value="7">ONU Mulheres (CSW/2026) - Violencia contra Mulheres</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Segmento</label>
+                            <div class="delegation-segment-toggle" id="segmentToggle">
+                                <button type="button" class="delegation-segment-btn is-active" data-segment="8e9">8º e 9º</button>
+                                <button type="button" class="delegation-segment-btn" data-segment="em">EM</button>
+                            </div>
+                        </div>
+
+                        <div class="delegation-status-chip" id="delegationStatusChip">Selecione um comitê</div>
+                    </div>
+                </section>
+
                 <section class="dashboard-panel">
                     <div class="dashboard-section-heading">
-                        <span class="dashboard-section-kicker">Comitês</span>
-                        <h2>Escolha um comitê</h2>
-                        <p id="delegationsMessage">Carregando páginas de delegações...</p>
+                        <span class="dashboard-section-kicker">Lista</span>
+                        <h2>Delegações e países</h2>
+                        <p id="delegationsMessage">Escolha um comitê para carregar as delegações públicas.</p>
                     </div>
-                    <div class="committees-grid" id="delegationsGrid">
-                        <p class="dashboard-empty">Preparando a navegação por comitê...</p>
+
+                    <div class="delegation-summary-grid">
+                        <div class="delegation-summary-card">
+                            <strong id="delegationsTotal">0</strong>
+                            <span>Delegações exibidas</span>
+                        </div>
+                        <div class="delegation-summary-card">
+                            <strong id="delegationsCountries">0</strong>
+                            <span>Países atribuídos</span>
+                        </div>
+                        <div class="delegation-summary-card">
+                            <strong id="delegationsSegment">-</strong>
+                            <span>Segmento ativo</span>
+                        </div>
+                        <div class="delegation-summary-card">
+                            <strong id="delegationsCommittee">-</strong>
+                            <span>Comitê ativo</span>
+                        </div>
+                    </div>
+
+                    <div id="committeePageContent" class="delegation-public-list">
+                        <p class="dashboard-empty">Carregue um comitê para ver as delegações.</p>
                     </div>
                 </section>
             </div>

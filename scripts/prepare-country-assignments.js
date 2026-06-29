@@ -431,7 +431,9 @@ async function main() {
         const firstLinksSecond = userHasDelegationMember(first.user, secondUserId);
         const secondLinksFirst = userHasDelegationMember(second.user, firstUserId);
 
-        if (!firstLinksSecond || !secondLinksFirst) {
+        // Criar par se A->B OU B->A estiver faltando.
+        const needsLink = !firstLinksSecond || !secondLinksFirst;
+        if (needsLink) {
           summary.pairMismatches += 1;
           summary.pairsToCreate += 1;
           pairs.push({
@@ -482,6 +484,7 @@ async function main() {
           });
           return;
         }
+
 
         pairs.push({
           status: 'linked',

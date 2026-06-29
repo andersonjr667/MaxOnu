@@ -3,7 +3,7 @@
     "type": "ambiguous_user_match",
     "fullName": "Gabriela Bambirra",
     "classGroup": "Palmares - 9 ano A",
-    "file": "paises/8e9/Comite_1_8e9.json",
+    "file": "paises\\8e9\\Comite_1_8e9.json",
     "rowIndex": 1,
     "candidates": [
       {
@@ -26,7 +26,7 @@
   },
   {
     "type": "pair_incomplete",
-    "file": "paises/8e9/Comite_1_8e9.json",
+    "file": "paises\\8e9\\Comite_1_8e9.json",
     "rowIndex": 1,
     "classGroup": "Palmares - 9 ano A",
     "country": "Brasil",
@@ -57,7 +57,7 @@
     "type": "ambiguous_user_match",
     "fullName": "Silvio Junior Cruz de Almeida",
     "classGroup": "Sta Ines - 8 ano B",
-    "file": "paises/8e9/Comite_1_8e9.json",
+    "file": "paises\\8e9\\Comite_1_8e9.json",
     "rowIndex": 5,
     "candidates": [
       {
@@ -75,7 +75,7 @@
   },
   {
     "type": "pair_incomplete",
-    "file": "paises/8e9/Comite_1_8e9.json",
+    "file": "paises\\8e9\\Comite_1_8e9.json",
     "rowIndex": 5,
     "classGroup": "Sta Ines - 8 ano B",
     "country": "França",
@@ -106,7 +106,7 @@
     "type": "ambiguous_user_match",
     "fullName": "Davi Rodrigues",
     "classGroup": "Sta Ines - 9º ano",
-    "file": "paises/8e9/Comite_1_8e9.json",
+    "file": "paises\\8e9\\Comite_1_8e9.json",
     "rowIndex": 14,
     "candidates": [
       {
@@ -129,7 +129,7 @@
   },
   {
     "type": "pair_incomplete",
-    "file": "paises/8e9/Comite_1_8e9.json",
+    "file": "paises\\8e9\\Comite_1_8e9.json",
     "rowIndex": 14,
     "classGroup": "Sta Ines - 9º ano",
     "country": "Coreia do Sul",
@@ -158,7 +158,7 @@
   },
   {
     "type": "empty_delegation",
-    "file": "paises/8e9/Comite_1_8e9.json",
+    "file": "paises\\8e9\\Comite_1_8e9.json",
     "rowIndex": 15,
     "classGroup": "",
     "country": "Unesco",
@@ -166,7 +166,7 @@
   },
   {
     "type": "empty_delegation",
-    "file": "paises/8e9/Comite_1_8e9.json",
+    "file": "paises\\8e9\\Comite_1_8e9.json",
     "rowIndex": 16,
     "classGroup": "",
     "country": "União Internacional de Telecomunicações (UIT)",
@@ -174,7 +174,7 @@
   },
   {
     "type": "empty_delegation",
-    "file": "paises/8e9/Comite_1_8e9.json",
+    "file": "paises\\8e9\\Comite_1_8e9.json",
     "rowIndex": 17,
     "classGroup": "",
     "country": "Canadá",
@@ -182,7 +182,7 @@
   },
   {
     "type": "empty_delegation",
-    "file": "paises/8e9/Comite_1_8e9.json",
+    "file": "paises\\8e9\\Comite_1_8e9.json",
     "rowIndex": 18,
     "classGroup": "",
     "country": "Singapura",
@@ -192,7 +192,7 @@
     "type": "ambiguous_user_match",
     "fullName": "liz souza lauar",
     "classGroup": "Palmares - 9 ano A",
-    "file": "paises/8e9/Comite_2_8e9.json",
+    "file": "paises\\8e9\\Comite_2_8e9.json",
     "rowIndex": 5,
     "candidates": [
       {
@@ -210,7 +210,7 @@
   },
   {
     "type": "pair_incomplete",
-    "file": "paises/8e9/Comite_2_8e9.json",
+    "file": "paises\\8e9\\Comite_2_8e9.json",
     "rowIndex": 5,
     "classGroup": "Palmares - 9 ano A",
     "country": "Palestina",
@@ -239,7 +239,7 @@
   },
   {
     "type": "empty_delegation",
-    "file": "paises/8e9/Comite_2_8e9.json",
+    "file": "paises\\8e9\\Comite_2_8e9.json",
     "rowIndex": 14,
     "classGroup": "",
     "country": "Venezuela",
@@ -247,7 +247,7 @@
   },
   {
     "type": "empty_delegation",
-    "file": "paises/8e9/Comite_2_8e9.json",
+    "file": "paises\\8e9\\Comite_2_8e9.json",
     "rowIndex": 15,
     "classGroup": "",
     "country": "Argélia",
@@ -257,7 +257,7 @@
     "type": "ambiguous_user_match",
     "fullName": "Sofia dos Reis Corrêa Simão",
     "classGroup": "Palmares - 8º ano A",
-    "file": "paises/8e9/Comite_3_8e9.json",
+    "file": "paises\\8e9\\Comite_3_8e9.json",
     "rowIndex": 1,
     "candidates": [
       {
@@ -275,7 +275,7 @@
   },
   {
     "type": "pair_incomplete",
-    "file": "paises/8e9/Comite_3_8e9.json",
+    "file": "paises\\8e9\\Comite_3_8e9.json",
     "rowIndex": 1,
     "classGroup": "Palmares - 8º ano A",
     "country": "Russia",
@@ -306,7 +306,7 @@
     "type": "ambiguous_user_match",
     "fullName": "Maria Luiza Guedes Santiago Santana",
     "classGroup": "Palmares - 9 ano B",
-    "file": "paises/8e9/Comite_3_8e9.json",
+    "file": "paises\\8e9\\Comite_3_8e9.json",
     "rowIndex": 4,
     "candidates": [
       {
@@ -324,7 +324,7 @@
   },
   {
     "type": "pair_incomplete",
-    "file": "paises/8e9/Comite_3_8e9.json",
+    "file": "paises\\8e9\\Comite_3_8e9.json",
     "rowIndex": 4,
     "classGroup": "Palmares - 9 ano B",
     "country": "ACNUR",
@@ -355,7 +355,7 @@
     "type": "ambiguous_user_match",
     "fullName": "Marcelo Campos Rodrigues",
     "classGroup": "Palmares - 9 ano B",
-    "file": "paises/8e9/Comite_3_8e9.json",
+    "file": "paises\\8e9\\Comite_3_8e9.json",
     "rowIndex": 5,
     "candidates": [
       {
@@ -373,7 +373,7 @@
   },
   {
     "type": "pair_incomplete",
-    "file": "paises/8e9/Comite_3_8e9.json",
+    "file": "paises\\8e9\\Comite_3_8e9.json",
     "rowIndex": 5,
     "classGroup": "Palmares - 9 ano B",
     "country": "Ucrânia",
@@ -404,7 +404,7 @@
     "type": "user_not_found",
     "fullName": "Ana Clara Alves",
     "classGroup": "Sta Ines - 8 ano",
-    "file": "paises/8e9/Comite_3_8e9.json",
+    "file": "paises\\8e9\\Comite_3_8e9.json",
     "rowIndex": 13,
     "candidates": [],
     "matchStrategy": ""
@@ -413,7 +413,7 @@
     "type": "user_not_found",
     "fullName": "Ester Oliveira Morais",
     "classGroup": "Sta Ines - 8 ano",
-    "file": "paises/8e9/Comite_3_8e9.json",
+    "file": "paises\\8e9\\Comite_3_8e9.json",
     "rowIndex": 13,
     "candidates": [],
     "matchStrategy": ""
@@ -422,14 +422,14 @@
     "type": "user_not_found",
     "fullName": "Anna Clara Martins Felisale",
     "classGroup": "Sta Ines - 8 ano",
-    "file": "paises/8e9/Comite_3_8e9.json",
+    "file": "paises\\8e9\\Comite_3_8e9.json",
     "rowIndex": 13,
     "candidates": [],
     "matchStrategy": ""
   },
   {
     "type": "pair_member_count_invalid",
-    "file": "paises/8e9/Comite_3_8e9.json",
+    "file": "paises\\8e9\\Comite_3_8e9.json",
     "rowIndex": 13,
     "classGroup": "Sta Ines - 8 ano",
     "country": "Cuba",
@@ -457,7 +457,7 @@
   },
   {
     "type": "empty_delegation",
-    "file": "paises/8e9/Comite_3_8e9.json",
+    "file": "paises\\8e9\\Comite_3_8e9.json",
     "rowIndex": 15,
     "classGroup": "",
     "country": "Arabia Saudita",
@@ -465,7 +465,7 @@
   },
   {
     "type": "empty_delegation",
-    "file": "paises/8e9/Comite_3_8e9.json",
+    "file": "paises\\8e9\\Comite_3_8e9.json",
     "rowIndex": 16,
     "classGroup": "",
     "country": "Colombia",
@@ -475,7 +475,7 @@
     "type": "ambiguous_user_match",
     "fullName": "Isabella Malagoli Peixoto de Oliveira",
     "classGroup": "Sta Ines - 9º ano B",
-    "file": "paises/8e9/Comite_4_8e9.json",
+    "file": "paises\\8e9\\Comite_4_8e9.json",
     "rowIndex": 6,
     "candidates": [
       {
@@ -498,7 +498,7 @@
   },
   {
     "type": "pair_incomplete",
-    "file": "paises/8e9/Comite_4_8e9.json",
+    "file": "paises\\8e9\\Comite_4_8e9.json",
     "rowIndex": 6,
     "classGroup": "Sta Ines - 9º ano B",
     "country": "Índia",
@@ -529,7 +529,7 @@
     "type": "user_not_found",
     "fullName": "Giovanna Mendes Leite",
     "classGroup": "Sta Ines - 8º ano",
-    "file": "paises/8e9/Comite_4_8e9.json",
+    "file": "paises\\8e9\\Comite_4_8e9.json",
     "rowIndex": 13,
     "candidates": [],
     "matchStrategy": ""
@@ -538,14 +538,14 @@
     "type": "user_not_found",
     "fullName": "Maria Clara Evangelista",
     "classGroup": "Sta Ines - 8º ano",
-    "file": "paises/8e9/Comite_4_8e9.json",
+    "file": "paises\\8e9\\Comite_4_8e9.json",
     "rowIndex": 13,
     "candidates": [],
     "matchStrategy": ""
   },
   {
     "type": "pair_incomplete",
-    "file": "paises/8e9/Comite_4_8e9.json",
+    "file": "paises\\8e9\\Comite_4_8e9.json",
     "rowIndex": 13,
     "classGroup": "Sta Ines - 8º ano",
     "country": "Canadá",
@@ -566,7 +566,7 @@
   },
   {
     "type": "empty_delegation",
-    "file": "paises/8e9/Comite_4_8e9.json",
+    "file": "paises\\8e9\\Comite_4_8e9.json",
     "rowIndex": 15,
     "classGroup": "",
     "country": "Unesco",
@@ -574,7 +574,7 @@
   },
   {
     "type": "empty_delegation",
-    "file": "paises/8e9/Comite_4_8e9.json",
+    "file": "paises\\8e9\\Comite_4_8e9.json",
     "rowIndex": 16,
     "classGroup": "",
     "country": "Israel",
@@ -582,7 +582,7 @@
   },
   {
     "type": "empty_delegation",
-    "file": "paises/8e9/Comite_4_8e9.json",
+    "file": "paises\\8e9\\Comite_4_8e9.json",
     "rowIndex": 17,
     "classGroup": "",
     "country": "Singapura",
@@ -590,7 +590,7 @@
   },
   {
     "type": "empty_delegation",
-    "file": "paises/8e9/Comite_4_8e9.json",
+    "file": "paises\\8e9\\Comite_4_8e9.json",
     "rowIndex": 18,
     "classGroup": "",
     "country": "Rússia",
@@ -600,7 +600,7 @@
     "type": "ambiguous_user_match",
     "fullName": "Samuel Rocha Machado",
     "classGroup": "Sta Ines - 9º ano B",
-    "file": "paises/8e9/Comite_5_8e9.json",
+    "file": "paises\\8e9\\Comite_5_8e9.json",
     "rowIndex": 4,
     "candidates": [
       {
@@ -620,7 +620,7 @@
     "type": "ambiguous_user_match",
     "fullName": "Lia Moises  Do Vale Barroso",
     "classGroup": "Sta Ines - 9º ano B",
-    "file": "paises/8e9/Comite_5_8e9.json",
+    "file": "paises\\8e9\\Comite_5_8e9.json",
     "rowIndex": 4,
     "candidates": [
       {
@@ -638,7 +638,7 @@
   },
   {
     "type": "pair_incomplete",
-    "file": "paises/8e9/Comite_5_8e9.json",
+    "file": "paises\\8e9\\Comite_5_8e9.json",
     "rowIndex": 4,
     "classGroup": "Sta Ines - 9º ano B",
     "country": "Índia",
@@ -659,7 +659,7 @@
   },
   {
     "type": "empty_delegation",
-    "file": "paises/8e9/Comite_5_8e9.json",
+    "file": "paises\\8e9\\Comite_5_8e9.json",
     "rowIndex": 14,
     "classGroup": "",
     "country": "OMC",
@@ -667,7 +667,7 @@
   },
   {
     "type": "empty_delegation",
-    "file": "paises/8e9/Comite_5_8e9.json",
+    "file": "paises\\8e9\\Comite_5_8e9.json",
     "rowIndex": 15,
     "classGroup": "",
     "country": "Coréia do Sul",
@@ -675,7 +675,7 @@
   },
   {
     "type": "empty_delegation",
-    "file": "paises/8e9/Comite_5_8e9.json",
+    "file": "paises\\8e9\\Comite_5_8e9.json",
     "rowIndex": 16,
     "classGroup": "",
     "country": "Singapura",
@@ -683,7 +683,7 @@
   },
   {
     "type": "empty_delegation",
-    "file": "paises/8e9/Comite_5_8e9.json",
+    "file": "paises\\8e9\\Comite_5_8e9.json",
     "rowIndex": 17,
     "classGroup": "",
     "country": "México",
@@ -691,7 +691,7 @@
   },
   {
     "type": "empty_delegation",
-    "file": "paises/8e9/Comite_5_8e9.json",
+    "file": "paises\\8e9\\Comite_5_8e9.json",
     "rowIndex": 18,
     "classGroup": "",
     "country": "Arábia Saudita",
@@ -699,7 +699,7 @@
   },
   {
     "type": "empty_delegation",
-    "file": "paises/8e9/Comite_5_8e9.json",
+    "file": "paises\\8e9\\Comite_5_8e9.json",
     "rowIndex": 19,
     "classGroup": "",
     "country": "Turquia",
@@ -707,7 +707,7 @@
   },
   {
     "type": "pair_member_count_invalid",
-    "file": "paises/8e9/Comite_6_8e9.json",
+    "file": "paises\\8e9\\Comite_6_8e9.json",
     "rowIndex": 4,
     "classGroup": "Palmares - 9 ano B",
     "country": "Russia",
@@ -759,7 +759,7 @@
     "type": "ambiguous_user_match",
     "fullName": "Livia Silva Sousa Milan",
     "classGroup": "Palmares - 8 ano A",
-    "file": "paises/8e9/Comite_6_8e9.json",
+    "file": "paises\\8e9\\Comite_6_8e9.json",
     "rowIndex": 7,
     "candidates": [
       {
@@ -782,7 +782,7 @@
   },
   {
     "type": "pair_incomplete",
-    "file": "paises/8e9/Comite_6_8e9.json",
+    "file": "paises\\8e9\\Comite_6_8e9.json",
     "rowIndex": 7,
     "classGroup": "Palmares - 8 ano A",
     "country": "Austrália",
@@ -813,14 +813,14 @@
     "type": "user_not_found",
     "fullName": "Benício Albuquerque Paiva",
     "classGroup": "Sta Ines - 9º ano",
-    "file": "paises/8e9/Comite_6_8e9.json",
+    "file": "paises\\8e9\\Comite_6_8e9.json",
     "rowIndex": 13,
     "candidates": [],
     "matchStrategy": ""
   },
   {
     "type": "pair_incomplete",
-    "file": "paises/8e9/Comite_6_8e9.json",
+    "file": "paises\\8e9\\Comite_6_8e9.json",
     "rowIndex": 13,
     "classGroup": "Sta Ines - 9º ano",
     "country": "Índia",
@@ -849,7 +849,7 @@
   },
   {
     "type": "empty_delegation",
-    "file": "paises/8e9/Comite_6_8e9.json",
+    "file": "paises\\8e9\\Comite_6_8e9.json",
     "rowIndex": 14,
     "classGroup": "",
     "country": "Canadá",
@@ -857,7 +857,7 @@
   },
   {
     "type": "empty_delegation",
-    "file": "paises/8e9/Comite_6_8e9.json",
+    "file": "paises\\8e9\\Comite_6_8e9.json",
     "rowIndex": 15,
     "classGroup": "",
     "country": "CDH",
@@ -865,7 +865,7 @@
   },
   {
     "type": "empty_delegation",
-    "file": "paises/8e9/Comite_6_8e9.json",
+    "file": "paises\\8e9\\Comite_6_8e9.json",
     "rowIndex": 16,
     "classGroup": "",
     "country": "Tribunal Penal (TPI)",
@@ -875,7 +875,7 @@
     "type": "ambiguous_user_match",
     "fullName": "Cecília Andrade Jorge",
     "classGroup": "Palmares - 9 ano A",
-    "file": "paises/8e9/Comite_7_8e9.json",
+    "file": "paises\\8e9\\Comite_7_8e9.json",
     "rowIndex": 3,
     "candidates": [
       {
@@ -893,7 +893,7 @@
   },
   {
     "type": "pair_incomplete",
-    "file": "paises/8e9/Comite_7_8e9.json",
+    "file": "paises\\8e9\\Comite_7_8e9.json",
     "rowIndex": 3,
     "classGroup": "Palmares - 9 ano A",
     "country": "Afeganistão",
@@ -924,14 +924,14 @@
     "type": "user_not_found",
     "fullName": "Bianca Eduarda Coelho",
     "classGroup": "Sta Ines - 9 ano A",
-    "file": "paises/8e9/Comite_7_8e9.json",
+    "file": "paises\\8e9\\Comite_7_8e9.json",
     "rowIndex": 6,
     "candidates": [],
     "matchStrategy": ""
   },
   {
     "type": "pair_incomplete",
-    "file": "paises/8e9/Comite_7_8e9.json",
+    "file": "paises\\8e9\\Comite_7_8e9.json",
     "rowIndex": 6,
     "classGroup": "Sta Ines - 9 ano A",
     "country": "Brasil",
@@ -962,7 +962,7 @@
     "type": "user_not_found",
     "fullName": "Frederico Ferreira Cunha",
     "classGroup": "Sta Ines - 8 ano",
-    "file": "paises/8e9/Comite_7_8e9.json",
+    "file": "paises\\8e9\\Comite_7_8e9.json",
     "rowIndex": 14,
     "candidates": [],
     "matchStrategy": ""
@@ -971,7 +971,7 @@
     "type": "user_not_found",
     "fullName": "Heitor Franscisco Gonçalves",
     "classGroup": "Sta Ines - 8 ano",
-    "file": "paises/8e9/Comite_7_8e9.json",
+    "file": "paises\\8e9\\Comite_7_8e9.json",
     "rowIndex": 14,
     "candidates": [],
     "matchStrategy": ""
@@ -980,14 +980,14 @@
     "type": "user_not_found",
     "fullName": "João Marcos B. Oliveira",
     "classGroup": "Sta Ines - 8 ano",
-    "file": "paises/8e9/Comite_7_8e9.json",
+    "file": "paises\\8e9\\Comite_7_8e9.json",
     "rowIndex": 14,
     "candidates": [],
     "matchStrategy": ""
   },
   {
     "type": "pair_member_count_invalid",
-    "file": "paises/8e9/Comite_7_8e9.json",
+    "file": "paises\\8e9\\Comite_7_8e9.json",
     "rowIndex": 14,
     "classGroup": "Sta Ines - 8 ano",
     "country": "Ruanda",
@@ -1015,7 +1015,7 @@
   },
   {
     "type": "empty_delegation",
-    "file": "paises/8e9/Comite_7_8e9.json",
+    "file": "paises\\8e9\\Comite_7_8e9.json",
     "rowIndex": 15,
     "classGroup": "",
     "country": "Unicef",
@@ -1023,7 +1023,7 @@
   },
   {
     "type": "empty_delegation",
-    "file": "paises/8e9/Comite_7_8e9.json",
+    "file": "paises\\8e9\\Comite_7_8e9.json",
     "rowIndex": 16,
     "classGroup": "",
     "country": "Turquia",
@@ -1031,7 +1031,7 @@
   },
   {
     "type": "empty_delegation",
-    "file": "paises/8e9/Comite_7_8e9.json",
+    "file": "paises\\8e9\\Comite_7_8e9.json",
     "rowIndex": 17,
     "classGroup": "",
     "country": "Suécia",
@@ -1039,7 +1039,7 @@
   },
   {
     "type": "empty_delegation",
-    "file": "paises/8e9/Comite_7_8e9.json",
+    "file": "paises\\8e9\\Comite_7_8e9.json",
     "rowIndex": 18,
     "classGroup": "",
     "country": "Egito",
@@ -1049,7 +1049,7 @@
     "type": "ambiguous_user_match",
     "fullName": "Maria Eduarda Rocha Ribeiro",
     "classGroup": "Sta Ines - 2ª série",
-    "file": "paises/EM/Comite_1_EM.json",
+    "file": "paises\\EM\\Comite_1_EM.json",
     "rowIndex": 6,
     "candidates": [
       {
@@ -1072,7 +1072,7 @@
   },
   {
     "type": "pair_incomplete",
-    "file": "paises/EM/Comite_1_EM.json",
+    "file": "paises\\EM\\Comite_1_EM.json",
     "rowIndex": 6,
     "classGroup": "Sta Ines - 2ª série",
     "country": "",
@@ -1101,7 +1101,7 @@
   },
   {
     "type": "pair_member_count_invalid",
-    "file": "paises/EM/Comite_1_EM.json",
+    "file": "paises\\EM\\Comite_1_EM.json",
     "rowIndex": 7,
     "classGroup": "Palmares - 1 Serie A",
     "country": "",
@@ -1153,14 +1153,14 @@
     "type": "user_not_found",
     "fullName": "Dom Venuto",
     "classGroup": "Sta Ines - 1 Serie A",
-    "file": "paises/EM/Comite_2_EM.json",
+    "file": "paises\\EM\\Comite_2_EM.json",
     "rowIndex": 5,
     "candidates": [],
     "matchStrategy": ""
   },
   {
     "type": "pair_incomplete",
-    "file": "paises/EM/Comite_2_EM.json",
+    "file": "paises\\EM\\Comite_2_EM.json",
     "rowIndex": 5,
     "classGroup": "Sta Ines - 1 Serie A",
     "country": "",
@@ -1191,7 +1191,7 @@
     "type": "ambiguous_user_match",
     "fullName": "Rafaela Gomes Domingues",
     "classGroup": "Sta Ines - 1 Serie A",
-    "file": "paises/EM/Comite_3_EM.json",
+    "file": "paises\\EM\\Comite_3_EM.json",
     "rowIndex": 4,
     "candidates": [
       {
@@ -1209,7 +1209,7 @@
   },
   {
     "type": "pair_incomplete",
-    "file": "paises/EM/Comite_3_EM.json",
+    "file": "paises\\EM\\Comite_3_EM.json",
     "rowIndex": 4,
     "classGroup": "Sta Ines - 1 Serie A",
     "country": "",
@@ -1240,14 +1240,14 @@
     "type": "user_not_found",
     "fullName": "Ana Clara Alves Moreira",
     "classGroup": "Sta Ines - 1ª série A",
-    "file": "paises/EM/Comite_3_EM.json",
+    "file": "paises\\EM\\Comite_3_EM.json",
     "rowIndex": 12,
     "candidates": [],
     "matchStrategy": ""
   },
   {
     "type": "pair_incomplete",
-    "file": "paises/EM/Comite_3_EM.json",
+    "file": "paises\\EM\\Comite_3_EM.json",
     "rowIndex": 12,
     "classGroup": "Sta Ines - 1ª série A",
     "country": "",
@@ -1278,7 +1278,7 @@
     "type": "ambiguous_user_match",
     "fullName": "Gabriela Vivas Braga",
     "classGroup": "Palmares - 1 Serie B",
-    "file": "paises/EM/Comite_4_EM.json",
+    "file": "paises\\EM\\Comite_4_EM.json",
     "rowIndex": 1,
     "candidates": [
       {
@@ -1296,7 +1296,7 @@
   },
   {
     "type": "pair_incomplete",
-    "file": "paises/EM/Comite_4_EM.json",
+    "file": "paises\\EM\\Comite_4_EM.json",
     "rowIndex": 1,
     "classGroup": "Palmares - 1 Serie B",
     "country": "",
@@ -1325,7 +1325,7 @@
   },
   {
     "type": "pair_member_count_invalid",
-    "file": "paises/EM/Comite_4_EM.json",
+    "file": "paises\\EM\\Comite_4_EM.json",
     "rowIndex": 7,
     "classGroup": "Palmares - 3 serie",
     "country": "",
@@ -1377,7 +1377,7 @@
     "type": "user_not_found",
     "fullName": "Rúbia Gomes",
     "classGroup": "Sta Ines - 1ª série A",
-    "file": "paises/EM/Comite_4_EM.json",
+    "file": "paises\\EM\\Comite_4_EM.json",
     "rowIndex": 10,
     "candidates": [],
     "matchStrategy": ""
@@ -1386,14 +1386,14 @@
     "type": "user_not_found",
     "fullName": "Manuella Valadares",
     "classGroup": "Sta Ines - 1ª série A",
-    "file": "paises/EM/Comite_4_EM.json",
+    "file": "paises\\EM\\Comite_4_EM.json",
     "rowIndex": 10,
     "candidates": [],
     "matchStrategy": ""
   },
   {
     "type": "pair_incomplete",
-    "file": "paises/EM/Comite_4_EM.json",
+    "file": "paises\\EM\\Comite_4_EM.json",
     "rowIndex": 10,
     "classGroup": "Sta Ines - 1ª série A",
     "country": "",
@@ -1416,7 +1416,7 @@
     "type": "user_not_found",
     "fullName": "Anne Said de Almeida",
     "classGroup": "Sta Ines - 2ª série A",
-    "file": "paises/EM/Comite_4_EM.json",
+    "file": "paises\\EM\\Comite_4_EM.json",
     "rowIndex": 11,
     "candidates": [],
     "matchStrategy": ""
@@ -1425,14 +1425,14 @@
     "type": "user_not_found",
     "fullName": "Maria Fernanda Mendes de Oliveira",
     "classGroup": "Sta Ines - 2ª série A",
-    "file": "paises/EM/Comite_4_EM.json",
+    "file": "paises\\EM\\Comite_4_EM.json",
     "rowIndex": 11,
     "candidates": [],
     "matchStrategy": ""
   },
   {
     "type": "pair_incomplete",
-    "file": "paises/EM/Comite_4_EM.json",
+    "file": "paises\\EM\\Comite_4_EM.json",
     "rowIndex": 11,
     "classGroup": "Sta Ines - 2ª série A",
     "country": "",
@@ -1455,7 +1455,7 @@
     "type": "ambiguous_user_match",
     "fullName": "Vitor Lima Vasconcelos",
     "classGroup": "Sta Ines - 1 Serie A",
-    "file": "paises/EM/Comite_7_EM.json",
+    "file": "paises\\EM\\Comite_7_EM.json",
     "rowIndex": 4,
     "candidates": [
       {
@@ -1473,7 +1473,7 @@
   },
   {
     "type": "pair_incomplete",
-    "file": "paises/EM/Comite_7_EM.json",
+    "file": "paises\\EM\\Comite_7_EM.json",
     "rowIndex": 4,
     "classGroup": "Sta Ines - 1 Serie A",
     "country": "",
@@ -1504,7 +1504,7 @@
     "type": "ambiguous_user_match",
     "fullName": "Maria Eduarda Santos Martins",
     "classGroup": "Sta Ines - 2ª série",
-    "file": "paises/EM/Comite_7_EM.json",
+    "file": "paises\\EM\\Comite_7_EM.json",
     "rowIndex": 5,
     "candidates": [
       {
@@ -1522,7 +1522,7 @@
   },
   {
     "type": "pair_incomplete",
-    "file": "paises/EM/Comite_7_EM.json",
+    "file": "paises\\EM\\Comite_7_EM.json",
     "rowIndex": 5,
     "classGroup": "Sta Ines - 2ª série",
     "country": "",
@@ -1553,7 +1553,7 @@
     "type": "user_not_found",
     "fullName": "Luana Jácome",
     "classGroup": "Sta Ines - 1ª série A",
-    "file": "paises/EM/Comite_7_EM.json",
+    "file": "paises\\EM\\Comite_7_EM.json",
     "rowIndex": 9,
     "candidates": [],
     "matchStrategy": ""
@@ -1562,14 +1562,14 @@
     "type": "user_not_found",
     "fullName": "Laura Eliza",
     "classGroup": "Sta Ines - 1ª série A",
-    "file": "paises/EM/Comite_7_EM.json",
+    "file": "paises\\EM\\Comite_7_EM.json",
     "rowIndex": 9,
     "candidates": [],
     "matchStrategy": ""
   },
   {
     "type": "pair_incomplete",
-    "file": "paises/EM/Comite_7_EM.json",
+    "file": "paises\\EM\\Comite_7_EM.json",
     "rowIndex": 9,
     "classGroup": "Sta Ines - 1ª série A",
     "country": "",
@@ -1592,14 +1592,14 @@
     "type": "user_not_found",
     "fullName": "Isabella Nunes",
     "classGroup": "Sta Ines - 2ª série A",
-    "file": "paises/EM/Comite_7_EM.json",
+    "file": "paises\\EM\\Comite_7_EM.json",
     "rowIndex": 10,
     "candidates": [],
     "matchStrategy": ""
   },
   {
     "type": "pair_member_count_invalid",
-    "file": "paises/EM/Comite_7_EM.json",
+    "file": "paises\\EM\\Comite_7_EM.json",
     "rowIndex": 10,
     "classGroup": "Sta Ines - 2ª série A",
     "country": "",
@@ -1644,14 +1644,14 @@
     "type": "user_not_found",
     "fullName": "Carlos Henrique de Carvalho",
     "classGroup": "Sta Ines - 2ª série A",
-    "file": "paises/EM/Comite_7_EM.json",
+    "file": "paises\\EM\\Comite_7_EM.json",
     "rowIndex": 11,
     "candidates": [],
     "matchStrategy": ""
   },
   {
     "type": "pair_incomplete",
-    "file": "paises/EM/Comite_7_EM.json",
+    "file": "paises\\EM\\Comite_7_EM.json",
     "rowIndex": 11,
     "classGroup": "Sta Ines - 2ª série A",
     "country": "",
@@ -1682,7 +1682,7 @@
     "type": "user_not_found",
     "fullName": "Alana Queiroz",
     "classGroup": "Sta Ines - 2ª série A",
-    "file": "paises/EM/Comite_7_EM.json",
+    "file": "paises\\EM\\Comite_7_EM.json",
     "rowIndex": 12,
     "candidates": [],
     "matchStrategy": ""
@@ -1691,14 +1691,14 @@
     "type": "user_not_found",
     "fullName": "Vitor Jones Lobo",
     "classGroup": "Sta Ines - 2ª série A",
-    "file": "paises/EM/Comite_7_EM.json",
+    "file": "paises\\EM\\Comite_7_EM.json",
     "rowIndex": 12,
     "candidates": [],
     "matchStrategy": ""
   },
   {
     "type": "pair_incomplete",
-    "file": "paises/EM/Comite_7_EM.json",
+    "file": "paises\\EM\\Comite_7_EM.json",
     "rowIndex": 12,
     "classGroup": "Sta Ines - 2ª série A",
     "country": "",

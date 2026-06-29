@@ -179,7 +179,7 @@ function buildDelegationSummary(user, options = {}) {
             currentSize: getDelegationCount(user),
             remainingSlots: Math.max(getExpectedTeamSize() - getDelegationCount(user), 0)
         },
-notifications: (user.invitations || []).map((invitation) => ({
+        notifications: (user.invitations || []).map((invitation) => ({
             id: String(invitation._id),
             type: invitation.type,
             fromUser: String(invitation.fromUser?._id || invitation.fromUser),
@@ -260,9 +260,14 @@ router.get('/public/committee/:committee', async (req, res) => {
         }
 
         const settings = await getSettings();
-        if (!hasCommitteeRevealPassed() || !settings.publicDelegationsReleased) {
+        const committeeReleased = Boolean(settings.publicCommitteeReleased || settings.publicDelegationsReleased);
+        const countryReleased = Boolean(settings.publicDelegationsReleased);
+
+        if (!hasCommitteeRevealPassed() || !committeeReleased) {
             return res.json({
                 released: false,
+                committeeReleased,
+                countryReleased,
                 committee,
                 delegations: [],
                 revealDate: COMMITTEE_REVEAL_DATE.toISOString()
@@ -271,12 +276,20 @@ router.get('/public/committee/:committee', async (req, res) => {
 
         const users = await User.find({ role: 'candidate', committee })
             .populate('delegationMembers', 'fullName username classGroup committee country registration');
+
+        const requestedSegment = String(req.query.segment || '8e9').toLowerCase();
+        const allowedSegments = ['8e9', 'em'];
+        const selectedSegment = allowedSegments.includes(requestedSegment) ? requestedSegment : '8e9';
+
         const delegations = buildDelegationGroups(users)
-            .filter((group) => group.country)
+            .filter((group) => {
+                const groupSegment = getEducationSegment(group.members[0]?.classGroup);
+                return groupSegment === selectedSegment;
+            })
             .map((group) => ({
                 key: group.key,
                 committee: group.committee,
-                country: group.country,
+                country: countryReleased ? group.country : '',
                 teamSize: group.teamSize,
                 members: group.members.map((member) => ({
                     fullName: member.fullName,
@@ -286,7 +299,10 @@ router.get('/public/committee/:committee', async (req, res) => {
 
         res.json({
             released: true,
+            committeeReleased,
+            countryReleased,
             committee,
+            selectedSegment,
             delegations,
             revealDate: COMMITTEE_REVEAL_DATE.toISOString()
         });
@@ -416,7 +432,7 @@ router.post('/invite', authMiddleware, [
             return res.status(400).json({ error: 'Ja existe um convite pendente enviado para este participante.' });
         }
 
-invited.invitations.push({
+        invited.invitations.push({
             fromUser: inviter._id,
             fromUsername: inviter.username,
             fromProfileImageUrl: inviter.profileImageUrl || '',
@@ -640,7 +656,6 @@ router.post('/leave', authMiddleware, async (req, res) => {
 // Admin routes
 const roleAuth = require('../middleware/roleAuth');
 
-// POST /api/delegation/admin/create - Create delegation directly (admin, press, or coordinator)
 router.post('/admin/create', authMiddleware, roleAuth(['admin', 'press', 'coordinator']), [
     body('members').isArray({ min: 2, max: 3 }).withMessage('Delegação deve ter 2 ou 3 integrantes'),
     body('teamSize').isIn([2, 3]).withMessage('Tamanho deve ser 2 ou 3')
@@ -658,20 +673,16 @@ router.post('/admin/create', authMiddleware, roleAuth(['admin', 'press', 'coordi
             return res.status(404).json({ error: 'Admin não encontrado.' });
         }
 
-        // Validate members count matches teamSize
         if (members.length !== teamSize) {
             return res.status(400).json({ error: `Número de integrantes (${members.length}) não corresponde ao tamanho da delegação (${teamSize}).` });
         }
 
-        // Normalize usernames
         const normalizedMembers = members.map(m => m.trim().toLowerCase());
 
-        // Check for duplicates
         if (new Set(normalizedMembers).size !== normalizedMembers.length) {
             return res.status(400).json({ error: 'Os integrantes devem ser diferentes.' });
         }
 
-        // Find all users
         const users = await User.find({ username: { $in: normalizedMembers } });
 
         if (users.length !== normalizedMembers.length) {
@@ -680,19 +691,16 @@ router.post('/admin/create', authMiddleware, roleAuth(['admin', 'press', 'coordi
             return res.status(404).json({ error: `Usuários não encontrados: ${notFound.join(', ')}` });
         }
 
-        // Validate all are candidates
         const nonCandidates = users.filter(u => u.role !== 'candidate');
         if (nonCandidates.length > 0) {
             return res.status(400).json({ error: `Apenas delegados podem fazer parte de delegações: ${nonCandidates.map(u => u.username).join(', ')}` });
         }
 
-        // Check if any user is already in a delegation
         const alreadyInDelegation = users.filter(u => (u.delegationMembers || []).length > 0);
         if (alreadyInDelegation.length > 0) {
             return res.status(400).json({ error: `Usuários já estão em delegações: ${alreadyInDelegation.map(u => u.username).join(', ')}` });
         }
 
-        // Validate class group compatibility
         if (users.length >= 2) {
             const pairValidation = validateDelegationPairByClassGroup(users[0], users[1]);
             if (!pairValidation.valid) {
@@ -700,7 +708,6 @@ router.post('/admin/create', authMiddleware, roleAuth(['admin', 'press', 'coordi
             }
         }
 
-        // Sync registrations - use first user's registration or create new
         const baseRegistration = users[0].registration?.submittedAt ? users[0].registration : {
             firstChoice: users[0].registration?.firstChoice || null,
             secondChoice: users[0].registration?.secondChoice || null,
@@ -709,7 +716,6 @@ router.post('/admin/create', authMiddleware, roleAuth(['admin', 'press', 'coordi
             submittedAt: new Date()
         };
 
-        // Create delegation links
         for (const user of users) {
             const otherMembers = users.filter(u => !sameId(u._id, user._id));
             user.delegationMembers = otherMembers.map(m => m._id);
@@ -720,17 +726,13 @@ router.post('/admin/create', authMiddleware, roleAuth(['admin', 'press', 'coordi
             await user.save();
         }
 
-        // Sync partner labels
         await syncPartnerLabels(users);
 
-        // Send notifications to all members
         const adminName = admin.fullName || admin.username;
-        const memberNames = users.map(u => u.fullName || u.username).join(', ');
-
         for (const user of users) {
             const otherMembers = users.filter(u => !sameId(u._id, user._id));
             const otherNames = otherMembers.map(m => m.fullName || m.username).join(' e ');
-            
+
             await addUserNotification(user._id, {
                 type: 'delegation-created-by-admin',
                 title: 'Delegação criada',
@@ -768,13 +770,11 @@ router.post('/admin/create', authMiddleware, roleAuth(['admin', 'press', 'coordi
 // GET /api/delegation/admin/list - List all delegations (admin, press, or coordinator)
 router.get('/admin/list', authMiddleware, roleAuth(['admin', 'press', 'coordinator']), async (req, res) => {
     try {
-        // Get all candidates (with or without delegations)
         const users = await User.find({ role: 'candidate' })
             .populate('delegationMembers', 'fullName username classGroup gender profileImageUrl committee country')
             .select('fullName username classGroup delegationMembers registration committee country createdAt gender profileImageUrl')
             .sort({ createdAt: -1 });
 
-        // Build unique delegations
         const delegationMap = new Map();
         const processedUsers = new Set();
 
@@ -788,7 +788,6 @@ router.get('/admin/list', authMiddleware, roleAuth(['admin', 'press', 'coordinat
                 const allMembers = await User.find({ _id: { $in: memberIds } })
                     .select('fullName username classGroup gender profileImageUrl committee country');
 
-                // Get committee from any member that has it
                 const committeeValue = allMembers.find(m => m.committee)?.committee || user.committee || null;
                 const countryValue = allMembers.find(m => m.country)?.country || user.country || null;
 
@@ -818,10 +817,7 @@ router.get('/admin/list', authMiddleware, roleAuth(['admin', 'press', 'coordinat
 
         const shouldHideAssignments = !canViewAssignments(req.user) && !await areAssignmentsReleased();
         const delegations = Array.from(delegationMap.values()).map((delegation) => {
-            if (!shouldHideAssignments) {
-                return delegation;
-            }
-
+            if (!shouldHideAssignments) return delegation;
             return {
                 ...delegation,
                 committee: null,
@@ -829,12 +825,54 @@ router.get('/admin/list', authMiddleware, roleAuth(['admin', 'press', 'coordinat
             };
         });
 
+        res.json({ total: delegations.length, delegations });
+    } catch (error) {
+        console.error('Admin list delegations error:', error);
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// GET /api/delegation/admin/committee/:committee?segment=8e9|em
+router.get('/admin/committee/:committee', authMiddleware, roleAuth(['admin', 'press', 'coordinator']), async (req, res) => {
+    try {
+        const committee = Number(req.params.committee);
+        if (!Number.isInteger(committee) || committee < 1 || committee > 7) {
+            return res.status(400).json({ error: 'Comitê inválido.' });
+        }
+
+        const requestedSegment = String(req.query.segment || '8e9').toLowerCase();
+        const allowedSegments = ['8e9', 'em'];
+        const selectedSegment = allowedSegments.includes(requestedSegment) ? requestedSegment : '8e9';
+
+        // Para admin, não bloqueia por reveal público.
+        // Buscamos candidatos desse comitê e agrupamos pelas delegações.
+        const users = await User.find({ role: 'candidate', committee })
+            .populate('delegationMembers', 'fullName username classGroup committee country registration');
+
+        const delegations = buildDelegationGroups(users)
+            .filter((group) => {
+                const groupSegment = getEducationSegment(group.members[0]?.classGroup);
+                return groupSegment === selectedSegment;
+            })
+            .map((group) => ({
+                _id: group.memberIds.join('-'),
+                committee: group.committee,
+                country: String(group.country || '').trim(),
+                teamSize: group.teamSize,
+                members: group.members.map((member) => ({
+                    fullName: member.fullName,
+                    username: member.username,
+                    classGroup: member.classGroup
+                }))
+            }));
+
         res.json({
-            total: delegations.length,
+            released: true,
+            committee,
+            selectedSegment,
             delegations
         });
     } catch (error) {
-        console.error('Admin list delegations error:', error);
         res.status(400).json({ error: error.message });
     }
 });
@@ -849,30 +887,23 @@ router.delete('/admin/:delegationId', authMiddleware, roleAuth(['admin', 'press'
             return res.status(404).json({ error: 'Admin não encontrado.' });
         }
 
-        // DelegationId is a composite key of member IDs
         const memberIds = delegationId.split('-');
-
         if (memberIds.length < 2) {
             return res.status(400).json({ error: 'ID de delegação inválido.' });
         }
 
-        // Find all members
         const users = await User.find({ _id: { $in: memberIds } });
-
         if (users.length === 0) {
             return res.status(404).json({ error: 'Delegação não encontrada.' });
         }
 
-        // Clear delegation members for all users
         for (const user of users) {
             user.delegationMembers = [];
             await user.save();
         }
 
-        // Sync partner labels
         await syncPartnerLabels(users);
 
-        // Send notifications
         const adminName = admin.fullName || admin.username;
         for (const user of users) {
             await addUserNotification(user._id, {
@@ -886,12 +917,45 @@ router.delete('/admin/:delegationId', authMiddleware, roleAuth(['admin', 'press'
             });
         }
 
-        res.json({
-            message: 'Delegação dissolvida com sucesso.',
-            affectedUsers: users.length
-        });
+        res.json({ message: 'Delegação dissolvida com sucesso.', affectedUsers: users.length });
     } catch (error) {
         console.error('Admin delete delegation error:', error);
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// PUT /api/delegation/admin/:delegationId/country - Update only country for a delegation
+router.put('/admin/:delegationId/country', authMiddleware, roleAuth(['admin', 'press', 'coordinator']), [
+    body('country').optional().isString().withMessage('Country inválido')
+], async (req, res) => {
+    try {
+        const { delegationId } = req.params;
+        const { country } = req.body;
+        const normalizedCountry = String(country || '').trim();
+
+        const memberIds = String(delegationId || '').split('-').filter(Boolean);
+        if (memberIds.length < 2) {
+            return res.status(400).json({ error: 'ID de delegação inválido.' });
+        }
+
+        const users = await User.find({ _id: { $in: memberIds } });
+        if (!users || users.length === 0) {
+            return res.status(404).json({ error: 'Delegação não encontrada.' });
+        }
+
+        await Promise.all(users.map(async (u) => {
+            u.country = normalizedCountry;
+            await u.save();
+        }));
+
+        res.json({
+            message: 'Países atualizados com sucesso.',
+            delegationId,
+            affectedUsers: users.length,
+            country: normalizedCountry
+        });
+    } catch (error) {
+        console.error('Admin update delegation country error:', error);
         res.status(400).json({ error: error.message });
     }
 });
@@ -916,33 +980,24 @@ router.put('/admin/:delegationId', authMiddleware, roleAuth(['admin', 'press', '
             return res.status(404).json({ error: 'Admin não encontrado.' });
         }
 
-        // Validate members count matches teamSize
         if (members.length !== teamSize) {
             return res.status(400).json({ error: `Número de integrantes (${members.length}) não corresponde ao tamanho da delegação (${teamSize}).` });
         }
 
-        // DelegationId is a composite key of member IDs
         const oldMemberIds = delegationId.split('-');
-
         if (oldMemberIds.length < 1) {
             return res.status(400).json({ error: 'ID de delegação inválido.' });
         }
 
-        // Allow completing individual delegations (1 member -> 2 or 3)
-        // Block editing complete delegations to become individual
         if (oldMemberIds.length > 1 && teamSize < oldMemberIds.length) {
             return res.status(400).json({ error: 'Não é possível reduzir o tamanho de uma delegação existente.' });
         }
 
-        // Normalize new usernames
         const normalizedMembers = members.map(m => m.trim().toLowerCase());
-
-        // Check for duplicates
         if (new Set(normalizedMembers).size !== normalizedMembers.length) {
             return res.status(400).json({ error: 'Os integrantes devem ser diferentes.' });
         }
 
-        // Find new users
         const newUsers = await User.find({ username: { $in: normalizedMembers } });
 
         if (newUsers.length !== normalizedMembers.length) {
@@ -951,22 +1006,18 @@ router.put('/admin/:delegationId', authMiddleware, roleAuth(['admin', 'press', '
             return res.status(404).json({ error: `Usuários não encontrados: ${notFound.join(', ')}` });
         }
 
-        // Validate all are candidates
         const nonCandidates = newUsers.filter(u => u.role !== 'candidate');
         if (nonCandidates.length > 0) {
             return res.status(400).json({ error: `Apenas delegados podem fazer parte de delegações: ${nonCandidates.map(u => u.username).join(', ')}` });
         }
 
-        // Check if any NEW user (not in old delegation) is already in another delegation
         const newUserIds = newUsers.map(u => String(u._id));
         const usersNotInOldDelegation = newUsers.filter(u => !oldMemberIds.includes(String(u._id)));
         const alreadyInDelegation = usersNotInOldDelegation.filter(u => (u.delegationMembers || []).length > 0);
-        
         if (alreadyInDelegation.length > 0) {
             return res.status(400).json({ error: `Usuários já estão em outras delegações: ${alreadyInDelegation.map(u => u.username).join(', ')}` });
         }
 
-        // Validate class group compatibility
         if (newUsers.length >= 2) {
             const pairValidation = validateDelegationPairByClassGroup(newUsers[0], newUsers[1]);
             if (!pairValidation.valid) {
@@ -974,21 +1025,18 @@ router.put('/admin/:delegationId', authMiddleware, roleAuth(['admin', 'press', '
             }
         }
 
-        // Find old users
         const oldUsers = await User.find({ _id: { $in: oldMemberIds } });
 
-        // Clear old delegation for users who are being removed
         const removedUsers = oldUsers.filter(oldUser => !newUserIds.includes(String(oldUser._id)));
         for (const user of removedUsers) {
             user.delegationMembers = [];
             await user.save();
         }
 
-        // Create new delegation links
         for (const user of newUsers) {
             const otherMembers = newUsers.filter(u => !sameId(u._id, user._id));
             user.delegationMembers = otherMembers.map(m => m._id);
-            
+
             if (committee) {
                 user.committee = parseInt(committee);
                 if (!user.registration) {
@@ -998,17 +1046,14 @@ router.put('/admin/:delegationId', authMiddleware, roleAuth(['admin', 'press', '
                 user.registration.teamSize = teamSize;
                 user.registration.submittedAt = user.registration.submittedAt || new Date();
             }
-            
+
             await user.save();
         }
 
-        // Sync partner labels
         await syncPartnerLabels([...removedUsers, ...newUsers]);
 
-        // Send notifications
         const adminName = admin.fullName || admin.username;
-        
-        // Notify removed users
+
         for (const user of removedUsers) {
             await addUserNotification(user._id, {
                 type: 'delegation-removed-by-admin',
@@ -1020,12 +1065,11 @@ router.put('/admin/:delegationId', authMiddleware, roleAuth(['admin', 'press', '
                 }
             });
         }
-        
-        // Notify all new delegation members
+
         for (const user of newUsers) {
             const otherMembers = newUsers.filter(u => !sameId(u._id, user._id));
             const otherNames = otherMembers.map(m => m.fullName || m.username).join(' e ');
-            
+
             await addUserNotification(user._id, {
                 type: 'delegation-updated-by-admin',
                 title: 'Delegação atualizada',
@@ -1061,3 +1105,4 @@ router.put('/admin/:delegationId', authMiddleware, roleAuth(['admin', 'press', '
 });
 
 module.exports = router;
+

@@ -14,6 +14,7 @@ const ALLOWED_ROLES = new Set(['admin', 'coordinator', 'teacher']);
 let currentUser = null;
 let registrationsCache = [];
 let exportModalReturnFocus = null;
+let isDetailedOverviewVisible = true;
 
 const QUICK_EXPORT_ENDPOINTS = {
     all: { url: '/api/export/results', filename: 'todos-inscritos.xlsx' },
@@ -840,6 +841,25 @@ function renderDelegationList(registrations) {
         .join('');
 }
 
+function setDetailedOverviewVisibility(visible) {
+    const container = document.getElementById('advancedDetailedOverviewSection');
+    const toggleButton = document.getElementById('advancedToggleDetailedViewBtn');
+
+    isDetailedOverviewVisible = visible;
+
+    if (container) {
+        container.style.display = visible ? '' : 'none';
+    }
+
+    if (toggleButton) {
+        toggleButton.textContent = visible ? 'Ocultar painel filtrado' : 'Mostrar painel filtrado';
+    }
+}
+
+function toggleDetailedOverview() {
+    setDetailedOverviewVisibility(!isDetailedOverviewVisible);
+}
+
 function renderAllAdvancedData() {
     const filtered = applyFilters(registrationsCache);
     renderGlobalSummary(registrationsCache);
@@ -1167,6 +1187,7 @@ function initEventListeners() {
     document.getElementById('advancedLoadBtn')?.addEventListener('click', () => loadRegistrations({ forceFetch: false }));
     document.getElementById('advancedRefreshBtn')?.addEventListener('click', () => loadRegistrations({ forceFetch: true }));
     document.getElementById('advancedResetBtn')?.addEventListener('click', resetFilters);
+    document.getElementById('advancedToggleDetailedViewBtn')?.addEventListener('click', toggleDetailedOverview);
 
     // Modal
     document.getElementById('advancedOpenExportModalBtn')?.addEventListener('click', openExportModal);

@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-06-18T14:29:54.423Z",
-  "totalErrors": 101,
+  "timestamp": "2026-06-20T22:55:07.910Z",
+  "totalErrors": 96,
   "totalAssignments": 273,
   "totalPairs": 121,
   "resolutions": {
@@ -178,10 +178,10 @@
         "filesAffected": 7
       },
       "byFile": {
-        "paises/8e9/Comite_1_8e9.json": [
+        "paises\\8e9\\Comite_1_8e9.json": [
           {
             "type": "empty_delegation",
-            "file": "paises/8e9/Comite_1_8e9.json",
+            "file": "paises\\8e9\\Comite_1_8e9.json",
             "rowIndex": 15,
             "classGroup": "",
             "country": "Unesco",
@@ -189,7 +189,7 @@
           },
           {
             "type": "empty_delegation",
-            "file": "paises/8e9/Comite_1_8e9.json",
+            "file": "paises\\8e9\\Comite_1_8e9.json",
             "rowIndex": 16,
             "classGroup": "",
             "country": "União Internacional de Telecomunicações (UIT)",
@@ -197,7 +197,7 @@
           },
           {
             "type": "empty_delegation",
-            "file": "paises/8e9/Comite_1_8e9.json",
+            "file": "paises\\8e9\\Comite_1_8e9.json",
             "rowIndex": 17,
             "classGroup": "",
             "country": "Canadá",
@@ -205,17 +205,17 @@
           },
           {
             "type": "empty_delegation",
-            "file": "paises/8e9/Comite_1_8e9.json",
+            "file": "paises\\8e9\\Comite_1_8e9.json",
             "rowIndex": 18,
             "classGroup": "",
             "country": "Singapura",
             "committee": "Conselho de Direitos Humanos (CDH - 2026)"
           }
         ],
-        "paises/8e9/Comite_2_8e9.json": [
+        "paises\\8e9\\Comite_2_8e9.json": [
           {
             "type": "empty_delegation",
-            "file": "paises/8e9/Comite_2_8e9.json",
+            "file": "paises\\8e9\\Comite_2_8e9.json",
             "rowIndex": 14,
             "classGroup": "",
             "country": "Venezuela",
@@ -223,17 +223,17 @@
           },
           {
             "type": "empty_delegation",
-            "file": "paises/8e9/Comite_2_8e9.json",
+            "file": "paises\\8e9\\Comite_2_8e9.json",
             "rowIndex": 15,
             "classGroup": "",
             "country": "Argélia",
             "committee": "Assembleia Geral das Nações Unidas (AGNU)"
           }
         ],
-        "paises/8e9/Comite_3_8e9.json": [
+        "paises\\8e9\\Comite_3_8e9.json": [
           {
             "type": "empty_delegation",
-            "file": "paises/8e9/Comite_3_8e9.json",
+            "file": "paises\\8e9\\Comite_3_8e9.json",
             "rowIndex": 15,
             "classGroup": "",
             "country": "Arabia Saudita",
@@ -241,17 +241,17 @@
           },
           {
             "type": "empty_delegation",
-            "file": "paises/8e9/Comite_3_8e9.json",
+            "file": "paises\\8e9\\Comite_3_8e9.json",
             "rowIndex": 16,
             "classGroup": "",
             "country": "Colombia",
             "committee": "Alto Comissariado das Nações Unidas para Refugiados (ACNUR)"
           }
         ],
-        "paises/8e9/Comite_4_8e9.json": [
+        "paises\\8e9\\Comite_4_8e9.json": [
           {
             "type": "empty_delegation",
-            "file": "paises/8e9/Comite_4_8e9.json",
+            "file": "paises\\8e9\\Comite_4_8e9.json",
             "rowIndex": 15,
             "classGroup": "",
             "country": "Unesco",
@@ -259,7 +259,7 @@
           },
           {
             "type": "empty_delegation",
-            "file": "paises/8e9/Comite_4_8e9.json",
+            "file": "paises\\8e9\\Comite_4_8e9.json",
             "rowIndex": 16,
             "classGroup": "",
             "country": "Israel",
@@ -267,7 +267,7 @@
           },
           {
             "type": "empty_delegation",
-            "file": "paises/8e9/Comite_4_8e9.json",
+            "file": "paises\\8e9\\Comite_4_8e9.json",
             "rowIndex": 17,
             "classGroup": "",
             "country": "Singapura",
@@ -275,17 +275,17 @@
           },
           {
             "type": "empty_delegation",
-            "file": "paises/8e9/Comite_4_8e9.json",
+            "file": "paises\\8e9\\Comite_4_8e9.json",
             "rowIndex": 18,
             "classGroup": "",
             "country": "Rússia",
             "committee": "Bioética e Genética Humana"
           }
         ],
-        "paises/8e9/Comite_5_8e9.json": [
+        "paises\\8e9\\Comite_5_8e9.json": [
           {
             "type": "empty_delegation",
-            "file": "paises/8e9/Comite_5_8e9.json",
+            "file": "paises\\8e9\\Comite_5_8e9.json",
             "rowIndex": 14,
             "classGroup": "",
             "country": "OMC",
@@ -293,7 +293,7 @@
           },
           {
             "type": "empty_delegation",
-            "file": "paises/8e9/Comite_5_8e9.json",
+            "file": "paises\\8e9\\Comite_5_8e9.json",
             "rowIndex": 15,
             "classGroup": "",
             "country": "Coréia do Sul",
@@ -301,7 +301,7 @@
           },
           {
             "type": "empty_delegation",
-            "file": "paises/8e9/Comite_5_8e9.json",
+            "file": "paises\\8e9\\Comite_5_8e9.json",
             "rowIndex": 16,
             "classGroup": "",
             "country": "Singapura",
@@ -309,7 +309,7 @@
           },
           {
             "type": "empty_delegation",
-            "file": "paises/8e9/Comite_5_8e9.json",
+            "file": "paises\\8e9\\Comite_5_8e9.json",
             "rowIndex": 17,
             "classGroup": "",
             "country": "México",
@@ -317,7 +317,7 @@
           },
           {
             "type": "empty_delegation",
-            "file": "paises/8e9/Comite_5_8e9.json",
+            "file": "paises\\8e9\\Comite_5_8e9.json",
             "rowIndex": 18,
             "classGroup": "",
             "country": "Arábia Saudita",
@@ -325,17 +325,17 @@
           },
           {
             "type": "empty_delegation",
-            "file": "paises/8e9/Comite_5_8e9.json",
+            "file": "paises\\8e9\\Comite_5_8e9.json",
             "rowIndex": 19,
             "classGroup": "",
             "country": "Turquia",
             "committee": "Nova Ordem Global"
           }
         ],
-        "paises/8e9/Comite_6_8e9.json": [
+        "paises\\8e9\\Comite_6_8e9.json": [
           {
             "type": "empty_delegation",
-            "file": "paises/8e9/Comite_6_8e9.json",
+            "file": "paises\\8e9\\Comite_6_8e9.json",
             "rowIndex": 14,
             "classGroup": "",
             "country": "Canadá",
@@ -343,7 +343,7 @@
           },
           {
             "type": "empty_delegation",
-            "file": "paises/8e9/Comite_6_8e9.json",
+            "file": "paises\\8e9\\Comite_6_8e9.json",
             "rowIndex": 15,
             "classGroup": "",
             "country": "CDH",
@@ -351,17 +351,17 @@
           },
           {
             "type": "empty_delegation",
-            "file": "paises/8e9/Comite_6_8e9.json",
+            "file": "paises\\8e9\\Comite_6_8e9.json",
             "rowIndex": 16,
             "classGroup": "",
             "country": "Tribunal Penal (TPI)",
             "committee": "Conselho de Direitos Humanos das Nações Unidas (UNHRC)"
           }
         ],
-        "paises/8e9/Comite_7_8e9.json": [
+        "paises\\8e9\\Comite_7_8e9.json": [
           {
             "type": "empty_delegation",
-            "file": "paises/8e9/Comite_7_8e9.json",
+            "file": "paises\\8e9\\Comite_7_8e9.json",
             "rowIndex": 15,
             "classGroup": "",
             "country": "Unicef",
@@ -369,7 +369,7 @@
           },
           {
             "type": "empty_delegation",
-            "file": "paises/8e9/Comite_7_8e9.json",
+            "file": "paises\\8e9\\Comite_7_8e9.json",
             "rowIndex": 16,
             "classGroup": "",
             "country": "Turquia",
@@ -377,7 +377,7 @@
           },
           {
             "type": "empty_delegation",
-            "file": "paises/8e9/Comite_7_8e9.json",
+            "file": "paises\\8e9\\Comite_7_8e9.json",
             "rowIndex": 17,
             "classGroup": "",
             "country": "Suécia",
@@ -385,7 +385,7 @@
           },
           {
             "type": "empty_delegation",
-            "file": "paises/8e9/Comite_7_8e9.json",
+            "file": "paises\\8e9\\Comite_7_8e9.json",
             "rowIndex": 18,
             "classGroup": "",
             "country": "Egito",
@@ -406,70 +406,70 @@
         {
           "fullName": "Ana Clara Alves",
           "classGroup": "Sta Ines - 8 ano",
-          "file": "paises/8e9/Comite_3_8e9.json",
+          "file": "paises\\8e9\\Comite_3_8e9.json",
           "rowIndex": 13,
           "candidates": "no candidates"
         },
         {
           "fullName": "Ester Oliveira Morais",
           "classGroup": "Sta Ines - 8 ano",
-          "file": "paises/8e9/Comite_3_8e9.json",
+          "file": "paises\\8e9\\Comite_3_8e9.json",
           "rowIndex": 13,
           "candidates": "no candidates"
         },
         {
           "fullName": "Anna Clara Martins Felisale",
           "classGroup": "Sta Ines - 8 ano",
-          "file": "paises/8e9/Comite_3_8e9.json",
+          "file": "paises\\8e9\\Comite_3_8e9.json",
           "rowIndex": 13,
           "candidates": "no candidates"
         },
         {
           "fullName": "Giovanna Mendes Leite",
           "classGroup": "Sta Ines - 8º ano",
-          "file": "paises/8e9/Comite_4_8e9.json",
+          "file": "paises\\8e9\\Comite_4_8e9.json",
           "rowIndex": 13,
           "candidates": "no candidates"
         },
         {
           "fullName": "Maria Clara Evangelista",
           "classGroup": "Sta Ines - 8º ano",
-          "file": "paises/8e9/Comite_4_8e9.json",
+          "file": "paises\\8e9\\Comite_4_8e9.json",
           "rowIndex": 13,
           "candidates": "no candidates"
         },
         {
           "fullName": "Benício Albuquerque Paiva",
           "classGroup": "Sta Ines - 9º ano",
-          "file": "paises/8e9/Comite_6_8e9.json",
+          "file": "paises\\8e9\\Comite_6_8e9.json",
           "rowIndex": 13,
           "candidates": "no candidates"
         },
         {
           "fullName": "Bianca Eduarda Coelho",
           "classGroup": "Sta Ines - 9 ano A",
-          "file": "paises/8e9/Comite_7_8e9.json",
+          "file": "paises\\8e9\\Comite_7_8e9.json",
           "rowIndex": 6,
           "candidates": "no candidates"
         },
         {
           "fullName": "Frederico Ferreira Cunha",
           "classGroup": "Sta Ines - 8 ano",
-          "file": "paises/8e9/Comite_7_8e9.json",
+          "file": "paises\\8e9\\Comite_7_8e9.json",
           "rowIndex": 14,
           "candidates": "no candidates"
         },
         {
           "fullName": "Heitor Franscisco Gonçalves",
           "classGroup": "Sta Ines - 8 ano",
-          "file": "paises/8e9/Comite_7_8e9.json",
+          "file": "paises\\8e9\\Comite_7_8e9.json",
           "rowIndex": 14,
           "candidates": "no candidates"
         },
         {
           "fullName": "João Marcos B. Oliveira",
           "classGroup": "Sta Ines - 8 ano",
-          "file": "paises/8e9/Comite_7_8e9.json",
+          "file": "paises\\8e9\\Comite_7_8e9.json",
           "rowIndex": 14,
           "candidates": "no candidates"
         }
@@ -478,190 +478,14 @@
     "pairsToCreate": {
       "type": "pairs_to_create",
       "summary": {
-        "totalPairs": 5,
-        "operations": 10
+        "totalPairs": 0,
+        "operations": 0
       },
-      "patch": [
-        {
-          "type": "create_delegation_link",
-          "action": "push_to_delegationMembers",
-          "firstUserId": "69fbc007d14860ef4f8b8a2e",
-          "secondUserId": "69fba252d14860ef4f8b7a71",
-          "committee": "Conselho de Direitos Humanos (CDH - 2026)",
-          "country": "Austrália",
-          "classGroup": "Sta Ines - 8 ano",
-          "operations": [
-            {
-              "updateOne": {
-                "filter": {
-                  "_id": "69fbc007d14860ef4f8b8a2e"
-                },
-                "update": {
-                  "$addToSet": {
-                    "delegationMembers": "69fba252d14860ef4f8b7a71"
-                  }
-                }
-              }
-            },
-            {
-              "updateOne": {
-                "filter": {
-                  "_id": "69fba252d14860ef4f8b7a71"
-                },
-                "update": {
-                  "$addToSet": {
-                    "delegationMembers": "69fbc007d14860ef4f8b8a2e"
-                  }
-                }
-              }
-            }
-          ]
-        },
-        {
-          "type": "create_delegation_link",
-          "action": "push_to_delegationMembers",
-          "firstUserId": "69fbce7cd14860ef4f8b90c9",
-          "secondUserId": "69fbb9a9d14860ef4f8b86c5",
-          "committee": "Alto Comissariado das Nações Unidas para Refugiados (ACNUR)",
-          "country": "Alemanha",
-          "classGroup": "Sta Ines - 9º ano",
-          "operations": [
-            {
-              "updateOne": {
-                "filter": {
-                  "_id": "69fbce7cd14860ef4f8b90c9"
-                },
-                "update": {
-                  "$addToSet": {
-                    "delegationMembers": "69fbb9a9d14860ef4f8b86c5"
-                  }
-                }
-              }
-            },
-            {
-              "updateOne": {
-                "filter": {
-                  "_id": "69fbb9a9d14860ef4f8b86c5"
-                },
-                "update": {
-                  "$addToSet": {
-                    "delegationMembers": "69fbce7cd14860ef4f8b90c9"
-                  }
-                }
-              }
-            }
-          ]
-        },
-        {
-          "type": "create_delegation_link",
-          "action": "push_to_delegationMembers",
-          "firstUserId": "69fcf01e6eec1d500bcc19cc",
-          "secondUserId": "69fcfd826eec1d500bcc1e44",
-          "committee": "Bioética e Genética Humana",
-          "country": "Coreia do Sul",
-          "classGroup": "Sta Ines - 9º ano",
-          "operations": [
-            {
-              "updateOne": {
-                "filter": {
-                  "_id": "69fcf01e6eec1d500bcc19cc"
-                },
-                "update": {
-                  "$addToSet": {
-                    "delegationMembers": "69fcfd826eec1d500bcc1e44"
-                  }
-                }
-              }
-            },
-            {
-              "updateOne": {
-                "filter": {
-                  "_id": "69fcfd826eec1d500bcc1e44"
-                },
-                "update": {
-                  "$addToSet": {
-                    "delegationMembers": "69fcf01e6eec1d500bcc19cc"
-                  }
-                }
-              }
-            }
-          ]
-        },
-        {
-          "type": "create_delegation_link",
-          "action": "push_to_delegationMembers",
-          "firstUserId": "69fc638e9593988d4bb24e7d",
-          "secondUserId": "69fbc335d14860ef4f8b8cb5",
-          "committee": "Nova Ordem Global",
-          "country": "Irã",
-          "classGroup": "Sta Ines - 8 ano",
-          "operations": [
-            {
-              "updateOne": {
-                "filter": {
-                  "_id": "69fc638e9593988d4bb24e7d"
-                },
-                "update": {
-                  "$addToSet": {
-                    "delegationMembers": "69fbc335d14860ef4f8b8cb5"
-                  }
-                }
-              }
-            },
-            {
-              "updateOne": {
-                "filter": {
-                  "_id": "69fbc335d14860ef4f8b8cb5"
-                },
-                "update": {
-                  "$addToSet": {
-                    "delegationMembers": "69fc638e9593988d4bb24e7d"
-                  }
-                }
-              }
-            }
-          ]
-        },
-        {
-          "type": "create_delegation_link",
-          "action": "push_to_delegationMembers",
-          "firstUserId": "69fba2cad14860ef4f8b7a9a",
-          "secondUserId": "6a039252b4c6ac6d6868b2f6",
-          "committee": "Conselho de Direitos Humanos das Nações Unidas (UNHRC)",
-          "country": "Israel",
-          "classGroup": "Sta Ines - 8 ano",
-          "operations": [
-            {
-              "updateOne": {
-                "filter": {
-                  "_id": "69fba2cad14860ef4f8b7a9a"
-                },
-                "update": {
-                  "$addToSet": {
-                    "delegationMembers": "6a039252b4c6ac6d6868b2f6"
-                  }
-                }
-              }
-            },
-            {
-              "updateOne": {
-                "filter": {
-                  "_id": "6a039252b4c6ac6d6868b2f6"
-                },
-                "update": {
-                  "$addToSet": {
-                    "delegationMembers": "69fba2cad14860ef4f8b7a9a"
-                  }
-                }
-              }
-            }
-          ]
-        }
-      ]
+      "patch": []
     }
   },
   "recommendations": [
-    "1. PARES NÃO VINCULADOS (5): Executar patch com operações MongoDB",
+    "1. PARES NÃO VINCULADOS (0): Executar patch com operações MongoDB",
     "2. DELEGAÇÕES VAZIAS (25): Revisar manualmente 7 arquivo(s)",
     "3. USUÁRIOS NÃO ENCONTRADOS (22): Verificar base de dados",
     "4. MATCHES AMBÍGUOS: 15 resolvidos, 2 precisam revisão"

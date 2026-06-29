@@ -166,6 +166,7 @@
       { href: '/dashboard', label: 'Dashboard' },
       { href: '/admin', label: 'Painel admin' },
       { href: '/admin-delegations', label: 'Delegações admin' },
+      { href: '/gerenciar-paises', label: 'País por comitê' },
       { href: '/verificacao-usuarios', label: 'Verificação de usuários' },
       { href: '/analytics', label: 'Analytics' },
       { href: '/notificacoes-admin', label: 'Notificações' }

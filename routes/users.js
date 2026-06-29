@@ -178,7 +178,10 @@ router.get('/registrations', authMiddleware, requireRole(['admin', 'coordinator'
   try {
     const candidates = await User.find({
       role: 'candidate',
-      'registration.submittedAt': { $ne: null }
+      $or: [
+        { 'registration.submittedAt': { $ne: null } },
+        { delegationMembers: { $exists: true, $ne: [] } }
+      ]
     })
       .select('-password')
       .populate('delegationMembers', 'fullName username email classGroup committee country registration')
