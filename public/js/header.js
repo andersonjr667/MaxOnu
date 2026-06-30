@@ -913,6 +913,38 @@
       const link = e.target.closest('a[data-mx-nav-link]');
       if (link) closeAllDropdowns(root);
     });
+
+    // Cleanup defensivo: fechar drawer quando a página fica invisível (abas/janelas)
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden && root.classList.contains('is-menu-open')) {
+        closeAllDropdowns(root);
+        setMenuOpen(root, false);
+      }
+    });
+
+    // Cleanup defensivo: fechar drawer ao rotacionar o dispositivo
+    window.addEventListener('orientationchange', () => {
+      if (root.classList.contains('is-menu-open')) {
+        closeAllDropdowns(root);
+        setMenuOpen(root, false);
+      }
+    });
+
+    // Cleanup defensivo: remover classes presas ao carregar a página
+    window.addEventListener('load', () => {
+      if (document.body.classList.contains('mx-head-drawer-open') && !root.classList.contains('is-menu-open')) {
+        document.body.classList.remove('mx-head-drawer-open');
+        document.documentElement.classList.remove('mx-head-drawer-open');
+      }
+    });
+
+    // Cleanup defensivo: resetar estado ao sair da página
+    window.addEventListener('beforeunload', () => {
+      if (root.classList.contains('is-menu-open')) {
+        closeAllDropdowns(root);
+        setMenuOpen(root, false);
+      }
+    });
   }
 
   if (document.readyState === 'loading') {

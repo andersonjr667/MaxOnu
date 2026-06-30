@@ -34,7 +34,6 @@ html.mx-head-drawer-open {
 
 body.mx-head-drawer-open {
   overflow: hidden;
-  touch-action: none;
 }
 
 .mx-premium-header__skip-link {
@@ -1539,6 +1538,7 @@ html[data-theme="dark"] .mx-head-theme__moon {
   pointer-events: none;
   transition: opacity 0.3s ease;
   backdrop-filter: blur(2px);
+  touch-action: none;
 }
 
 .mx-premium-header.is-menu-open .mx-premium-header__scrim {
