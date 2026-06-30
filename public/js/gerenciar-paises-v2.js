@@ -618,6 +618,23 @@
         text-transform: uppercase;
       }
 
+      .gp-team-size {
+        margin-top: 0.5rem;
+      }
+
+      .gp-team-size span {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.3rem 0.7rem;
+        border-radius: 999px;
+        background: rgba(15, 58, 82, 0.08);
+        color: #114056;
+        font-weight: 700;
+        font-size: 0.8rem;
+        letter-spacing: 0.02em;
+      }
+
       .gp-member-list {
         display: flex;
         flex-wrap: wrap;
@@ -884,6 +901,8 @@
     const currentFlag = currentCountry ? pickFlagForLabel(currentCountry) : null;
     const query = state.searchTerms[delegationId] || '';
     const results = getMatches(query);
+    const teamSize = Number(delegation.teamSize || (delegation.members || []).length || 0);
+    const teamSizeLabel = teamSize === 3 ? 'Trio' : teamSize === 2 ? 'Dupla' : teamSize === 1 ? 'Individual' : `${teamSize} integrantes`;
 
     return `
       <article class="gp-delegation-card" data-delegation-card data-delegation-id="${delegationId}">
@@ -892,6 +911,7 @@
 
           <div>
             <div class="gp-delegation-id">Delegação #${escapeHtml(delegationId.slice(-6))}</div>
+            <div class="gp-team-size"><span>${escapeHtml(teamSizeLabel)}</span></div>
             <div class="gp-member-list">
               ${(delegation.members || []).map((member) => `
                 <span class="gp-member-pill" title="${escapeHtml(member.fullName || member.username || '')}">
@@ -991,6 +1011,10 @@
           <div class="gp-stat">
             <strong>${statsTotal}</strong>
             <span>Delegações</span>
+          </div>
+          <div class="gp-stat">
+            <strong>${state.delegations.filter((delegation) => Number(delegation.teamSize) === 3).length}</strong>
+            <span>Trios</span>
           </div>
           <div class="gp-stat">
             <strong>${statsWithCountry}</strong>
