@@ -44,6 +44,8 @@ function cleanUrlsMiddleware(publicDir) {
     '/nao-encontrado': '404.html'
   };
 
+  const fileExistsCache = new Map();
+
   return (req, res, next) => {
     // Apenas processa requisições GET e HEAD
     if (!/^(GET|HEAD)$/.test(req.method)) {
@@ -83,6 +85,7 @@ function cleanUrlsMiddleware(publicDir) {
     if (routeMap.hasOwnProperty(reqPath)) {
       const filePath = path.join(publicDir, routeMap[reqPath]);
       const statusCode = routeMap[reqPath] === '404.html' ? 404 : 200;
+      res.setHeader('Cache-Control', 'public, max-age=300');
       return res.status(statusCode).sendFile(filePath, (err) => {
         if (err) {
           next();
@@ -93,7 +96,13 @@ function cleanUrlsMiddleware(publicDir) {
 
     if (!path.extname(req.path)) {
       const candidateFile = path.join(publicDir, `${req.path.replace(/^\/+/, '')}.html`);
-      if (fs.existsSync(candidateFile)) {
+      let exists = fileExistsCache.get(candidateFile);
+      if (exists === undefined) {
+        exists = fs.existsSync(candidateFile);
+        fileExistsCache.set(candidateFile, exists);
+      }
+      if (exists) {
+        res.setHeader('Cache-Control', 'public, max-age=300');
         return res.sendFile(candidateFile, (err) => {
           if (err) {
             next();

@@ -1,7 +1,17 @@
 const SiteSettings = require('../models/SiteSettings');
 
+const settingsCache = {
+  timestamp: 0,
+  settings: null
+};
+
 async function getSettings() {
-    return await SiteSettings.findOne({ singletonKey: 'main' });
+    const now = Date.now();
+    if (!settingsCache.settings || now - settingsCache.timestamp > 5000) {
+        settingsCache.settings = await SiteSettings.findOne({ singletonKey: 'main' });
+        settingsCache.timestamp = now;
+    }
+    return settingsCache.settings;
 }
 
 // Maintenance middleware - blocks all non-admin access when maintenance mode is enabled

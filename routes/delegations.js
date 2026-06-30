@@ -70,6 +70,26 @@ function getEducationSegment(classGroup = '') {
     return '';
 }
 
+function normalizeSegmentQuery(segment = '') {
+    const requested = String(segment || '').trim().toLowerCase();
+    if (requested === '8e9' || requested === 'fundamental' || requested === '8/9') {
+        return 'fundamental';
+    }
+    if (requested === 'em') {
+        return 'em';
+    }
+    return 'fundamental';
+}
+
+function getDelegationGroupSegment(group) {
+    const members = Array.isArray(group.members) ? group.members : [];
+    for (const member of members) {
+        const segment = getEducationSegment(member.classGroup);
+        if (segment) return segment;
+    }
+    return '';
+}
+
 function getExpectedTeamSize() {
     return 2;
 }
@@ -278,14 +298,10 @@ router.get('/public/committee/:committee', async (req, res) => {
             .populate('delegationMembers', 'fullName username classGroup committee country registration');
 
         const requestedSegment = String(req.query.segment || '8e9').toLowerCase();
-        const allowedSegments = ['8e9', 'em'];
-        const selectedSegment = allowedSegments.includes(requestedSegment) ? requestedSegment : '8e9';
+        const selectedSegment = normalizeSegmentQuery(requestedSegment);
 
         const delegations = buildDelegationGroups(users)
-            .filter((group) => {
-                const groupSegment = getEducationSegment(group.members[0]?.classGroup);
-                return groupSegment === selectedSegment;
-            })
+            .filter((group) => getDelegationGroupSegment(group) === selectedSegment)
             .map((group) => ({
                 key: group.key,
                 committee: group.committee,
@@ -841,8 +857,7 @@ router.get('/admin/committee/:committee', authMiddleware, roleAuth(['admin', 'pr
         }
 
         const requestedSegment = String(req.query.segment || '8e9').toLowerCase();
-        const allowedSegments = ['8e9', 'em'];
-        const selectedSegment = allowedSegments.includes(requestedSegment) ? requestedSegment : '8e9';
+        const selectedSegment = normalizeSegmentQuery(requestedSegment);
 
         // Para admin, não bloqueia por reveal público.
         // Buscamos candidatos desse comitê e agrupamos pelas delegações.
@@ -850,10 +865,7 @@ router.get('/admin/committee/:committee', authMiddleware, roleAuth(['admin', 'pr
             .populate('delegationMembers', 'fullName username classGroup committee country registration');
 
         const delegations = buildDelegationGroups(users)
-            .filter((group) => {
-                const groupSegment = getEducationSegment(group.members[0]?.classGroup);
-                return groupSegment === selectedSegment;
-            })
+            .filter((group) => getDelegationGroupSegment(group) === selectedSegment)
             .map((group) => ({
                 _id: group.memberIds.join('-'),
                 committee: group.committee,

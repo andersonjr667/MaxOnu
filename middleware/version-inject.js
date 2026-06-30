@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 let APP_VERSION = Date.now().toString();
+const versionInjectedCache = new Map();
 
 // Load version
 try {
@@ -18,20 +19,27 @@ function injectVersionMiddleware(publicDir) {
       return next();
     }
 
-    const originalSend = res.send;
+    const cacheKey = req.path || '/';
+    const originalSend = res.send.bind(res);
     res.send = function(data) {
       if (typeof data === 'string' && data.includes('</head>')) {
-        // Inject version as query parameter in CSS and JS files
-        data = data.replace(
+        if (versionInjectedCache.has(cacheKey)) {
+          return originalSend(versionInjectedCache.get(cacheKey));
+        }
+
+        let injected = data.replace(
           /href="\/css\/([^"?]+\.css)(\?[^"]*)?"/g,
           `href="/css/$1?v=${APP_VERSION}"`
         );
-        data = data.replace(
+        injected = injected.replace(
           /src="\/js\/([^"?]+\.js)(\?[^"]*)?"/g,
           `src="/js/$1?v=${APP_VERSION}"`
         );
+
+        versionInjectedCache.set(cacheKey, injected);
+        return originalSend(injected);
       }
-      originalSend.call(this, data);
+      return originalSend(data);
     };
     next();
   };

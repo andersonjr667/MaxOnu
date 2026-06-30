@@ -770,34 +770,48 @@ app.use('/paises', express.static(path.join(__dirname, 'paises'), {
   setHeaders: setStaticCacheHeaders
 }));
 
+const flagsCatalogCache = {
+  timestamp: 0,
+  data: null
+};
+
+function buildFlagsCatalog() {
+  const flagsDir = path.join(__dirname, 'paises', 'flags');
+  const files = fs.readdirSync(flagsDir, { withFileTypes: true })
+    .filter((entry) => entry.isFile())
+    .map((entry) => entry.name)
+    .filter((name) => /\.(png|jpe?g|webp|gif|svg)$/i.test(name))
+    .sort((a, b) => a.localeCompare(b, 'pt-BR'));
+
+  return files.map((fileName) => {
+    const stem = fileName.replace(/\.[^.]+$/, '');
+    const label = stem
+      .replace(/_/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .toLowerCase()
+      .split(' ')
+      .map((word) => word ? `${word.charAt(0).toUpperCase()}${word.slice(1)}` : word)
+      .join(' ');
+
+    return {
+      fileName,
+      label,
+      url: `/paises/flags/${encodeURIComponent(fileName)}`
+    };
+  });
+}
+
 app.get('/api/flags-catalog', (req, res) => {
   try {
-    const flagsDir = path.join(__dirname, 'paises', 'flags');
-    const files = fs.readdirSync(flagsDir, { withFileTypes: true })
-      .filter((entry) => entry.isFile())
-      .map((entry) => entry.name)
-      .filter((name) => /\.(png|jpe?g|webp|gif|svg)$/i.test(name))
-      .sort((a, b) => a.localeCompare(b, 'pt-BR'));
+    const now = Date.now();
+    if (!flagsCatalogCache.data || now - flagsCatalogCache.timestamp > 5 * 60 * 1000) {
+      flagsCatalogCache.data = buildFlagsCatalog();
+      flagsCatalogCache.timestamp = now;
+    }
 
-    const flags = files.map((fileName) => {
-      const stem = fileName.replace(/\.[^.]+$/, '');
-      const label = stem
-        .replace(/_/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim()
-        .toLowerCase()
-        .split(' ')
-        .map((word) => word ? `${word.charAt(0).toUpperCase()}${word.slice(1)}` : word)
-        .join(' ');
-
-      return {
-        fileName,
-        label,
-        url: `/paises/flags/${encodeURIComponent(fileName)}`
-      };
-    });
-
-    res.json({ total: flags.length, flags });
+    res.setHeader('Cache-Control', 'public, max-age=300');
+    res.json({ total: flagsCatalogCache.data.length, flags: flagsCatalogCache.data });
   } catch (error) {
     res.status(500).json({ error: 'Nao foi possivel carregar o catalogo de bandeiras.' });
   }
@@ -812,6 +826,7 @@ app.use(cleanUrlsMiddleware(publicDir));
 // ============================================
 // Garante que HTML estático respeite as regras por role.
 // A regra usa data-portal-role no <body> quando existir.
+const pageRoleCache = new Map();
 const pageRoleGuard = (req, res, next) => {
   try {
     // Não proteger assets e rotas que já são /api
@@ -828,11 +843,16 @@ const pageRoleGuard = (req, res, next) => {
     // Se arquivo não existir, deixa passar (ex: páginas que não são HTML)
     if (!fs.existsSync(htmlPath)) return next();
 
-    const file = fs.readFileSync(htmlPath, 'utf8');
-    const match = file.match(/<body[^>]*data-portal-role=["']([^"']+)["']/i);
-    if (!match) return next();
+    let requiredRole;
+    if (pageRoleCache.has(htmlPath)) {
+      requiredRole = pageRoleCache.get(htmlPath);
+    } else {
+      const file = fs.readFileSync(htmlPath, 'utf8');
+      const match = file.match(/<body[^>]*data-portal-role=["']([^"']+)["']/i);
+      requiredRole = match ? match[1] : null;
+      pageRoleCache.set(htmlPath, requiredRole);
+    }
 
-    const requiredRole = match[1] || (req.path === '/admin' ? 'admin' : null);
     if (!requiredRole) return next();
 
     // Login é via token no header Authorization

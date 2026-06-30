@@ -1,6 +1,8 @@
 const path = require('path');
 const fs = require('fs');
 
+const shareMetaCache = new Map();
+
 // Configurações de meta tags para cada página
 const META_TAGS_CONFIG = {
   '/': {
@@ -151,6 +153,13 @@ function shareMetaMiddleware(publicDir) {
       fileToRead = path.join(publicDir, 'index.html');
     }
 
+    const cacheKey = pagePath;
+    if (shareMetaCache.has(cacheKey)) {
+      res.setHeader('Cache-Control', 'public, max-age=300');
+      res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      return res.send(shareMetaCache.get(cacheKey));
+    }
+
     // Lê o arquivo HTML
     fs.readFile(fileToRead, 'utf8', (err, data) => {
       if (err) {
@@ -159,7 +168,7 @@ function shareMetaMiddleware(publicDir) {
       }
 
       // Obtém a configuração de meta tags para esta página
-      const config = META_TAGS_CONFIG[pagePath] || META_TAGS_CONFIG['/'];
+      const config = META_TAGS_CONFIG[cacheKey] || META_TAGS_CONFIG['/'];
       const shareMetaTags = generateShareMetaTags(config);
 
       // Substitui o marcador ou insere antes de </head>
@@ -169,6 +178,8 @@ function shareMetaMiddleware(publicDir) {
       } else {
         modifiedData = data.replace('</head>', `${shareMetaTags}\n</head>`);
       }
+
+      shareMetaCache.set(cacheKey, modifiedData);
 
       // Configura headers de cache para HTML
       res.setHeader('Cache-Control', 'public, max-age=300');

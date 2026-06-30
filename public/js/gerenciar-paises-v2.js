@@ -16,6 +16,8 @@
     { id: 'em', label: 'EM' }
   ];
 
+  const MAX_EMPTY_RESULTS = 20;
+
   const state = {
     view: 'committees',
     committeeId: null,
@@ -121,7 +123,7 @@
     const source = state.countryCatalog.slice();
 
     if (!normalized) {
-      return source.slice(0, 8);
+      return [];
     }
 
     return source
@@ -881,7 +883,7 @@
     const currentCountry = String(delegation.country || '').trim();
     const currentFlag = currentCountry ? pickFlagForLabel(currentCountry) : null;
     const query = state.searchTerms[delegationId] || '';
-    const results = query ? getMatches(query) : [];
+    const results = getMatches(query);
 
     return `
       <article class="gp-delegation-card" data-delegation-card data-delegation-id="${delegationId}">
@@ -922,16 +924,24 @@
           </label>
 
           <div class="gp-results" data-results-for="${delegationId}">
-            ${renderResultsMarkup(delegationId, results)}
+            ${renderResultsMarkup(delegationId, results, query)}
           </div>
         </div>
       </article>
     `;
   }
 
-  function renderResultsMarkup(delegationId, options) {
+  function renderResultsMarkup(delegationId, options, query) {
+    if (!query) {
+      query = state.searchTerms[delegationId] || '';
+    }
+
+    if (!query) {
+      return '';
+    }
+
     if (!options.length) {
-      return `<div class="gp-empty">Digite para buscar uma representação. As opções vêm dos arquivos de <code>paises/flags</code>.</div>`;
+      return `<div class="gp-empty">Nenhum resultado encontrado. Tente outro termo.</div>`;
     }
 
     return options.map((option) => `
@@ -1122,7 +1132,7 @@
     const query = input.value || '';
     state.searchTerms[delegationId] = query;
     const matches = getMatches(query);
-    results.innerHTML = renderResultsMarkup(delegationId, matches);
+    results.innerHTML = renderResultsMarkup(delegationId, matches, query);
   }
 
   function syncAllVisibleCards() {
@@ -1278,6 +1288,20 @@
       const delegationId = input.dataset.delegationId;
       state.searchTerms[delegationId] = input.value;
       refreshSearchResults(delegationId);
+    });
+
+    root.addEventListener('keydown', (event) => {
+      const input = event.target.closest('[data-action="country-search"]');
+      if (!input) return;
+
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        const delegationId = input.dataset.delegationId;
+        const results = root.querySelectorAll(`[data-results-for="${attrValue(delegationId)}"] .gp-result`);
+        if (results.length) {
+          results[0].click();
+        }
+      }
     });
   }
 
