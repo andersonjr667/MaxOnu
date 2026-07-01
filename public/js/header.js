@@ -396,6 +396,7 @@
     const drawer = document.getElementById('mxHeadDrawer');
     const scrim = document.getElementById('mxHeadScrim');
     const closeBtn = document.getElementById('mxHeadDrawerClose');
+    const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
 
     if (open) {
       closeAllDropdowns(root);
@@ -423,7 +424,9 @@
 
     if (open) {
       requestAnimationFrame(() => {
-        closeBtn?.focus({ preventScroll: true });
+        if (!isTouchDevice) {
+          closeBtn?.focus({ preventScroll: true });
+        }
       });
     } else {
       requestAnimationFrame(() => {
@@ -431,16 +434,24 @@
         drawerReturnFocusEl = null;
         if (ret && typeof ret.focus === 'function' && document.contains(ret)) {
           ret.focus({ preventScroll: true });
-        } else {
+        } else if (!isTouchDevice) {
           btn?.focus({ preventScroll: true });
         }
       });
     }
   }
 
+  function shouldIgnoreOutsideClick(target) {
+    if (!(target instanceof Element)) return false;
+    return Boolean(target.closest('input, textarea, select, [contenteditable="true"], [data-mx-ignore-outside-click]'));
+  }
+
   function bindOutsideClose(root) {
     document.addEventListener('click', (e) => {
       const t = /** @type {Node} */ (e.target);
+      if (t instanceof Element && shouldIgnoreOutsideClick(t)) {
+        return;
+      }
       if (!root.contains(t)) {
         closeAllDropdowns(root);
         setMenuOpen(root, false);

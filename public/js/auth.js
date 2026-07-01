@@ -24,8 +24,12 @@ function initAuth() {
         hint.textContent = message;
         group.appendChild(hint);
 
-        inputEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        inputEl.focus();
+        if (!window.matchMedia('(pointer: coarse)').matches) {
+            inputEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        requestAnimationFrame(() => {
+            inputEl.focus({ preventScroll: true });
+        });
     }
 
     function clearFieldError(inputEl) {
@@ -60,7 +64,9 @@ function initAuth() {
         el.className = 'auth-generic-error';
         el.textContent = message;
         submitBtn.insertAdjacentElement('beforebegin', el);
-        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (!window.matchMedia('(pointer: coarse)').matches) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
     }
 
     function clearGenericError(form) {
