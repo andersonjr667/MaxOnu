@@ -443,15 +443,35 @@
 
   function shouldIgnoreOutsideClick(target) {
     if (!(target instanceof Element)) return false;
-    return Boolean(target.closest('input, textarea, select, [contenteditable="true"], [data-mx-ignore-outside-click]'));
+    if (target.closest('input, textarea, select, [contenteditable="true"], [data-mx-ignore-outside-click]')) {
+      return true;
+    }
+
+    const active = document.activeElement;
+    return Boolean(active && active instanceof Element && active.closest('input, textarea, select, [contenteditable="true"], [data-mx-ignore-outside-click]'));
   }
 
   function bindOutsideClose(root) {
-    document.addEventListener('click', (e) => {
+    const ignoreIfEditable = (e) => {
       const t = /** @type {Node} */ (e.target);
       if (t instanceof Element && shouldIgnoreOutsideClick(t)) {
-        return;
+        e.stopPropagation();
+        return true;
       }
+      return false;
+    };
+
+    document.addEventListener('pointerdown', (e) => {
+      if (ignoreIfEditable(e)) return;
+    }, { passive: true });
+
+    document.addEventListener('touchstart', (e) => {
+      if (ignoreIfEditable(e)) return;
+    }, { passive: true });
+
+    document.addEventListener('click', (e) => {
+      const t = /** @type {Node} */ (e.target);
+      if (ignoreIfEditable(e)) return;
       if (!root.contains(t)) {
         closeAllDropdowns(root);
         setMenuOpen(root, false);

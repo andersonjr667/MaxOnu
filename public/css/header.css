@@ -30,10 +30,14 @@
 
 html.mx-head-drawer-open {
   overflow: hidden;
+  height: 100%;
 }
 
 body.mx-head-drawer-open {
   overflow: hidden;
+  position: fixed;
+  inset: 0;
+  width: 100%;
 }
 
 .mx-premium-header__skip-link {
