@@ -21,6 +21,9 @@
     committees: COMMITTEE_PLACEHOLDERS,
     delegations: [],
     flags: [],
+    searchTerm: '',
+    sortBy: 'country',
+    viewMode: 'grid',
     message: 'Escolha um comitê para visualizar as delegações.',
     loading: false
   };
@@ -170,6 +173,47 @@
     return SEGMENTS.find((item) => item.id === segment)?.label || segment;
   }
 
+  function getFilteredDelegations() {
+    const query = normalizeText(state.searchTerm);
+    if (!query) return state.delegations;
+
+    return state.delegations.filter((delegation) => {
+      const haystack = [
+        delegation.country,
+        delegation._id,
+        ...(delegation.members || []).map((member) => [member.fullName, member.username, member.classGroup].join(' '))
+      ].join(' ');
+      return normalizeText(haystack).includes(query);
+    });
+  }
+
+  function getDelegationName(delegation) {
+    const member = (delegation.members || []).find((item) => String(item.fullName || item.username || '').trim());
+    return String(member?.fullName || member?.username || delegation.country || 'Delegação').trim();
+  }
+
+  function getSortedDelegations() {
+    const filtered = getFilteredDelegations();
+    const sorted = [...filtered];
+
+    sorted.sort((left, right) => {
+      if (state.sortBy === 'name') {
+        const leftName = getDelegationName(left).toLowerCase();
+        const rightName = getDelegationName(right).toLowerCase();
+        return leftName.localeCompare(rightName, 'pt-BR');
+      }
+
+      const leftCountry = String(left.country || '').trim().toLowerCase();
+      const rightCountry = String(right.country || '').trim().toLowerCase();
+      if (!leftCountry && !rightCountry) return 0;
+      if (!leftCountry) return 1;
+      if (!rightCountry) return -1;
+      return leftCountry.localeCompare(rightCountry, 'pt-BR');
+    });
+
+    return sorted;
+  }
+
   function renderCommitteeCards() {
     const cards = state.revealStatus.revealed ? state.committees : COMMITTEE_PLACEHOLDERS;
     const allowOpen = state.revealStatus.revealed;
@@ -200,9 +244,10 @@
   function renderDelegationCard(delegation, index) {
     const country = String(delegation.country || '').trim();
     const flagUrl = country ? getFlagUrl(country) : '';
+    const cardClass = `gp-delegation-card${state.viewMode === 'list' ? ' gp-delegation-card--list' : ''}${flagUrl ? ' is-highlighted' : ''}`;
 
     return `
-      <article class="gp-delegation-card">
+      <article class="${cardClass}">
         <div class="gp-delegation-top">
           <div class="gp-delegation-index">${index + 1}</div>
           <div>
@@ -215,7 +260,7 @@
               `).join('')}
             </div>
           </div>
-          <div class="gp-country-preview">
+          <div class="gp-country-preview${flagUrl ? ' gp-country-preview--has-flag' : ''}">
             ${flagUrl ? `<img src="${escapeHtml(flagUrl)}" alt="${escapeHtml(country)}" onerror="this.style.display='none'">` : '<div style="width:54px;height:34px;border-radius:8px;background:rgba(0,0,0,0.04);border:1px dashed rgba(0,0,0,0.15);"></div>'}
             <div>
               <strong>${escapeHtml(country || 'País não liberado')}</strong>
@@ -249,6 +294,16 @@
                 <span class="gp-kicker">Comitês</span>
                 <h2>Escolha um comitê</h2>
                 <p>${state.revealStatus.revealed ? 'Os cartões abaixo estão liberados para navegação pública.' : 'A navegação fica disponível após a abertura oficial dos comitês.'}</p>
+              </div>
+            </div>
+            <div class="gp-guide-grid">
+              <div class="gp-guide-card">
+                <strong>Como usar</strong>
+                <p>1. Selecione um comitê. 2. Escolha 8º/9º ou EM. 3. Veja as delegações e os países atribuídos.</p>
+              </div>
+              <div class="gp-guide-card gp-guide-card--soft">
+                <strong>Dica</strong>
+                <p>Na tela seguinte, você pode buscar por nome, país, turma ou código da delegação.</p>
               </div>
             </div>
             <div class="gp-committee-grid">
@@ -337,7 +392,7 @@
           </div>
 
           <div class="gp-delegation-grid">
-            ${state.delegations.length ? state.delegations.map((delegation, index) => renderDelegationCard(delegation, index)).join('') : '<div class="gp-empty">Nenhuma delegação encontrada para esse comitê e segmento.</div>'}
+            ${getFilteredDelegations().length ? getFilteredDelegations().map((delegation, index) => renderDelegationCard(delegation, index)).join('') : '<div class="gp-empty">Nenhuma delegação encontrada para esse filtro. Tente limpar a busca ou usar outro termo.</div>'}
           </div>
         </section>
       </div>
@@ -350,135 +405,183 @@
     const style = document.createElement('style');
     style.id = 'delegacoes-public-v2-style';
     style.textContent = `
-      .gp-app { display:grid; gap:1.25rem; padding-bottom:2rem; }
-      .gp-hero {
-        display:grid;
-        gap:1rem;
-        grid-template-columns: 1.3fr auto;
-        align-items:start;
-        padding:1.5rem;
-        border-radius:24px;
-        background: linear-gradient(135deg, rgba(9, 27, 42, 0.98), rgba(18, 67, 92, 0.92));
-        color:#f5fbff;
-        box-shadow:0 24px 70px rgba(6, 15, 24, 0.22);
-      }
-      .gp-hero h1 { margin:0.45rem 0 0.55rem; font-size:clamp(2rem,3.5vw,3.6rem); line-height:1.02; }
-      .gp-hero p { margin:0; max-width:68ch; color:rgba(240,248,255,0.82); }
-      .gp-kicker {
-        display:inline-flex; align-items:center; gap:0.45rem;
-        font-size:0.78rem; font-weight:800; letter-spacing:0.14em; text-transform:uppercase;
-        color:rgba(255,255,255,0.7);
-      }
-      .gp-badge {
-        display:inline-flex; align-items:center; justify-content:center; min-width:96px; padding:0.9rem 1.2rem;
-        border-radius:18px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.14);
-        font-weight:900; letter-spacing:0.05em;
-      }
-      .gp-panel {
-        padding:1.25rem; border-radius:22px; background:rgba(255,255,255,0.94);
-        border:1px solid rgba(63,87,96,0.09); box-shadow:0 18px 60px rgba(17,28,36,0.08);
-      }
-      .gp-section-title { display:flex; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin-bottom:1rem; }
-      .gp-section-title h2 { margin:0.15rem 0 0; font-size:1.35rem; }
-      .gp-section-title p { margin:0.25rem 0 0; color:var(--dash-muted, #63707c); }
-      .gp-committee-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1rem; }
-      .gp-committee-card {
-        position:relative; aspect-ratio:1 / 1; border-radius:24px; border:1px solid rgba(24,69,94,0.12);
-        background: radial-gradient(circle at top left, rgba(74,159,212,0.18), transparent 36%), linear-gradient(180deg, rgba(255,255,255,0.98), rgba(242,247,251,0.95));
-        padding:1rem; display:flex; flex-direction:column; justify-content:space-between; cursor:pointer; text-align:left;
-        transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease;
-      }
-      .gp-committee-card:hover:not(:disabled) { transform:translateY(-3px); border-color:rgba(74,159,212,0.35); box-shadow:0 18px 35px rgba(17,28,36,0.14); }
-      .gp-committee-card:disabled { cursor:not-allowed; opacity:0.82; }
-      .gp-committee-id {
-        display:inline-flex; align-items:center; justify-content:center; width:52px; height:52px; border-radius:16px;
-        background:rgba(74,159,212,0.12); color:#164b63; font-weight:900; font-size:1.2rem;
-      }
-      .gp-committee-card h3 { margin:0.8rem 0 0.45rem; font-size:1.05rem; line-height:1.18; color:var(--dash-ink, #102131); }
-      .gp-committee-card p { margin:0; color:var(--dash-muted, #64717f); font-size:0.93rem; }
-      .gp-committee-arrow { display:inline-flex; align-items:center; justify-content:space-between; margin-top:1rem; color:#114056; font-weight:800; }
-      .gp-backbar { display:flex; gap:0.75rem; flex-wrap:wrap; align-items:center; justify-content:space-between; margin-bottom:1rem; }
-      .gp-committee-mini { padding:0.9rem 1rem; border-radius:18px; background:rgba(15, 58, 82, 0.07); border:1px solid rgba(15,58,82,0.1); }
-      .gp-committee-mini strong { display:block; font-size:1rem; }
-      .gp-committee-mini span { color:var(--dash-muted, #63707c); font-size:0.86rem; }
-      .gp-segment-toggle { display:inline-flex; gap:0.55rem; flex-wrap:wrap; }
-      .gp-segment-btn {
-        border:1px solid rgba(18,64,86,0.16); background:rgba(255,255,255,0.96); color:var(--dash-ink, #102131);
-        border-radius:999px; padding:0.8rem 1rem; font-weight:800; cursor:pointer;
-      }
-      .gp-segment-btn.is-active { background:linear-gradient(135deg, #0f3a52, #1f6b8e); color:#fff; border-color:transparent; }
-      .gp-stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1rem; margin-bottom:1rem; }
-      .gp-stat {
-        padding:1rem 1.1rem; border-radius:18px; background:linear-gradient(180deg, rgba(255,255,255,0.98), rgba(242,247,251,0.96));
-        border:1px solid rgba(63,87,96,0.08);
-      }
-      .gp-stat strong { display:block; font-size:1.7rem; line-height:1; color:var(--dash-ink, #102131); }
-      .gp-stat span { color:var(--dash-muted, #63707c); font-size:0.9rem; }
-      .gp-notice {
-        margin-top:1rem; padding:0.9rem 1rem; border-radius:14px; background:rgba(15,58,82,0.06);
-        border:1px solid rgba(15,58,82,0.12); color:var(--dash-ink, #102131); font-weight:600;
-      }
-      .gp-delegation-grid { display:grid; gap:1rem; }
-      .gp-delegation-card {
-        padding:1rem; border-radius:22px; border:1px solid rgba(63,87,96,0.1);
-        background: radial-gradient(circle at top right, rgba(74,159,212,0.08), transparent 34%), linear-gradient(180deg, rgba(255,255,255,0.98), rgba(246,250,253,0.96));
-        box-shadow:0 14px 38px rgba(18,31,44,0.06);
-      }
-      .gp-delegation-top {
-        display:grid; gap:1rem; grid-template-columns:96px minmax(0,1fr) minmax(240px,320px); align-items:start;
-      }
-      .gp-delegation-index {
-        width:84px; height:84px; border-radius:24px; display:flex; align-items:center; justify-content:center;
-        background:linear-gradient(135deg, rgba(15,58,82,0.98), rgba(28,95,124,0.92)); color:#fff; font-size:1.6rem; font-weight:900;
-      }
-      .gp-delegation-id { font-size:0.82rem; font-weight:800; color:var(--dash-muted, #63707c); letter-spacing:0.05em; text-transform:uppercase; }
-      .gp-member-list { display:flex; flex-wrap:wrap; gap:0.45rem; margin-top:0.65rem; }
-      .gp-member-pill {
-        padding:0.35rem 0.55rem; border-radius:999px; background:rgba(74,159,212,0.08); border:1px solid rgba(74,159,212,0.18);
-        font-size:0.85rem; font-weight:700;
-      }
-      .gp-country-preview {
-        display:flex; align-items:center; gap:0.75rem; justify-content:flex-start;
-        padding:0.8rem 0.85rem; border-radius:18px; border:1px solid rgba(63,87,96,0.1); background:rgba(255,255,255,0.78);
-      }
-      .gp-country-preview img { width:54px; height:34px; object-fit:cover; border-radius:8px; border:1px solid rgba(0,0,0,0.08); }
-      .gp-country-preview strong { display:block; font-size:1rem; }
-      .gp-country-preview span { display:block; color:var(--dash-muted, #63707c); font-size:0.83rem; }
-      .gp-empty {
-        padding:1.2rem; border-radius:18px; border:1px dashed rgba(63,87,96,0.18); color:var(--dash-muted, #63707c);
-        background:rgba(255,255,255,0.6);
+      :root {
+        --gp-surface: rgba(255, 255, 255, 0.95);
+        --gp-border: rgba(13, 59, 102, 0.12);
+        --gp-shadow: 0 24px 60px rgba(8, 31, 56, 0.14);
       }
 
-      [data-theme="dark"] .gp-hero {
-        background: radial-gradient(circle at top left, rgba(64,132,174,0.3), transparent 34%), linear-gradient(145deg, rgba(7,16,26,0.98), rgba(11,26,40,0.96));
-        box-shadow:0 28px 80px rgba(0,0,0,0.42); border:1px solid rgba(120,171,204,0.12);
+      .gp-app {
+        display:grid;
+        gap:1.15rem;
+        padding-bottom:2rem;
       }
-      [data-theme="dark"] .gp-panel {
-        background: radial-gradient(circle at top right, rgba(74,159,212,0.09), transparent 34%), linear-gradient(180deg, rgba(13,21,30,0.96), rgba(9,15,23,0.94));
-        border-color:rgba(115,152,179,0.14); box-shadow:0 24px 70px rgba(0,0,0,0.34);
+
+      .gp-hero {
+        position:relative;
+        overflow:hidden;
+        display:grid;
+        gap:1rem;
+        grid-template-columns:minmax(0, 1.3fr) auto;
+        align-items:start;
+        padding:1.6rem;
+        border-radius:30px;
+        border:1px solid rgba(255, 255, 255, 0.28);
+        background:
+          radial-gradient(circle at top left, rgba(255, 209, 102, 0.24), transparent 32%),
+          linear-gradient(135deg, rgba(8, 31, 56, 0.96) 0%, rgba(13, 59, 102, 0.95) 48%, rgba(31, 111, 168, 0.94) 100%);
+        color:#f7fbff;
+        box-shadow:0 26px 80px rgba(8, 31, 56, 0.22);
+        isolation:isolate;
       }
-      [data-theme="dark"] .gp-committee-card, [data-theme="dark"] .gp-delegation-card {
-        background: radial-gradient(circle at top left, rgba(74,159,212,0.12), transparent 34%), linear-gradient(180deg, rgba(17,25,34,0.96), rgba(12,18,27,0.98));
-        border-color:rgba(124,166,196,0.14); box-shadow:0 18px 44px rgba(0,0,0,0.28); color:#eef6ff;
+      .gp-hero::before,
+      .gp-hero::after {
+        content:"";
+        position:absolute;
+        border-radius:999px;
+        pointer-events:none;
+        filter:blur(2px);
       }
-      [data-theme="dark"] .gp-committee-card h3, [data-theme="dark"] .gp-section-title h2, [data-theme="dark"] .gp-country-preview strong, [data-theme="dark"] .gp-delegation-id, [data-theme="dark"] .gp-stat strong {
-        color:#f3f8ff;
+      .gp-hero::before {
+        width:240px;
+        height:240px;
+        top:-90px;
+        right:-40px;
+        background:rgba(255, 209, 102, 0.16);
       }
-      [data-theme="dark"] .gp-committee-card p, [data-theme="dark"] .gp-section-title p, [data-theme="dark"] .gp-country-preview span, [data-theme="dark"] .gp-stat span, [data-theme="dark"] .gp-committee-mini span {
-        color:rgba(217,228,236,0.72);
+      .gp-hero::after {
+        width:180px;
+        height:180px;
+        bottom:-80px;
+        left:-40px;
+        background:rgba(255, 140, 66, 0.16);
       }
-      [data-theme="dark"] .gp-segment-btn, [data-theme="dark"] .gp-country-preview, [data-theme="dark"] .gp-stat, [data-theme="dark"] .gp-empty, [data-theme="dark"] .gp-notice {
-        background:rgba(12,18,27,0.9); border-color:rgba(124,166,196,0.16); color:#eef6ff;
+      .gp-hero > * { position:relative; z-index:1; }
+      .gp-hero h1 { margin:0.45rem 0 0.55rem; font-size:clamp(1.9rem,3.2vw,3.1rem); line-height:1.02; letter-spacing:-0.03em; }
+      .gp-hero p { margin:0; max-width:66ch; color:rgba(242,248,255,0.82); }
+      .gp-kicker {
+        display:inline-flex; align-items:center; gap:0.45rem;
+        font-size:0.78rem; font-weight:800; letter-spacing:0.16em; text-transform:uppercase;
+        color:rgba(255,255,255,0.8);
       }
+      .gp-badge {
+        display:inline-flex; align-items:center; justify-content:center; min-width:108px; padding:0.95rem 1.1rem;
+        border-radius:999px; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.16);
+        font-weight:900; letter-spacing:0.08em; backdrop-filter:blur(12px);
+      }
+
+      .gp-panel {
+        position:relative;
+        padding:1.25rem; border-radius:24px; background:linear-gradient(145deg, rgba(255,255,255,0.95), rgba(246,250,253,0.9));
+        border:1px solid var(--gp-border); box-shadow:var(--gp-shadow); backdrop-filter:blur(18px);
+      }
+      .gp-panel::before {
+        content:"";
+        position:absolute;
+        inset:0;
+        border-radius:inherit;
+        background:linear-gradient(90deg, rgba(255,140,66,0.04), transparent 35%, rgba(31,111,168,0.04));
+        pointer-events:none;
+      }
+      .gp-panel > * { position:relative; z-index:1; }
+      .gp-section-title { display:flex; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin-bottom:1rem; }
+      .gp-section-title h2 { margin:0.15rem 0 0; font-size:1.32rem; color:var(--azul-principal, #0d3b66); }
+      .gp-section-title p { margin:0.25rem 0 0; color:var(--texto-suave, #5f748c); }
+      .gp-guide-grid { display:grid; gap:0.9rem; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); margin-bottom:1rem; }
+      .gp-guide-card {
+        padding:0.95rem 1rem; border-radius:18px; background:linear-gradient(135deg, rgba(13,59,102,0.07), rgba(31,111,168,0.06));
+        border:1px solid rgba(13,59,102,0.1);
+      }
+      .gp-guide-card strong { display:block; margin-bottom:0.35rem; color:var(--azul-principal, #0d3b66); }
+      .gp-guide-card p { margin:0; color:var(--texto-suave, #5f748c); font-size:0.93rem; }
+      .gp-guide-card--soft { background:linear-gradient(135deg, rgba(255,255,255,0.96), rgba(247,250,252,0.95)); }
+      .gp-committee-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:1rem; }
+      .gp-committee-card {
+        position:relative; aspect-ratio:1 / 1; border-radius:24px; border:1px solid rgba(13,59,102,0.1);
+        background:linear-gradient(145deg, rgba(255,255,255,0.97), rgba(243,248,252,0.94)); padding:1rem; display:flex; flex-direction:column; justify-content:space-between; cursor:pointer; text-align:left;
+        transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease; box-shadow:0 14px 34px rgba(8,31,56,0.08);
+      }
+      .gp-committee-card:hover:not(:disabled) { transform:translateY(-4px); border-color:rgba(31,111,168,0.28); box-shadow:0 22px 44px rgba(8,31,56,0.12); }
+      .gp-committee-card:disabled { cursor:not-allowed; opacity:0.84; }
+      .gp-committee-id {
+        display:inline-flex; align-items:center; justify-content:center; width:54px; height:54px; border-radius:16px;
+        background:linear-gradient(135deg, rgba(13,59,102,0.14), rgba(31,111,168,0.18)); color:var(--azul-principal, #0d3b66); font-weight:900; font-size:1.15rem;
+      }
+      .gp-committee-card h3 { margin:0.8rem 0 0.45rem; font-size:1.05rem; line-height:1.2; color:var(--azul-principal, #0d3b66); }
+      .gp-committee-card p { margin:0; color:var(--texto-suave, #5f748c); font-size:0.93rem; }
+      .gp-committee-arrow { display:inline-flex; align-items:center; justify-content:space-between; margin-top:1rem; color:var(--azul-secundario, #1f6fa8); font-weight:800; }
+      .gp-backbar { display:flex; gap:0.75rem; flex-wrap:wrap; align-items:center; justify-content:space-between; margin-bottom:1rem; }
+      .gp-committee-mini { padding:0.9rem 1rem; border-radius:16px; background:rgba(13,59,102,0.06); border:1px solid rgba(13,59,102,0.1); }
+      .gp-committee-mini strong { display:block; font-size:1rem; color:var(--azul-principal, #0d3b66); }
+      .gp-committee-mini span { color:var(--texto-suave, #5f748c); font-size:0.86rem; }
+      .gp-segment-toggle { display:inline-flex; gap:0.55rem; flex-wrap:wrap; }
+      .gp-segment-btn {
+        border:1px solid rgba(13,59,102,0.16); background:rgba(255,255,255,0.96); color:var(--azul-principal, #0d3b66);
+        border-radius:999px; padding:0.8rem 1rem; font-weight:800; cursor:pointer; transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+      }
+      .gp-segment-btn:hover { transform:translateY(-1px); }
+      .gp-segment-btn.is-active { background:linear-gradient(135deg, var(--azul-principal, #0d3b66), var(--azul-secundario, #1f6fa8)); color:#fff; border-color:transparent; box-shadow:0 14px 28px rgba(13,59,102,0.2); }
+      .gp-toolbar { display:flex; gap:0.8rem; flex-wrap:wrap; align-items:flex-end; margin-bottom:1rem; }
+      .gp-search-field { display:grid; gap:0.35rem; flex:1 1 280px; }
+      .gp-search-field span, .gp-select-field span { font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--texto-suave, #5f748c); }
+      .gp-search-field input, .gp-select-field select {
+        width:100%; border:1px solid rgba(13,59,102,0.12); border-radius:999px; padding:0.8rem 1rem; font:inherit; color:var(--texto, #17324d);
+        background:rgba(255,255,255,0.96); box-shadow:inset 0 1px 0 rgba(255,255,255,0.7);
+      }
+      .gp-toolbar-actions { display:flex; gap:0.7rem; flex-wrap:wrap; align-items:flex-end; }
+      .gp-select-field { display:grid; gap:0.35rem; min-width:160px; }
+      .gp-view-toggle { display:inline-flex; gap:0.35rem; padding:0.3rem; border-radius:999px; background:rgba(13,59,102,0.06); }
+      .gp-view-btn { border:none; border-radius:999px; padding:0.7rem 0.9rem; font-weight:800; cursor:pointer; color:var(--azul-principal, #0d3b66); background:transparent; transition: all 160ms ease; }
+      .gp-view-btn.is-active { color:#fff; background:linear-gradient(135deg, var(--azul-principal, #0d3b66), var(--azul-secundario, #1f6fa8)); }
+      .gp-clear-btn { border:none; border-radius:999px; padding:0.8rem 1rem; font-weight:800; cursor:pointer; color:#fff; background:linear-gradient(135deg, var(--azul-principal, #0d3b66), var(--azul-secundario, #1f6fa8)); }
+      .gp-stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1rem; margin-bottom:1rem; }
+      .gp-stat { padding:1rem 1.1rem; border-radius:18px; background:linear-gradient(145deg, rgba(255,255,255,0.96), rgba(242,247,251,0.92)); border:1px solid rgba(13,59,102,0.08); box-shadow:0 10px 24px rgba(8,31,56,0.05); }
+      .gp-stat strong { display:block; font-size:1.6rem; line-height:1; color:var(--azul-principal, #0d3b66); }
+      .gp-stat span { color:var(--texto-suave, #5f748c); font-size:0.9rem; }
+      .gp-notice { margin-top:1rem; padding:0.95rem 1rem; border-radius:14px; background:linear-gradient(135deg, rgba(13,59,102,0.06), rgba(255,140,66,0.06)); border:1px solid rgba(13,59,102,0.1); color:var(--texto, #17324d); font-weight:700; }
+      .gp-delegation-grid { display:grid; gap:1rem; }
+      .gp-delegation-grid--list { gap:0.8rem; }
+      .gp-delegation-card { padding:1rem; border-radius:22px; border:1px solid rgba(13,59,102,0.1); background:linear-gradient(145deg, rgba(255,255,255,0.97), rgba(244,248,252,0.94)); box-shadow:0 16px 40px rgba(8,31,56,0.07); transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background 180ms ease; animation: gpFadeInUp 360ms ease both; }
+      .gp-delegation-card:hover { transform:translateY(-4px); box-shadow:0 22px 50px rgba(8,31,56,0.12); }
+      .gp-delegation-card.is-highlighted { border-color:rgba(31,111,168,0.3); background:linear-gradient(145deg, rgba(255,255,255,0.98), rgba(237,247,253,0.96)); box-shadow:0 24px 54px rgba(13,59,102,0.13); }
+      .gp-delegation-card--list .gp-delegation-top { grid-template-columns:72px minmax(0,1fr) minmax(220px,280px); }
+      .gp-delegation-top { display:grid; gap:1rem; grid-template-columns:96px minmax(0,1fr) minmax(240px,320px); align-items:start; }
+      .gp-delegation-index { width:84px; height:84px; border-radius:24px; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg, var(--azul-principal, #0d3b66), var(--azul-secundario, #1f6fa8)); color:#fff; font-size:1.55rem; font-weight:900; box-shadow:0 14px 26px rgba(13,59,102,0.16); }
+      .gp-delegation-id { font-size:0.82rem; font-weight:800; color:var(--texto-suave, #5f748c); letter-spacing:0.05em; text-transform:uppercase; }
+      .gp-member-list { display:flex; flex-wrap:wrap; gap:0.45rem; margin-top:0.65rem; }
+      .gp-member-pill { padding:0.35rem 0.55rem; border-radius:999px; background:rgba(31,111,168,0.08); border:1px solid rgba(31,111,168,0.16); font-size:0.85rem; font-weight:700; color:var(--azul-principal, #0d3b66); }
+      .gp-country-preview { display:flex; align-items:center; gap:0.75rem; justify-content:flex-start; padding:0.8rem 0.85rem; border-radius:18px; border:1px solid rgba(13,59,102,0.1); background:rgba(255,255,255,0.78); transition: border-color 180ms ease, background 180ms ease, transform 180ms ease; }
+      .gp-country-preview--has-flag { border-color:rgba(31,111,168,0.24); background:linear-gradient(135deg, rgba(31,111,168,0.1), rgba(255,255,255,0.94)); transform:translateY(-1px); }
+      .gp-country-preview img { width:54px; height:34px; object-fit:cover; border-radius:8px; border:1px solid rgba(0,0,0,0.08); }
+      .gp-country-preview strong { display:block; font-size:1rem; color:var(--azul-principal, #0d3b66); }
+      .gp-country-preview span { display:block; color:var(--texto-suave, #5f748c); font-size:0.83rem; }
+      .gp-empty { padding:1.2rem; border-radius:18px; border:1px dashed rgba(13,59,102,0.2); color:var(--texto-suave, #5f748c); background:rgba(255,255,255,0.58); }
+
+      [data-theme="dark"] .gp-hero { background:radial-gradient(circle at top left, rgba(255,209,102,0.18), transparent 34%), linear-gradient(145deg, rgba(5,16,28,0.98), rgba(10,27,44,0.96)); border-color:rgba(255,255,255,0.08); }
+      [data-theme="dark"] .gp-panel { background:linear-gradient(145deg, rgba(12,20,31,0.96), rgba(9,15,23,0.94)); border-color:rgba(255,255,255,0.08); box-shadow:0 24px 70px rgba(0,0,0,0.32); }
+      [data-theme="dark"] .gp-committee-card, [data-theme="dark"] .gp-delegation-card { background:linear-gradient(145deg, rgba(15,24,34,0.96), rgba(9,15,23,0.95)); border-color:rgba(255,255,255,0.08); box-shadow:0 18px 44px rgba(0,0,0,0.27); color:#eef6ff; }
+      [data-theme="dark"] .gp-committee-card h3, [data-theme="dark"] .gp-section-title h2, [data-theme="dark"] .gp-country-preview strong, [data-theme="dark"] .gp-delegation-id, [data-theme="dark"] .gp-stat strong { color:#f3f8ff; }
+      [data-theme="dark"] .gp-committee-card p, [data-theme="dark"] .gp-section-title p, [data-theme="dark"] .gp-country-preview span, [data-theme="dark"] .gp-stat span, [data-theme="dark"] .gp-committee-mini span { color:rgba(217,228,236,0.74); }
+      [data-theme="dark"] .gp-segment-btn, [data-theme="dark"] .gp-country-preview, [data-theme="dark"] .gp-stat, [data-theme="dark"] .gp-empty, [data-theme="dark"] .gp-notice, [data-theme="dark"] .gp-search-field input, [data-theme="dark"] .gp-guide-card { background:rgba(10,17,26,0.9); border-color:rgba(255,255,255,0.08); color:#eef6ff; }
       [data-theme="dark"] .gp-segment-btn.is-active { background:linear-gradient(135deg, #1f6b8e, #2a90b8); }
-      [data-theme="dark"] .gp-committee-id { background:rgba(74,159,212,0.18); color:#daf1ff; }
-      [data-theme="dark"] .gp-committee-card:hover:not(:disabled), [data-theme="dark"] .gp-delegation-card:hover {
-        border-color:rgba(121,185,224,0.35); box-shadow:0 22px 50px rgba(0,0,0,0.34);
-      }
+      [data-theme="dark"] .gp-committee-id { background:rgba(31,111,168,0.16); color:#daf1ff; }
+      [data-theme="dark"] .gp-committee-card:hover:not(:disabled), [data-theme="dark"] .gp-delegation-card:hover { border-color:rgba(121,185,224,0.32); box-shadow:0 22px 50px rgba(0,0,0,0.33); }
+
+      @keyframes gpFadeInUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
 
       @media (max-width: 920px) {
         .gp-hero, .gp-delegation-top { grid-template-columns:1fr; }
         .gp-committee-card { aspect-ratio:auto; min-height:220px; }
+        .gp-toolbar-actions { width:100%; }
+      }
+
+      @media (max-width: 640px) {
+        .gp-panel { padding:1rem; }
+        .gp-hero { padding:1.1rem; }
+        .gp-toolbar { flex-direction:column; align-items:stretch; }
+        .gp-toolbar-actions, .gp-view-toggle { width:100%; }
+        .gp-view-btn { flex:1; }
+        .gp-clear-btn { width:100%; }
       }
     `;
     document.head.appendChild(style);
@@ -570,9 +673,30 @@
             </div>
           </div>
 
+          <div class="gp-toolbar">
+            <label class="gp-search-field">
+              <span>Buscar</span>
+              <input type="text" value="${escapeHtml(state.searchTerm)}" placeholder="Nome, país, turma ou código" data-action="search-delegations" autocomplete="off">
+            </label>
+            <div class="gp-toolbar-actions">
+              <label class="gp-select-field">
+                <span>Ordenar por</span>
+                <select data-action="change-sort">
+                  <option value="country" ${state.sortBy === 'country' ? 'selected' : ''}>País</option>
+                  <option value="name" ${state.sortBy === 'name' ? 'selected' : ''}>Nome</option>
+                </select>
+              </label>
+              <div class="gp-view-toggle" role="group" aria-label="Modo de visualização">
+                <button type="button" class="gp-view-btn ${state.viewMode === 'grid' ? 'is-active' : ''}" data-action="change-view-mode" data-view-mode="grid">Grade</button>
+                <button type="button" class="gp-view-btn ${state.viewMode === 'list' ? 'is-active' : ''}" data-action="change-view-mode" data-view-mode="list">Lista</button>
+              </div>
+            </div>
+            <button type="button" class="gp-clear-btn" data-action="clear-search">Limpar</button>
+          </div>
+
           <div class="gp-stats">
-            <div class="gp-stat"><strong>${state.delegations.length}</strong><span>Delegações exibidas</span></div>
-            <div class="gp-stat"><strong>${state.delegations.filter((item) => String(item.country || '').trim()).length}</strong><span>Países atribuídos</span></div>
+            <div class="gp-stat"><strong>${getSortedDelegations().length}</strong><span>Delegações exibidas</span></div>
+            <div class="gp-stat"><strong>${getSortedDelegations().filter((item) => String(item.country || '').trim()).length}</strong><span>Países atribuídos</span></div>
             <div class="gp-stat"><strong>${segmentLabel(state.segment)}</strong><span>Segmento ativo</span></div>
           </div>
 
@@ -588,7 +712,7 @@
             </div>
           </div>
           <div class="gp-delegation-grid">
-            ${state.delegations.length ? state.delegations.map((delegation, index) => renderDelegationCard(delegation, index)).join('') : '<div class="gp-empty">Nenhuma delegação encontrada para este comitê e segmento.</div>'}
+            ${getFilteredDelegations().length ? getFilteredDelegations().map((delegation, index) => renderDelegationCard(delegation, index)).join('') : '<div class="gp-empty">Nenhuma delegação encontrada para esse filtro. Tente limpar a busca ou usar outro termo.</div>'}
           </div>
         </section>
       </div>
@@ -630,6 +754,7 @@
 
   async function loadDelegations() {
     setLoading(true);
+    state.searchTerm = '';
     try {
       const data = await fetchDelegations();
       if (!data.released) {
@@ -684,6 +809,28 @@
         state.delegations = [];
         render();
       }
+      if (action === 'clear-search') {
+        state.searchTerm = '';
+        render();
+      }
+      if (action === 'change-view-mode') {
+        state.viewMode = target.dataset.viewMode === 'list' ? 'list' : 'grid';
+        render();
+      }
+    });
+
+    root.addEventListener('change', (event) => {
+      const select = event.target.closest('[data-action="change-sort"]');
+      if (!select) return;
+      state.sortBy = select.value === 'name' ? 'name' : 'country';
+      render();
+    });
+
+    root.addEventListener('input', (event) => {
+      const input = event.target.closest('[data-action="search-delegations"]');
+      if (!input) return;
+      state.searchTerm = input.value;
+      render();
     });
   }
 
