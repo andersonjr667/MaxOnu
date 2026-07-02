@@ -15,6 +15,7 @@ const rateLimit = require('express-rate-limit');
 const Joi = require('joi');
 const chalk = require('chalk').default;
 const figlet = require('figlet');
+const { SitemapStream, streamToPromise } = require('sitemap');
 const fs = require('fs');
 const os = require('os');
 const nodemailer = require('nodemailer');
@@ -674,6 +675,38 @@ app.get('/health', (req, res) => res.json({
   db: isDbReady(),
   uptime: process.uptime()
 }));
+
+app.get('/robots.txt', (req, res) => {
+  res.type('text/plain').send(`User-agent: *\nAllow: /\nSitemap: ${process.env.PUBLIC_URL || 'https://maxonu.com.br'}/sitemap.xml\n`);
+});
+
+app.get('/sitemap.xml', async (req, res) => {
+  try {
+    const hostname = process.env.PUBLIC_URL || 'https://maxonu.com.br';
+    const smStream = new SitemapStream({ hostname });
+    const urls = [
+      { url: '/', changefreq: 'weekly', priority: 1.0 },
+      { url: '/inscricao', changefreq: 'weekly', priority: 0.95 },
+      { url: '/delegacoes', changefreq: 'weekly', priority: 0.95 },
+      { url: '/blog', changefreq: 'weekly', priority: 0.9 },
+      { url: '/guias', changefreq: 'monthly', priority: 0.8 },
+      { url: '/imprensa', changefreq: 'weekly', priority: 0.85 },
+      { url: '/regras', changefreq: 'monthly', priority: 0.7 },
+      { url: '/termos-de-uso', changefreq: 'monthly', priority: 0.6 }
+    ];
+
+    urls.forEach((item) => smStream.write(item));
+    smStream.end();
+
+    const xml = await streamToPromise(smStream);
+    res.header('Content-Type', 'application/xml');
+    res.setHeader('Cache-Control', 'public, max-age=3600');
+    res.send(xml.toString());
+  } catch (error) {
+    console.error('Sitemap generation failed', error);
+    res.status(500).send('Unable to generate sitemap');
+  }
+});
 
 app.get('/api/reveal-status', (req, res) => {
   res.setHeader('Cache-Control', 'public, max-age=60');

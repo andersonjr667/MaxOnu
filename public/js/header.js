@@ -441,14 +441,23 @@
     }
   }
 
+  function isEditableElement(node) {
+    if (!(node instanceof Element)) return false;
+    return Boolean(node.closest('input, textarea, select, [contenteditable="true"], [contenteditable="plaintext-only"], [data-mx-ignore-outside-click], [role="textbox"]'));
+  }
+
   function shouldIgnoreOutsideClick(target) {
     if (!(target instanceof Element)) return false;
-    if (target.closest('input, textarea, select, [contenteditable="true"], [data-mx-ignore-outside-click]')) {
+    if (isEditableElement(target)) {
       return true;
     }
 
     const active = document.activeElement;
-    return Boolean(active && active instanceof Element && active.closest('input, textarea, select, [contenteditable="true"], [data-mx-ignore-outside-click]'));
+    if (active instanceof Element && isEditableElement(active)) {
+      return true;
+    }
+
+    return false;
   }
 
   function bindOutsideClose(root) {
@@ -458,6 +467,13 @@
         e.stopPropagation();
         return true;
       }
+
+      const path = typeof e.composedPath === 'function' ? e.composedPath() : [];
+      if (path.some((node) => node instanceof Element && isEditableElement(node))) {
+        e.stopPropagation();
+        return true;
+      }
+
       return false;
     };
 
@@ -472,11 +488,11 @@
     document.addEventListener('click', (e) => {
       const t = /** @type {Node} */ (e.target);
       if (ignoreIfEditable(e)) return;
-      if (!root.contains(t)) {
+      if (!root.contains(t) && !isEditableElement(t)) {
         closeAllDropdowns(root);
         setMenuOpen(root, false);
       }
-    });
+    }, { passive: true });
 
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {

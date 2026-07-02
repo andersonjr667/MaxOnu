@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://maxonu.com.br/sitemap.xml
