@@ -944,9 +944,17 @@ router.put('/admin/:delegationId/country', authMiddleware, roleAuth(['admin', 'p
         const { delegationId } = req.params;
         const { country } = req.body;
         const normalizedCountry = String(country || '').trim();
+        const rawDelegationId = String(delegationId || '').trim();
 
-        const memberIds = String(delegationId || '').split('-').filter(Boolean);
+        let memberIds = rawDelegationId.split('-').filter(Boolean);
         if (memberIds.length < 2) {
+            const directUser = await User.findById(rawDelegationId);
+            if (directUser) {
+                memberIds = [String(directUser._id)];
+            }
+        }
+
+        if (memberIds.length < 1) {
             return res.status(400).json({ error: 'ID de delegação inválido.' });
         }
 
